@@ -1069,7 +1069,8 @@ def storage_local_route():
     cut=len(client.capture);client_prompt=False;client.send(b'/options\r','fixed local Save menu')
     fresh(client,'Игровое меню',cut);cut=len(client.capture);client.send(b'1\r','observed Save choice')
     fresh(client,'Название сохранения:',cut);cut=len(client.capture);client.send((save_name+'\r').encode(),'fresh unique Save name')
-    fresh(client,'Описание (необязательно):',cut);cut=len(client.capture);client.send(b'\r','empty optional Save description')
+    fresh(client,'Описание (необязательно):',cut);cut=len(client.capture);save_result_cut=cut
+    client.send(b'\r','empty optional Save description')
     fresh(client,'✅ Игра сохранена',cut)
     new_saves=set(saves.glob('*.zip'))-old_saves
     if len(new_saves)!=1:raise RuntimeError('Actual Save did not produce one distinct archive')
@@ -1081,6 +1082,12 @@ def storage_local_route():
         metadata=strict_settings(saved.read('save_metadata.json'))
     if metadata['saveName']!=save_name or metadata['turnNumber']!=expected_turn-1:raise RuntimeError('Save metadata differs from actual local phase')
     cut=len(client.capture);client.send(b'\r','acknowledge actual Save result');fresh_player(client,cut,10);client_prompt=True
+    # Success is also printed for Committed+NeedsFollowUp. Inspect through the
+    # returned prompt so a later warning cannot be missed or silently replayed.
+    result['LocalSaveResult']={'Text':client.text(save_result_cut),
+        'NeedsFollowUpObserved':'Требуется служебная проверка хранилища сохранений.' in client.text(save_result_cut)}
+    if not console_routes.clean_save_result(client.text(save_result_cut)):
+        raise RuntimeError('Original Save did not return a clean result; no retry or subsequent local move')
     save_location,save_inventory=stage('Save','inventory')
     if (save_location,save_inventory)!=(saved_location,saved_inventory):raise RuntimeError('Save changed local item bytes')
     move(False);stage('Deposit','storage')

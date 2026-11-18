@@ -116,3 +116,12 @@ def item_position(location,inventory,storage_id,item_id):
     pair=(count(storage['contents']),count(items))
     if pair not in ((1,0),(0,1)):raise ValueError('Target item duplicated or absent')
     return 'storage' if pair==(1,0) else 'inventory'
+
+def clean_save_result(text):
+    """Clean returned Save interval only; committed-with-follow-up is not clean."""
+    if type(text) is not str:return False
+    success='✅ Игра сохранена'
+    warning='Требуется служебная проверка хранилища сохранений.'
+    if text.count(success)!=1 or warning in text:return False
+    saved=text.index(success);heading=text.rfind('Ваш ход');prompt=text.rfind('\n >  ')
+    return saved<heading<prompt

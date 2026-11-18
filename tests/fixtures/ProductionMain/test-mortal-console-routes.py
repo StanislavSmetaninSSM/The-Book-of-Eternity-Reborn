@@ -120,6 +120,28 @@ class RouteTests(unittest.TestCase):
         for field,replacement in [('RootKey','/foreign'),('RunId','a'*32),('Backend',2)]:
             scope['settled']={'Disposition':'Stopped','Identity':dict(durable,**{field:replacement})}
             with self.subTest(field=field),self.assertRaises(AssertionError):exec(check,scope)
+    def test_save_result_interval_refuses_committed_followup_before_next_local_move(self):
+        success='✅ Игра сохранена'
+        warning='Требуется служебная проверка хранилища сохранений.'
+        self.assertTrue(console_routes.clean_save_result(success+'\nВаш ход\n >  '))
+        for text in (success+'\n'+warning+'\nВаш ход\n >  ',warning+'\nВаш ход\n >  ',
+                     success+'\n',success+'\n'+success+'\nВаш ход\n >  '):
+            with self.subTest(text=text):self.assertFalse(console_routes.clean_save_result(text))
+        tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
+        fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='storage_local_route')
+        guards=[n for n in fn.body if isinstance(n,ast.If) and any(isinstance(c,ast.Call) and
+            isinstance(c.func,ast.Attribute) and c.func.attr=='clean_save_result' for c in ast.walk(n.test))]
+        self.assertEqual(len(guards),1)
+        guard=guards[0];index=fn.body.index(guard)
+        earlier=ast.unparse(ast.Module(body=fn.body[:index],type_ignores=[]))
+        later=ast.unparse(ast.Module(body=fn.body[index+1:],type_ignores=[]))
+        self.assertIn('acknowledge actual Save result',earlier)
+        self.assertTrue(earlier.rfind('fresh_player')>earlier.index('acknowledge actual Save result'))
+        self.assertIn('move(False)',later)
+        class Peer:
+            def text(self,cut):return success+'\n'+warning+'\nВаш ход\n >  '
+        ns={'console_routes':console_routes,'client':Peer(),'save_result_cut':1}
+        with self.assertRaises(RuntimeError):exec(compile(ast.Module(body=[guard],type_ignores=[]),'actual Save result refusal','exec'),ns)
     def test_local_route_does_not_accept_story_or_queue_change(self):
         before={'StorySHA256':'a','HistorySHA256':'b','QueuePins':{}}
         require_local_unchanged(before,dict(before))
@@ -129,6 +151,6 @@ class RouteTests(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(RouteTests)
-    if suite.countTestCases()!=13:raise SystemExit('Expected exactly thirteen finite-route DATA methods')
+    if suite.countTestCases()!=14:raise SystemExit('Expected exactly fourteen finite-route DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==13 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==14 and result.wasSuccessful() and not result.skipped else 1)

@@ -3001,3 +3001,19 @@ observed numeric1/2, preserving original raw records and observed A/B authority
 boundaries. Malformed/cross-wire controls added;22/22PASS0.015s and existing
 Mortal38/38PASS0.149s. Evidence external mortal-t024/load-codec; no native retry.
 Independent correction/full-route review and official Unit build/run pending.
+T024 complete source-review corrections remain bounded: the actual driver also
+had numeric B versus durable string B in its final stopped readback. Actual-AST
+assignment/closing control reproduced13 methods12PASS/1FAIL, then13PASS0.179s.
+Only the already-joined installed raw identity is retained for durable readback;
+shutdown continues to use captured observed B. Reviewer accepted this distinction.
+Save Committed-with-NeedsFollowUp is no longer clean success: preserve the full
+fresh Save-result interval through acknowledgment/returned prompt, report the
+known follow-up warning and refuse before deposit/Load, never replay Save.
+14-method route controls first had4 assertions in the new warning/partial/duplicate
+and absent actual guard control, then14/14PASS0.178s. Restored-diagnostic fixture
+manifest now includes the mandatory console-module pin;18/18 existing controls
+PASS0.177s, no fallback/native replay. Wrapper expects14 route+22 Load methods.
+Current impact controls additionally passed15 rejected-cleanup,11 general relay
+and5 inert phase-wait cases. Source review final correction check and fresh
+bounded official Unit run remain pending. Fixed routes qualify one exact canonical
+package, not arbitrary paginated/wrapped inventories. All raw remains external.
