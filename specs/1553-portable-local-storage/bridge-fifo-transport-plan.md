@@ -771,3 +771,26 @@ both positives and lacks the15 negative gates; expected RED is2PASS/15FAIL,
 subject to actual execution rather than asserted as a result. No driver or
 production code has changed. The earlier14-case text describes initial source
 preparation, not an executed run.
+
+Reviewed sourceae046ad2 executed serially: unit build27.72s (wall28.077s),
+42 warnings/zero errors. Official gm-mortal-daemon-settlement-oracle completed
+17/17:2PASS/15FAIL,11.0423358s, no timeout/skips/duplicates and complete owned
+cleanup. Valid settled and valid retained continuation controls passed; the15
+actual-function assertions expose accepted invalid/lying cleanup evidence.
+This is causal fixture RED, not an unimplemented parser or preparation failure.
+Runner20261117-221724-190-5-197ea7c971174dc882ec1669fdf55bd0-categories;
+raw daemon-settlement-red-{build,official}.log remains outside Git.
+
+Separately, official gm-linux-powershell-finally-diagnostics completed4/4 PASS
+in12.9764329s with complete owned cleanup, no timeout/skips/duplicates.
+All four peers exited0 with EOF/restored termios; each guardian recorded driver0,
+ECHILD/reaped1/no emergency/failures/deadline. BOTH direct and nested Ctrl+C
+observed child.finally.enter/after-write/exit; nested also observed launcher
+finally enter/exit, without launcher.after. Cooperative controls completed body
+exit and final markers. Thus this inert experiment does not reproduce ml7 and
+does not support a blanket claim that Ctrl+C skips finally. Actual daemon
+finalization cause remains unknown; no production fix follows from this alone.
+Evidence root powershell-finally/f53d81226f4a4d7884c20e62f4a1b1cd,
+runner20261117-221748-951-5-5ce07e5d9b804535bf0a8da67cc8b568-categories,
+raw powershell-finally-diagnostic-official.log are retained outside Git.
+Driver and production daemon remain unchanged; no live/old-world replay occurred.
