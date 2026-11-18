@@ -8,7 +8,7 @@ public sealed class MortalConsoleRouteTests
     [Fact]
     public Task FiniteConsoleRouteDataContracts() => RunAsync("test-mortal-console-routes.py", 12);
     [Fact]
-    public Task RetainedDaemonLoadDataContracts() => RunAsync("test-relay-load-evidence.py", 19);
+    public Task RetainedDaemonLoadDataContracts() => RunAsync("test-relay-load-evidence.py", 22);
     private static async Task RunAsync(string script, int expectedMethods)
     {
         Assert.True(OperatingSystem.IsLinux());
