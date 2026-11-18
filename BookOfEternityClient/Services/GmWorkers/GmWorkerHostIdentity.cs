@@ -92,7 +92,12 @@ internal sealed class GmWorkerHostIdentity
                 {
                     pidfd.DangerousAddRef(ref held);
                     var observed = _poll(pidfd.DangerousGetHandle().ToInt32());
-                    if (observed.Result < 0 || (observed.ReturnedEvents & ~0x11) != 0) throw Invalid();
+                    if (observed.Result < 0 || (observed.ReturnedEvents & ~0x11) != 0)
+                    {
+                        var failure = Invalid();
+                        failure.Data[HostExitFaultCapture.PollDataKey] = observed;
+                        throw failure;
+                    }
                     if ((observed.ReturnedEvents & 0x11) != 0) return;
                 }
                 finally { if (held) pidfd.DangerousRelease(); }

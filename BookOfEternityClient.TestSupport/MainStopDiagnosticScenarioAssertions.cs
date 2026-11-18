@@ -55,6 +55,7 @@ internal static class MainStopDiagnosticScenarioAssertions
         Require(first.GetProperty("StackText").ValueKind is JsonValueKind.String or JsonValueKind.Null,"First-cause stack absence was hidden.");
         foreach(var entry in new[]{first,current}) {
             var state=entry.GetProperty("State");
+            Require(state.GetProperty("RootExitFault").ValueKind==JsonValueKind.Null,"Healthy original exit task acquired invented fault evidence.");
             Require(state.GetProperty("Pins").GetInt32()==1 && !state.GetProperty("PinDrainCompleted").GetBoolean() &&
                 !state.GetProperty("LifecyclePresent").GetBoolean() && !state.GetProperty("LifecycleActive").GetBoolean() &&
                 state.GetProperty("OwnerClosed").GetBoolean() && !state.GetProperty("OwnerRetired").GetBoolean() &&
@@ -75,6 +76,7 @@ internal static class MainStopDiagnosticScenarioAssertions
     internal static void NonPrimaryRefusalState(JsonElement report,GmSessionRunIdentity identity)
     {
         var state=report.GetProperty("CurrentFailure").GetProperty("State");
+        Require(state.GetProperty("RootExitFault").ValueKind==JsonValueKind.Null,"Live original exit task acquired invented fault evidence.");
         var record=JsonSerializer.Deserialize<GmSessionRunRecord>(state.GetProperty("InMemoryRecord").GetRawText());
         Require(record?.Identity==identity && record.Disposition==GmSessionRunDisposition.Stopping &&
             state.GetProperty("LifecycleActive").GetBoolean() && !state.GetProperty("InputDrainCompleted").GetBoolean() &&
