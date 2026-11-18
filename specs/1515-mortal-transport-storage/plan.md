@@ -2549,3 +2549,18 @@ Frozen19source manifest terminal-owner-correction-pins SHA256
 27c099b21b586f63fda4f670c6ef04bb8a5a387d20ae3d4c3ca21dabd9f44edb.
 Counts unchanged27cheap+5combined, all stillUNRUN. Focused review of these two
 changed files precedes the cheap gate; no additional framework or native attempt.
+The narrowed independent terminal-owner review accepted the source correction
+for targeted execution, not runtime acceptance. Corrected official27 ran
+22PASS/5FAIL in28.8168203s; all11 projection/seed controls passed. Genuine
+publication/reference and Browser controls passed, but five boundary fixtures
+remain invalid or unreached: None phase is forbidden in closing-drift/read-count
+(two preparation failures), the old physical-close hook is not reached through
+the pending read owner, and two late-publication hooks did not reach their
+required boundary. No All read-count artifact was produced; no efficiency claim.
+Integration118.85s/177warnings/0errors,3439source pins unchanged,20outputs;
+complete27/no skips/duplicates/timeout, owned cleanup complete, no observed
+deadlock. External mortal-t022/green-corrected/result.log SHA256
+560122ef9b92145091a8bc7e9be8c1ab2fa2746d24478c9f2fbf22552feaefb0.
+Trace and correct these fixture entry/hook lifetimes without loosening production
+selection, ownership, exact failure or reached-boundary requirements. Combined5
+and native remain UNRUN;22passes do not compensate for the five missing proofs.
