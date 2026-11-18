@@ -2719,7 +2719,7 @@ not a new native acceptance or closure of #1515/#1516/#1538.
 Before packaging a fresh native world, preserve the unchanged runtime/relay
 while preparing the actual inventory/save/load console transport. Existing
 client stdout pipe does not support direct Spectre SelectionPrompt menus.
-Choose client-only stdin/stdout/stderr on its existing owned PTY with TERM=xterm;
+Choose client-only stdin/stdout/stderr on its existing owned PTY with TERM=xterm-256color;
 bridge/daemon/RPC TERM and ownership remain unchanged. A PTY is not a terminal
 emulator: first prove actual inert Spectre selection, fresh rendered observation,
 selected return value, normal exit/EOF/termios with this exact configuration.
@@ -2772,3 +2772,13 @@ current generation and disposal unchanged. Tests will not prove actual process
 ownership; the later native Load A-to-B witness remains mandatory. No new protocol,
 status-derived identity, runtime authority or legacy path. Stub source is saved
 before a separate smoke-only build; do not treat that build as observer acceptance.
+
+T024 independent fresh-context Sol6.1 XHigh source review found one Important
+observer gap before execution: blanket CSI h/l and SGR acceptance can preserve
+stale visible rows across alternate-buffer/conceal sequences; partial escape or
+UTF-8 at observation/EOF was not rejected. This does not prove Spectre emits them.
+Correct with a bounded supported-control allowlist and cheap parser negatives,
+not a general emulator or fabricated terminal response. Also tighten startup
+handle ownership where simple; uncertain asynchronous cleanup must remain failure.
+Both actual smoke cases are UNRUN. The precise proposed child TERM is
+xterm-256color; bridge/daemon settings remain unchanged.
