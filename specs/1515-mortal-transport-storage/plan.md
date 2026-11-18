@@ -3303,3 +3303,16 @@ Fresh session/setup41/53files/validation0, no main/config/queue/guardian yet,
 private0700/supervisors0755/socket89bytes. Independent delta preflight pending;
 no launch or response. Failed mm11 world is not reused. Actual candidate still
 requires exact-hash complete-field/identity review before publication.
+mm12 initial preflight found stale UnitOutputsCorroboration copied from mm11,
+although20 actual output pins and packaged bytes were correct. Corrected only
+external metadata/preparation checks, preserving original failure evidence; no
+re-export/publish/build/world mutation. Revised manifest
+f25202882b0393e5ef48aa842ecd4c67fa614c898ba960dd852e5c0315d01b7c,
+both source/output pin files f7e225a46a1530291fa57a3ae14946e4dab0672d91400725222207fa6e0e2d64,
+prep script dbfcf5a95953322e2826c1f349ec37f4e83fad6eac35a61da242741e61292328.
+Independent Sol6.1 XHigh focused rereview accepts all3510sources/20outputs/8Unit
+joins, full inventories/modes/isolation/absence and unchanged package. No remaining
+prelaunch blocker; failed mm11 probe and106world pins unchanged. After environment
+reconnect, fresh read-only checks again confirm corrected manifest and no launch,
+queue, guardian, probe, main owner or config. One bounded fresh birth launch is
+next; actual candidate complete review still precedes any response.
