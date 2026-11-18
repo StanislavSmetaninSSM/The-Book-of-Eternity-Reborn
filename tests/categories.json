@@ -2,6 +2,28 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-linux-powershell-finally-diagnostics",
+      "responsibility": "#1589 inert actual foreground PowerShell direct/nested cooperative/Ctrl+C finally marker diagnostics, with one shared native guardian preparation.",
+      "excludes": "No gameplay, actual daemon terminal settlement, publication authority, or asserted universal Ctrl+C finally behavior.",
+      "changeHints": ["BookOfEternityClient.Tests/LinuxPowerShellFinallyDiagnosticsTests.cs", "tests/fixtures/PowerShellFinally"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.LinuxPowerShellFinallyDiagnosticsTests.OwnedForegroundFinallyMarkers"]}]
+    },
+    {
+      "id": "gm-mortal-daemon-settlement-oracle",
+      "responsibility": "#1589 actual Mortal phase acceptance requires original active and exact final settled daemon owner/status evidence, beyond physical process closure.",
+      "excludes": "Inert functions only; no live daemon, gameplay, publication authority or Ctrl+C cause qualification.",
+      "changeHints": ["tests/fixtures/ProductionMain/live-mortal-phase.py", "BookOfEternityClient.Tests/MortalDaemonSettlementOracleTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.MortalDaemonSettlementOracleTests.*"]}]
+    },
+    {
       "id": "gm-linux-bridge-contender-restart",
       "responsibility": "#1589 actual typed same-root bridge contender refusal preserves original owner/status RPC, then confirmed stop permits same-config new-run restart.",
       "excludes": "No gameplay, legacy PID fallback, Windows qualification or broad launcher redesign.",

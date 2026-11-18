@@ -730,3 +730,44 @@ and bridge DLL/PDB remain unchanged. Do not claim all helper copies identical;
 there was no integration rebuild for these test-only changes and no C# rebuild
 between the causal build and source4e1d54 GREEN4/4. Packaged launcher must be
 copied from the reviewed current source, not an older build-output script.
+
+### Daemon terminal-settlement oracle: test-first WIP after ml7
+
+ml7 p01 probe reported Success although final daemon status remained running
+and its exact guard remained unsettled. Physical EOF/exit0 is not confirmation
+of terminal status publication. This establishes a fixture acceptance gap, not
+the cause of daemon finalization failure; no production stop correction is made.
+New14 inert cases invoke the actual phase functions from their AST without any
+runtime top-level execution: a complete physical/main-close positive plus bad
+owner/session/missing/malformed/null/duplicate/running/false/type/original-state
+pairs, a lying Success record, and two unchanged saved proofs against changed
+current continuation status. No helper refusal stub substitutes for this causal
+acceptance behavior. Cases are UNRUN; existing live driver is still unchanged.
+
+Planned correction is read-only original-active identity capture before action,
+strict final pair observation after EOF, raw/hash retention even on failure,
+and current-pair recheck before continuation writes/processes. It never writes
+ownership or requires zero recovered errors. Existing idle-daemon scenario must
+also assert original/final pair, not merely record status. Historical results
+remain limited to their earlier assertions. Four independent inert PowerShell
+finally diagnostics are separate; Ctrl+C timing is a candidate, not established
+cause. Fresh owner/state checks are not reusable permission DATA; no cache or
+broad gameplay rerun is needed for this acceptance predicate.
+
+Separate gm-linux-powershell-finally-diagnostics selects exactly four inert
+Theory cases. Its three-minute protective category budget covers one shared
+native preparation (50s bound) plus four25s outer case bounds, not repeated
+preparation or game execution. Marker outcomes are diagnostic, not forced to a
+predicted Ctrl+C result. Source review also requires a continuation-valid
+positive before GREEN so unconditional retained-world refusal cannot satisfy
+only the two negative continuation cases; this is not yet added in the frozen
+initial causal14 block.
+
+Before the first causal build, reviewer-requested controls extend this frozen
+oracle selection to17 cases: unchanged valid continuation must return43,
+current guard-only owner replacement must refuse independently of status, and
+saved raw/hash tampering must refuse. The unchanged driver currently accepts
+both positives and lacks the15 negative gates; expected RED is2PASS/15FAIL,
+subject to actual execution rather than asserted as a result. No driver or
+production code has changed. The earlier14-case text describes initial source
+preparation, not an executed run.
