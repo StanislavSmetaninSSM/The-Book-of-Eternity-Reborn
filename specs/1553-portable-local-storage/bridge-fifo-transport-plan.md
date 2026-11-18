@@ -1325,3 +1325,29 @@ for original logical shutdown proof. Raw diagnostics stay external, not in Git.
 No repeat launch is authorized by this checkpoint, no game-materialization
 qualification is claimed, and main remains unchanged pending reliable relay
 shutdown and same-world restart qualification.
+
+### #1589 deterministic prepared-grant stop race: causal RED
+
+Test-only source 0128f3e6 was independently reviewed before execution. A separate
+actual FIFO neutral host holds one real Active control pin, receives a second
+PreparedGrant, observes same-owner durable Stopping after scoped shutdown, then
+sends the exact late activation. Activation is refused and the control pin's
+immutable close is acknowledged before observing the sole shutdown response.
+The desired clean-stop oracle fails: original shutdown NACK, first failure
+pin_drain_timeout with exactly one remaining pin. This proves a stop/admission
+race in the current protocol, not the exact historical interleaving in rl3.
+
+Fresh Unit build: 39.59 seconds / 39.978 wall, 66 warnings, zero errors. Sole
+official gm-prepared-grant-stop-race: 0 PASS / 1 FAIL, 27.0152095 seconds,
+complete runner-owned cleanup, no skips, duplicates, retry or timeout. Original
+native case 737624e621fe4430a7531ef978620646 preserves secondary host disposal
+and join timeouts; guardian independently reports ECHILD, driver 1, no emergency
+signals, failures or deadline. Twenty output pins remain external, manifest
+SHA256 99696eeef666eaeb8e34c67a8e68eef7ead8a51b2dd21866b179822deb2c2a5b.
+
+Next minimal correction must distinguish a reservation revoked by the original
+Stop while still PreparedGrant from an Active or already Unresolved operation.
+Only the same owner lock may order revocation versus activation. No fabricated
+ClosedObserved receipt, active lost-close relaxation, retry or authority cache.
+Independent RED outcome review and source review of any correction remain
+separate gates; no further game launch or main merge has occurred.
