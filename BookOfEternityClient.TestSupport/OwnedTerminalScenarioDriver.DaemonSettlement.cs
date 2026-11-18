@@ -14,21 +14,23 @@ internal static partial class OwnedTerminalScenarioDriver
             Path.Combine(folder,"root/.boe_runtime/locks/gm-daemon-instance.lock") };
         var captured = new byte[2][];
         var capture = new List<object>();
+        var captureFailed = false;
         // Preserve both raw inputs before parsing, including malformed/duplicate evidence.
         for(var i=0;i<paths.Length;i++)
         {
             var destination = Path.Combine(folder,$"daemon-{phase}-{(i==0?"status":"guard")}.raw.json");
             try
             {
-                captured[i] = File.ReadAllBytes(paths[i]);
-                File.WriteAllBytes(destination,captured[i]);
+                var raw = File.ReadAllBytes(paths[i]);
+                File.WriteAllBytes(destination,raw);
+                captured[i] = raw;
                 capture.Add(new { Path=paths[i], RawPath=destination,
                     SHA256=Convert.ToHexString(SHA256.HashData(captured[i])).ToLowerInvariant() });
             }
-            catch(Exception failure) { capture.Add(new { Path=paths[i], Failure=failure.ToString() }); }
+            catch(Exception failure) { captureFailed=true; capture.Add(new { Path=paths[i], Failure=failure.ToString() }); }
         }
         evidence["DaemonSettlementCapture-"+phase] = capture;
-        if(captured.Any(raw=>raw is null)) throw new IOException("Daemon settlement input unavailable: "+phase);
+        if(captureFailed || captured.Any(raw=>raw is null)) throw new IOException("Daemon settlement input unavailable: "+phase);
         JsonElement Read(byte[] raw)
         {
             // Match canonical UTF-8 JSON BOM allowance without replacing malformed UTF-8.
@@ -49,6 +51,9 @@ internal static partial class OwnedTerminalScenarioDriver
             return document.RootElement.Clone();
         }
         var status=Read(captured[0]); var guard=Read(captured[1]);
+        var guardFields = new HashSet<string>(guard.EnumerateObject().Select(property=>property.Name),StringComparer.Ordinal);
+        if(!guardFields.SetEquals(new[]{"version","sessionPath","ownerId","settled"}))
+            throw new InvalidDataException("Daemon guard must contain exactly its four canonical fields.");
         string ExactString(JsonElement value,string name)
         {
             var field=value.GetProperty(name);
