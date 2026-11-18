@@ -2280,3 +2280,16 @@ no cache/retained-world repair/runtime migration. Independent outcome review is
 separate. Prepare fresh mm9 from this seed after review; actual GM will clone
 its existing vehicles root and preserve exact client-owned empty receipts,
 not recreate the file or manually create receipts. No native retry yet.
+Independent T020 outcome accepted, including exact recomposed authority equality.
+Fresh mm9 prepared-only: manifestf4e424015f0320c67271075ad6c70214fa70f4313ecb8e02c15f56e823a20e5f,
+package8e0f14bb42155357a6a0777626ab0603e3672fcb9f7fc9f76ac0d5c13d8d484c.
+Uses current green/package-source-output-pins.json
+(a617252d48ffdd500431dd53feafa063e61a5c62595c1f7a389a1e3e0b294ebc),
+not an older similarly named artifact. New helper DLL
+3db952c38773f263ca6be1ed775da5ac8dcdee86f4c0dddcca44a0aaa3207a0b;
+client/runtime behavior unchanged. Fresh session
+seeded_live_mortal_627f41b7e7254c98b09ddaee2b88f71c, setup41/expected42,
+53seed files include exact4 current empty companions. No predecessor, main owner,
+config or queue. GM must preserve baseline vehicle receipt bytes/fields when
+adding commands and retain final resource preflight. Independent prelaunch gate
+pending. No raw diagnostics/world data uploaded and no native attempt yet.
