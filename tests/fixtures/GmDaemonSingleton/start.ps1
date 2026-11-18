@@ -24,7 +24,7 @@ if($Scenario -eq 'wrong-session'){
  try {Start-LinuxGmDaemonInstance}catch{$failure=$_.Exception.Message}
 }
 try {
- if($Scenario -in @('missing','terminal-readback-fails','wrong-session','malformed-json','malformed-utf8')){
+ if($Scenario -in @('missing','terminal-readback-fails','wrong-session')){
   if($failure){throw "Actual Start unexpectedly refused: $failure"}
   if(-not $script:LinuxDaemonGuard -or $script:Writes -ne 1){throw 'Actual Start did not retain guard and confirm running'}
   if($Scenario -in @('missing','wrong-session')){
@@ -45,5 +45,8 @@ try {
    finally {if($retry){$retry.Dispose()}}
    if(-not $refused){throw 'Stopped JSON with unconfirmed terminal readback must not authorize restart'}
   }
- }else{if(-not $failure){throw 'Missing-status identity and initial publication refusals must be preserved'}}
+ }else{
+  if(-not $failure){throw 'Malformed/empty status and initial publication refusals must be preserved'}
+  if($script:Writes -ne 0){throw 'Refused startup must not publish running status'}
+ }
 }finally{if($script:LinuxDaemonGuard){$script:LinuxDaemonGuard.Dispose();$script:LinuxDaemonGuard=$null}}
