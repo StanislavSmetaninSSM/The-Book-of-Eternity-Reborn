@@ -53,5 +53,26 @@ class ScreenTests(unittest.TestCase):
         self.assertTrue(s.selected('SMOKE_ALPHA'))
         with self.assertRaises(RuntimeError):Screen().feed(b'\x1b[6n')
 
+class KeyboardAndFrameTests(unittest.TestCase):
+    def test_application_cursor_changes_down_encoding(self):
+        s=Screen();self.assertEqual(s.down(),b'\x1b[B')
+        s.feed(b'\x1b[?1h\x1b=')
+        self.assertEqual(s.down(),b'\x1bOB');self.assertTrue(s.keyboard['keypad'])
+        s.feed(b'\x1b[?1l\x1b>')
+        self.assertEqual(s.down(),b'\x1b[B');self.assertFalse(s.keyboard['keypad'])
+    def test_split_keyboard_mode_and_unknown_escape(self):
+        s=Screen();s.feed(b'\x1b[?');s.feed(b'1h\x1b');s.feed(b'=')
+        self.assertEqual(s.down(),b'\x1bOB')
+        with self.assertRaises(ValueError):s.feed(b'\x1bZ')
+    def test_pipe_frame_is_fresh_and_not_echo(self):
+        s=Screen();s.feed(b'T024 inert selection\n\n'+ALPHA)
+        self.assertTrue(s.frame('SMOKE_ALPHA',0))
+        cut=len(s.plain)
+        self.assertFalse(s.frame('SMOKE_ALPHA',cut))
+        s.feed(b'\r\x1b[3AT024 inert selection\n\n'+BETA)
+        self.assertTrue(s.frame('SMOKE_BETA',cut))
+        s.feed(b'\rjunk')
+        self.assertFalse(s.frame('SMOKE_BETA',cut))
+
 if __name__=='__main__':
     unittest.main()

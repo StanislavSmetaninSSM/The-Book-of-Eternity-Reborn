@@ -2838,3 +2838,14 @@ operation-test SHA256
 30bdb9aa4a0ac69944636e4a839b731ec0ebefd34b34987be4365465be6a55e0.
 Independent correction review and fresh Unit execution next; native evidence
 still required and no external harness may adopt a current status as lineage.
+T024 console correction source: compare three actual configurations (PTY/xterm-
+256color, captured-pipe/dumb as old driver, captured-pipe/xterm-256color) plus one
+parser wrapper. Each must independently produce an actual choice and verified
+normal cleanup; no expected pipe exception remains. Only observed keyboard modes
+?1h/l and ESC=/ESC> added, with Down encoding derived from current observed mode.
+Captured stdout uses an exact fresh title/two-row frame after the input cut, not
+an invented screen; control master/echo is separate. Alternate-buffer/conceal/DSR
+and unknown controls still fail. New cheap keyboard controls showed8 oldPASS plus
+3 missing-API errors, then11/11PASS in0.001s; actual three console cases UNRUN.
+No budget increase or live driver/gameplay changes. Independent follow-up review
+precedes fresh Unit/official4-case execution. Preserve first1/3 failed result.

@@ -4,9 +4,11 @@ import codecs, errno, fcntl, json, os, pathlib, pty, re, select, struct, subproc
 # Small read-only screen projection for the cursor operations Spectre renders.
 # Unsupported sequences fail explicitly; this is not an input/DSR responder.
 class Screen:
-    def __init__(self):
+    def __init__(self, keyboard=None):
         self.rows = [[' '] * 100 for _ in range(25)]
         self.x = self.y = 0
+        self.keyboard = keyboard if keyboard is not None else {'cursor':False,'keypad':False}
+        self.plain = ''
         self.pending = ''
         self.invalid = False
         self.decoder = codecs.getincrementaldecoder('utf-8')()
@@ -36,7 +38,8 @@ class Screen:
                 self.pending = self.pending[match.end():]
                 if intermediate: raise ValueError('Unsupported CSI intermediate')
                 if final in ('h','l'):
-                    if args != '?25': raise ValueError('Unsupported terminal mode')
+                    if args == '?1': self.keyboard['cursor'] = final == 'h'
+                    elif args != '?25': raise ValueError('Unsupported terminal mode')
                     continue
                 if '?' in args: raise ValueError('Unsupported private CSI')
                 vals = [int(n or 0) for n in args.lstrip('?').split(';')]
@@ -65,8 +68,13 @@ class Screen:
                 continue
             if self.pending[0]=='\x1b':
                 if len(self.pending)==1:return
+                if self.pending[1] in ('=','>'):
+                    self.keyboard['keypad'] = self.pending[1] == '='
+                    self.pending = self.pending[2:]
+                    continue
                 raise ValueError('Unsupported escape '+repr(self.pending[:20]))
             c,self.pending=self.pending[0],self.pending[1:]
+            self.plain += c
             if c=='\r':self.x=0
             elif c=='\n':
                 self.y+=1
@@ -74,6 +82,22 @@ class Screen:
             elif c=='\b':self.x=max(0,self.x-1)
             elif c >= ' ':
                 self.rows[self.y][self.x]=c;self.x=min(99,self.x+1)
+    def down(self):
+        if self.invalid or self.pending or self.decoder.getstate()[0]:
+            raise ValueError('Incomplete keyboard mode')
+        return b'\x1bOB' if self.keyboard['cursor'] else b'\x1b[B'
+    def frame(self, choice, after):
+        # Captured PIPE has no screen. Only the latest complete emitted prompt frame
+        # after the original input cut may authorize the next input.
+        if self.invalid or self.pending or self.decoder.getstate()[0]: return False
+        text=self.plain[after:]
+        at=text.rfind('T024 inert selection')
+        if at<0:return False
+        match=re.fullmatch(r'T024 inert selection\r?\n[ \r\n]*([ >]*SMOKE_ALPHA *)\r?\n([ >]*SMOKE_BETA *)',text[at:])
+        if not match:return False
+        a,b=match.groups()
+        return (a.lstrip().startswith('> ') and not b.lstrip().startswith('> ')) if choice=='SMOKE_ALPHA' else (
+            b.lstrip().startswith('> ') and not a.lstrip().startswith('> '))
     def lines(self):return [''.join(row).rstrip() for row in self.rows]
     def selected(self, choice):
         if self.invalid or self.pending or self.decoder.getstate()[0]: return False
@@ -88,16 +112,17 @@ class Screen:
 
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
-    assert mode in ('pty','captured-pipe')
+    assert mode in ('pty','pipe-dumb','pipe-xterm')
     root.mkdir(parents=True,exist_ok=False)
     master,slave=pty.openpty()
     fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0))
     initial=termios.tcgetattr(slave)
     def own():
         os.setsid();fcntl.ioctl(slave,termios.TIOCSCTTY,0);os.tcsetpgrp(slave,os.getpid())
-    env=os.environ.copy();env['TERM']='xterm-256color'
+    env=os.environ.copy();env['TERM']='dumb' if mode=='pipe-dumb' else 'xterm-256color'
     result={'Mode':mode,'Success':False,'EOF':False,'CleanupFailures':[],'Inputs':[]}
-    process=None;screen=Screen();closed=set();streams={};raws={}
+    process=None;screen=Screen();control=Screen(screen.keyboard);closed=set();streams={};raws={}
+    frame_cut=0
     start=time.monotonic();stage=0
     try:
         args=['dotnet',helper,'spectre-selection-smoke',str(root),'--plain-output']
@@ -115,32 +140,37 @@ def main():
                     data=b''
                 if not data:closed.add(fd);continue
                 raws[fd].write(data)
-                if mode=='pty':screen.feed(data)
-            if mode=='pty' and stage==0 and screen.selected('SMOKE_ALPHA'):
-                result['InitialScreen']=screen.lines()
-                assert os.write(master,b'\x1b[B')==3
-                result['Inputs'].append('Down');stage=1
-            elif mode=='pty' and stage==1 and screen.selected('SMOKE_BETA'):
-                result['MovedScreen']=screen.lines()
+                if mode=='pty' or streams[fd]=='captured':screen.feed(data)
+                else:control.feed(data)
+            ready=lambda choice:screen.selected(choice) if mode=='pty' else screen.frame(choice,frame_cut)
+            if stage==0 and ready('SMOKE_ALPHA'):
+                result['InitialRender']=screen.lines() if mode=='pty' else screen.plain[frame_cut:]
+                arrow=screen.down()
+                result['KeyboardAtDown']=dict(screen.keyboard)
+                assert not control.pending and not control.invalid
+                assert os.write(master,arrow)==len(arrow)
+                result['Inputs'].append({'Key':'Down','Hex':arrow.hex()})
+                frame_cut=len(screen.plain);stage=1
+            elif stage==1 and ready('SMOKE_BETA'):
+                result['MovedRender']=screen.lines() if mode=='pty' else screen.plain[frame_cut:]
                 assert os.write(master,b'\r')==1
                 result['Inputs'].append('Enter');stage=2
             if process.poll() is not None and slave>=0:
                 os.close(slave);slave=-1
             if len(closed)==len(streams):break
         result['EOF']=len(closed)==len(streams)
-        if result['EOF'] and mode=='pty':screen.finish()
+        if result['EOF']:screen.finish();control.finish()
         if not result['EOF']:raise TimeoutError('Actual selection/exit/EOF not observed within 12s')
         result['ExitCode']=process.wait(timeout=1)
         result['TermiosRestored']=termios.tcgetattr(master)==initial
         receipt=json.loads((root/'choice.json').read_text())
         result['Choice']=receipt
         assert result['TermiosRestored'] and not receipt['InputRedirected']
-        assert receipt['Term']=='xterm-256color' and receipt['NoColor']=='1' and receipt['PlainOutput']
+        assert receipt['Term']==env['TERM'] and receipt['NoColor']=='1' and receipt['PlainOutput']
+        assert stage==2 and result['ExitCode']==0 and receipt['Selected']=='SMOKE_BETA' and receipt['Failure'] is None
         if mode=='pty':
-            assert stage==2 and result['ExitCode']==0 and receipt['Selected']=='SMOKE_BETA' and receipt['Failure'] is None
             assert not receipt['OutputRedirected'] and not receipt['ErrorRedirected']
         else:
-            assert result['ExitCode']!=0 and receipt['Selected'] is None and receipt['Failure']
             assert receipt['OutputRedirected'] and receipt['ErrorRedirected']
         result['Success']=True
     except BaseException as error:

@@ -58723,7 +58723,7 @@
     },
     {
       "id": "mortal-spectre-selection-pty",
-      "responsibility": "#1515 T024 inert default Spectre SelectionPrompt on proposed owned client PTY with plain output; separate captured-output-pipe refusal control and pure fail-closed screen projection controls.",
+      "responsibility": "#1515 T024 inert default Spectre SelectionPrompt on proposed owned client PTY with plain output; captured-pipe TERM=dumb and xterm comparisons; pure fail-closed screen/keyboard/frame controls.",
       "excludes": "Game bootstrap, menus, load lifecycle, GM/bridge/daemon, worlds and native relay acceptance.",
       "changeHints": [
         "BookOfEternityClient.Tests/SpectreSelectionPtyTests.cs",

@@ -7,7 +7,8 @@ public sealed class SpectreSelectionPtyTests
 {
     [Theory]
     [InlineData("pty")]
-    [InlineData("captured-pipe")]
+    [InlineData("pipe-dumb")]
+    [InlineData("pipe-xterm")]
     public async Task ActualDefaultPromptUsesOwnedClientConsole(string mode)
     {
         Assert.True(OperatingSystem.IsLinux());
