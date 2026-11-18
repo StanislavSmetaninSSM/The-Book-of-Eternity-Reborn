@@ -82,7 +82,7 @@ internal static class NativeHostScenarioDriver
         if(args.Length==3 && args[0].StartsWith("production-main-",StringComparison.Ordinal))return await OwnedTerminalScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-crash-",StringComparison.Ordinal))return await MainRunCrashScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-operation-",StringComparison.Ordinal))return await MainOperationScenarioDriver.RunAsync(args[0],args[1],args[2]);
-        if(args.Length==3 && args[0] is "terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race")return await GmBridgeConsumerScenarioDriver.RunAsync(args[0],args[1],args[2]);
+        if(args.Length==3 && args[0] is "terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active")return await GmBridgeConsumerScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-",StringComparison.Ordinal))return await MainRunFenceScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if (args.Length == 3 && args[0].StartsWith("terminal-", StringComparison.Ordinal))
             return await OwnedTerminalScenarioDriver.RunAsync(args[0], args[1], args[2]);

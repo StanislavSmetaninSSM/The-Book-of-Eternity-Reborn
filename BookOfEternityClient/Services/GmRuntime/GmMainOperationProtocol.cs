@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace BookOfEternityClient.Services.GmRuntime;
 
-internal enum MainOperationState { PreparedGrant, Active, Closing, ClosedObserved, Unresolved }
+internal enum MainOperationState { PreparedGrant, Active, Closing, ClosedObserved, Unresolved, RevokedBeforeActivation = 5 }
 internal enum MainOperationOutcome { Completed, Failed, Cancelled, Committed, RolledBack, Uncertain, NotLoaded }
 internal sealed record MainOperationClose(string PinId,string CloseId,string OperationId,GmSessionRunIdentity Identity,
     [property:JsonRequired] MainOperationOutcome Outcome,[property:JsonRequired] bool ClosingFailed);

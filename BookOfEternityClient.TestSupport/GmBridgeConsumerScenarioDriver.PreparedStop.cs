@@ -51,6 +51,20 @@ internal static partial class GmBridgeConsumerScenarioDriver
             result["ActivationReply"] = reply;
             if (reply != null && reply.Ok) throw new IOException("Late activation received success instead of EOF or explicit refusal.");
             result["ActivationRefused"] = true;
+            var lookup = new MainOperationClose(grant.PinId!, grant.CloseId!, operation, original.Identity,
+                MainOperationOutcome.Completed, false);
+            for (var i = 0; i < 2; i++)
+            {
+                var raw = await BridgeTransportConnector.RequestAsync(status, JsonSerializer.Serialize(new {
+                    command = "mainOperationStatus", mainOperationClose = lookup }), 3000, token);
+                var observed = JsonSerializer.Deserialize<MainOperationReply>(raw, MainOperationReader.Json)
+                    ?? throw new IOException("Missing revoked identity observation.");
+                if (!observed.Ok || observed.State != MainOperationState.RevokedBeforeActivation ||
+                    observed.PinId != grant.PinId || observed.CloseId != grant.CloseId || observed.Identity != original.Identity)
+                    throw new IOException("Stop revocation fabricated a close receipt or lost its original identity.");
+                result["RevokedObservation" + i] = observed;
+            }
+            if (stopping.IsCompleted) throw new IOException("Revoked grant double-release bypassed the real active control pin.");
         }
         catch (Exception error) { primary = error; }
         finally

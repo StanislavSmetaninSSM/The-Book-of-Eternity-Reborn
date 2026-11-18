@@ -32,7 +32,7 @@ public sealed class GmOwnedTerminalLinuxTests
     {
         Assert.True(OperatingSystem.IsLinux(), "This category requires actual Linux native execution.");
         var root = TestRepoPaths.RepoRoot;
-        var race = mode == "terminal-main-prepared-stop-race";
+        var race = mode is "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active";
         var soak = mode == "terminal-main-consumer-pidfd-soak";
         var consumer = mode is "terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-prepared-stop-race";
         var folder = Path.Combine(TestDiagnosticPaths.Root, "native-terminal", Guid.NewGuid().ToString("N"));
@@ -41,7 +41,7 @@ public sealed class GmOwnedTerminalLinuxTests
         var build = new ProcessStartInfo("pwsh") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var arg in new[] { "-NoProfile", "-File", Path.Combine(root, "scripts/build-linux-supervisor.ps1"),
             "-OutputDirectory", folder, "-IncludeHostGuardian", "-IncludeTerminalFixture" }) build.ArgumentList.Add(arg);
-        if (consumer || soak) { build.ArgumentList.Add("-TerminalFixtureLifetimeSeconds"); build.ArgumentList.Add(soak ? "180" : race ? "45" : "25"); }
+        if (consumer || soak || race) { build.ArgumentList.Add("-TerminalFixtureLifetimeSeconds"); build.ArgumentList.Add(soak ? "180" : race ? "45" : "25"); }
         using (var compiler = Process.Start(build)!)
         {
             var log = await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(compiler, TimeSpan.FromSeconds(40), Path.Combine(folder, "build.log"));

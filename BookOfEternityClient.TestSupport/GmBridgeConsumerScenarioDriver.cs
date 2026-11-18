@@ -14,11 +14,13 @@ internal static partial class GmBridgeConsumerScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race"))
+        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active"))
             throw new ArgumentException("Unknown bridge consumer mode.", nameof(mode));
         var soak = mode == "terminal-main-consumer-pidfd-soak";
         var race = mode == "terminal-main-prepared-stop-race";
-        var diagnostic = soak || race;
+        var loss = mode is "terminal-main-loss-prepared" or "terminal-main-loss-active";
+        var diagnostic = soak || race || loss;
+        var expectedLossProven = false;
         var priorNonce = Environment.GetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable);
         if (diagnostic) Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, Guid.NewGuid().ToString("N"));
         string? status = null;
@@ -30,7 +32,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
         Task<int>? running = null;
         GmMainOperationClient? pin = null;
         var exit = 1;
-        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 140 : race ? 20 : 25));
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 140 : race || loss ? 20 : 25));
         try
         {
             var expectedKind = "named-pipe-v1";
@@ -80,7 +82,12 @@ internal static partial class GmBridgeConsumerScenarioDriver
             if (endpoint.Kind != expectedKind) throw new IOException("Actual host transport disagrees with fresh socket capability.");
             if (!TransportEntryExists(endpoint.Address)) throw new IOException("Published transport entry is absent before use.");
             result["ActualEndpoint"] = endpoint;
-            if (mode == "terminal-main-prepared-stop-race")
+            if (loss)
+            {
+                await VerifyUnresolvedLossAsync(mode, status, original!, root, output, result, deadline.Token);
+                expectedLossProven = true;
+            }
+            else if (mode == "terminal-main-prepared-stop-race")
             {
                 await VerifyPreparedStopRaceAsync(status, original!, root, output, result, deadline.Token);
             }
@@ -152,6 +159,8 @@ internal static partial class GmBridgeConsumerScenarioDriver
                 result["IndependentLauncherShutdown"] = true;
             }
             }
+            if (!loss)
+            {
             if (await running.WaitAsync(deadline.Token) != 0) throw new IOException("Actual bridge returned failure.");
             var stopped = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(root) ?? throw new IOException("Stopped record missing."));
             if (stopped.Identity != original.Identity || stopped.Disposition != GmSessionRunDisposition.Stopped)
@@ -161,6 +170,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
                 throw new IOException("Soak original durable stop evidence missing.");
             if (TransportEntryExists(endpoint.Address)) throw new IOException("Original transport entry survived actual host shutdown.");
             result["OriginalStoppedAndEndpointRemoved"] = true;
+            }
             result["Success"] = true;
             exit = 0;
         }
@@ -196,16 +206,40 @@ internal static partial class GmBridgeConsumerScenarioDriver
             if (pin != null)
                 try { await pin.DisposeAsync(); }
                 catch (Exception error) { result["PinDisposeFailure"] = error.ToString(); exit = 1; }
-            if (host != null)
-                try
+            if (loss && host != null && running != null)
+            {
+                // Two serialized original stop attempts each retain the production 5s
+                // pin drain. One 18s observation budget leaves reserve under guardian50.
+                using var teardown = new CancellationTokenSource(TimeSpan.FromSeconds(18));
+                var dispose = Task.Run(host.Dispose);
+                async Task ObserveOriginalTask(Task task, string label)
                 {
-                    if (diagnostic) await Task.Run(host.Dispose).WaitAsync(TimeSpan.FromSeconds(5));
-                    else host.Dispose();
+                    try { await task.WaitAsync(teardown.Token); }
+                    catch (Exception error)
+                    {
+                        result[label + "Failure"] = error.ToString();
+                        if (!expectedLossProven || !task.IsFaulted ||
+                            !IsExpectedUnresolvedStop(error, original!)) exit = 1;
+                    }
+                    result[label + "Completed"] = task.IsCompleted;
+                    if (!task.IsCompleted) exit = 1;
                 }
-                catch (Exception error) { result["HostDisposeFailure"] = error.ToString(); exit = 1; }
-            if (running != null)
-                try { await running.WaitAsync(TimeSpan.FromSeconds(5)); }
-                catch (Exception error) { result["HostJoinFailure"] = error.ToString(); exit = 1; }
+                await ObserveOriginalTask(dispose, "HostDispose");
+                await ObserveOriginalTask(running, "HostJoin");
+            }
+            else
+            {
+                if (host != null)
+                    try
+                    {
+                        if (diagnostic) await Task.Run(host.Dispose).WaitAsync(TimeSpan.FromSeconds(5));
+                        else host.Dispose();
+                    }
+                    catch (Exception error) { result["HostDisposeFailure"] = error.ToString(); exit = 1; }
+                if (running != null)
+                    try { await running.WaitAsync(TimeSpan.FromSeconds(5)); }
+                    catch (Exception error) { result["HostJoinFailure"] = error.ToString(); exit = 1; }
+            }
             if (diagnostic) Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, priorNonce);
             if (exit != 0) result["Success"] = false;
             await File.WriteAllTextAsync(Path.Combine(output, "scenario.json"), JsonSerializer.Serialize(result));

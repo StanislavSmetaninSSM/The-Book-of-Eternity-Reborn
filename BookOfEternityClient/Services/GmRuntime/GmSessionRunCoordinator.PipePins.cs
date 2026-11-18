@@ -37,14 +37,25 @@ internal sealed partial class GmSessionRunCoordinator
                 // Receipt of the exact immutable terminal frame is the retirement
                 // point. Reply write success/peer EOF is not a second authority test.
                 pin.Dispose();State=MainOperationState.ClosedObserved;
-                owner._closedRemotePins.Enqueue(PinId);
-                while(owner._closedRemotePins.Count>32)owner._remotePins.Remove(owner._closedRemotePins.Dequeue());
+                RememberTerminal();
             }
+        }
+        private void RememberTerminal()
+        {
+            owner._closedRemotePins.Enqueue(PinId);
+            while(owner._closedRemotePins.Count>32)owner._remotePins.Remove(owner._closedRemotePins.Dequeue());
+        }
+        // Called only by the owner's actual stop fence while holding its _sync.
+        internal void RevokeBeforeActivationForStop()
+        {
+            if(State!=MainOperationState.PreparedGrant)return;
+            pin.Dispose();State=MainOperationState.RevokedBeforeActivation;
+            RememberTerminal();
         }
         internal void Lost()
         {
             lock(owner._sync) {
-                if(State==MainOperationState.ClosedObserved)return;
+                if(State is MainOperationState.ClosedObserved or MainOperationState.RevokedBeforeActivation)return;
                 State=MainOperationState.Unresolved;owner._closed=true;owner._uncertain=true;
                 // Original pin remains counted. Never timeout/evict/reconnect it.
             }
@@ -55,7 +66,7 @@ internal sealed partial class GmSessionRunCoordinator
         lock(_sync) {
             if((expectedIdentity!=null && !GmSessionRunValidation.IdentityMatches(Identity,expectedIdentity)) ||
                 root==null || !GmSessionRunValidation.AdmissionRootMatches(root,Identity.RootKey,_backend) || !Guid.TryParseExact(operation,"N",out _) ||
-                _remotePins.Values.Any(p=>p.OperationId==operation) || _remotePins.Values.Count(p=>p.State!=MainOperationState.ClosedObserved)>=32)
+                _remotePins.Values.Any(p=>p.OperationId==operation) || _remotePins.Values.Count(p=>p.State is not (MainOperationState.ClosedObserved or MainOperationState.RevokedBeforeActivation))>=32)
                 throw GmSessionRunPersistence.Invalid();
             var pin=CreateOperationPin();var remote=new RemotePin(this,pin,operation!);_remotePins.Add(remote.PinId,remote);return remote;
         }

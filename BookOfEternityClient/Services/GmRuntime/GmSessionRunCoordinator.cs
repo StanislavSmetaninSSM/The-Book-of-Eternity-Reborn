@@ -291,7 +291,12 @@ internal sealed partial class GmSessionRunCoordinator
     internal void NotifyUncertain(){lock(_sync){_uncertain=true;_closed=true;}}
     internal async Task BeginStopAsync()
     {
-        lock(_sync)_closed=true;
+        lock(_sync)
+        {
+            _closed=true;
+            // No activation can interleave. Active/lost pins retain their original close obligations.
+            foreach(var pin in _remotePins.Values.ToArray())pin.RevokeBeforeActivationForStop();
+        }
         await _transitions.WaitAsync();
         try
         {

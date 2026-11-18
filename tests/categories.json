@@ -8,9 +8,9 @@
       "changeHints": ["BookOfEternityClient.Tests/GmPreparedGrantStopTests.cs"],
       "related": [],
       "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
-      "timeoutMinutes": 2,
+      "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmPreparedGrantStopTests.PreparedGrant_StopBeforeActivationRefusesEffectsAndRetiresOriginal"]}]
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmPreparedGrantStopTests.*"]}]
     },
     {
       "id": "gm-host-exit-original-fifo-soak",
