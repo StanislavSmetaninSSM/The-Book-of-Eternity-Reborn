@@ -221,3 +221,10 @@ once after acceptance candidate, never in the polling loop. Original absent
 requestId was causal inert RED; corrected story/receipt checks pass with eight
 negative tuple/fingerprint cases plus raw-snapshot tamper refusal. Actual live
 verification of this revised observer is still UNRUN.
+
+Independent review found that the CLI catch did not include InvalidDataException.
+A real RunAsync test with tampered receipt confirmed causal RED: 10 executed,
+9 PASS / 1 FAIL, 10.9145601 seconds, complete official cleanup. Console capture
+is isolated in the existing nonparallel console collection and restored in finally.
+The boundary now explicitly catches InvalidDataException and emits the flat
+exit-2 refusal. This correction is frozen awaiting combined official GREEN.

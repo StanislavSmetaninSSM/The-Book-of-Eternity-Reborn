@@ -94,7 +94,7 @@ internal static class MortalLiveEvidenceValidator
                 declarationFingerprint = result.DeclarationFingerprint, receiptFingerprint = result.ReceiptFingerprint }));
             return 0;
         }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException or JsonException or InvalidOperationException or System.Security.SecurityException)
+        catch (Exception error) when (error is InvalidDataException or IOException or UnauthorizedAccessException or ArgumentException or JsonException or InvalidOperationException or System.Security.SecurityException)
         {
             Console.WriteLine("{\"valid\":false,\"publicationAuthority\":false,\"errorCode\":\"typed_evidence_invalid\"}");
             return 2;

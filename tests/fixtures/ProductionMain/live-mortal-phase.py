@@ -466,6 +466,20 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-relay-evidence':
         assert not all((q/'execution.json').exists() for q in queue.glob('request-*'))
     print(json.dumps({'InertTurnAndDifferentRepairEvidence':True,'WrongRevisionRefused':True,'PendingDrainNotReady':True,'GameProcesses':0}));sys.exit(0)
 
+def receipt_check_budget(deadline,now):
+    remaining=deadline-now
+    if remaining<=0:raise TimeoutError('Original evidence work bound exhausted; preserve cleanup reserve')
+    return min(30,remaining)
+
+if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-receipt-budget':
+    assert receipt_check_budget(100,50)==30 and receipt_check_budget(100,90)==10
+    for now in (100,101):
+        try:receipt_check_budget(100,now)
+        except TimeoutError:pass
+        else:raise AssertionError('Cleanup reserve consumed')
+    print('PASS receipt verifier bounded by original work deadline; cleanup reserve unchanged')
+    sys.exit(0)
+
 def checked_typed_receipt(value,request):
     if value.get('valid') is not True or value.get('publicationAuthority') is not False:
         raise ValueError('Typed receipt validation failed')
@@ -551,6 +565,7 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-native-path-budget':
 
 assert len(sys.argv) in (5,6), 'phase-root seed-manifest action-file evidence-helper-dll [previous-result]'
 receipt_helper=Path(sys.argv[4]).resolve();assert receipt_helper.is_file()
+receipt_helper_sha=sha(receipt_helper.read_bytes()) # Preparation manifest separately pins adjacent dependencies.
 out=Path(sys.argv[1]).resolve();seed_path=Path(sys.argv[2]).resolve()
 require_native_bootstrap_path_budget(out/'tmp') # Before processes, directories or operational config writes.
 seed_bytes=seed_path.read_bytes();seed=json.loads(seed_bytes)
@@ -946,9 +961,11 @@ try:
                 assert accepted_row==accepted[0]
                 until(lambda:all((q/'execution.json').exists() for q in relay_queue.glob('request-*')),10,'relay consumer settled evidence')
                 result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['OriginalRunningStatus']['status']['inputBindingId'],session,accepted_row['narrative'],baseline)
-                helper=subprocess.run(['dotnet',str(receipt_helper),'mortal-live-evidence',str(baseline),str(session),str(out/'actual-turn-request.json')],capture_output=True,timeout=30,env=env)
+                if sha(receipt_helper.read_bytes())!=receipt_helper_sha:raise ValueError('Immutable evidence helper changed before invocation')
+                helper=subprocess.run(['dotnet',str(receipt_helper),'mortal-live-evidence',str(baseline),str(session),str(out/'actual-turn-request.json')],capture_output=True,timeout=receipt_check_budget(start+work_seconds,time.monotonic()),env=env)
                 (out/'typed-receipt.stdout').write_bytes(helper.stdout);(out/'typed-receipt.stderr').write_bytes(helper.stderr)
-                result['ReceiptHelper']={'Path':str(receipt_helper),'SHA256':sha(receipt_helper.read_bytes()),'ExitCode':helper.returncode,'Completed':True,'StdoutEOF':True,'StderrEOF':True}
+                if sha(receipt_helper.read_bytes())!=receipt_helper_sha:raise ValueError('Evidence helper changed during invocation')
+                result['ReceiptHelper']={'Path':str(receipt_helper),'SHA256':receipt_helper_sha,'ExitCode':helper.returncode,'Completed':True,'StdoutEOF':True,'StderrEOF':True}
                 if helper.returncode!=0:raise ValueError('Production-typed Mortal receipt verification refused')
                 result['TypedReceiptEvidence']=checked_typed_receipt(json.loads(helper.stdout),request)
                 result['LivingWorldHistorySHA256']=sha((session/'game_state/world/mortal_living_world_history.json').read_bytes())
