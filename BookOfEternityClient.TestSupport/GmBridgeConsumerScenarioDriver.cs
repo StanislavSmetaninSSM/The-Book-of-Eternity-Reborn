@@ -14,13 +14,14 @@ internal static partial class GmBridgeConsumerScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode, string package, string output)
     {
-        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active" or "terminal-main-nested-heartbeat"))
+        if (mode is not ("terminal-main-consumer-fifo" or "terminal-main-consumer-load-fifo" or "terminal-main-consumer-pidfd-soak" or "terminal-main-prepared-stop-race" or "terminal-main-loss-prepared" or "terminal-main-loss-active" or "terminal-main-nested-heartbeat" or "terminal-main-held-ready"))
             throw new ArgumentException("Unknown bridge consumer mode.", nameof(mode));
         var soak = mode == "terminal-main-consumer-pidfd-soak";
         var race = mode == "terminal-main-prepared-stop-race";
         var loss = mode is "terminal-main-loss-prepared" or "terminal-main-loss-active";
         var nested = mode == "terminal-main-nested-heartbeat";
-        var diagnostic = soak || race || loss || nested;
+        var heldReady = mode == "terminal-main-held-ready";
+        var diagnostic = soak || race || loss || nested || heldReady;
         var expectedLossProven = false;
         var priorNonce = Environment.GetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable);
         if (diagnostic) Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, Guid.NewGuid().ToString("N"));
@@ -33,7 +34,7 @@ internal static partial class GmBridgeConsumerScenarioDriver
         Task<int>? running = null;
         GmMainOperationClient? pin = null;
         var exit = 1;
-        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 140 : nested ? 30 : race || loss ? 20 : 25));
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(soak ? 140 : nested || heldReady ? 30 : race || loss ? 20 : 25));
         try
         {
             var expectedKind = "named-pipe-v1";
@@ -96,7 +97,21 @@ internal static partial class GmBridgeConsumerScenarioDriver
             if (endpoint.Kind != expectedKind) throw new IOException("Actual host transport disagrees with fresh socket capability.");
             if (!TransportEntryExists(endpoint.Address)) throw new IOException("Published transport entry is absent before use.");
             result["ActualEndpoint"] = endpoint;
-            if (loss)
+            if (heldReady)
+            {
+                if(endpoint.Kind!="linux-fifo-v1")throw new IOException("Held-ready control requires actual FIFO.");
+                var directory=new DirectoryInfo(AppContext.BaseDirectory);
+                while(directory!=null&&!File.Exists(Path.Combine(directory.FullName,"AGENTS.md")))directory=directory.Parent;
+                var repo=directory?.FullName??throw new IOException("Source root missing.");
+                loss=await VerifyHeldReadyAsync(files,status,launch.Scratch,repo,output,original!,result,deadline.Token);
+                if(loss)
+                {
+                    await VerifyOriginalUnresolvedStopAsync(status,original!,root,output,result,deadline.Token);
+                    expectedLossProven=true;
+                }
+                else await StopOriginalSoakAsync(status,original!,output);
+            }
+            else if (loss)
             {
                 await VerifyUnresolvedLossAsync(mode, status, original!, root, output, result, deadline.Token);
                 expectedLossProven = true;

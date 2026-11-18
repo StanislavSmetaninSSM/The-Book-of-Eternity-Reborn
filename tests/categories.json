@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-held-ready-fifo",
+      "responsibility": "#1589 controlled genuine canonical lease contention: release only on original PowerShell timeout/stdin-close, exact target pin outcome and owned cleanup; not historical game causality.",
+      "excludes": "No game acceptance, timeout changes, retries or authority changes; unproved acquisition ordering fails rather than qualifying a leak.",
+      "changeHints": ["BookOfEternityClient.TestSupport/GmBridgeConsumerScenarioDriver.HeldReady.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.GmHeldReadyDiagnosticTests.OriginalCanonicalHoldReleasedByActualHelperStdinClose"]}]
+    },
+    {
       "id": "gm-main-first-operation-failure-data",
       "responsibility": "#1589 nonce-bound original operation failure diagnostic DATA: full frozen tuple and text, disabled/stale nonce and capture/sink isolation.",
       "excludes": "No live fault attribution, operation retry, authority or runtime producer qualification.",

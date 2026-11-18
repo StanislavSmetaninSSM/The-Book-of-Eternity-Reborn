@@ -66,6 +66,11 @@ internal static partial class GmBridgeConsumerScenarioDriver
                 await Task.Delay(5, observed.Token);
             }
         }
+        await VerifyOriginalUnresolvedStopAsync(status,original,root,output,result,token);
+    }
+    private static async Task VerifyOriginalUnresolvedStopAsync(string status,GmSessionRunRecord original,
+        string root,string output,Dictionary<string,object?> result,CancellationToken token)
+    {
         var response = await BridgeTransportConnector.RequestAsync(status, JsonSerializer.Serialize(new {
             command = "shutdown", rootKey = root, expectedMainIdentity = original.Identity }), 10000, token);
         await File.WriteAllTextAsync(Path.Combine(output, "unresolved-original-shutdown.json"), response);
