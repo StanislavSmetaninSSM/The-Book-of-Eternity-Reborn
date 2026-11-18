@@ -1299,3 +1299,29 @@ phase package3993cd8b56a87daa6986f2c21c16c709870a484fe6beb8dd1daaeffd8fb58767.
 Independent preparation review is pending. Previous worlds remain untouched;
 this fresh game will use the diagnostic-enabled observer, without claiming any
 production fix for the unknown rl2 failure. Main remains unchanged.
+
+### #1589 rl3 accepted live turn, failed shutdown, 2026-11-18
+
+Independent preparation review accepted the frozen package above. The original
+single launch then completed in 223.853 seconds: one genuine action and one
+accepted game turn, but overall FAIL. The fresh assistant-authored GM response
+was consumed by the real relay, execution exit 0 with child exit and I/O drain.
+No second phase or same-world restart was attempted.
+
+The original nonce-bound stop report records pin_drain_timeout with one remaining
+operation pin. At that snapshot the owner is closed/uncertain, the stop lifecycle
+is absent, and RootExited is still pending. The final report has RootExited
+completed and actual native scoped stop proof cleanupComplete=true, but still one
+pin and no stop lifecycle, so logical settlement refuses. RootExitFault is null
+in both snapshots: this is not evidence of the earlier rl2 pidfd failure.
+The cause of the retained pin and faulted registered loop is under investigation;
+no production fix or systematic environment restriction is established.
+
+Client exit 0/EOF/termios and RPC-helper exit 0/both EOF were observed. Daemon
+exited 1 and its logical settlement is unconfirmed. Bridge exit/EOF/termios were
+not confirmed. Guardian separately reports ECHILD, driver 1, reaped 2, zero
+emergency signals, failures or deadline. Physical draining does not substitute
+for original logical shutdown proof. Raw diagnostics stay external, not in Git.
+No repeat launch is authorized by this checkpoint, no game-materialization
+qualification is claimed, and main remains unchanged pending reliable relay
+shutdown and same-world restart qualification.
