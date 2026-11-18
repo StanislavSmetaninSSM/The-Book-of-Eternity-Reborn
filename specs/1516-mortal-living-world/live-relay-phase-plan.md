@@ -1152,3 +1152,32 @@ It may reproduce or fail to reproduce p04; neither outcome retroactively proves
 p04 cleanup or corrected T021 native behavior. Adapter source recovered from
 remote20e75f9 into a fresh directory has exact SHAa604ba2a; this is only that
 file's recovery, not a clean full checkout/build restore.
+
+## T022 single diagnostic execution, 2026-11-18; final review pending
+
+The original mm4 launch exited0. Probe
+`e4519956080f72b79240c69134b4346ea698c94e60dffe4cba361bf81598e9a4`
+reports1 action/1 accepted turn45 in270.428s; source is old58df9, not T021.
+Fresh request3e40f8a03c074341bcbc0adcba56c60d differs from failedp04;
+request SHA0d55e497c3a4e7cf3087f541ece7a0b78fed12caa755c56bb0f274cfe8601df0.
+New Run54c25c36eb9945a485a3e75a849a5303 and generation893e5810ccc54ab0ac1e4e5c121e01e8
+were proved before action. Initial packet80b5e01bc939a1511207605729e736a689e9df6dac39373af544cf5b66691c3f
+made six intended clock/report/progression/output writes. A real GM authoring
+error selected World-progression without actors; actual repair requested
+Scene-local. Repair packet77236f7b592759ef8b0c2c926f6455700029ebf4a2c4aa144d3d745a99e55b63
+changed only that debug scope, preserving state; no deliberate invalid-input
+test or duplicate reward is claimed.
+
+Accepted story prefix41-44 is unchanged plus45; history3 becomes4 and clock1440
+becomes1680 with no significant autonomous change or actor/project/threat edit.
+The probe reports original ACK/Stopped/OwnedScopeEmpty, relay closure and all
+terminal/RPC exits0 with EOF and restored terminal; guardian reports ECHILD,
+driver0, one reaped child, no emergency signals/failures/deadline. Independent
+final outcome must still verify these joins. A recovered daemon-read refusal
+near final retirement and Errors1 is preserved for chronological review, not
+hidden as an error-free run. No opt-in game-loop exception marker appeared:
+p04's exception was NOT reproduced or fixed. Its original unresolved world is
+unchanged and remains inadmissible for ordinary continuation. No repeated run
+was made. Diagnostic success does not convert mm4 into an ordinary predecessor.
+Next: independent outcome/reassessment, then a fresh ordinary current-runtime
+world for remaining vehicle/storage/NPC journeys without reusing old authority.
