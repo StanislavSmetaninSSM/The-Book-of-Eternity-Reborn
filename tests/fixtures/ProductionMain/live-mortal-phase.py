@@ -9,6 +9,7 @@ logical/physical-owner cleanup evidence; no replay or scripted GM output.
 import errno, fcntl, hashlib, json, os, pty, re, select, shutil, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
 import relay_phase_evidence as phase_evidence
+import mortal_console_routes as console_routes
 
 class IncrementalEvidence:
     """Each observed chunk survives loss of the driver before finally.
@@ -655,6 +656,9 @@ seed_bytes=seed_path.read_bytes();seed=strict_settings(seed_bytes)
 restored_diagnostic=seed.get('kind')=='restored-accepted-data-diagnostic'
 assert out.is_dir() and not (out/'probe-result.json').exists() and not (out/'queue').exists()
 assert os.environ.get('TERM')=='dumb'
+route_path=out/'console-route.json'
+route_bytes=route_path.read_bytes() if route_path.exists() else None
+route=console_routes.checked_route(strict_settings(route_bytes) if route_bytes is not None else None)
 action=checked_action(Path(sys.argv[3]).read_bytes())
 previous=strict_settings(Path(sys.argv[5]).read_bytes()) if len(sys.argv)==6 else None
 if restored_diagnostic:
@@ -668,6 +672,12 @@ else:
     package_manifest,package_sha=phase_evidence.relay_package_preflight(out,ship,__file__)
     phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
     historical_session=seed['sessionId']
+if package_manifest.get('ConsoleRouteModuleSHA256')!=sha(Path(console_routes.__file__).read_bytes()):
+    raise ValueError('Finite console module differs from prepared package')
+if route['Route']!='birth' and (previous is None or restored_diagnostic):
+    raise ValueError('Finite storage routes require an ordinary accepted predecessor')
+# Local Load wiring is the next source checkpoint; never accidentally send a GM turn.
+if route['Route']=='storage-local-proof':raise ValueError('Local Load route not yet wired; no processes or action started')
 story=session/'stories/mortal_life_2.jsonl'
 story_before=story.read_bytes()
 setup_line=story_before.splitlines()[0]
@@ -732,6 +742,7 @@ start=time.monotonic(); peers=[]; journal=EvidenceJournal(evidence); original=No
 offset=0 # Defined even when the first client startup observation fails.
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
+result.update(ConsoleRoute=route,ConsoleRouteSHA256=sha(route_bytes) if route_bytes is not None else None,ClientTERM='xterm-256color')
 result.update(RuntimePins=package_manifest['RuntimePins'],PhasePackage=package_manifest,PhasePackageSHA256=package_sha,ReceiptHelperPins=package_manifest['ReceiptHelperPins'])
 if relay_mode:result.update(ConfiguredModel='dots-finish-relay',TestRelay=True,OpenCodeProviderCalls=0,RelayQueue=str(relay_queue))
 if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',ControlledRefusal=True,ProviderCalls=0)
@@ -743,7 +754,8 @@ class Terminal:
         fcntl.ioctl(self.slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0));self.initial=termios.tcgetattr(self.slave)
         def own():
             os.setsid();fcntl.ioctl(self.slave,termios.TIOCSCTTY,0);os.tcsetpgrp(self.slave,os.getpid())
-        self.process=subprocess.Popen(args,cwd=ship,env=env,stdin=self.slave,
+        child_env=console_routes.client_environment(env) if name=='client' else env
+        self.process=subprocess.Popen(args,cwd=ship,env=child_env,stdin=self.slave,
             stdout=subprocess.PIPE if captured_output else self.slave,
             stderr=subprocess.STDOUT if captured_output else self.slave,preexec_fn=own)
         evidence.raw(name,b'')
@@ -961,6 +973,51 @@ def exit_client(client):
     offset=len(client.capture);client.send(b'4\r','observed game menu: exit to menu');fresh_main(client,offset)
     client.send(b'8\r','observed eight-item main menu: exit');until(lambda:client.process.poll() is not None,8,'client normal exit')
     assert client.process.returncode==0
+def finite_select(title,label,cut,maximum_rows):
+    # Only callers below supply fixed source-read menus. No arbitrary key program.
+    seen=set()
+    for _ in range(maximum_rows):
+        until(lambda:console_routes.selected_frame(bytes(client.capture),cut,title) is not None,
+              5,'fresh fixed menu selection')
+        selected=console_routes.selected_frame(bytes(client.capture),cut,title)
+        if selected in seen:raise RuntimeError('Menu wrapped before exact target; no guessing or pagination')
+        seen.add(selected)
+        if selected==label:
+            selected_cut=cut;after=len(client.capture)
+            client.send(b'\r','fixed menu exact selected row: '+label)
+            return after,selected_cut
+        cut=len(client.capture)
+        # Captured pipe/xterm emits normal CSI arrows, independently smoke-qualified.
+        client.send(b'\x1b[B','fixed menu observed next row')
+    raise RuntimeError('Fixed menu exceeds visible bounded rows; no pagination')
+
+def local_observation():
+    return {'StorySHA256':sha(story.read_bytes()),
+        'HistorySHA256':sha((session/'game_state/world/mortal_living_world_history.json').read_bytes()),
+        'QueuePins':phase_evidence.relay_inventory(relay_queue)}
+
+def denied_storage_route():
+    global client_prompt
+    current_path=session/'game_state/world/current_location.json'
+    current=current_path.read_bytes()
+    target=console_routes.storage_target(strict_settings(current),route['StorageId'],route['ItemId'],False)
+    before=local_observation();inventory_path=session/'game_state/inventory/items.json'
+    inventory=inventory_path.read_bytes()
+    cut=len(client.capture);client_prompt=False
+    client.send(b'/storage_move\r','fixed denied storage route')
+    cut,selected_cut=finite_select('🎒 📦 Инвентарь',target['StorageLabel'],cut,20)
+    # Locked selection loops back to the same menu; it is not a denial exception.
+    until(lambda:console_routes.selected_frame(bytes(client.capture),cut,'🎒 📦 Инвентарь') is not None,
+          5,'fresh inventory after locked storage selection')
+    after,_=finite_select('🎒 📦 Инвентарь','← Назад',cut,20)
+    fresh_player(client,after,10);client_prompt=True
+    console_routes.require_local_unchanged(before,local_observation())
+    if current_path.read_bytes()!=current or inventory_path.read_bytes()!=inventory:
+        raise RuntimeError('Denied storage selection changed exact canonical bytes')
+    result['DeniedStorageProof']={'Target':target,'SelectionCut':selected_cut,
+        'ReturnedPromptCut':after,'Before':before,'After':local_observation(),
+        'CurrentLocationSHA256':sha(current),'InventorySHA256':sha(inventory)}
+
 client=bridge=daemon=None;client_wait=False;client_prompt=False
 ledger_witness=ledger_binding=None
 try:
@@ -999,6 +1056,7 @@ try:
         result['DiagnosticFreshOwnerQualified']=True
     offset=len(client.capture);client.send(b'\r','observed Continue selected')
     preparation_phase(lambda:current_player_prompt_at(client.text(offset))>=0,'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
+    if route['Route']=='permission-with-denial':denied_storage_route()
     provider_bridge_offset=len(bridge.capture)
     ledger_witness=phase_evidence.capture_terminal_ledger_witness(session)
     (out/'pre-action-terminal-ledger-witness.json').write_bytes(ledger_witness)

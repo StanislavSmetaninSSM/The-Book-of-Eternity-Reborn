@@ -2935,3 +2935,14 @@ qualification, not retrospectively causal. C# wire schema was source-checked,
 not runtime-golden qualified; actual captured client observation is still needed.
 Both helper modules/tests saved before continuation. Exact current tests and
 native driver integration require coherent independent review before packaging.
+T024 early finite-driver WIP checkpoint: native phase pins the console-route
+module hash, gives only client TERM=xterm-256color, reads a fixed descriptor,
+and implements locked storage row/unchanged state/back-to-prompt prelude before
+a real GM permission request. Exact location/inventory/story/history/queue
+invariants retained. Eight pure helper methods PASS0.001s and driver syntax
+compiled; neither is native menu proof. storage-local-proof still deliberately
+refuses BEFORE starting processes pending complete Load wiring, so no accidental
+GM action can be sent from this unfinished route. Current driver SHA256
+41b5575f19960e2b68671ed557171a24b95956e986e5a841c2e7e83865d648c3.
+No world, provider or native relay started. Full coherent integration review,
+category ownership and final packaging remain pending.

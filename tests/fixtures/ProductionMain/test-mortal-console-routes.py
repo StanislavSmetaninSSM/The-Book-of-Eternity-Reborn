@@ -1,6 +1,6 @@
 """T024 pure route DATA tests, no terminal/GM/ownership fabrication."""
 import unittest
-from mortal_console_routes import checked_route, storage_target, fresh_selection, require_local_unchanged
+from mortal_console_routes import checked_route, storage_target, fresh_selection, require_local_unchanged, client_environment, selected_frame
 
 class RouteTests(unittest.TestCase):
     def state(self):
@@ -35,6 +35,16 @@ class RouteTests(unittest.TestCase):
         for bad in ('Inventory\n> Rope extra\n','Rope\n','Inventory\n> Rope\n  Rope\n',
                     'Inventory\n> Rope\nInventory\n> Other\n  Rope\n'):
             self.assertFalse(fresh_selection(bad.encode(),0,'Inventory','Rope'))
+    def test_client_environment_does_not_change_other_peers(self):
+        original={'TERM':'dumb','NONCE':'retained'}
+        client=client_environment(original)
+        self.assertEqual(client,{'TERM':'xterm-256color','NONCE':'retained'})
+        self.assertEqual(original,{'TERM':'dumb','NONCE':'retained'})
+    def test_selected_frame_never_uses_old_or_ambiguous_selection(self):
+        self.assertEqual(selected_frame(b'Menu\n> Alpha\n  Beta\n',0,'Menu'),'Alpha')
+        for raw in (b'Menu\n> Alpha\nMenu\n',b'Menu\n> Alpha\n> Beta\n',
+                    b'Menu\n\x1b[8m> Alpha\n',b'Menu\n> Alpha\x1b[',b'Menu\n> Alpha\n  Alpha\n'):
+            with self.subTest(raw=raw):self.assertIsNone(selected_frame(raw,0,'Menu'))
     def test_local_route_does_not_accept_story_or_queue_change(self):
         before={'StorySHA256':'a','HistorySHA256':'b','QueuePins':{}}
         require_local_unchanged(before,dict(before))

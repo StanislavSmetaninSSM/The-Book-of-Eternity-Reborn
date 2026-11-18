@@ -77,3 +77,27 @@ def require_local_unchanged(before,after):
     for key in ('StorySHA256','HistorySHA256','QueuePins'):
         if key not in before or key not in after or before[key]!=after[key]:
             raise ValueError('Local console route changed original '+key)
+
+def client_environment(environment):
+    """Isolated client console capability; no mutation of bridge/daemon/RPC env."""
+    return dict(environment, TERM='xterm-256color')
+
+def selected_frame(raw, cut, title):
+    """Return the one selected emitted row from the newest complete fixed menu.
+
+    This is captured output, not a terminal-screen reconstruction. Pagination,
+    missing/ambiguous selected rows and incomplete output cannot select anything.
+    """
+    if type(raw) is not bytes or type(cut) is not int or not 0<=cut<=len(raw):return None
+    try:text=raw[cut:].decode('utf-8')
+    except UnicodeError:return None
+    # Same supported non-concealing output surface as the inert pipe/xterm proof.
+    text=re.sub(r'\x1b\[(?:\?25[hl]|[0-9;]*[mABCDGHfKJ])','',text)
+    if '\x1b' in text:return None
+    at=text.rfind(title)
+    if at<0:return None
+    rows=text[at+len(title):].replace('\r','').splitlines()
+    selected=[row.strip()[2:] for row in rows if row.strip().startswith('> ')]
+    if len(selected)!=1:return None
+    label=selected[0]
+    return label if fresh_selection(raw,cut,title,label) else None
