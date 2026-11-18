@@ -15,7 +15,14 @@ for mode in ('correct','wrong-close','eof','drain-timeout','command-timeout'):
  events=[]
  for line in (root/'stderr.raw').read_text().splitlines():
   if line.startswith('BOE_MAIN_OPERATION_PS '):events.append(json.loads(line.split(' ',1)[1]))
+ timeouts=[x for x in events if x['stage']=='reply-timeout']
+ expected_action='daemon-snapshot' if mode=='command-timeout' else 'helper-ready'
+ if len(timeouts)!=1 or timeouts[0].get('lastAction')!=expected_action or timeouts[0].get('sequence')!=(1 if mode=='command-timeout' else 0):
+  failures.append(mode+': missing original timeout action/sequence evidence');continue
  if mode!='command-timeout':
+  originals=[x for x in events if x['stage']=='helper-open-failure-before-dispose']
+  if len(originals)!=1 or 'Original operation reply unavailable; no replay.' not in originals[0].get('exception',''):
+   failures.append(mode+': original ready timeout was replaced');continue
   completions=[x for x in events if x['stage']=='helper-open-completion-after-dispose']
   if len(completions)!=1:failures.append(mode+': missing retained completion evidence');continue
   if completions[0].get('lost') is not True:failures.append(mode+': cleanup restored lost admission')
