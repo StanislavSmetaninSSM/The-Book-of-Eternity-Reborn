@@ -1969,3 +1969,8 @@ DEBUG callsites before existing bookkeeping and9 cases (2 expected emission FAIL
 1minute. No build/execution yet, serialization unimplemented. Reuse already
 computed issues/flags/exception only; trivial one-shot diagnostic work needs no
 cache or additional reads. Independent source review pending. No new live run.
+Independent RED source review caught a Release compile regression in the new
+fixture tests (Debug-only methods called unconditionally). The test class is now
+Debug-only too; Release does not gain an emitter. The same9 Debug cases remain.
+The source guard now checks the first matching closing directive and exact
+original issue/flag/exception arguments. No serializer or test run yet.

@@ -5,6 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+#if DEBUG
 public sealed class GameLoopRejectionDiagnosticTests
 {
     private const string Nonce = "0123456789abcdef0123456789abcdef";
@@ -106,6 +107,8 @@ public sealed class GameLoopRejectionDiagnosticTests
         var canonical = File.ReadAllText(Path.Combine(directory, "GameEngine.ValidationAndRepair.Part04.cs"));
         AssertOrdered(materialization, "if (requiresMortalItemFailClosed ||", "EmitProtectedMaterializationFixtureRejection(",
             "Materialization repair after {Source}");
+        Assert.Contains("EmitProtectedMaterializationFixtureRejection(errors, requiresMortalItemFailClosed, requiresMortalLocationFailClosed, requiresEffectFailClosed, requiresResourceFailClosed, requiresWoundFailClosed, source, attempt, rollbackAvailable, Environment.GetEnvironmentVariable(\"BOE_TEST_GAME_LOOP_FAILURE_NONCE\"), Console.Error);", NormalizeWhitespace(materialization));
+        Assert.Contains("EmitCanonicalRefreshFixtureRejection(exception, source, HasRollbackCapability(rollbackSnapshot), Environment.GetEnvironmentVariable(\"BOE_TEST_GAME_LOOP_FAILURE_NONCE\"), Console.Error);", NormalizeWhitespace(canonical));
         AssertOrdered(canonical, "private async Task FailClosedAcceptedTurnCanonicalRefreshAsync(",
             "EmitCanonicalRefreshFixtureRejection(", "var sessionGeneration = await CaptureCurrentSessionGenerationAsync();");
         foreach (var pair in new[] { (materialization, "EmitProtectedMaterializationFixtureRejection("),
@@ -113,14 +116,18 @@ public sealed class GameLoopRejectionDiagnosticTests
         {
             var at = pair.Item1.IndexOf(pair.Item2, StringComparison.Ordinal);
             var start = pair.Item1.LastIndexOf("#if DEBUG", at, StringComparison.Ordinal);
-            var end = pair.Item1.IndexOf("#endif", at, StringComparison.Ordinal);
-            Assert.True(start >= 0 && end > at);
+            Assert.True(start >= 0);
+            var end = pair.Item1.IndexOf("#endif", start, StringComparison.Ordinal);
+            Assert.True(end > at, "The invocation must precede the FIRST #endif of its DEBUG block.");
             var guarded = pair.Item1[start..end];
             Assert.Contains("BOE_TEST_GAME_LOOP_FAILURE_NONCE", guarded);
             Assert.Contains("catch", guarded);
         }
         // Source placement is not execution proof of an actual rejected turn.
     }
+
+    private static string NormalizeWhitespace(string text) =>
+        string.Join(" ", text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
 
     private static void AssertEnvelope(JsonElement root, string stage)
     {
@@ -149,3 +156,5 @@ public sealed class GameLoopRejectionDiagnosticTests
         public override void WriteLine(string? value) => throw new IOException("diagnostic sink unavailable");
     }
 }
+
+#endif
