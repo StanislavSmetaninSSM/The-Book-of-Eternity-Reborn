@@ -2,6 +2,56 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-resource-template-data",
+      "responsibility": "#1515 T019 compact new-NPC resource creation example and one-time guidance source DATA guard.",
+      "excludes": "No live GM acceptance, resource autofill, whole placeholder NPC validity or unrelated progression examples.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient.Tests/MortalNpcResourceTemplateGuidanceTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalNpcResourceTemplateGuidanceTests.CompactNpcCreationJsonDeclaresClosedResourceMaxima"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-npc-resource-template-render",
+      "responsibility": "#1515 T019 compact new-NPC resource creation example and one-time guidance through the existing actual daemon context-pack exporter.",
+      "excludes": "No live GM acceptance, resource autofill, whole placeholder NPC validity or unrelated progression examples.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonContextPack_RendersMortalNpcUpdateTemplate"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-retained-npc-inspection-routing",
       "responsibility": "#1515 T018 immutable inspection selection preserves phases/files; three UI routes select inspection while worker validation stays strict.",
       "excludes": "Source routing guard is not executed UI or worker publication proof; runtime retention has a separate integration category.",

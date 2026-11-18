@@ -4795,6 +4795,30 @@ public sealed class GmTurnHelperContractTests
             Assert.True(WaitForFileContaining(templatePath, "Minimal safe NPC scene object", process, TimeSpan.FromSeconds(20)), ReadProcessOutput(process));
 
             var template = File.ReadAllText(templatePath, Encoding.UTF8);
+            // Parse the actual exported creation example, not another occurrence in the pack.
+            var normalizedTemplate = template.Replace("\r\n", "\n");
+            var creationHeading = normalizedTemplate.IndexOf("## Minimal safe NPC scene object", StringComparison.Ordinal);
+            Assert.True(creationHeading >= 0);
+            var creationStart = normalizedTemplate.IndexOf("```json\n", creationHeading, StringComparison.Ordinal);
+            Assert.True(creationStart >= 0);
+            creationStart += "```json\n".Length;
+            var creationEnd = normalizedTemplate.IndexOf("\n```", creationStart, StringComparison.Ordinal);
+            Assert.True(creationEnd > creationStart);
+            using var creation = JsonDocument.Parse(normalizedTemplate[creationStart..creationEnd]);
+            Assert.True(creation.RootElement.TryGetProperty("resourceMaterialization", out var resourceEnvelope),
+                "Exported compact new-NPC object omits mandatory resourceMaterialization.");
+            Assert.Equal("resources", Assert.Single(resourceEnvelope.EnumerateObject()).Name);
+            var resourceEntries = resourceEnvelope.GetProperty("resources").EnumerateArray().ToArray();
+            Assert.NotEmpty(resourceEntries);
+            Assert.Contains(resourceEntries, entry => entry.GetProperty("resourceKey").GetString() == "health");
+            foreach (var entry in resourceEntries)
+            {
+                Assert.Equal(new[] { "maximum", "resourceKey" },
+                    entry.EnumerateObject().Select(p => p.Name).OrderBy(n => n, StringComparer.Ordinal).ToArray());
+                Assert.True(entry.GetProperty("maximum").TryGetDouble(out var maximum) && double.IsFinite(maximum) && maximum > 0);
+            }
+            Assert.Contains("Existing NPCs must not resend resourceMaterialization", template, StringComparison.Ordinal);
+            Assert.Contains("Do not author current values or resource receipts", template, StringComparison.Ordinal);
             Assert.Contains("NPCsInScene", template, StringComparison.Ordinal);
             Assert.Contains("progressionProfile", template, StringComparison.Ordinal);
             Assert.Contains("experienceDelta", template, StringComparison.Ordinal);
