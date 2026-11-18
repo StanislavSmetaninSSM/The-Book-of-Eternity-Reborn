@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-live-outcome-applicability",
+      "responsibility": "Detached Mortal live evidence applicability through actual ReadAsync for a production-validated short turn with absent or unchanged prior history.",
+      "excludes": "No native execution, gameplay publication authority or broadening of the strict appended-receipt validator.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MortalLiveEvidenceValidator.cs",
+        "BookOfEternityClient.Tests/MortalLiveOutcomeApplicabilityTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLiveOutcomeApplicabilityTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-load-session-observation-data",
       "responsibility": "T024 opt-in diagnostic DATA and real Load operation parsing/metadata/disposal over an inert test transport; no new runtime authority.",
       "excludes": "Native process ownership, actual UI Load, replacement restart and live A-to-B shutdown qualification.",
