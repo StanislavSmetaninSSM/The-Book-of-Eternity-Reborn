@@ -680,3 +680,28 @@ Engine failure lost its temporary fixture after proper cleanup; no cause can be 
 Targeted three-check outcome oned8bd85: Unitbuild27.57s/wall27.852,42warnings/0errors; Integration58.51s/wall58.786,129warnings/0errors. Exact3 official30.2496114s: guidancePASS, post-consumptionPASS including reached mutation and full owned rollback, engineFAIL; cleanup complete/no duplicate/timeout. Engine diagnostic preserved full original failure: author never entered, request/session null; predispatch actor_materialization_duplicate_id and npc_existing_inventory_resend_forbidden from the newly added full actor UpdateNPCs mirror. This was invalid test preparation, not a terminal-consumer failure. Earlier source review missed this real predispatch constraint and acknowledges the gap. Restored existing canonical actor seed; now assert UpdateNPCs remains empty and one exact NPCsInScene actor before/after. All request, repair, completion, receipt/story and diagnostic assertions unchanged. Corrected source a7b7ab0533be5e75c5af0536445880e7d17324b0e89d56d9d3efdb5ee53f9aba is UNCOMPILED/UNRUN. Independent targeted review then only Integration build and that one Fact; do not repeat49 passing distinct checks or replay mm1. Component agreeing-mirror coverage remains separate from genuine ordinary predispatch validity.
 
 Engine canonical-seed rerun: Integration64.36s/129warnings/0errors; exact one Fact23.3799012s FAIL, complete cleanup. Actual request30c2dacda4424373be01c4418d761d21/turn42 and both repair callbacks were reached. First missing-outcome repair succeeded, second exact output-freshness pair passed, then test dereferenced absent UpdateNPCs. Existing normalizer.Npcs379–381 removes empty UpdateNPCs, so this is another test-oracle shape error, not production failure. Captured core contains one NPCsInScene Mira, null currentActivity and one exact SuccessWithComplication/turn42 history; sidecar{}, living history one matching receipt. No final story/acceptance/cleanup-of-controls claim from this interrupted test. Corrected only no-resend assertion to absent OR actual JsonArray Count0, rejecting present null, malformed or nonempty values. Sourcef49b78ab9646b53827d504af44d5b070d2855371ff38a134a528664f9bd6ec24. Before another execution, review all remaining assertions against actual shapes/source rather than discovering them one at a time. Production remains unchanged; no native start.
+
+
+## T019 bounded outcome accepted; fresh native journey remains pending, 2026-11-18
+
+Final engine completion-repair Fact passed 1/1 in 28.6803996 seconds after a
+fresh integration build: 60.31 seconds, 129 warnings, zero errors. It proves
+same-original repair, one terminal receipt/story, pending-control removal and
+refresh stability. Its repair-count assertion is the explicit 1–2 bound, not
+a separately serialized exact counter.
+
+Independent outcome review reconciled 50 distinct final PASS cases across five
+bounded runs (38+7+2+2+1), not one all-green aggregate. Historical fixture and
+oracle failures remain recorded separately. All five runs confirm owned/runtime
+cleanup without skips, duplicates or timeouts. Reached rollback/retry, replay
+refusal, outer post-consumption refusal and unchanged neighboring repair are
+included; the latter refusal does not isolate the terminal final fence.
+
+The final source/output manifest SHA256 is
+`58e9235f5026b18df267c31ba8db88d59b5c9a25369f4630987fb4a3c2a95cbd`.
+Independent readback rehashed all 3,417 source records and 28 outputs with zero
+mismatches; shared production Client DLL copies remain identical. This is an
+inventory/output join, not a portable-PDB document audit. Raw evidence remains
+external. T019 bounded implementation is accepted; fresh mm2 package/ownership
+preflight and actual GM relay acceptance are still pending. No whole-issue
+closure, spiritual combat, Windows runtime or NLP-completeness claim follows.
