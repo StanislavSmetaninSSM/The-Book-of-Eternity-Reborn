@@ -215,3 +215,64 @@ entries. Transport run identity is distinct from application identity. Internal
 48 slots bound pending handshakes plus queued connections only; accepted Stream
 count remains the bridge's responsibility. No consumer wiring was changed here.
 Ready for a separately reviewed integration block, not merge or issue closure.
+
+## #1589 Linux daemon singleton follow-up, 2026-11-18 (WIP plan)
+
+Live ml4 accepted Mortal turn42 and completely closed its original owner. The
+next phase failed before any action because Assert-SingleDaemonInstance treated
+old stopped status PID111 as a live original daemon. PID-only lookup is not
+identity across reuse/namespaces; PID plus birth also leaves concurrent-start
+TOCTOU. These are not grounds to delete status or bypass admission.
+
+Design: every Linux daemon entry uses a retained in-process IDisposable guard
+backed by existing trusted filesystem primitives and a distinct fixed
+base/.boe_runtime/locks/gm-daemon-instance.lock. Do not hold the main-owner,
+session-lifecycle or canonical-write lock for daemon lifetime. Do not use a
+child-held lock: child death could release it while the daemon still runs.
+The public narrow net8 facade is loaded only on Linux from the trusted shipped
+or build code root. All non-Linux branches retain their current behavior and
+must not resolve/load this type. Linux requires a Core runtime able to load
+net8; unsupported runtimes refuse clearly without PID fallback. Windows runtime
+and distributed/network filesystem support are not claimed.
+
+Guard owns one stable local file/parent handle, authenticates path/handle and
+uses the existing Linux nonblocking flock pattern; never unlink or replace it.
+It grants singleton exclusion only, never generation/publication permission.
+Current per-operation root/generation/admission remains authoritative. No cached
+liveness result or new cache framework is appropriate for a live owner handle.
+Fresh acquisition is bounded; repeated source parsing is unnecessary.
+
+Admission occurs before daemon canonical bootstrap effects and before watchers.
+Under the held guard, distinguish atomically fresh first-use from an existing
+guard with missing status. Fresh root without old status can initialize. Existing
+roots require a well-formed guarded clean-stopped record with exact sessionPath
+and owner identity; malformed/null/legacy/running/failed/unknown or lost status
+refuses without rewriting it. New guarded incarnation running must be confirmed
+through the existing canonical writer before processing starts. A losing or
+unadmitted daemon must not publish fatal/stopped over the real owner's status.
+Hold the guard through watcher/operation cleanup and final status publication;
+failed cleanup or final write must not claim a clean restart. Always release only
+one's own retained handle. Previous ml4 status is not migrated manually.
+
+Bounded implementation sequence (one coherent review block):
+- [ ] Add causal AST/pwsh test of actual PID-only stale-status refusal and narrow
+      guard tests, preserving the failure before the implementation.
+- [ ] Add a small public Linux daemon guard facade reusing TrustedLocalFileScope,
+      PhysicalFileAuthority/stable-parent and local flock mechanisms; no general
+      process manager or main admission API changes.
+- [ ] Wire all Linux daemon entry/lifetime paths, initial confirmed running and
+      guarded final status; preserve Windows source branch and early failure.
+- [ ] Official narrow categories: real same-root cross-process contention and
+      restart, distinct roots, status malformed/null/missing/legacy, failed first
+      write, stale PID with valid guarded clean stop, wrong session/owner,
+      substituted path/handle, startup/watcher cleanup and non-Linux source guard.
+      Include affected existing daemon watcher/operation/template consumers.
+- [ ] Independent source/outcome review, save all source and precise results.
+- [ ] Fresh independent live world with two sequential actual GM turns and full
+      original closure each; no continuation token from failed ml4 p02, no raw
+      evidence edited, and no implied resolution of unknown ml3/e.
+
+Verification costs and exact category IDs will be recorded with actual results.
+Use cheap typed/AST cases and existing harness rather than a whole game for lock
+semantics. Rebuild changed owned outputs once after cheap RED; reuse immutable
+verified output for the actual live path. No broad suite and no speedup claim.
