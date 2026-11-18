@@ -937,3 +937,20 @@ No native package/world is patched; new C# work waits for the completed original
 run and has separate source/build/package qualification. The terminal archive's
 retained old progress counters are being reviewed separately against its actual
 contract; do not conflate that observation with the confirmed nullable defect.
+
+Independent p03 outcome review now accepts the bounded result and closure:
+project completion44, faction XP0-to80, threat3-to1 and clock960-to1440 match
+actual narrative/news; prior story41-43 and two receipts remain exact, one new
+receipt/story44, scout byte-unchanged. Original run
+d34b2f16689c40aaa61fb7a12b369b69 reached Stopped/OwnedScopeEmpty in epoch3, one
+ACK/endpoint removal, all terminal/RPC exit0 and drain, matching daemon guard
+settled/errors0, guardian ECHILD without emergency/failure/deadline. Current
+runtime732/helper249/world106 pins match. This accepts the repaired real turn,
+not T021 correction or quiet-time qualification.
+
+The archived project counters240/step1 are not a confirmed defect: Rule19.F.3.2
+accepts terminal-only completion and the reducer preserves prior trackers while
+stamping terminal fields. Do not report them as measured final work, infer new
+progress writes or expand this task to change that contract. Next retained
+continuation asks for four hours of quiet rest and actual relevant news, without
+forcing a no-change answer. The known nullable bug remains tracked separately.
