@@ -2081,3 +2081,14 @@ related link instead of the catalog's {id,when} object. This is coordinator
 metadata error, not a test or product RED. Corrected only that link shape;
 retain the fresh matching integration build, refresh catalog pins, then repeat
 PlanOnly and execute the previously unrun2 cases. No test has been retried yet.
+Corrected RED2 verified: both new-scene and known-scene theory rows reach the
+retained-actor assertion atline55 after valid baseline, error-free newcomer and
+actual offscreen local-scope checks. Exact failures are respectively
+npc_scene_missing_initial_location_id and npc_scene_location_mismatch on the
+unchanged historical NPCsInScene[0]. Executed2/2, no skips/duplicates/timeouts,
+complete cleanup, runner14.3557192s. Result20261118-092813-115-5-2b1c2fdb88d34180884de1fe990fd05f.
+Same68.26s Integrationbuild reused after metadata-only correction; current test
+SHA97de2c9043faf4bf0318b820a960d006c6e4fd951f65addd8eeb4fd6e87834ca
+and8outputs remained exact. Original incomplete fail-fast and fixture-premise
+failure remain separate. Minimal GREEN implementation may now begin under the
+explicit inspection/intake design; no live acceptance is claimed.
