@@ -532,3 +532,32 @@ ported for this correction. Their coverage is not claimed here. New typed/FIFO
 readmission and managed registration/absence controls are the primary selection;
 existing exact cleanup neighbors are considered separately with the reviewer.
 No game world, prior request, or accepted live result was modified or replayed.
+
+### Retired readmission bounded execution; cleanup neighbors under diagnosis
+
+Source checkpoint 5a1ff30f4ea5b1e23b4b8c26dbead72f193ed8ad: serial no-restore
+unit build completed 91.25s, 88 warnings, 0 errors. Official new selections
+executed 5/5 PASS in 21.6147486s, no skips/duplicate IDs, complete owned cleanup.
+The real FIFO same-client local-to-remote path completed, as did all seven
+refusal/subsequent-positive evidence rows. Config/generation remained exact;
+original full Stopped identity matched Running, host exited0, and guardian
+reported driver0, ECHILD, zero emergency signals/failures and no deadline.
+The coordinator independently accepted these five results. This is bounded
+admission evidence, not a replay of the failed live Mortal phase.
+
+The approved existing unit neighbors then executed 18 cases in 46.3012324s:
+15 PASS / 3 FAIL, no skips/duplicates, complete runner-owned cleanup. All seven
+absence and four finalization/managed-neighbor cases passed; cleanup admission
+passed four of seven. Its publication, publication-expired and publication-retired
+rows failed at MainWorkerCleanupScenario.cs:117. Each reached the real publication
+cut once, retained its slot and had no cleanup receipt, but the fixture's callback
+failure list still contained its initial deferred-cleanup exception. This is an
+unresolved neighbor diagnostic, not yet a baseline or regression classification.
+No assertion or production guard has been weakened to obtain GREEN.
+
+Execution stopped for causal diagnosis. The two integration cleanup neighbors
+remain UNRUN; no live game continuation/retry occurred. Complete raw evidence is
+outside Git in retired-readmission-green-build.log, retired-readmission-green-
+core-official.log and retired-readmission-green-neighbors-official.log under the
+shared external diagnostics directory. The real new scenario is a61a8da58e6b49da
+b3658c31b744a989; official neighbor run is 20261117-211546-140-6-96aea338b2424d53992206994651301c-categories.
