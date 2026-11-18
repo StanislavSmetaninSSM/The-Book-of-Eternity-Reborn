@@ -166,3 +166,18 @@ def rejected_restored_for_cleanup(request, keys_before, keys_after, action_text,
         executions=relay_observation['Executions']
         return bool(executions) and all(execution_closed(x) for x in executions)
     except (KeyError,TypeError,ValueError):return False
+
+
+def capture_terminal_ledger_witness(session):
+    """RED-only unused capture seam; no absence inferred and no filesystem change."""
+    return None
+
+
+def bind_terminal_ledger_witness(witness_bytes, request_bytes):
+    """RED-only unused exact-request binding seam."""
+    return None
+
+
+def terminal_ledger_witness_keys(witness_bytes, binding_bytes, session, request_bytes):
+    """RED-only fail-closed DATA reader. None is refusal, not an empty ledger."""
+    return None

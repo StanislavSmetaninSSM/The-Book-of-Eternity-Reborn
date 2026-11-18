@@ -133,5 +133,81 @@ class RejectedJoinTests(unittest.TestCase):
                 self.assertFalse(evidence.rejected_restored_for_cleanup(**value))
 
 
+class LedgerWitnessTests(unittest.TestCase):
+    def request(self):
+        return b'{"sessionId":"session","requestId":"request","turnNumber":43}'
+
+    def test_real_absent_file_capture_and_exact_binding(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session=Path(directory)/'session';session.mkdir()
+            witness=evidence.capture_terminal_ledger_witness(session)
+            self.assertIsInstance(witness,bytes)
+            value=json.loads(witness)
+            self.assertIs(value['Present'],False)
+            self.assertEqual(value['SessionPath'],str(session.resolve()))
+            self.assertEqual(value['RelativePath'],'game_state/control/gm_observed_terminal_requests.json')
+            binding=evidence.bind_terminal_ledger_witness(witness,self.request())
+            self.assertEqual(evidence.terminal_ledger_witness_keys(witness,binding,session,self.request()),[])
+
+    def test_real_present_capture_preserves_exact_bytes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session=Path(directory);path=session/'game_state/control/gm_observed_terminal_requests.json'
+            path.parent.mkdir(parents=True)
+            raw=b'{ "schemaVersion":1, "keys":["session|old|42"] }\n';path.write_bytes(raw)
+            witness=evidence.capture_terminal_ledger_witness(session)
+            self.assertIsInstance(witness,bytes)
+            self.assertEqual(bytes.fromhex(json.loads(witness)['RawHex']),raw)
+            binding=evidence.bind_terminal_ledger_witness(witness,self.request())
+            path.write_bytes(b'changed after immutable capture')
+            self.assertEqual(evidence.terminal_ledger_witness_keys(witness,binding,session,self.request()),['session|old|42'])
+
+    def test_capture_permission_error_is_not_absence(self):
+        # OS permission error injected at the one read boundary: chmod is not
+        # reliable when the test account owns elevated filesystem privileges.
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(Path,'read_bytes',side_effect=PermissionError('injected read denial')):
+                with self.assertRaises(PermissionError):
+                    evidence.capture_terminal_ledger_witness(Path(directory))
+
+    def test_capture_real_non_file_io_error_is_not_absence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            session=Path(directory);path=session/'game_state/control/gm_observed_terminal_requests.json'
+            path.mkdir(parents=True)
+            with self.assertRaises(OSError):evidence.capture_terminal_ledger_witness(session)
+
+    def test_missing_truncated_and_foreign_witness_refuse(self):
+        session=Path('/synthetic/session');request=self.request()
+        raw=json.dumps({'SessionPath':str(session),'RelativePath':'game_state/control/gm_observed_terminal_requests.json',
+                        'Present':False,'RawHex':None,'SHA256':None}).encode()
+        binding=json.dumps({'WitnessSHA256':evidence.sha(raw),'RequestSHA256':evidence.sha(request),
+                            'RequestIdentity':json.loads(request)}).encode()
+        mutations=[(None,binding,session,request),(b'{',binding,session,request),
+                   (raw,None,session,request),(raw,b'{',session,request),
+                   (raw,binding,Path('/foreign/session'),request),
+                   (raw,binding,session,request.replace(b'request',b'foreign')),
+                   (raw.replace(b'gm_observed_terminal_requests.json',b'foreign.json'),binding,session,request),
+                   (raw,binding.replace(evidence.sha(raw).encode(),b'0'*64),session,request)]
+        for args in mutations:
+            with self.subTest(args=args):self.assertIsNone(evidence.terminal_ledger_witness_keys(*args))
+
+    def test_actual_driver_capture_precedes_send_binding_follows_request(self):
+        calls={}
+        for n in ast.walk(TREE):
+            if isinstance(n,ast.Call):
+                name=n.func.attr if isinstance(n.func,ast.Attribute) else n.func.id if isinstance(n.func,ast.Name) else ''
+                if name in ('capture_terminal_ledger_witness','bind_terminal_ledger_witness'):
+                    calls.setdefault(name,[]).append(n.lineno)
+                if name=='send' and any(isinstance(a,ast.Constant) and a.value=='one genuine game action' for a in n.args):calls['send']=[n.lineno]
+        self.assertEqual(len(calls.get('capture_terminal_ledger_witness',[])),1)
+        self.assertEqual(len(calls.get('bind_terminal_ledger_witness',[])),1)
+        self.assertLess(calls['capture_terminal_ledger_witness'][0],calls['send'][0])
+        request_reads=[n.lineno for n in ast.walk(TREE) if isinstance(n,ast.Assign) and
+            any(isinstance(t,ast.Name) and t.id=='request_bytes' for t in n.targets) and
+            isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Attribute) and n.value.func.attr=='read_bytes']
+        self.assertEqual(len(request_reads),1)
+        self.assertGreater(calls['bind_terminal_ledger_witness'][0],request_reads[0])
+
+
 if __name__ == '__main__':
     unittest.main()
