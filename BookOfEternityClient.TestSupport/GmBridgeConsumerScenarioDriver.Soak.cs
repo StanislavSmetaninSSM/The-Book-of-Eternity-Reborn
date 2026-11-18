@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
 
 namespace BookOfEternityClient.Tests;

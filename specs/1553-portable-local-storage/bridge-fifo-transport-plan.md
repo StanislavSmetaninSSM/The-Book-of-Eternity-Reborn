@@ -1249,3 +1249,10 @@ Shutdown uses the public connector with captured endpoint and full identity, not
 a generic launcher that could reread a different current owner. Existing fixture
 modes and the broad FIFO wildcard remain unchanged. Only the separate one-case
 `gm-host-exit-original-fifo-soak` category is authorized for this reproduction.
+
+The first soak preparation build failed before any native execution:8.32s,
+23 warnings and CS0103 for GmSessionRunPersistence in the new partial file.
+Adding only `using BookOfEternityClient.Core;` fixes name resolution; independent
+review verified removing that line reproduces the exact previously reviewed
+source hash. This is a preparation correction, not a causal runtime RED. The
+failed build is retained outside Git; the one actual soak remains UNRUN.
