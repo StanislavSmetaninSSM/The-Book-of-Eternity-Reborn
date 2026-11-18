@@ -11,4 +11,3 @@ public sealed class GmPreparedGrantStopTests
     public async Task LostBeforeStop_RemainsUnresolvedWithoutFabricatedLogicalStop(string mode)
         => await GmOwnedTerminalLinuxTests.RunAsync(mode);
 }
-

@@ -108,9 +108,9 @@ public sealed class HostExitObservationDiagnosticTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void IncompleteOriginalFault_MakesAggregateCaptureIncomplete(bool hostile)
+    public void IncompleteOriginalFault_MakesAggregateCaptureIncomplete(bool hostileStack)
     {
-        Exception failure = hostile ? new HostileException() : new Exception(new string('x', 2049));
+        Exception failure = new HostileException(hostileStack);
         var task = Task.FromException<TerminalRootExit>(failure);
         var session = new DiagnosticSession(task);
         var captured = GmSessionRunCoordinator.CaptureOriginalRootExit(session);
@@ -118,7 +118,6 @@ public sealed class HostExitObservationDiagnosticTests
         Assert.NotNull(captured.Fault);
         Assert.False(captured.Fault.CaptureComplete);
         Assert.NotNull(captured.Fault.CaptureFailure);
-        if (!hostile) Assert.Equal(2048, captured.Fault.Message!.Length);
         var state = State(captured.Status, captured.Fault);
         Assert.False(GmSessionRunCoordinator.StopCaptureComplete(true, state));
         using var json = JsonDocument.Parse(JsonSerializer.Serialize(state));
@@ -140,9 +139,10 @@ public sealed class HostExitObservationDiagnosticTests
     private static GmSessionRunCoordinator.StopFailureState State(string? status, HostExitFaultCapture.Fault? fault) =>
         new(0, true, true, true, true, false, false, false, null, true, [], status, null, null, fault);
 
-    private sealed class HostileException : Exception
+    private sealed class HostileException(bool stack) : Exception("original message")
     {
-        public override string Message => throw new InvalidOperationException("hostile diagnostic getter");
+        public override string Message => !stack ? throw new InvalidOperationException("hostile message getter") : base.Message;
+        public override string? StackTrace => stack ? throw new InvalidOperationException("hostile stack getter") : base.StackTrace;
     }
 
     // Diagnostic composition only: this fixture never acquires or impersonates coordinator authority.

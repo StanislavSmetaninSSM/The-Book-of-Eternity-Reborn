@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-nested-heartbeat-fifo",
+      "responsibility": "#1589 original nested participation scope closes before a fresh FIFO main heartbeat on the same owner.",
+      "excludes": "No game turn, materialization acceptance, production first-loss repair or broad relay qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/GmNestedParticipationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmNestedParticipationTests.OriginalNestedScopeClosesBeforeFreshHeartbeat"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-stop-diagnostic-full-text-data",
       "responsibility": "#1589 complete existing Unicode exception text and failure-report export without diagnostic collection quotas; isolated sink failure.",
       "excludes": "Diagnostic DATA only. No native/game launch, nonce or owner admission qualification, stop repair, retry or lifecycle authority.",

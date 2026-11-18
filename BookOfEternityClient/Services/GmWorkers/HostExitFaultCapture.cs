@@ -20,9 +20,7 @@ internal static class HostExitFaultCapture
         catch (Exception error) { captureFailure ??= error.GetType().FullName; }
         try { stack = failure.StackTrace; }
         catch (Exception error) { captureFailure ??= error.GetType().FullName; }
-        if (message?.Length > 2048 || stack?.Length > 4096)
-            captureFailure ??= "exception_text_limit_exceeded";
-        return new(failure.GetType().FullName!, message?.Length > 2048 ? message[..2048] : message,
-            stack?.Length > 4096 ? stack[..4096] : stack, poll, captureFailure == null, captureFailure);
+        return new(failure.GetType().FullName!, message,
+            stack, poll, captureFailure == null, captureFailure);
     }
 }

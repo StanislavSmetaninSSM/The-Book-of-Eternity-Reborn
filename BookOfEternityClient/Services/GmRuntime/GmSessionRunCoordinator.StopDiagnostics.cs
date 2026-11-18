@@ -59,14 +59,11 @@ internal sealed partial class GmSessionRunCoordinator
         if(_stopDiagnosticNonce!=null)lock(_sync)_stopDiagnosticIdentity??=identity;
 #endif
     }
-    private static string? BoundStopText(string? value,int limit)=>value?.Length>limit?value[..limit]:value;
     internal static FrozenStopText TryFreezeStopFailureText(Exception failure)
     {
         try {
             var message=failure.Message;var stack=failure.StackTrace;
-            var overflow=message?.Length>2048 || stack?.Length>4096;
-            return new(failure,failure.GetType().FullName!,BoundStopText(message,2048),BoundStopText(stack,4096),
-                !overflow,overflow?"exception_text_limit_exceeded":null);
+            return new(failure,failure.GetType().FullName!,message,stack,true,null);
         }
         catch(Exception captureFailure) {return new(failure,failure.GetType().FullName!,null,null,false,captureFailure.GetType().FullName);}
     }

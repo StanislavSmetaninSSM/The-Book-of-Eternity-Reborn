@@ -36,6 +36,24 @@ public sealed class StopDiagnosticFullTextTests
         Assert.Null(frozen.CaptureFailure);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void CoordinatorGetterFailure_RemainsIncompleteAndPreservesOriginal(bool stack)
+    {
+        var original = new GetterFailure(stack);
+        var captured = GmSessionRunCoordinator.TryFreezeStopFailureText(original);
+        Assert.Same(original, captured.Exception);
+        Assert.False(captured.CaptureComplete);
+        Assert.Equal(typeof(InvalidOperationException).FullName, captured.CaptureFailure);
+    }
+
+    private sealed class GetterFailure(bool stack) : Exception("original message")
+    {
+        public override string Message => !stack ? throw new InvalidOperationException("message getter") : base.Message;
+        public override string? StackTrace => stack ? throw new InvalidOperationException("stack getter") : base.StackTrace;
+    }
+
     [Fact]
     public void ReportExport_PreservesFullUnicodePayloadBeyondFormerByteLimit()
     {
