@@ -1428,3 +1428,37 @@ phase package97efb2ca6b7eda30fdec5a35f86e8a9cb3ab36775fa5611a0ccd51b2aee95d31.
 The single original guarded p01 launch is now in progress, not accepted yet.
 No p02 is permitted without full p01 success and independent guardian proof;
 all earlier worlds remain untouched. Main remains unchanged.
+
+### #1589 rl4 p01 live acceptance and cleanup confirmed
+
+The original guarded launch completed in233.079 seconds and was independently
+accepted. One genuine action produced request7e71eddbb67b4f37afd7c7a90747fe2d,
+turn1, actual request SHA256
+b566e488d526114f095000cd65fd0e5abe9db7efee14d3d72486d368f9eb630a.
+A new live-authored response4b7f3eea096b2f444dbb65ec386617ca9d2ca51d3c69134e80b86e0b018b8f6f
+was published once, executed exit0 with child exit/I/O drain and accepted into
+the canonical story with its exact narrative. No repair or replay occurred.
+
+The sole scoped shutdown at231.336s received its original ACK at231.526s.
+Run3280804d657a4db79fceb2f438bd260d, generation71afc6e1e3d44666b88adf96e51ea930,
+epoch1 reaches full-identity Stopped/OwnedScopeEmpty on disk. The same daemon
+owner fa4f4bfe transitions from running/unsettled to stopped/terminalSettled with
+guard settlement and errorCount0. Client, bridge and daemon each exit0 with
+EOF and restored terminal state; RPC helper exits0/drained. Guardian reports
+ECHILD, driver0, reaped1, zero emergency signals/failures/deadline. External
+outcome-pins SHA2568de80a2cf3a0d5aa9e620b2dc226f81fe41c2f589f3542d6e72c7b73b3e0f9e8.
+This qualifies the first live phase, not same-world restart. Independent review
+permits preparing p02 using ordinary Continue of these exact retained bytes.
+
+Merge selection was reconciled against the entire relay-only candidate. The
+39 stale #1515 current selections were replaced, without revoking their prior
+coverage. All1776 preceding catalog entries retain exact original text/order;
+one five-case supported diagnostic category excludes the unavailable legacy
+NamedPipe case. Source review corrected the description to preserve valid dotted
+Windows pipe names. Official metadata-only PlanOnly exits0 in12.9960057s,
+complete cleanup:23 descriptors,101 unique methods,191 planned cases, zero
+duplicates and ZERO execution. This is not a fresh191-case pass. The28 current
+output pins stayed exact. External PlanOnly pins SHA256
+c5a243c34b52697f964a3cb6846568c6867d868e97e34d1032e3cd849d0524cf.
+No hosted CI or full suite ran. Main remains unchanged pending p02 and final
+source/remote-tree verification; historical rl2/e uncertainty remains separate.
