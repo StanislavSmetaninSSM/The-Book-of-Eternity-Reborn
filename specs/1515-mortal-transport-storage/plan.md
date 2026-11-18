@@ -3709,3 +3709,93 @@ before process creation. This recovery note is saved directly through GitHub API
 Next work must first restore the exact remote source and allowed toolchain into
 a writable environment, and must never promote the unknown mm14 run to accepted
 predecessor or replay its action. A future fresh isolated journey is separate.
+
+
+### T028 reproducible prepare-only recovery (planned, UNRUN)
+
+The lost external preparation scripts are replaced by a narrow tracked helper
+under this existing T016 journey, not a new gameplay feature or recovery system.
+Base source is recovered f76a18cfb3adfc7db4eee9cc6657245f3f04cd7b; mm14 remains
+UNKNOWN and is never a predecessor. This checkpoint changes documentation only.
+Proposed source owner: `tests/fixtures/ProductionMain/prepare-mortal-live.py`,
+with adjacent pure contract tests and a narrow official category wrapper. Exact
+selectors and budgets are recorded with the test-source checkpoint before runs.
+
+Inputs and admission:
+- Explicit checkout, nonexistent absolute destination, source commit, and a fresh
+  owning-build manifest binding configuration/framework, tool versions, compiler
+  input hashes and exact Client/Bridge/TestSupport dependency outputs. A commit
+  label or copied old manifest alone is insufficient. Verify current inputs and
+  outputs before reuse; refuse drift, missing outputs, links/path escapes and
+  any existing destination, including an empty directory. No overwrite/resume.
+- Restored supported SDK/compiler, target runtime, PowerShell and native compiler
+  must be available. Fresh native source pins/provenance are tied to this source;
+  old executable bytes are not recovered from historical reports. No toolchain
+  download, implicit build/restore or package installation inside this helper.
+- Verify the prospective phase temporary/socket paths with the existing native
+  bootstrap path-budget contract before preparation. Use private directories
+  (0700), private manifests/config inputs (0600), preserve required native/script
+  executable modes, and refuse unsafe destination parents or linked members.
+
+One sequential preparation, with checked exit codes and retained external logs:
+1. Invoke existing `scripts/build-linux-supervisor.ps1 -OutputDirectory <native>
+   -IncludeHostGuardian`; verify both native executables and existing provenance/
+   package manifests, source joins and modes. Do not hand-author native metadata.
+2. Serial `dotnet publish -c Debug --no-build --no-restore` for Client, Bridge and
+   TestSupport, passing `BoeNativePackageDirectory` and
+   `BoeRequireNativePackage=true`. Publish Client/Bridge as existing sibling
+   package directories and the full TestSupport receipt-helper dependency tree.
+3. Invoke that published TestSupport's existing `mortal-live-seed-export` once
+   with a new play base, current `FileSystemExample/game_session` and new seed
+   manifest. Keep its real full-validation/setup41/no-runtime-artifact gates.
+   Do not replace the exporter with JSON construction or copy an old world.
+4. Deploy the verified package to the exported session `_runtime`, copy tracked
+   `tools/gm-relay` into the new phase relay directory, and create only required
+   empty private npm-config inputs. Let the later existing driver create its own
+   runtime configuration, request queue and live ownership. No owner, generation,
+   pending snapshot, receipt, action, GM packet or authority is manufactured.
+5. Hash final deployed trees, compare publish/deployment bytes, recheck source/
+   output pins and exporter absence gates, and write a final preparation manifest
+   only on complete success. Partial failure remains unqualified diagnostic DATA;
+   do not automatically delete, resume, rerun export or retry another destination.
+
+Manifest contract (version 1, preparation DATA only):
+- `schemaVersion`, `kind: "mortal-live-preparation"`, `sourceCommit`, tool versions,
+  configuration/framework, and owning-build manifest path/SHA256;
+- source and compiled-output entries `{path, sha256}`, native provenance/package
+  manifest hashes and native inventory, published runtime/helper inventories,
+  deployed runtime inventory, relay inventory, seed-manifest path/hash and seed
+  world inventory; inventory paths are unique root-relative names with exact
+  size/hash/mode, no links or traversal. Counts are measured, never old constants;
+- command outcomes/log locations, verified private/executable modes and socket
+  budget, plus final `prepared: true` only after all joins. This is neither
+  acceptance nor launch permission. Raw logs/worlds/manifests remain outside Git.
+The driver-facing `relay-phase-package.json` retains its existing exact schema:
+`RuntimePins`, `RelayPins`, `ReceiptHelperPins`, `DriverSHA256`,
+`EvidenceModuleSHA256`, `ConsoleRouteModuleSHA256`. Reuse its existing preflight;
+include the entire helper package (deps/runtimeconfig/native dependencies), not
+one DLL. Preparation metadata does not replace current driver freshness checks.
+
+Verification and completion criteria:
+- First pure test-source checkpoint: reject occupied destinations without writes,
+  stale source/output/native joins, linked/escaping inventory, unsafe modes and
+  over-budget socket paths; prove deterministic complete inventory/schema and
+  exact sequential command construction. No mocked command result proves actual
+  publication/export. Save/review before official bounded RED/GREEN.
+- Later one valid preparation integration uses fresh actual compiled/native
+  inputs and real publishes/exporter; verify setup-only seed, all deployed joins,
+  zero owner/request/queue/pending artifacts and no client/relay/GM launch. Refuse
+  a second preparation to the same destination without touching its bytes.
+- Independent source/outcome review and remote checkpoint precede any separately
+  authorized mm15 prelaunch review. No full suite, native game, Save/Load, packet
+  preset, automatic start/retry or promotion of lost mm14 is part of T028.
+
+Cost/cache assessment: reuse only the explicitly verified fresh owning build;
+three serial no-build publishes avoid redundant compilation. The preparation
+operation owns immutable inventory DATA only until its source/output/deployment
+freshness fences; any mutation invalidates readiness. Rehash final copies and
+create every seed afresh because paths, identity and exporter validation are
+per-world. No cross-world cache, registry or cached ownership. Record actual
+native/publish/export/hash durations later; no performance claim is made now.
+No GM contract or prompt update is required: this packages existing supported
+sources and setup through their owners, without changing authoring or gameplay.
