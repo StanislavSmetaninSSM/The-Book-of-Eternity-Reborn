@@ -3594,3 +3594,21 @@ unrestricted stripping of cursor/erase CSI can conceal trailing or mid-row
 operations. Add production-shaped DATA controls, an explicit narrow redraw grammar,
 a genuinely unwrapped redirected renderer layout and whole-route preflight before
 owner launch. No build or GREEN execution occurred, and no live world was started.
+
+
+### T027 source correction checkpoint: frame-tail and prompt transition (UNRUN)
+
+The matcher now admits a padding-only remainder before the exact source-sized
+CR/cursor-up redraw. It does not fall back to a prior frame when the newest draw
+is incomplete. A following menu carries the previous menu height as DATA; only
+that prompt's exact erase/up/restore-cursor preamble may precede the first fresh
+header. Cursor/erase controls inside or after a frame remain refusals. The known
+`/storage_move` line-editor echo is confined to its explicit entry preamble.
+
+The inert redirected Load renderer now executes two real prompts: inventory
+Down/Back, then the production-shaped Clear and Load heading, then Load
+Down/Back/EOF. It checks the actual prior closing sequence and both complete
+Load draws without a final CR. DATA controls cover split padding, incomplete
+newest draws, wrong close counts, trailing erase, and entry-prefix boundaries.
+This checkpoint is source-only and UNRUN; no live world or ownership policy was
+changed, and no renderer width/transition capability is claimed until execution.

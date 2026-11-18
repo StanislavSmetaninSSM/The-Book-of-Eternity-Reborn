@@ -1002,14 +1002,15 @@ def denied_storage_route():
     target=console_routes.storage_target(strict_settings(current),route['StorageId'],route['ItemId'],False)
     before=local_observation();inventory_path=session/'game_state/inventory/items.json'
     inventory=inventory_path.read_bytes()
-    menu=current_inventory_menu()
+    menu=console_routes.entry_menu(current_inventory_menu(),command='/storage_move')
     cut=len(client.capture);client_prompt=False
     client.send(b'/storage_move\r','fixed denied storage route')
     cut,selected_cut=finite_select(menu,target['StorageLabel'],cut,20)
     # Locked selection loops back to the same menu; it is not a denial exception.
+    menu=console_routes.after_menu(current_inventory_menu(),menu)
     until(lambda:console_routes.selected_frame(bytes(client.capture),cut,menu) is not None,
           5,'fresh inventory after locked storage selection')
-    after,_=finite_select(current_inventory_menu(),'← Назад',cut,20)
+    after,_=finite_select(menu,'← Назад',cut,20)
     fresh_player(client,after,10);client_prompt=True
     console_routes.require_local_unchanged(before,local_observation())
     if current_path.read_bytes()!=current or inventory_path.read_bytes()!=inventory:
@@ -1047,7 +1048,7 @@ def storage_local_route():
         contents=[i for i in storage[0]['contents'] if type(i) is dict and i.get('itemId')]
         inventory_items=[i for i in items['items'] if type(i) is dict and i.get('itemId')]
         label=f"📦 {target['StorageName']} ({len(contents)} пр.) → управление"
-        inventory_menu=current_inventory_menu()
+        inventory_menu=console_routes.entry_menu(current_inventory_menu(),command='/storage_move')
         actions=[]
         if inventory_items:actions.append(f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
         if contents:actions.append(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)')
@@ -1062,8 +1063,8 @@ def storage_local_route():
         cut,_=finite_select(inventory_menu,label,cut,20)
         action_label=(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)' if retrieve else
                       f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
-        cut,_=finite_select(action_menu,action_label,cut,10)
-        cut,_=finite_select(picker_menu,target['ItemLabel'],cut,20)
+        cut,_=finite_select(console_routes.after_menu(action_menu,inventory_menu),action_label,cut,10)
+        cut,_=finite_select(console_routes.after_menu(picker_menu,action_menu),target['ItemLabel'],cut,20)
         until(lambda:'✅ ' in client.text(cut),10,'actual local move result')
         if '❌' in client.text(cut):raise RuntimeError('Actual local move refused')
         post_location=strict_settings(location_path.read_bytes());post_items=strict_settings(inventory_path.read_bytes())
@@ -1072,8 +1073,8 @@ def storage_local_route():
         if post_items['items']:post_actions.append(f"📥 Положить предмет в хранилище ({len(post_items['items'])} в инвентаре)")
         if post_storage['contents']:post_actions.append(f"📤 Забрать предмет из хранилища ({len(post_storage['contents'])} внутри)")
         post_menu=console_routes.fixed_menu('📦 '+target['StorageName']+'\n  Предметов внутри: '+str(len(post_storage['contents'])),post_actions+['← Назад к инвентарю'],10)
-        cut,_=finite_select(post_menu,'← Назад к инвентарю',cut,10)
-        cut,_=finite_select(current_inventory_menu(),'← Назад',cut,20)
+        cut,_=finite_select(console_routes.after_menu(post_menu,picker_menu),'← Назад к инвентарю',cut,10)
+        cut,_=finite_select(console_routes.after_menu(current_inventory_menu(),post_menu),'← Назад',cut,20)
         fresh_player(client,cut,10);client_prompt=True
     move(True);saved_location,saved_inventory=stage('Retrieve','inventory')
     save_name='s' # Sole fresh archive, checked before any owner starts; no canonical name changes.
@@ -1124,7 +1125,7 @@ def storage_local_route():
     cut=len(client.capture);client_prompt=False;client.send(b'/options\r','fixed local Load menu')
     fresh(client,'Игровое меню',cut);cut=len(client.capture);client.send(b'2\r','observed Load choice')
     # Select the exact archive row without activating it yet; its receipt SourceKey must match.
-    load_cut=finite_select(load_menu,load_label,cut,15,commit=False)[0]
+    load_cut=finite_select(console_routes.entry_menu(load_menu,load_clear=True),load_label,cut,15,commit=False)[0]
     if archive.read_bytes()!=archive_bytes:raise RuntimeError('Original Save archive changed before Load')
     continuity['LoadActionUtc']=datetime.datetime.now(datetime.timezone.utc).isoformat()
     result['LoadActionCut']=load_cut

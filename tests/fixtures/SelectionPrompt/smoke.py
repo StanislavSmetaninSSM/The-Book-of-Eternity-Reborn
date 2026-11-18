@@ -130,9 +130,9 @@ def main():
     fixed_render = inventory or load
     if fixed_render:
         sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'ProductionMain'))
-        from mortal_console_routes import selected_frame, fixed_menu, local_load_menu
+        from mortal_console_routes import selected_frame, fixed_menu, local_load_menu, after_menu, entry_menu
         menu=fixed_menu("🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)",["💰 Деньги: 500","← Назад"],20)
-        if load:menu=local_load_menu('Хозяйственный двор у кладовой совета',43,99999)
+        if load:load_menu=local_load_menu('Хозяйственный двор у кладовой совета',43,99999)
         first_label,footer=menu['choices']
     root.mkdir(parents=True,exist_ok=False)
     master,slave=pty.openpty()
@@ -185,8 +185,28 @@ def main():
                     assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith(footer.encode())
                     result['MovedCompleteFooterWithoutCR']=True
                 result['MovedRender']=screen.lines() if mode=='pty' else screen.plain[frame_cut:]
+                if load:
+                    previous=menu;raw_cut=len(captured)
+                    menu=entry_menu(after_menu(load_menu,previous),load_clear=True)
+                    first_label,footer=menu['choices']
                 assert os.write(master,b'\r')==1
                 result['Inputs'].append('Enter');stage=2
+            elif load and stage==2 and ready('SMOKE_ALPHA'):
+                actual=bytes(captured[raw_cut:])
+                assert b'\x1b[2K' in actual and b'\x1b[?25h' in actual
+                assert b'\x1b[2J\x1b[3J\x1b[1;1H' in actual and '📂 Загрузка игры'.encode() in actual
+                assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith(footer.encode())
+                result['TransitionCompleteFooterWithoutCR']=True
+                result['TransitionRawHex']=actual.hex()
+                raw_cut=len(captured);frame_cut=len(screen.plain)
+                assert os.write(master,b'\x1b[B')==3
+                result['Inputs'].append({'Key':'Down','Hex':'1b5b42'});stage=3
+            elif load and stage==3 and ready('SMOKE_BETA'):
+                actual=bytes(captured[raw_cut:])
+                assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith(footer.encode())
+                result['LoadMovedCompleteFooterWithoutCR']=True
+                assert os.write(master,b'\r')==1
+                result['Inputs'].append('Enter');stage=4
             if process.poll() is not None and slave>=0:
                 os.close(slave);slave=-1
             if len(closed)==len(streams):break
@@ -200,7 +220,7 @@ def main():
         assert result['TermiosRestored'] and not receipt['InputRedirected']
         assert receipt['Term']==env['TERM'] and receipt['NoColor']=='1' and receipt['PlainOutput']
         if mode!='pipe-dumb':
-            assert stage==2 and result['ExitCode']==0 and receipt['Selected']==(footer if fixed_render else 'SMOKE_BETA') and receipt['Failure'] is None
+            assert stage==(4 if load else 2) and result['ExitCode']==0 and receipt['Selected']==(footer if fixed_render else 'SMOKE_BETA') and receipt['Failure'] is None
         if mode=='pty':
             assert not receipt['OutputRedirected'] and not receipt['ErrorRedirected']
         else:

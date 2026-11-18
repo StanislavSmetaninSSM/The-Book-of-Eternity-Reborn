@@ -19,6 +19,16 @@ internal static class SpectreSelectionSmoke
         Exception? failure = null;
         try
         {
+            if (load)
+            {
+                var first = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                    .Title("[bold yellow]🎒 📦 Инвентарь[/]  [dim](⚖ 1.8kg/45.0kg кг)[/]  [dim](выберите для просмотра / управления)[/]")
+                    .PageSize(20).AddChoices("💰 Деньги: 500", "← Назад"));
+                if (first != "← Назад") throw new InvalidOperationException("First inert prompt did not return Back.");
+                BookOfEternityClient.UI.SpectreConsoleSafe.Clear();
+                AnsiConsole.Write(new Rule("[cyan]📂 Загрузка игры[/]").RuleStyle("cyan"));
+                AnsiConsole.WriteLine();
+            }
             selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
                 .Title(load ? "Выберите сохранение:" : inventory
                     ? "[bold yellow]🎒 📦 Инвентарь[/]  [dim](⚖ 1.8kg/45.0kg кг)[/]  [dim](выберите для просмотра / управления)[/]"

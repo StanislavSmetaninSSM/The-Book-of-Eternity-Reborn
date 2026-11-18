@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "mortal-menu-frame-data",
-      "responsibility": "#1515 T027 sixteen authored captured-pipe frame contracts, including complete padded inventory and selected footer without final CR.",
+      "responsibility": "#1515 T027 twenty authored captured-pipe frame contracts, including complete padded inventory and selected footer without final CR.",
       "excludes": "No real renderer, owner, world or live acceptance. Initial no-output recognition failures are causal RED only after fixture assertions.",
       "changeHints": ["tests/fixtures/ProductionMain/mortal_console_routes.py", "tests/fixtures/ProductionMain/test-mortal-menu-frame.py"],
       "related": [],
@@ -14,7 +14,7 @@
     },
     {
       "id": "mortal-menu-frame-renderer",
-      "responsibility": "#1515 T027 actual inert Spectre inventory-shaped pipe/xterm render and fresh redraw through shipped finite menu matcher, Down then Back and owned EOF/guardian cleanup.",
+      "responsibility": "#1515 T027 actual inert Spectre inventory-shaped pipe/xterm render, fresh redraw and inventory-to-Load closing/Clear transition through shipped finite menu matcher, Down then Back and owned EOF/guardian cleanup.",
       "excludes": "No game, bootstrap, GM, world, main-owner lifecycle or publication authority.",
       "changeHints": ["BookOfEternityClient.TestSupport/SpectreSelectionSmoke.cs", "tests/fixtures/SelectionPrompt/smoke.py"],
       "related": [],

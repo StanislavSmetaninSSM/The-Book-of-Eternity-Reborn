@@ -1,6 +1,6 @@
 """T027 authored captured-pipe DATA, not retained live bytes or terminal authority."""
 import unittest
-from mortal_console_routes import selected_frame, fixed_menu, inventory_menu, local_load_menu, preflight_local_route
+from mortal_console_routes import selected_frame, fixed_menu, inventory_menu, local_load_menu, preflight_local_route, after_menu, entry_menu
 
 TITLE = '🎒 📦 Инвентарь'
 HEADER = TITLE + '  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)'
@@ -99,8 +99,35 @@ class MenuFrameTests(unittest.TestCase):
         loc['locationStorages'][0]['contents'][0]['name']='← Отмена extra'
         with self.assertRaises(ValueError):preflight_local_route(inv,loc,{'money':0},'s','target',43)
 
+    def test_fresh_cut_padding_before_exact_redraw(self):
+        for padding in (b'',b' ',b' '*35):
+            self.assertEqual(selected_frame(padding+b'\r\x1b[4A'+frame(2),0,MENU),'← Назад')
+            self.assertIsNone(selected_frame(padding+b'\r\x1b[4A'+HEADER.encode(),0,MENU))
+        self.assertIsNone(selected_frame(b'not padding\r\x1b[4A'+frame(),0,MENU))
+    def test_exact_prior_close_only_before_first_fresh_header(self):
+        close=b'\r'+b'\x1b[2K\x1b[1A'*4+b'\x1b[2K\x1b[?25h'
+        next_menu=after_menu(MENU,MENU)
+        self.assertEqual(selected_frame(b'   '+close+frame(),0,next_menu),'💰 Деньги: 500')
+        self.assertIsNone(selected_frame(close+frame(),0,MENU))
+        self.assertIsNone(selected_frame(frame()+close,0,next_menu))
+        self.assertIsNone(selected_frame(close.replace(b'1A',b'2A',1)+frame(),0,next_menu))
+    def test_source_load_clear_heading_and_unknown_erase_refuse(self):
+        load=entry_menu(local_load_menu('Court',43,1),load_clear=True)
+        body=('Выберите сохранение:\n\n> '+load['choices'][0]+'  \n  ↩️ Назад  ').encode()
+        clear=b'\x1b[2J\x1b[3J\x1b[1;1H'
+        prefix=clear+'── 📂 Загрузка игры ──\n\n'.encode()
+        self.assertEqual(selected_frame(prefix+body,0,load),load['choices'][0])
+        self.assertIsNone(selected_frame(clear+body,0,load))
+        self.assertIsNone(selected_frame(prefix+body+b'\x1b[2J',0,load))
+    def test_only_known_command_echo_controls_before_header(self):
+        menu=entry_menu(MENU,command='/storage_move')
+        prefix=b'\x1b[s'+b''.join(b'\x1b[u\x1b[J'+b'/storage_move'[:i]+b'\x1b[u'+b'/storage_move'[:i] for i in range(1,14))+b'\n'
+        self.assertEqual(selected_frame(prefix+frame(),0,menu),'💰 Деньги: 500')
+        self.assertIsNone(selected_frame(prefix+frame(),0,MENU))
+        self.assertIsNone(selected_frame(prefix+frame()+b'\x1b[u',0,menu))
+
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(MenuFrameTests)
-    if suite.countTestCases()!=16:raise SystemExit('Expected exactly sixteen menu-frame DATA methods')
+    if suite.countTestCases()!=20:raise SystemExit('Expected exactly twenty menu-frame DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==16 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==20 and result.wasSuccessful() and not result.skipped else 1)

@@ -160,6 +160,15 @@ def preflight_local_route(inventory, location, player_status, storage_id, item_i
     local_load_menu(location['name'],turn,99999)
 
 
+def after_menu(menu, previous):
+    """Admits only the exact closing erase count of the prior source-bound prompt."""
+    return dict(menu,previous_height=len(previous['header'].split('\n'))+len(previous['choices']))
+
+def entry_menu(menu, command=None, load_clear=False):
+    """Known console-entry preamble, never cursor controls within a menu frame."""
+    if command not in (None,'/storage_move'):raise ValueError('Unsupported entry command')
+    return dict(menu,command_echo=command,load_clear=load_clear)
+
 def selected_frame(raw, cut, menu):
     """Exact emitted frames; only SGR and the source-sized CR/cursor-up redraw prefix are accepted."""
     if type(raw) is not bytes or type(cut) is not int or not 0<=cut<=len(raw) or type(menu) is not dict:return None
@@ -176,15 +185,32 @@ def selected_frame(raw, cut, menu):
     redraw='\r\x1b['+str(height)+'A'
     parts=text.split(redraw)
     def one(part, first):
-        # Cursor hiding is allowed only immediately before an exact header.
-        part=part.replace('\x1b[?25l'+header_lines[0],header_lines[0],1)
-        if '\x1b' in part:return None
+        # Only the first new header can follow a prior prompt close or known entry echo.
         header='\n'.join(re.escape(line)+r' *' for line in header_lines)
-        starts=list(re.finditer(r'(?:^|\n)\r?'+header+r'\r?\n',part))
-        if not starts or (not first and starts[-1].start()!=0):return None
+        starts=list(re.finditer(r'(?:^|\n|(?<=\x1b\[\?25h))\r?(?:\x1b\[\?25l)?'+header+r'\r?\n',part))
+        if not starts:return None
+        prefix=part[:starts[-1].start()]
+        if not first and prefix:return None
+        if first:
+            previous=menu.get('previous_height')
+            if previous is not None:
+                if type(previous) is not int or not 1<=previous<=22:return None
+                close='\r'+('\x1b[2K\x1b[1A'*previous)+'\x1b[2K\x1b[?25h'
+                prefix=prefix.replace(close,'',1)
+            if menu.get('load_clear') is True and '\x1b[2J\x1b[3J\x1b[1;1H' in prefix:
+                prefix=prefix.replace('\x1b[2J\x1b[3J\x1b[1;1H','',1)
+                if '📂 Загрузка игры' not in prefix:return None
+            command=menu.get('command_echo')
+            if command is not None:
+                if command!='/storage_move':return None
+                prefix=prefix.removeprefix('\x1b[s')
+                for end in range(len(command),0,-1):
+                    literal=command[:end]
+                    prefix=prefix.replace('\x1b[u\x1b[J'+literal,'').replace('\x1b[u'+literal,'')
+            if '\x1b' in prefix:return None
         body=part[starts[-1].end():]
         body=re.sub(r'^(?: *\r?\n)*','',body)
-        if re.search(r'\r(?!\n|$)',body):return None
+        if '\x1b' in body or re.search(r'\r(?!\n|$)',body):return None
         rows=body.replace('\r','').split('\n')
         if len(rows)!=len(checked['choices']):return None
         selected=[]
@@ -195,7 +221,7 @@ def selected_frame(raw, cut, menu):
         return checked['choices'][selected[0]] if len(selected)==1 else None
     # A fresh cut can start at the redraw prefix. Coalesced old frames must also
     # be complete; a newest partial draw can never fall back to an earlier one.
-    if len(parts)>1 and parts[0]=='':parts=parts[1:]
+    if len(parts)>1 and not parts[0].strip(' '):parts=parts[1:]
     selected=None
     for index,part in enumerate(parts):
         selected=one(part,index==0)
