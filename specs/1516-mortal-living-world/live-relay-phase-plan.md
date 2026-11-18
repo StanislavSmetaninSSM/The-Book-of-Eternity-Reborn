@@ -427,3 +427,44 @@ root context. A prior local menu admission followed by a separately owned remote
 main is a candidate lifecycle explanation, not yet a causal test or fixed bug.
 Next is a cheap existing-fixture reproduction and independent admission/lifetime
 design review, without weakening ownership checks or replaying the game action.
+
+### ml6 p01 independently accepted, retained-world p02 not yet run
+
+The bounded readmission correction and its 26 distinct passing checks are recorded
+in bridge-fifo-transport-plan.md; they do not erase the historical ml5 p02 failure
+above. Fresh ml6 p01 uses source f4630e and preparation manifest SHA256
+5d7957835e840ab650580ef0fbab3862f7732868e6ac097e79cb359a80cb971c.
+Independent outcome review accepted this actual phase in 241.118 seconds.
+
+Session seeded_live_mortal_3dfa88a0a449457eb840108d6649f5ad issued actual request
+136cdb973c64486e98d9ce87c311d6b9, turn42, for one ordinary player action.
+One real GM relay execution exited0 and drained, without repair. The production-
+typed receipt validator returned valid=true, publicationAuthority=false and
+priorCount0/currentCount1. Story [41,42] preserves the exact setup41 byte prefix;
+setup41 remains initial test preparation, not a GM-accepted turn. World clock
+480..720 and Mira's Active progress240/480, step1, XP0 evidence partial progress
+only, not activity completion or whole living-world acceptance.
+
+Exact p01 evidence joins (SHA256 unless prefixed):
+
+- Probe: c5f7eba77270e89c77591850ae7e31c38012d78df14f47e5899d6153f91bff7d.
+- Actual request: 47ea6fa6f0f37a6e0bd405b975b3a58ed8ef0c2fad2744a0b90da353c26c28c2.
+- Executed response: 22afb481c0d94b609885c8b38664f9ab6cbbb07a3cadd16577a7e60cf8b3e5fa.
+- Receipt: sha256:918c75708cc0ab7722b29905770f416c36e3c202ebd76dfa2405597d40d69405.
+- Living history: 8a599ad6ecee8c24125fc51cc841bd3f2e689434ac67c649392df330bfdf53b3.
+- Story before: 556aadabc9a627011477f81c6d7ef81ea426940c450ae74109b135c03672ac55.
+- Story after: 7614d79ad926582bdf1e4736473ad9b88f13cc958f89a66248691de59ef83498.
+
+One original shutdown ACK matches run994f02a3f8994d6da81a2befff62792f,
+generation7c3036f4412243039a504a670a11245f, epoch1 and the full durable Stopped
+identity/OwnedScopeEmpty proof. Client, bridge and daemon exited0 with EOF and
+restored termios; RPC helper exited0 with both EOF. Guardian recorded driver0,
+ECHILD, reaped1, zero emergency signals/failures and no deadline. Daemon
+errorCount1 has no established cause; lastLoopError/fatalError are absent. This
+is not an error-free-log claim.
+
+Retained-world p02 is permitted only from this exact accepted p01 probe and the
+same world, with a new queue and original owner identity. It is still UNRUN at
+this checkpoint. No ml5 world, failure or raw evidence was altered or replayed.
+The separate e history, semantic audit and remaining issue requirements remain
+open; this checkpoint does not close #1515, #1516, #1538 or #1589.
