@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-relay-phase-contract",
+      "responsibility": "#1589 inert source contracts for the general relay phase continuation, original settlement and immutable evidence gates.",
+      "excludes": "No actual game, daemon shutdown, native ownership or materialization qualification; Python case count is reported separately from the single adapter Fact.",
+      "changeHints": ["BookOfEternityClient.Tests/LinuxRelayPhaseContractTests.cs", "tests/fixtures/ProductionMain/test-relay-phase-contract.py", "tests/fixtures/ProductionMain/live-game-one-turn.py"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.LinuxRelayPhaseContractTests.GeneralRelayContinuationAndSettlementSourceContracts"]}]
+    },
+    {
       "id": "gm-daemon-settlement-observation",
       "responsibility": "#1589 test-only shared observation of a genuinely held daemon guard preserves original validation, unchanged bytes and contender exclusion before status reading.",
       "excludes": "No live daemon shutdown, cross-process qualification, gameplay or new publication authority.",

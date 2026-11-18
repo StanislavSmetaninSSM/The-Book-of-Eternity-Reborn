@@ -928,3 +928,37 @@ Preparation records publisher-only compile and compiler absent from player
 startup. The recovered read refusal is the expected closing-fence condition
 in this bounded successful stop, not a claim of clean error counters. The
 unsettled ml7 result remains unresolved.
+
+## WIP: general relay same-world continuation harness, 2026-11-18
+
+Relay-only candidate based on main `605ec71`; no Mortal seed/exporter/receipt helper
+is imported. `live-game-one-turn.py` now has an explicit relay continuation argument
+`PHASE --codex-relay PREVIOUS_PROBE`. Initial play remains ordinary Chaos Sea UI
+creation with the existing Elyara preset; continuation performs ordinary Continue
+in the same world, followed by one newly authored player question and actual GM
+response. No spiritual combat or materialization implementation is added.
+
+Before phase effects, a prepared `relay-phase-package.json` must exactly pin
+`RuntimePins`, `RelayPins` and `DriverSHA256`; continuation additionally checks the
+prior successful physical/logical/daemon settlement, exact retained story, world,
+config, runtime, main record and absence of pending work. Only queue/pipe/cwd config
+fields change on continuation; other profiles/settings remain. Actual request bytes
+are captured once; queue turn/repair witnesses, prompt dispatch, executing response,
+consumer exit/drain and exact appended story narrative are joined. Initial/final
+daemon owner settlement and all three original peer exits are mandatory. Native
+bootstrap path length is checked before effects. This is source WIP, not live
+qualification; pristine two-phase restart/stop remains UNRUN.
+
+Actual original driver's AST success predicate causally failed one source-only
+assertion: it accepted a result with physical EOF and bridge stop but no daemon
+settlement. This is distinct from initial missing-new-function test setup errors.
+After the candidate change, nine source-only tests pass, including positive retained
+world admission and changed-byte/pending/guardian refusals, stale daemon evidence,
+exact story append, config preservation and turn/repair execution correlation.
+Official bounded category/build and independent review are pending. Existing
+nonrelay/provider-refusal routes are retained and are not newly runtime-qualified.
+
+Optimization: immutable package pins are retained as DATA within a phase; current
+world/owner inputs are freshly checked before continuation and never reused as
+admission authority. No additional game preparation, exporter or broad suite is
+introduced. Raw diagnostic output remains uncapped; old failed worlds are untouched.

@@ -1,5 +1,7 @@
 """Owner-authorized one genuine turn in an ordinary disposable console game.
 
+Relay continuation: PHASE --codex-relay PREVIOUS_PROBE; phase-local relay-phase-package.json
+pins RuntimePins/RelayPins/DriverSHA256 before effects. Same ordinary world, no seed exporter.
 Run only beneath the independently compiled guardian: --live-turn (300s),
 or --relay-turn (750s) for the explicit maintained developer relay.
 Package is already deployed below fresh base/game_session/_runtime. No scripted
@@ -311,16 +313,219 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-phase-wait':
     assert current_client_failure('❌ Ошибка: Main run metadata or original owner admission is unavailable.'), 'Current main-menu error must stop preparation before a timeout'
     assert current_client_failure('╭ Ход не принят ╮'), 'Pre-request rejection must fail promptly'
     print(json.dumps({'InertDriverChecks':5,'Passed':5,'ProcessesStarted':0,'RuntimeTestsExecuted':0}));sys.exit(0)
+def daemon_pair_capture(session, evidence, prefix):
+    paths={'Status':Path(session)/'game_state/control/gm_daemon_status.json',
+           'Guard':Path(session).parent/'.boe_runtime/locks/gm-daemon-instance.lock'}
+    evidence['SessionPath']=str(session)
+    for name,path in paths.items():
+        key=prefix+name
+        try:
+            raw=path.read_bytes()
+            evidence[key+'RawHex']=raw.hex()
+            evidence[key+'SHA256']=hashlib.sha256(raw).hexdigest()
+        except OSError as failure:
+            evidence[key+'ReadError']=type(failure).__name__+': '+str(failure)
+    return evidence
+
+def daemon_pair_decode(evidence, prefix, settled):
+    def unique(pairs):
+        value={};seen=set()
+        for key,item in pairs:
+            if key.casefold() in seen:raise ValueError('Duplicate daemon JSON field')
+            seen.add(key.casefold());value[key]=item
+        return value
+    def decode(name):
+        key=prefix+name
+        raw=bytes.fromhex(evidence[key+'RawHex'])
+        if hashlib.sha256(raw).hexdigest()!=evidence[key+'SHA256']:raise ValueError('Daemon evidence hash mismatch')
+        result=json.loads(raw.decode('utf-8-sig'),object_pairs_hook=unique,
+            parse_constant=lambda value:(_ for _ in ()).throw(ValueError('Non-JSON constant')))
+        if type(result) is not dict:raise ValueError('Daemon evidence is not an object')
+        return result
+    status=decode('Status');guard=decode('Guard');session=evidence['SessionPath']
+    if type(session) is not str or not session:raise ValueError('Missing exact daemon session')
+    owner=status.get('daemonGuardOwnerId')
+    if type(owner) is not str or re.fullmatch('[0-9a-f]{32}',owner) is None:raise ValueError('Invalid daemon owner')
+    if (type(status.get('daemonGuardVersion')) is not int or status['daemonGuardVersion']!=1 or
+        type(guard.get('version')) is not int or guard['version']!=1):raise ValueError('Invalid daemon version')
+    if set(guard)!={'version','sessionPath','ownerId','settled'}:raise ValueError('Invalid guard shape')
+    if status.get('sessionPath')!=session or guard.get('sessionPath')!=session or guard.get('ownerId')!=owner:
+        raise ValueError('Daemon owner/session mismatch')
+    if (status.get('status')!=('stopped' if settled else 'running') or
+        status.get('terminalSettled') is not settled or guard.get('settled') is not settled):
+        raise ValueError('Daemon lifecycle is not exact')
+    return owner
+
+def daemon_settlement_proved(evidence):
+    try:return daemon_pair_decode(evidence,'Original',False)==daemon_pair_decode(evidence,'Final',True)
+    except (KeyError,TypeError,ValueError,UnicodeError):return False
+
+def relay_phase_cleanup_proved(value):
+    try:
+        if any(k.endswith('Failure') for k in value):return False
+        if not daemon_settlement_proved(value.get('DaemonSettlement')):return False
+        if any(type(value[k]) is not int or value[k]!=1 for k in ('AcceptedGameTurns','GenuineActionsSent','ShutdownAttempts')):return False
+        if any(value[k] is not True for k in ('InputQualified','LogicalLifecycleVerified','RelayExecutionClosed')) or not rpc_helper_closed(value):return False
+        terminals=value['Terminals']
+        if set(terminals)!={'client','bridge','daemon'}:return False
+        if not all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] and v['StreamEOF'] and all(v['StreamEOF'].values()) for v in terminals.values()):return False
+        running=value['OriginalRunningRecord'];stopped=value['StoppedRecord'];identity=running['Identity']
+        if running['Disposition']!='Running' or stopped['Disposition']!='Stopped' or stopped['Identity']!=identity:return False
+        if stopped['StopEvidence']['Identity']!=identity or stopped['StopEvidence']['Kind']!='OwnedScopeEmpty':return False
+        ack=value['ShutdownReceipt'];proof=ack['status']['terminalStop'];started=value['OriginalRunningStatus']
+        return (ack['ok'] is True and started['ok'] is True and started['status']['terminalRunId']==identity['RunId'] and
+            ack['status']['terminalRunId']==identity['RunId'] and ack['status']['inputBindingId']==started['status']['inputBindingId'] and
+            proof['identity']['runId']==identity['RunId'] and proof['state']=='stopped-within-scope' and
+            proof['cleanupComplete'] is True and proof['authorityRetained'] is False)
+    except (KeyError,TypeError):return False
+
+def sha(data):return hashlib.sha256(data).hexdigest()
+
+def strict_settings(raw):
+    def pairs(items):
+        result={};seen=set()
+        for key,value in items:
+            if key.casefold() in seen:raise ValueError('Duplicate config key')
+            seen.add(key.casefold());result[key]=value
+        return result
+    value=json.loads(raw,object_pairs_hook=pairs)
+    if not isinstance(value,dict):raise ValueError('Config must be object')
+    return value
+
+def put_setting(settings,key,value):
+    existing=next((k for k in settings if k.casefold()==key.casefold()),key)
+    settings[existing]=value
+
+def checked_relay_story_append(before,after,request):
+    if not after.startswith(before):raise ValueError('Prior story bytes changed')
+    rows=[json.loads(row) for row in after[len(before):].decode('utf-8-sig').splitlines() if row.strip()]
+    if len(rows)!=1:raise ValueError('Expected exactly one appended story row')
+    row=rows[0]
+    if row.get('turn')!=request['turnNumber'] or row.get('realm')!='Chaos Sea' or row.get('player')!=request['playerAction'] or not row.get('narrative','').strip():
+        raise ValueError('Story does not match actual request')
+    if 'requestId' in row and row['requestId']!=request['requestId']:raise ValueError('Conflicting optional story identity')
+    return row
+
+def relay_response_evidence(queue,request_bytes,binding,session_path,narrative,baseline=None):
+    request=json.loads(request_bytes);identity={k:request[k] for k in ('sessionId','requestId','turnNumber')}
+    rows=[];narratives=[]
+    for folder in sorted(queue.glob('request-*'),key=lambda p:int(p.name.split('-')[1])):
+        def read(name):return json.loads((folder/name).read_bytes().decode('utf-8-sig'))
+        meta=read('request.json')
+        if meta['TurnIdentity']!=identity or meta['TurnRequestSHA256']!=sha(request_bytes) or meta['SessionPath']!=str(session_path):raise ValueError('Foreign relay request')
+        source_bytes=(folder/'game-request.json').read_bytes()
+        source_path='input/turn_request.json' if meta['Kind']=='turn' else 'game_state/control/validation_repair_request.json'
+        if meta['RequestPath']!=source_path or sha(source_bytes)!=meta['RequestSHA256'] or meta['Witnesses'][source_path]!=sha(source_bytes) or meta['Witnesses']['input/turn_request.json']!=sha(request_bytes):raise ValueError('Relay raw source mismatch')
+        if meta['Kind']=='turn' and source_bytes!=request_bytes:raise ValueError('Relay raw turn request changed')
+        if meta['Kind']=='turn' and baseline is not None:
+            for name in ('pending_turn_snapshot.json','pending_turn_snapshot.authority.json'):
+                path='game_state/control/'+name
+                if sha((baseline/path).read_bytes())!=meta['Witnesses'].get(path):raise ValueError('Captured original snapshot differs from relay witness')
+        prompt=(folder/'prompt.txt').read_bytes();dispatch=read('dispatch.json')
+        if meta['QueueId']!=folder.name or meta['PromptSHA256']!=sha(prompt):raise ValueError('Relay prompt mismatch')
+        if dispatch['disposition']!='submission-observed' or dispatch['inputBindingId']!=binding or dispatch['contentHash']!=sha(b'1\n'+prompt).upper():raise ValueError('Relay original submission mismatch')
+        revision='live' if meta['Kind']=='turn' else str(json.loads(source_bytes).get('revalidationAttempt') or 1)
+        if dispatch.get('operationKind')!=meta['Kind'] or dispatch.get('operationRevision')!=revision:raise ValueError('Relay operation kind/revision mismatch')
+        response=(folder/'executing-response.json').read_bytes();reply=read('reply.json');started=read('started.json');execution=read('execution.json')
+        if reply['QueueId']!=folder.name or reply['PromptSHA256']!=meta['PromptSHA256'] or reply['RequestSHA256']!=meta['RequestSHA256'] or reply['TurnRequestSHA256']!=sha(request_bytes):raise ValueError('Relay reply correlation mismatch')
+        if reply['ResponseSHA256']!=sha(response) or started['ResponseSHA256']!=sha(response):raise ValueError('Executed response hash mismatch')
+        if execution!={'Executed':True,'ExitCode':0,'ChildExited':True,'IoDrained':True}:raise ValueError('Relay consumer not settled')
+        packet=json.loads(response)
+        for write in packet['Writes']:
+            if write['Path']=='output/narrative_response.json':narratives.append(write['Data']['response'])
+        rows.append({'QueueId':folder.name,'Kind':meta['Kind'],'RequestSHA256':meta['RequestSHA256'],'ResponseSHA256':sha(response),'Dispatch':dispatch,'Execution':execution})
+    if not rows or rows[0]['Kind']!='turn' or any(r['Kind'] not in ('turn','repair') for r in rows) or sum(r['Kind']=='turn' for r in rows)!=1:raise ValueError('Unexpected relay operation sequence')
+    if not narratives or narratives[-1]!=narrative:raise ValueError('Story differs from actual final GM narrative')
+    return rows
+
+def load_relay_contract(folder):
+    sys.path.insert(0,str(Path(folder).resolve()))
+    import relay_contract
+    if Path(relay_contract.__file__).resolve()!=Path(folder).resolve()/'relay_contract.py':raise RuntimeError('Wrong maintained relay module')
+    return relay_contract
+
+def relay_package_preflight(out,ship,driver):
+    raw=(out/'relay-phase-package.json').read_bytes();manifest=strict_settings(raw)
+    if manifest['RuntimePins']!=relay_inventory(ship) or not manifest['RuntimePins']:raise ValueError('Prepared runtime pins mismatch')
+    if manifest['RelayPins']!=relay_inventory(out/'relay') or not manifest['RelayPins']:raise ValueError('Prepared relay pins mismatch')
+    if manifest['DriverSHA256']!=sha(Path(driver).read_bytes()):raise ValueError('Prepared driver pin mismatch')
+    return manifest,sha(raw)
+
+def relay_inventory(root):
+    root=Path(root)
+    return {str(p.relative_to(root)):sha(p.read_bytes()) for p in sorted(root.rglob('*')) if p.is_file() and '__pycache__' not in p.parts}
+
+def relay_world_inventory(session):
+    # Includes exact final status/control/story bytes. No cached authority or semantic reconstruction.
+    result={}
+    for name in ('game_state','stories','lore','input','output','ready'):
+        for relative,digest in relay_inventory(Path(session)/name).items():result[name+'/'+relative]=digest
+    return result
+
+def relay_continuation_settings(raw,pipe,command,session):
+    value=strict_settings(raw)
+    for key,item in [('GmBridgePipeNameOverride',pipe),('GmCliLaunchCommand',command),('GmBridgeShellWorkingDirectory',session)]:put_setting(value,key,item)
+    return value
+
+def relay_continuation_preflight(base,previous,guardian):
+    if previous.get('Success') is not True or not relay_phase_cleanup_proved(previous):raise ValueError('Prior relay phase cleanup incomplete')
+    if not (guardian.get('driverExitCode')==0 and guardian.get('echild') is True and guardian.get('emergencySignals')==0 and guardian.get('failures')==0 and guardian.get('deadline') is False):raise ValueError('Prior guardian closure incomplete')
+    base=Path(base).resolve();session=base/'game_session';story=session/'stories/chaos_sea.jsonl'
+    if previous.get('BasePath')!=str(base) or previous.get('StoryPath')!=str(story):raise ValueError('Wrong retained world')
+    if relay_inventory(session/'_runtime')!=previous['RuntimePins']:raise ValueError('Retained immutable runtime changed')
+    if relay_world_inventory(session)!=previous['FinalWorldPins']:raise ValueError('Retained world bytes changed')
+    if sha((session/'config.json').read_bytes())!=previous['FinalConfigSHA256']:raise ValueError('Retained config changed')
+    current=daemon_pair_capture(session,{},'Final');prior=previous['DaemonSettlement']
+    if daemon_pair_decode(current,'Final',True)!=daemon_pair_decode(prior,'Final',True):raise ValueError('Different settled daemon')
+    for name in ('Status','Guard'):
+        if current['Final'+name+'RawHex']!=prior['Final'+name+'RawHex']:raise ValueError('Retained daemon bytes changed')
+    record=json.loads((base/'.boe_runtime/gm-runs/main.json').read_bytes())
+    if record!=previous['StoppedRecord']:raise ValueError('Original stopped owner changed')
+    for relative in ('input/turn_request.json','game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json','game_state/control/pending_turn_snapshot','ready/turn_complete.json','ready/turn_error.json'):
+        if (session/relative).exists():raise ValueError('Retained phase has pending work')
+    raw=story.read_bytes()
+    if sha(raw)!=previous['StoryAfterSHA256']:raise ValueError('Retained story changed')
+    rows=[json.loads(line) for line in raw.decode('utf-8-sig').splitlines() if line.strip()]
+    if not rows or rows[-1]!=previous['AcceptedStory']:raise ValueError('Prior exact accepted story missing')
+    request=previous['ActualRequest']
+    if rows[-1].get('turn')!=request['turnNumber'] or rows[-1].get('player')!=request['playerAction']:raise ValueError('Prior story/request mismatch')
+    if type(request['turnNumber']) is not int or request['turnNumber']<1:raise ValueError('Invalid prior turn')
+    return request['turnNumber']+1
+
+def relay_atomic_settings(path,value):
+    temporary=path.with_name(path.name+'.relay-'+uuid.uuid4().hex+'.tmp')
+    try:
+        with temporary.open('x',encoding='utf-8') as stream:
+            json.dump(value,stream,ensure_ascii=False,indent=2);stream.write('\n');stream.flush();os.fsync(stream.fileno())
+        os.replace(temporary,path)
+    finally:
+        if temporary.exists():temporary.unlink()
+
 out = Path(sys.argv[1]).resolve()
-base = out / 'play'; session = base / 'game_session'; ship = session / '_runtime'
-assert session.is_dir() and ship.is_dir() and not (session / 'config.json').exists()
-assert not (session / 'game_state').exists()
-assert os.environ.get('TERM') == 'dumb'
 controlled_refusal = len(sys.argv)==3 and sys.argv[2]=='--controlled-provider-refusal'
-relay_mode = len(sys.argv)==3 and sys.argv[2]=='--codex-relay'
+relay_mode = len(sys.argv) in (3,4) and sys.argv[2]=='--codex-relay'
+assert len(sys.argv)==2 or controlled_refusal or relay_mode, 'Only explicit supported fixture arguments admitted'
+previous_path=Path(sys.argv[3]).resolve() if relay_mode and len(sys.argv)==4 else None
+previous=json.loads(previous_path.read_bytes()) if previous_path else None
+base = Path(previous['BasePath']).resolve() if previous else out / 'play'
+session = base / 'game_session'; ship = session / '_runtime'
+assert session.is_dir() and ship.is_dir()
+assert os.environ.get('TERM') == 'dumb'
+expected_turn=1
+if previous:
+    assert out!=previous_path.parent and not (out/'queue').exists(), 'Fresh phase/queue required'
+    expected_turn=relay_continuation_preflight(base,previous,json.loads((previous_path.parent/'guardian.json').read_bytes()))
+    prior_raw=(previous_path.parent/'actual-turn-request.json').read_bytes()
+    assert sha(prior_raw)==previous['ActualRequestSHA256'] and json.loads(prior_raw)==previous['ActualRequest']
+else:
+    assert not (session/'config.json').exists() and not (session/'game_state').exists()
+if relay_mode:
+    assert len(os.fsencode(out/'tmp'/('boe-native-'+('0'*32))/'owner'))<=107, 'Native bootstrap path budget exceeded'
+    package_manifest,package_sha=relay_package_preflight(out,ship,__file__)
+    relay_module=load_relay_contract(out/'relay')
+    if previous:assert package_manifest==previous['PhasePackage'], 'Immutable relay package changed across phases'
 total_seconds,work_seconds,client_cleanup_seconds,provider_seconds=(720,660,680,600) if relay_mode else (270,210,230,170)
 relay_queue=out/'queue'
-assert len(sys.argv)==2 or controlled_refusal or relay_mode, 'Only the fixed inert fixture mode is admitted'
 binary = (out/'configured-neutral-cli') if controlled_refusal else Path('/workspace/qualification-1553-opencode-install/package/node_modules/opencode-linux-x64-baseline/bin/opencode')
 if not controlled_refusal and not relay_mode:assert hashlib.sha256(binary.read_bytes()).hexdigest() == '77b2cfe4b97df6f15c3673b22100b9f79c711f25ecb9bf513bb82526b15d24fa'
 pipe = 'og-' + uuid.uuid4().hex[:12]
@@ -336,27 +541,37 @@ for key, folder in [('XDG_CONFIG_HOME','config'),('XDG_DATA_HOME','data'),('XDG_
 for key in ['OPENCODE_DISABLE_PROJECT_CONFIG','OPENCODE_DISABLE_AUTOUPDATE','OPENCODE_DISABLE_EXTERNAL_SKILLS','OPENCODE_DISABLE_CLAUDE_CODE']:env[key]='1'
 install = out if controlled_refusal or relay_mode else binary.parents[4]
 env.update(NPM_CONFIG_USERCONFIG=str(install/'empty-user.npmrc'),NPM_CONFIG_GLOBALCONFIG=str(install/'empty-global.npmrc'),NPM_CONFIG_CACHE=str(out/'npm-cache'),NPM_CONFIG_IGNORE_SCRIPTS='true')
-(session/'config.json').write_text(json.dumps({
-    'Language':'ru','MusicEnabled':False,'SoundEnabled':False,'GenerateSceneImages':False,'ShowImagesInConsole':False,
-    'GmBridgeEnabled':True,'GmBridgeBackend':'OwnedTerminal','GmMainOwnerBackend':'NativeLineage','GmBridgeAutoStart':False,
-    'GmBridgePipeNameOverride':pipe,'GmCliLaunchCommand':command,'GmBridgeShellWorkingDirectory':str(session),'GmWorkerBridgeProfiles':[],
-    'GmCliInputProfile':{'TerminalPresentation':'synchronized-mini-v1','DraftObservation':'external-editor-v1','DraftDirectory':env['TMPDIR'],
-        'StartupBannerLines':['','█▀▀█  OpenCode','█  █  '+str(session),'▀▀▀▀',''],'AutomaticSubmissionLimit':1,
-        'IdleMarker':' BUILD','WorkingMarker':'interrupt','ObservationTimeoutMilliseconds':15000}
-},indent=2,ensure_ascii=False)+'\n')
-if controlled_refusal or relay_mode:
-    settings=json.loads((session/'config.json').read_text())
-    settings['GmCliInputProfile']={'IdleMarker':'NEUTRAL READY','PromptPrefix':'> ','WorkingMarker':'NEUTRAL WORKING','ObservationTimeoutMilliseconds':1800}
-    if relay_mode:settings['GmCliInputProfile'].update(PromptPrefix='RELAY> ',BlockedMarkers=['RELAY ERROR'],ObservationTimeoutMilliseconds=15000)
-    (session/'config.json').write_text(json.dumps(settings,indent=2,ensure_ascii=False)+'\n')
+if relay_mode and not previous:
+    relay_atomic_settings(session/'config.json',dict(Language='ru',MusicEnabled=False,SoundEnabled=False,GenerateSceneImages=False,ShowImagesInConsole=False,
+        GmBridgeEnabled=True,GmBridgeBackend='OwnedTerminal',GmMainOwnerBackend='NativeLineage',GmBridgeAutoStart=False,
+        GmBridgePipeNameOverride=pipe,GmCliLaunchCommand=command,GmBridgeShellWorkingDirectory=str(session),GmWorkerBridgeProfiles=[],
+        GmCliInputProfile=dict(IdleMarker='NEUTRAL READY',PromptPrefix='RELAY> ',WorkingMarker='NEUTRAL WORKING',BlockedMarkers=['RELAY ERROR'],ObservationTimeoutMilliseconds=15000)))
+elif previous:
+    relay_atomic_settings(session/'config.json',relay_continuation_settings((session/'config.json').read_bytes(),pipe,command,str(session)))
+else:
+    (session/'config.json').write_text(json.dumps({
+        'Language':'ru','MusicEnabled':False,'SoundEnabled':False,'GenerateSceneImages':False,'ShowImagesInConsole':False,
+        'GmBridgeEnabled':True,'GmBridgeBackend':'OwnedTerminal','GmMainOwnerBackend':'NativeLineage','GmBridgeAutoStart':False,
+        'GmBridgePipeNameOverride':pipe,'GmCliLaunchCommand':command,'GmBridgeShellWorkingDirectory':str(session),'GmWorkerBridgeProfiles':[],
+        'GmCliInputProfile':{'TerminalPresentation':'synchronized-mini-v1','DraftObservation':'external-editor-v1','DraftDirectory':env['TMPDIR'],
+            'StartupBannerLines':['','█▀▀█  OpenCode','█  █  '+str(session),'▀▀▀▀',''],'AutomaticSubmissionLimit':1,
+            'IdleMarker':' BUILD','WorkingMarker':'interrupt','ObservationTimeoutMilliseconds':15000}
+    },indent=2,ensure_ascii=False)+'\n')
+    if controlled_refusal or relay_mode:
+        settings=json.loads((session/'config.json').read_text())
+        settings['GmCliInputProfile']={'IdleMarker':'NEUTRAL READY','PromptPrefix':'> ','WorkingMarker':'NEUTRAL WORKING','ObservationTimeoutMilliseconds':1800}
+        if relay_mode:settings['GmCliInputProfile'].update(PromptPrefix='RELAY> ',BlockedMarkers=['RELAY ERROR'],ObservationTimeoutMilliseconds=15000)
+        (session/'config.json').write_text(json.dumps(settings,indent=2,ensure_ascii=False)+'\n')
 evidence=IncrementalEvidence(out);process_observer=OwnedProcessSnapshots();observed_processes=[];last_process_sample=-5.0
 start=time.monotonic(); peers=[]; journal=EvidenceJournal(evidence); original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None;active_phase_deadline=None
 offset=0 # Defined even when the first client startup observation fails.
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
-if relay_mode:result.update(ConfiguredModel='dots-finish-relay',TestRelay=True,OpenCodeProviderCalls=0,RelayQueue=str(relay_queue))
+if relay_mode:
+    result.update(ConfiguredModel='dots-finish-relay',TestRelay=True,OpenCodeProviderCalls=0,RelayQueue=str(relay_queue),BasePath=str(base),RuntimePins=package_manifest['RuntimePins'],PhasePackage=package_manifest,PhasePackageSHA256=package_sha)
+    if previous:result.update(PreviousProbePath=str(previous_path),PreviousProbeSHA256=sha(previous_path.read_bytes()),RetainedWorldContinuation=True)
 if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',ControlledRefusal=True,ProviderCalls=0)
-action='Я осторожно осматриваю берег Моря Хаоса и спрашиваю моего Хранителя, где я оказался.'
+action=('Я благодарю Элиару за объяснение и спрашиваю, что я могу спокойно осмотреть рядом с её обителью.' if previous else 'Я осторожно осматриваю берег Моря Хаоса и спрашиваю моего Хранителя, где я оказался.')
 class Terminal:
     def __init__(self,name,args,captured_output=False):
         self.name=name;self.master,self.slave=pty.openpty();self.capture=bytearray();self.echo=bytearray();self.eof=False;self.captured_output=captured_output
@@ -584,30 +799,33 @@ def exit_client(client):
 client=bridge=daemon=None;client_wait=False;client_prompt=False
 try:
     client=Terminal('client',['dotnet',str(ship/'BookOfEternityClient/BookOfEternityClient.dll'),str(base),'--plain-output'],captured_output=True)
-    fresh(client,'Тренировка QTE',0);offset=len(client.capture);client.send(b'\r','observed NewGame selected')
-    offset=answer(client,'Введите имя вашей души:','Пробная Душа',offset)
-    offset=answer(client,'Опишите форму вашей души:','Человеческий силуэт мягкого синего света.',offset)
-    if relay_mode:
-        # Ordinary preset avoids the separately observed freeform↔seeded-Elyara
-        # missing-network-edge defect. No canonical state or validator edits.
-        offset=answer(client,'Выберите способ создания Хранителя:','2',offset)
-        until(lambda:observed_elyara_choice(client.text(offset)) is not None,12,'rendered exact Elyara preset menu')
-        choice=observed_elyara_choice(client.text(offset))
-        result['OrdinaryGuardianPreset']={'DisplayName':ELYARA_PRESET_NAME,'ObservedMenuIndex':choice}
-        result['ExcludedSetupDefect']='Freeform guardian to seeded Elyara network edges; not qualified by this preset run'
-        offset=len(client.capture);client.send((choice+'\r').encode(),'observed exact Elyara preset menu index')
-        offset=answer(client,'Выбрать этого хранителя для новой игры?','',offset)
+    if previous:
+        fresh_main(client,0)
     else:
-        offset=answer(client,'Выберите способ создания Хранителя:','1',offset)
-        offset=answer(client,'Опишите вашего хранителя:','Спокойный Хранитель маяка, который встречает душу на берегу Моря Хаоса.',offset)
-    preparation_phase(lambda:(session/'input/turn_request.json').exists(),'ordinary initial request',client,offset=offset);client_wait=True
-    result['InitialBootstrapRequest']=read_json(session/'input/turn_request.json');result['OrdinaryNewGame']=True
-    # Observe the actual waiting UI, allow its cancellation listener to start.
-    fresh(client,'Мастер игры размышляет...',offset,8);pump(.3)
-    offset=len(client.capture);client.send(b'\x1b','cancel initial wait before CLI exists')
-    preparation_phase(lambda:'Переходный ход отменён.' in client.text(offset) and re.search(r'8\.\s*[^\r\n]*Выход',client.text(offset)) is not None,'ordinary initial cancellation and current main menu',client,offset=offset);client_wait=False
-    assert not (session/'input/turn_request.json').exists()
-    result['BootstrapCancelledBeforeCli']=True
+        fresh(client,'Тренировка QTE',0);offset=len(client.capture);client.send(b'\r','observed NewGame selected')
+        offset=answer(client,'Введите имя вашей души:','Пробная Душа',offset)
+        offset=answer(client,'Опишите форму вашей души:','Человеческий силуэт мягкого синего света.',offset)
+        if relay_mode:
+            # Ordinary preset avoids the separately observed freeform↔seeded-Elyara
+            # missing-network-edge defect. No canonical state or validator edits.
+            offset=answer(client,'Выберите способ создания Хранителя:','2',offset)
+            until(lambda:observed_elyara_choice(client.text(offset)) is not None,12,'rendered exact Elyara preset menu')
+            choice=observed_elyara_choice(client.text(offset))
+            result['OrdinaryGuardianPreset']={'DisplayName':ELYARA_PRESET_NAME,'ObservedMenuIndex':choice}
+            result['ExcludedSetupDefect']='Freeform guardian to seeded Elyara network edges; not qualified by this preset run'
+            offset=len(client.capture);client.send((choice+'\r').encode(),'observed exact Elyara preset menu index')
+            offset=answer(client,'Выбрать этого хранителя для новой игры?','',offset)
+        else:
+            offset=answer(client,'Выберите способ создания Хранителя:','1',offset)
+            offset=answer(client,'Опишите вашего хранителя:','Спокойный Хранитель маяка, который встречает душу на берегу Моря Хаоса.',offset)
+        preparation_phase(lambda:(session/'input/turn_request.json').exists(),'ordinary initial request',client,offset=offset);client_wait=True
+        result['InitialBootstrapRequest']=read_json(session/'input/turn_request.json');result['OrdinaryNewGame']=True
+        # Observe the actual waiting UI, allow its cancellation listener to start.
+        fresh(client,'Мастер игры размышляет...',offset,8);pump(.3)
+        offset=len(client.capture);client.send(b'\x1b','cancel initial wait before CLI exists')
+        preparation_phase(lambda:'Переходный ход отменён.' in client.text(offset) and re.search(r'8\.\s*[^\r\n]*Выход',client.text(offset)) is not None,'ordinary initial cancellation and current main menu',client,offset=offset);client_wait=False
+        assert not (session/'input/turn_request.json').exists()
+        result['BootstrapCancelledBeforeCli']=True
     launcher=str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1')
     bridge=Terminal('bridge',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-bridge','visible','-SessionPath',str(session)])
     record_path=base/'.boe_runtime/gm-runs/main.json';status_path=session/'game_state/control/gm_bridge_status.json'
@@ -619,6 +837,9 @@ try:
     if record['Disposition']!='Running' or status['status']['terminalUncertain']:
         raise RuntimeError('Current original bootstrap failed; no model submission or replay')
     result['OriginalRunningRecord']=record
+    if previous:
+        old=previous['StoppedRecord']['Identity'];now=record['Identity']
+        assert now['RootKey']==old['RootKey'] and now['GenerationId']==old['GenerationId'] and now['RunId']!=old['RunId'] and now['Epoch']>old['Epoch']
     assert status['status']['cliLaunchCommand']==command and status['status']['shellWorkingDirectory']==str(session)
     def ready():
         status=rpc({'command':'status'})['status'];result['LastStartupStatus']=status
@@ -628,15 +849,26 @@ try:
     result['ReadinessQualified']=True
     daemon=Terminal('daemon',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-daemon','visible','--timeout',str(600 if relay_mode else 180),'--log',str(out/'daemon.log'),'-SessionPath',str(session)])
     preparation_phase(lambda:'Waiting for turns...' in daemon.text(),'daemon bootstrap',daemon,bootstrap=True)
+    if relay_mode:
+        result['DaemonSettlement']=daemon_pair_capture(session,{},'Original')
+        owner=daemon_pair_decode(result['DaemonSettlement'],'Original',False)
+        if previous:assert owner!=daemon_pair_decode(previous['DaemonSettlement'],'Final',True)
     offset=len(client.capture);client.send(b'\r','observed Continue selected')
     preparation_phase(lambda:current_player_prompt_at(client.text(offset))>=0,'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
+    story=session/'stories/chaos_sea.jsonl';story_before=story.read_bytes() if story.exists() else b''
     provider_bridge_offset=len(bridge.capture)
     offset=len(client.capture);client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
     current_request(offset)
-    request=read_json(session/'input/turn_request.json');result['ActualRequest']=request;result['ActualRequestSHA256']=hashlib.sha256((session/'input/turn_request.json').read_bytes()).hexdigest()
-    assert request['playerAction']==action and request['turnNumber']==1
-    assert request['sessionId']==result['InitialBootstrapRequest']['sessionId'] and request['requestId']!=result['InitialBootstrapRequest']['requestId']
-    (out/'actual-turn-request.json').write_bytes((session/'input/turn_request.json').read_bytes())
+    request_bytes=(session/'input/turn_request.json').read_bytes()
+    request=json.loads(request_bytes);result['ActualRequest']=request;result['ActualRequestSHA256']=sha(request_bytes)
+    assert request['playerAction']==action and request['turnNumber']==expected_turn
+    prior_request=previous['ActualRequest'] if previous else result['InitialBootstrapRequest']
+    assert request['sessionId']==prior_request['sessionId'] and request['requestId']!=prior_request['requestId']
+    (out/'actual-turn-request.json').write_bytes(request_bytes)
+    baseline=out/'original-baseline'
+    if relay_mode:
+        for name in ('pending_turn_snapshot.json','pending_turn_snapshot.authority.json'):
+            rel='game_state/control/'+name;target=baseline/rel;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes((session/rel).read_bytes())
     if controlled_refusal:
         # Own fixed fixture emits only a denial, never an accepted GM response.
         (session/'.inert-provider-denial-trigger').write_text('one controlled denial\n')
@@ -682,8 +914,13 @@ try:
             raise RuntimeError('Actual original automatic input refused; no manual reconstruction or replay')
         if story.exists():
             entries=[json.loads(line) for line in story.read_text(encoding='utf-8-sig').splitlines() if line.strip()]
-            accepted=[e for e in entries if e.get('turn')==1 and e.get('player')==action and e.get('narrative','').strip()]
+            accepted=[e for e in entries if e.get('turn')==expected_turn and e.get('player')==action and e.get('narrative','').strip()]
             if accepted:
+                if relay_mode:
+                    story_after=story.read_bytes();accepted=[checked_relay_story_append(story_before,story_after,request)]
+                    until(lambda:all((q/'execution.json').exists() for q in relay_queue.glob('request-*')),10,'actual relay execution drain')
+                    result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['OriginalRunningStatus']['status']['inputBindingId'],session,accepted[0]['narrative'],baseline)
+                    result.update(StoryPath=str(story),StoryBeforeSHA256=sha(story_before),StoryAfterSHA256=sha(story_after),AcceptedTurnNumber=expected_turn)
                 fresh_player(client,offset,10)
                 assert not (session/'input/turn_request.json').exists()
                 assert not (session/'game_state/control/pending_turn_snapshot.json').exists()
@@ -802,7 +1039,15 @@ finally:
             p.process.stdout.close()
         for fd in [p.master,p.slave]:
             if fd>=0:os.close(fd)
-    result['ElapsedSeconds']=elapsed();result['Success']=rpc_helper_closed(result) and result['AcceptedGameTurns']==1 and result.get('InputQualified',False) and result['LogicalLifecycleVerified'] and not any(k.endswith('Failure') for k in result) and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
+    if relay_mode:
+        try:
+            daemon_pair_capture(session,result.setdefault('DaemonSettlement',{}),'Final')
+            if not daemon_settlement_proved(result['DaemonSettlement']):raise ValueError('Original daemon settlement unconfirmed')
+            result['FinalWorldPins']=relay_world_inventory(session)
+            result['FinalConfigSHA256']=sha((session/'config.json').read_bytes())
+            if relay_inventory(ship)!=result['RuntimePins']:raise ValueError('Runtime changed during phase')
+        except Exception as ex:result['DaemonSettlementFailure']=type(ex).__name__+': '+str(ex)
+    result['ElapsedSeconds']=elapsed();result['Success']=relay_phase_cleanup_proved(result) if relay_mode else rpc_helper_closed(result) and result['AcceptedGameTurns']==1 and result.get('InputQualified',False) and result['LogicalLifecycleVerified'] and not any(k.endswith('Failure') for k in result) and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     if controlled_refusal:
         result['ControlledCleanupVerified']=rpc_helper_closed(result) and bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     (out/'rpc-journal.json').write_text(json.dumps(journal,indent=2,ensure_ascii=False)+'\n')
