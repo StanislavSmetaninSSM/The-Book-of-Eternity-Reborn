@@ -3054,3 +3054,9 @@ Unix socket path89 bytes. No config/main owner/queue/probe/guardian/launch artif
 exists yet. Manifest SHA2566819557b7daa8ca0c7076f6b33364b774fb227eb7de127d0bb69974e43eb79a3;
 package34f39515c1e6faebe0675d57980cc3e4c65b935870947d469abc54961416027e.
 Independent package preflight pending; actual accepted turn and cleanup UNRUN.
+Independent Sol6.1 XHigh mm10 preflight accepted the exact prepared p01 package:
+all inventories/source/output joins, fresh seed/authority absence, current Load
+markers, isolated launch and original-owner cleanup bounds verified read-only.
+No blocking findings. Approved one bounded birth-phase launch, not game success,
+later Load phases or merge. Existing bounds: provider600/work660/driver720/
+outerguardian750 seconds. Genuine GM reads the actual request before authoring.
