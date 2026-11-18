@@ -3526,3 +3526,22 @@ reaped2, no emergency/failures/deadline; RPC and relay drained. Physical reaping
 is not logical settlement. No retry, signals, world reset or continuation.
 Separate read-only menu/retirement diagnosis and independent failure audit are
 in progress. No permission or denial proof was produced; accepted p01 birth stands.
+Independent p02 failure audit confirms the locked row was visible, not selected:
+only Continue, /storage_move and cleanup Ctrl+C were sent. No request43, denial
+proof or gameplay mutation exists. All108 current pins match; whole play852 differs
+only in nine operational files. Current epoch2 main is Uncertain with no StopEvidence;
+one fenced shutdown returned NACK/TerminalUncertain. Client -2 and daemon1 are
+abnormal; bridge foreground join/EOF/termios are unproved. Durable daemon guard is
+unsettled; stale errorCount0 is not an error-free result (logs include admission and
+fatal helper-exit2 errors). Guardian ECHILD and process/socket absence prove final
+physical closure only. RPC/relay drained; seven FIFO files remain. All301 journal
+records and recorded byte ranges agree, but bridge-file coverage is not EOF proof.
+p01 remains historical birth evidence, not a reusable current predecessor.
+
+T027 confirmed parser cause: actual complete inventory ends in padded Back text,
+not CR. No navigation key was sent. The subsequent interruption lost the same
+Active pin; Unresolved/pin-drain timeout is the required fail-closed outcome,
+not a reason to relax ownership. Proposed parser correction uses explicit complete
+terminal rows for each fixed menu, strict fresh cuts/unique selection/ANSI/no
+pagination, with truncated/stale/ambiguous negatives and real inert Spectre redraw
+proof. Independent design review precedes source work or another live attempt.
