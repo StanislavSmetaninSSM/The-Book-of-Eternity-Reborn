@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-diagnostic-context-compatibility",
+      "responsibility": "#1589 optional observation fields cannot prevent original shared PS close or replace transport timeout across exact main and dedicated helper context shapes.",
+      "excludes": "Inert protocol replies; no real admission, native host, gameplay or Windows runtime qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/GmDiagnosticContextTests.cs",
+        "tests/fixtures/GmDiagnosticContext/check.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDiagnosticContextTests.OptionalDiagnosticContextCannotPreventOriginalProtocol"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-bridge-status-initial-and-seal-fifo",
       "responsibility": "#1589 genuine original publisher first-contention failure and in-flight seal/discard with independent public shutdown.",
       "excludes": "No game/GM, no automatic deferred delivery guarantee; initial failure preserves logical uncertainty.",

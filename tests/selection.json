@@ -210,6 +210,13 @@
       "contracts": [
         "No game/GM, no automatic deferred delivery guarantee; initial failure preserves logical uncertainty."
       ]
+    },
+    {
+      "category": "gm-diagnostic-context-compatibility",
+      "reason": "#1589 optional observation fields cannot prevent original shared PS close or replace transport timeout across exact main and dedicated helper context shapes.",
+      "contracts": [
+        "Inert protocol replies; no real admission, native host, gameplay or Windows runtime qualification."
+      ]
     }
   ]
 }
