@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-terminal-wait-contention",
+      "responsibility": "#1515 T017 diagnostic ordinary terminal wait: real canonical-lock exhaustion, release/retry and post-open integrity distinction without GM writes.",
+      "excludes": "Does not identify the original mm5 exception, qualify remote-owner admission, fix wait backpressure, or run a live GM journey. Linux-only physical lock observation.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.TerminalWaitContention.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TerminalWaitDistinguishesPhysicalContentionFromPostOpenIntegrityFailure"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-restored-diagnostic-data",
       "responsibility": "#1516 T022 explicit accepted-DATA diagnostic admission, isolated fixture wiring and refusal of diagnostic results as ordinary continuation.",
       "excludes": "No live recovery authority, native execution, production schema change or automatic replay of failed worlds.",

@@ -25,7 +25,8 @@ public partial class GameEngine
     private const int GmDaemonTerminalTimeoutGraceSeconds = 15;
     private const int GmDisabledDaemonTimeoutClientFloorSeconds = 900;
 
-    private enum TerminalSignalWaitOutcome
+    /// <summary>Describes whether the original terminal-signal wait completed or was cancelled; it does not authorize turn acceptance or publication.</summary>
+    internal enum TerminalSignalWaitOutcome
     {
         Cancelled,
         Completed
@@ -469,7 +470,9 @@ public partial class GameEngine
         return ReadRelativeTextFromWorkspace(snapshotPath);
     }
 
-    private Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync() =>
+    /// <summary>Runs the existing console terminal-signal waiter and joins its owned tasks before returning or propagating failure.</summary>
+    /// <returns>The original wait outcome, not evidence of validated turn acceptance or publication authority.</returns>
+    internal Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync() =>
         WaitForTerminalSignalWithParticipationAsync(null);
 
     private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalWithParticipationAsync(

@@ -1811,3 +1811,19 @@ needed catch; any next native observation must enable it. Leaving it disabled
 in mm5 lost the useful exception detail and was a diagnostic preparation mistake,
 not evidence that the game error was fixed. No timeout increase, guard weakening,
 authority cache or blind repeat is justified.
+
+T017 source WIP adds only a typed diagnostic test seam: existing terminal-wait
+method/result enum become internal with XML documentation, no behavior change.
+Three cheap official leaves exercise real exhausted physical lock contention,
+release on the first real contention callback, and a post-open integrity sentinel.
+They preserve input/ready/state bytes, distinguish typed contention from integrity
+failure, settle the original task, and prove a fresh lease after release/unwind.
+This observes existing local waiter behavior, not a desired suppression rule or
+identification of mm5's exception. No reflection or new cache/framework.
+Category mortal-terminal-wait-contention owns the exact three-case integration
+theory, Linux runner, protective2minutes. Source accepted independently before
+execution; final XML/metadata addendum review pending. Build/PlanOnly/run UNRUN.
+Engine SHA307d22dc651e08fdc177b0789ae5d66c4da19ea45019b176389060b3403f156b;
+test SHAae26d7be9d64ba805459fff3fcec7db380724a865244070ba5842ee092bc9d74.
+One real lock-exhaustion interval is necessary to distinguish this boundary;
+there is no expensive repeated world setup or new cached authority.
