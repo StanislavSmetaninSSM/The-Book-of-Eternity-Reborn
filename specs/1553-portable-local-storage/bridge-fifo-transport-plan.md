@@ -928,3 +928,33 @@ Preparation records publisher-only compile and compiler absent from player
 startup. The recovered read refusal is the expected closing-fence condition
 in this bounded successful stop, not a claim of clean error counters. The
 unsettled ml7 result remains unresolved.
+
+## WIP: deployment-only post-turn finally markers, 2026-11-18
+
+#1589 candidate `tests/fixtures/DaemonObservation/instrument-finally.py` adds only
+inert diagnostic marker blocks to a fresh deployed daemon copy. Every original
+anchor must occur exactly once; removing all inserted blocks must recover the
+original bytes exactly. The ledger records original/instrumented/patcher hashes,
+anchor identities and marker names. A single immutable instrumented script uses
+`BOE_DAEMON_FINALLY_TRACE` only as an absolute phase-specific output path, allowing
+distinct p01/p02 traces without further script changes. Direct .NET writes mark
+loaded, inner-finally entry/exit, watcher cleanup before/after, both final-status
+branches before/after, outer-finally entry/exit and guard Dispose before/after.
+Only marker I/O has an added catch; it emits
+`BOE_DAEMON_FINALLY_DIAGNOSTIC_INVALID` to stderr. Existing operations, branches,
+error handling, guards and lifecycle order are unchanged. Invalid/missing marker
+evidence cannot establish a successful cleanup.
+
+Source-only controls passed 4/4 in 0.084 seconds against the actual daemon source:
+LF/CRLF byte restoration, reinstrumentation refusal, missing/duplicate-anchor
+refusal and terminal-suffix refusal. PowerShell AST parsing of the patched copy
+reported no syntax errors. No daemon/game execution, package rebuild or deployment
+has occurred; independent source review and remote save precede any controlled
+run. Instrumented success would be diagnostic evidence only, not pristine
+production acceptance. A subsequent pristine same-world restart and normal stop
+remain required. The earlier real ml7 post-turn unsettled state stays unexplained;
+inert finally controls and no-turn idle settlement do not reclassify it.
+
+Optimization: patching reads immutable source once and creates one instrumented
+copy reusable across phases. Marker output is phase-local and uncapped; no owner
+state is cached and no broad test suite or new runtime framework is introduced.
