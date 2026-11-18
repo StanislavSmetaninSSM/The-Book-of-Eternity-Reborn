@@ -2651,3 +2651,16 @@ GitHub file API blob hashes for24 current block source/test/catalog/plan/task
 paths exactly matched local git hash-object, zero mismatches. This verifies those
 published files, not a claim that raw diagnostics or a full clean checkout were
 uploaded. New raw evidence remains external; this written outcome is the update.
+T023 combined5 after fresh Integration60.95s/130warnings/0errors:2PASS/3FAIL,
+49.8713502s, complete cleanup/no skips/duplicates/timeouts. Positive and genuine
+two-nonlocation-repair journeys fully PASS, including real NPC locality, cart,
+storage/item consumers and final receipt assertions. All three refusal cases
+reach intended refusal/turn41 and exact scheduler original, but now fail
+output/debug_logs.json byte comparison at line283; subsequent typed idle remains
+UNREACHED. Inspect the complete post-rollback client writer path and remaining
+oracle inventory before retry, distinguishing diagnostic ownership from canonical
+rollback. Do not simply drop assertions. All5 fixture roots removed without error;
+3439sourcepins unchanged/20outputs. External mortal-t023/combined/result.log SHA256
+d6d3ddd07acb45e2fa308d1d1f7db213c85660ef0776479a0a714d05f75d9af9.
+No native retry or complete negative-path qualification; retain both full PASS
+results separately from the three unfinished refusal checks.
