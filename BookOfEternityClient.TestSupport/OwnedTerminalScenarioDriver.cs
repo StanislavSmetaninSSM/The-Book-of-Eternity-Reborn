@@ -116,6 +116,7 @@ internal static partial class OwnedTerminalScenarioDriver
     private static async Task<int> RunBridgeAsync(string mode, string package, string folder,SystemdControlledFixture? systemd=null)
     {
         var result = new Dictionary<string, object?>(); object? host = null; Task? server = null;
+        GmLocalRemoteConsumerScenario? localRemote = null;
         using var journal = mode is "terminal-fence" or "terminal-bridge" ? new NamedTerminalFixtureJournal(folder, mode) : null;
         using var serverCancellation = new CancellationTokenSource();
         var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
@@ -172,6 +173,7 @@ internal static partial class OwnedTerminalScenarioDriver
                 await RunStartupConfigRecoveryAsync(mode.EndsWith("unknown",StringComparison.Ordinal),folder,host!,type,result);
                 result["Success"]=true;return 0;
             }
+            if(mode=="production-main-local-remote-consumer") localRemote=await GmLocalRemoteConsumerScenario.StartAsync(folder);
             if(mode=="terminal-partial-start")File.SetUnixFileMode(Path.Combine(package,"neutral-cli"),UnixFileMode.UserRead|UnixFileMode.UserWrite);
             try { using (journal?.Measure("NativeTerminalFixture.StartShell")) await (Task)Invoke("StartShellAsync")!; }
             catch(OwnedTerminalStartException ex) when(mode=="terminal-partial-start") {
@@ -237,6 +239,11 @@ internal static partial class OwnedTerminalScenarioDriver
                     await RunOriginalOwnerHttpReadsAsync(folder,host!,type,Rpc,result);result["Success"]=true;return 0;
                 }
                 await RunReusableRelayAsync(mode,folder,host!,type,Rpc,result);result["Success"]=true;return 0;
+            }
+            if(mode=="production-main-local-remote-consumer") {
+                await using(var fresh=await GmLocalRemoteConsumerScenario.StartAsync(folder,fresh:true))
+                    await fresh.CompleteRemoteAsync(result);
+                await localRemote!.CompleteRemoteAsync(result);result["Success"]=true;return 0;
             }
             if(mode=="production-main-console-pending-availability") {
                 await RunPendingAvailabilityAsync(folder,host!,type,Rpc,(IOwnedTerminalSession)originalSession,result);
@@ -394,6 +401,7 @@ internal static partial class OwnedTerminalScenarioDriver
         }
         finally {
             journal?.Record("before_cleanup", result);
+            if(localRemote!=null)await localRemote.DisposeAsync();
             if (host != null) {
                 try {
                     var original=type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host) as GmSessionRunCoordinator;

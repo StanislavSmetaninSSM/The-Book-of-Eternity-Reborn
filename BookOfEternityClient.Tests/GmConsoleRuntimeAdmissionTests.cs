@@ -3,6 +3,9 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmConsoleRuntimeAdmissionTests
 {
     [Fact]
+    public Task SameClient_LocalMenuAdmissionThenRemoteOwner_ReentersCurrentSession()=>
+        ProductionMainLinuxFixture.RunAsync("production-main-local-remote-consumer");
+    [Fact]
     public Task ActualHasCurrentSession_DeferredPublicationRetainsOriginalAdmission()=>
         ProductionMainLinuxFixture.RunAsync("production-main-console-pending-availability");
     [Fact]

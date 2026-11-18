@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-local-remote-worker-readmission",
+      "responsibility": "#1589 same client local current-session admission retires quiescent worker context, then enters through a real external production main and closes its original remote pin.",
+      "excludes": "No actual Continue UI, gameplay, GM response, worker task execution or live-world replay.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerRootContext.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConsoleRuntimeAdmissionTests.SameClient_LocalMenuAdmissionThenRemoteOwner_ReentersCurrentSession"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-linux-daemon-singleton-data",
       "responsibility": "#1589 Linux in-process singleton exclusion and fail-closed restart; no canonical authority.",
       "excludes": "No Windows qualification, live gameplay or distributed filesystem guarantee.",

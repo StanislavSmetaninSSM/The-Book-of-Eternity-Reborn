@@ -427,3 +427,31 @@ mismatch, not measured duplicate work, so no speedup claim is made.
 Next: independent outcome review, then parent-controlled fresh published-package
 live continuation with ordinary stopped status and retained guard, never replay
 or migration of earlier failed live requests.
+
+### Local-menu to external-main worker readmission: causal test WIP
+
+Live ml5 phase02 stopped before any game action: daemon restart succeeded, but
+client Continue reported `Explicit worker admission is required before canonical
+recovery.` The unique throw is the disposed registration check in
+GmWorkerRootContext.ValidateCanonical. The same client first shows its menu while
+main is stopped; ordinary local admission attaches and then retires the quiescent
+worker context. A later external main owns the inventory; that client's new
+remote admission observes workers but canonical recovery still consults its
+retired local registration. This is a source-based hypothesis, not yet causal
+acceptance. Existing world and prior live results remain untouched.
+
+New narrow test `gm-local-remote-worker-readmission` prepares only an empty real
+durable inventory, lets a separate shipped consumer execute and close ordinary
+local current-session admission, starts the real external production main, then
+asks the SAME consumer/FS to enter the same current-session operation remotely.
+It checks original close observation and uses existing owner/guardian cleanup.
+This tests the actual shared admission/finalization layer, not Continue UI or a
+GM turn. No production guards are changed; no reflection or authority injection
+is added. Test source awaits remote save, review and official causal RED.
+
+Design remains pending: any fix must retain the original remote pin plus exact
+retired durable registration as a lease-local conjunction, preserving current
+server worker authority, fresh refusal and special closing semantics. No global
+fence deletion, new worker coordinator under the external owner, broad
+WasRemote/disposed bypass or cached permission is approved. One tiny empty
+inventory avoids costly game setup; mutable authority cannot be cached.
