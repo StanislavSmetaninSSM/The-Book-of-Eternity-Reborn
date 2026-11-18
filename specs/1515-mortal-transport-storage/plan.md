@@ -2023,3 +2023,20 @@ idle test currently targets default validation and needs correction to an
 explicit inspection boundary before execution. No production exemption exists.
 Next resolve the narrow inspection-versus-publication API; preserve default
 worker checks and genuine-original strictness. No build or native run yet.
+T018 design gate independently accepted for test-first work: use an explicit
+immutable inspection purpose in the existing selection/AsyncLocal lifetime,
+not Missing as a mode. Default/public worker validation stays strict; only the
+three read-only UI consumers choose inspection. Raw responses remain strict.
+Usable-original retention requires exact permanent identity, same original
+section and semantic equality of the whole row. Unusable never exempts.
+Idle inspection additionally needs no active request/repair/ready, valid canonical
+actor/history and a nonempty permanent location in current canonical world DATA.
+The original-map reader returns empty when original is missing: never insert a
+current-map fallback into that authority helper. Use the existing current-map
+parser/read phase separately. No authority/cache framework or new game mechanic.
+RED first adds a named inspection entrypoint forwarding to strict validation;
+positive retained/inspection/guidance cases must fail causally. Negatives cover
+changed/unproven rows, default publication validation, active orphan request,
+unknown location, strict raw response and restored selection lifetime. Real
+worker execution/load/native behavior remain separately stated, not inferred
+from source callsite guards or fixture teardown.
