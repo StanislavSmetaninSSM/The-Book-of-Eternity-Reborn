@@ -2742,3 +2742,12 @@ an unrelated process. First stage is cheap real prompt transport proof, not a
 claim of complete gameplay routes. Preserve existing source; no native game
 retry until package/readiness review. No gameplay/GM-authored contract change is
 planned, so no prompt/example revision unless implementation finds one necessary.
+Independent Sol6.1 XHigh outcome review verified all five exact TRX cases and
+three empty mismatch artifacts:86 checked paths each (34 present-byte/52 absent).
+Effect refusal proves exact effect_source_authority_invalid_owner_identity,
+rollback and no story. Only map/index drift branches additionally assert typed
+idle, unchanged turn, no redispatch and request/snapshot/ready cleanup; do not
+attribute that extra coverage to effect refusal. Positive/two-repair branches
+reach resolved locality and all birth/resource/receipt/access assertions; the
+latter requires exactly two repairs. Every fixture was removed without failure.
+Bounded automatic gate accepted, native remains unrun with this source.
