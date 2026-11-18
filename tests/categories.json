@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-activity-command-composition",
+      "responsibility": "#1516 public raw-sidecar and response validation rejects the existing whole-sidecar nonterminal-update/terminal-completion conflict without consuming commands.",
+      "excludes": "No full NPC materialization or accepted-turn repair proof; each-alone controls concern this conflict code only.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/NpcActivityCommandCompositionTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.NpcActivityCommandCompositionTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-diagnostic-context-compatibility",
       "responsibility": "#1589 optional observation fields cannot prevent original shared PS close or replace transport timeout across exact main and dedicated helper context shapes.",
       "excludes": "Inert protocol replies; no real admission, native host, gameplay or Windows runtime qualification.",
