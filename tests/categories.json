@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-host-exit-fault-diagnostics",
+      "responsibility": "#1589 deterministic original pidfd observation fault retention; unchanged fail-closed classification, IN/HUP completion and held-handle lifetime.",
+      "excludes": "No EINTR retry, historical rl2 cause assertion, live game or native process qualification.",
+      "changeHints": ["BookOfEternityClient.Tests/HostExitObservationDiagnosticTests.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.HostExitObservationDiagnosticTests.*"]}]
+    },
+    {
       "id": "vehicle-receipt-validation-scope",
       "responsibility": "Relay launch prerequisite: existing vehicle receipt validation through public response and full-state APIs accepts unrelated roots while retaining exact canonical receipt checks.",
       "excludes": "No vehicle materialization expansion, new receipt authority, gameplay or whole-state qualification; unrelated baseline validation issues are outside the receipt predicate.",

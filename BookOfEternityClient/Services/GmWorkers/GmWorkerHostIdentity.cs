@@ -64,19 +64,40 @@ internal sealed class GmWorkerHostIdentity
     internal async Task WaitForExitAsync()
     {
         if (_pidfd == null) { await _owner.WaitForExitAsync(); return; }
-        while (true)
+        await new PidfdExitObserver().WaitAsync(_pidfd);
+    }
+
+    internal readonly record struct PidfdPollObservation(int Result, short ReturnedEvents, int? ErrorNumber);
+
+    // Each observer owns its immutable native-call adapter; no global hooks or authority cache.
+    internal sealed class PidfdExitObserver
+    {
+        private readonly Func<int, PidfdPollObservation> _poll;
+        internal PidfdExitObserver(Func<int, PidfdPollObservation>? poll = null) => _poll = poll ?? ObservePoll;
+
+        private static PidfdPollObservation ObservePoll(int descriptor)
         {
-            var held = false;
-            try
+            var poll = new PollDescriptor { Descriptor = descriptor, Events = 1 };
+            var result = Poll(ref poll, 1, 0);
+            var error = result < 0 ? Marshal.GetLastPInvokeError() : (int?)null;
+            return new(result, poll.ReturnedEvents, error);
+        }
+
+        internal async Task WaitAsync(SafeFileHandle pidfd)
+        {
+            while (true)
             {
-                _pidfd.DangerousAddRef(ref held);
-                var descriptor = new PollDescriptor { Descriptor = _pidfd.DangerousGetHandle().ToInt32(), Events = 1 };
-                var result = Poll(ref descriptor, 1, 0);
-                if (result < 0 || (descriptor.ReturnedEvents & ~0x11) != 0) throw Invalid();
-                if ((descriptor.ReturnedEvents & 0x11) != 0) return;
+                var held = false;
+                try
+                {
+                    pidfd.DangerousAddRef(ref held);
+                    var observed = _poll(pidfd.DangerousGetHandle().ToInt32());
+                    if (observed.Result < 0 || (observed.ReturnedEvents & ~0x11) != 0) throw Invalid();
+                    if ((observed.ReturnedEvents & 0x11) != 0) return;
+                }
+                finally { if (held) pidfd.DangerousRelease(); }
+                await Task.Delay(10);
             }
-            finally { if (held) _pidfd.DangerousRelease(); }
-            await Task.Delay(10);
         }
     }
 
