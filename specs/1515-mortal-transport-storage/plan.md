@@ -3370,3 +3370,18 @@ context files, current108pins exact. Independent failure/cleanup audit pending.
 No permission/denial success or ordinary predecessor asserted; no retry. Trace
 actual storage-command originalowner/read/lease context before proposing a narrow
 causal reproduction. Accepted p01 birth stands; subsequent consumer path is open.
+Independent p02 failure audit confirms0actions/0turns,exactprobe,gameplay/story
+byte preservation,current108pins and852wholeplayfiles. Only6world operational/
+context files differ (3JSONtimestamps+manifest and2statuses); otherplay changes
+are operationalconfig/epoch2main/daemonguard. Exactepoch2shutdownACK/Stopped,
+EOF/termios/RPC/relay/samedaemon0turns0errors/guardianECHILD and298journal records
+verified. Client-2 followed ownedCtrl+C, not normal exit. TwoCLRdebugFIFOs remain,
+no scopedprocess. Failedp02 is inadmissible; unchangedgameplay does not permit
+reusingp01 because epoch2/currentfinalpins invalidate its originaljoins.
+Read-only T026 trace finds ordinary and post-GM storefront Explorer dispatches
+both lack their own participating entry. Existing canonical resource projection
+can reach BeginMainAdmission(false) and reject a Runningowner without borrowed
+scope. Exacthistorical throw line remains unknown because SafeExecute stripsstack;
+no PID mismatch established. Plan a single narrow existing-participation dispatch
+boundary for both calls, closing before anotherGMturn; preserve cold standalone
+Explorer behavior and current owner/source refusals. No production change yet.
