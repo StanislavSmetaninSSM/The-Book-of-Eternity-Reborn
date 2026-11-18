@@ -316,3 +316,32 @@ isolation, not a claim of separate hardware. Immutable verified binaries can be
 reused without another build. This avoids redundant preparation computation while
 retaining fresh seed, authority and request checks. Any later success or cleanup
 belongs solely to this new run; ml3 remains unknown and preserved untouched.
+
+### ml4 first actual Mortal turn and closure, 2026-11-18
+
+A wholly fresh ml4 world used the unchanged9f78941 source/runtime, with the
+reviewed isolation above. Preparation manifest SHA256 is
+2da80c50383ffd2680b234e4840e512613d7d753f79a729c93f4c12229dab681.
+Ordinary Continue produced request83e992518ee2432c83db658b2fde94af/turn42 in
+session seeded_live_mortal_42b89938600e4f488e7dce151320716d. The independent GM read
+that actual prompt and authored a new response. One relay execution completed
+exit0/child exited/I-O drained, without a repair round or copying an old packet.
+
+The driver reports one genuine action and one accepted turn, Success=true,
+235.565 seconds. It verified the exact seed-story prefix plus one Mortal story,
+original snapshot Witnesses, matching final GM narrative and a production-typed
+revision2 receipt (prior0/current1, publicationAuthority=false). Receipt SHA256
+is28045b763e305c3da07d4a0b5197d610321f7a5f0cec5435ad82e12364b2fd9c.
+Canonical time advanced480..720 and the scout activity progressed0..240 of480
+minutes, step0..1 of2. This is partial progress, not activity completion, XP,
+public news, #1515 materialization or whole-issue acceptance.
+
+Exactly one original shutdown returned success; original run
+3ce0e6ee76664c5e9f41ae1027d0f41f has durable same-identity Stopped/OwnedScopeEmpty.
+Client, bridge and daemon all exited0 with full EOF and restored termios; relay
+execution and RPC helper were closed. Guardian independently returned ECHILD,
+driverExitCode0, emergencySignals0, failures0, deadlinefalse. These statements
+belong only to ml4; ml2 remains failed and ml3/e closure remains unknown.
+Independent outcome review is underway before admitting a retained-world phase.
+No implementation changed or broad test suite ran; immutable runtime reuse
+avoided recompilation while the new original authority/seed/effects stayed fresh.
