@@ -18,7 +18,14 @@ public sealed partial class MortalLivingWorldPublicationTests
         await context.WriteJsonAsync(MortalLivingWorldSource.WorldTimePath, new JsonObject { ["currentTimeInMinutes"] = 0 });
         await context.WriteJsonAsync(MortalItemIdentityState.StatePath, MortalItemIdentityState.CreateEmptyRoot());
         var originalLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity("loc_comparison_original", "Original courtyard");
-        await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, MortalLocationTestFixture.CreateWorldMap(originalLocation));
+        var originalMap = MortalLocationTestFixture.CreateWorldMap(originalLocation);
+        await context.WriteJsonAsync(MortalLocationMaterializationContract.WorldMapPath, originalMap);
+        // Effective access is a required client-owned companion even with no storages.
+        // Derive it from the actual original map before signing, never from raw commands.
+        var originalAccess = MortalStorageAccessProjection.Build(originalMap, null);
+        Assert.True(originalAccess.IsValid, string.Join(", ", originalAccess.Issues.Select(issue => issue.Code)));
+        await context.WriteJsonAsync(MortalStorageAccessProjection.StatePath, originalAccess.Root!);
+        Assert.Empty(MortalStorageAccessProjection.ValidateCanonical(originalMap, originalAccess.Root));
         await context.WriteJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath, MortalLocationTestFixture.CreateCurrentProjection(originalLocation));
         await context.WriteJsonAsync(MortalLocationIdentityState.StatePath, MortalLocationTestFixture.CreateIdentityIndex(originalLocation));
         var scheduler = new ProgressionScheduleService(context.FileSystem, NullLogger<ProgressionScheduleService>.Instance);
@@ -31,10 +38,16 @@ public sealed partial class MortalLivingWorldPublicationTests
         var backups = await BackupsAsync(context);
         Assert.True(backups.ContainsKey(MortalLocationMaterializationContract.WorldMapPath));
         var originalMapBytes = await context.FileSystem.ReadFileBytesAsync(backups[MortalLocationMaterializationContract.WorldMapPath]);
+        Assert.True(backups.ContainsKey(MortalStorageAccessProjection.StatePath));
+        var originalAccessBytes = await context.FileSystem.ReadFileBytesAsync(backups[MortalStorageAccessProjection.StatePath]);
+        Assert.NotNull(originalAccessBytes);
+        Assert.Equal(originalAccessBytes, await context.FileSystem.ReadFileBytesAsync(MortalStorageAccessProjection.StatePath));
         var raw = MortalLocationTestFixture.CreateRawLocation("current_scene_creation");
         raw["coordinates"] = new JsonObject { ["x"] = 10, ["y"] = 0, ["z"] = 0 };
         await context.WriteJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath,
             new JsonObject { ["currentLocationData"] = raw });
+        Assert.Empty(raw["locationStorages"]!.AsArray());
+        Assert.Equal(originalAccessBytes, await context.FileSystem.ReadFileBytesAsync(MortalStorageAccessProjection.StatePath));
         var result = await PublishAsync(context, backups);
         Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
         var current = (await context.ReadJsonAsync(MortalLocationMaterializationContract.CurrentLocationPath))!;
