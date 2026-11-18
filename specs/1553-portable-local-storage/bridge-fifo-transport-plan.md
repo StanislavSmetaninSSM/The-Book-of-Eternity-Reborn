@@ -595,3 +595,35 @@ The previous five new and fifteen unaffected passing cases are not repeated.
 Source changes are test/catalog/documentation only, currently UNBUILT/UNRUN;
 remote save and independent source review precede execution. Production guards
 and all live game worlds remain untouched.
+
+### Retired readmission bounded result: 26 distinct passing cases
+
+Saved test-only correction 735a5f3127d82d3abf8db5ce0ad965d43e9f43e8 passed
+independent SOURCE review. Serial unit build: 39.53s, 67 warnings, 0 errors.
+Official sticky-audit proof plus the three corrected publication rows executed
+4/4 PASS in 21.1342002s, with no skips/duplicates and complete owned cleanup.
+All three actual native scenarios reached exactly one publication cut and one
+append, retained canonical uncertainty and its evidence, and did not release the
+logical slot. Both withdrawal rows retained the same original fault without a
+second append or receipt; the retired row separately proved actual main Stopped.
+Their guardians all reported driver0, ECHILD, zero emergency signals/failures,
+no deadline. This qualifies retention, not successful cleanup of logical debt.
+
+Serial integration build then completed 62.19s, 129 warnings, 0 errors. The two
+previously unrun exact cleanup neighbors executed 2/2 PASS in 13.3802089s,
+no skips/duplicates, complete owned cleanup. No production source changed during
+these test-oracle corrections. The earlier five new cases and fifteen unaffected
+passing neighbors were not repeated. Current bounded passing evidence therefore covers
+26 distinct cases: 5 + 15 + 1 new proof + 3 corrected rows + 2 integration cases.
+This is not one 26-case run; the historical three oracle FAILs above remain part
+of the record. Unsupported legacy named-pipe console paths remain UNRUN.
+
+Full logs use retired-readmission-sticky-{build,official}.log and
+retired-readmission-integration-{build,official}.log in the shared external
+diagnostics directory. Current DLL/PDB hashes, including matching client copies
+in unit and integration output, are recorded outside Git in
+retired-readmission-current-output-pins.json. This confirms build output identity,
+not a new published live runtime package. New source-check guards still require
+fresh original permission; no permission cache or skipped canonical fence was
+introduced. No live world/request was replayed, no broader suite was run, and
+independent outcome review remains the final gate before a fresh live continuation.
