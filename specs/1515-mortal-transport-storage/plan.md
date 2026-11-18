@@ -2247,3 +2247,21 @@ other required materialization roots. Do not introduce runtime absence promotion
 or legacy-save compatibility; the user explicitly excludes those. T019 is complete
 within its bounded template/guard/final-authored-packet scope; it does not make the
 rejected mm8 turn accepted or close T016. Runtime and all failed worlds unchanged.
+T020 systematic setup comparison found four absent production-empty companions:
+vehicles, npc_skills, inventory/item_bonds and inventory/item_text_updates.
+Populated inventory/items, identity index and item journals are historical fixture
+DATA and must remain unchanged; world/location identities also are not empty
+bootstrap candidates. Resource quartet and effective storage projection already
+have existing seed owners. Two direct PrepareAsync mode cases (stateOnly false
+and true) now causally fail for exactly these four missing paths, after preparation
+succeeds. Fresh Integration60.87s/129warnings/0errors, runner13.0499328s,
+2/2executed, no skips/duplicates/timeouts, owned and fixture cleanup complete.
+3432 source pins unchanged;20outputs recorded. External mortal-t020/red,
+result973abf6db23da8a931ec19ed0d50c16faa1f934a6ca568efbfc32c7871886a39,
+identity20261118-101403-567-5-3bbf575197684a6b8077875c1f3ffc88-categories.
+GREEN will reuse production empty-root DATA once only for missing fresh-seed
+companions, before callback/original; no retained-world or runtime migration.
+Existing exporter scenario is the affected real consumer; no repeated broad birth
+suite. A separate cheap final resource-authority recomposition comparison will
+check the suspected seed ordering risk instead of inferring staleness or inventing
+health for the setup-only historical scout. No health/birth claim for that actor.
