@@ -2,9 +2,10 @@
 import ast, copy, hashlib, json, os, re, sys, tempfile, types, unittest
 from pathlib import Path
 import relay_phase_evidence as phase_evidence
+import mortal_console_routes as console_routes
 SOURCE=Path(__file__).with_name('live-mortal-phase.py')
 TREE=ast.parse(SOURCE.read_text())
-NS=dict(phase_evidence=phase_evidence,__file__=str(SOURCE),Path=Path,json=json,hashlib=hashlib,re=re,os=os,sys=sys)
+NS=dict(phase_evidence=phase_evidence,console_routes=console_routes,__file__=str(SOURCE),Path=Path,json=json,hashlib=hashlib,re=re,os=os,sys=sys)
 exec(compile(ast.Module(body=[n for n in TREE.body if isinstance(n,ast.FunctionDef)],type_ignores=[]),str(SOURCE),'exec'),NS)
 # Test-only reuse of the existing positive lifecycle DATA builder, no runtime AST imports.
 GENERAL=Path(__file__).with_name('test-relay-phase-contract.py')
@@ -68,6 +69,7 @@ class MortalEvidenceTests(unittest.TestCase):
             package=dict(RuntimePins=inventory(session/'_runtime'),RelayPins=inventory(relay),DriverSHA256=NS['sha'](SOURCE.read_bytes()),ReceiptHelperPins=inventory(helper))
             module=SOURCE.with_name('relay_phase_evidence.py')
             package['EvidenceModuleSHA256']=NS['sha'](module.read_bytes()) if module.exists() else 'not-created-before-green'
+            package['ConsoleRouteModuleSHA256']=NS['sha'](module.with_name('mortal_console_routes.py').read_bytes())
             (out/'relay-phase-package.json').write_text(json.dumps(package))
             if continuation:
                 prior=valid();prior['OriginalRunningRecord']['Identity']['RootKey']=str(base)

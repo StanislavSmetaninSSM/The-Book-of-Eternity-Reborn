@@ -662,6 +662,7 @@ route_bytes=route_path.read_bytes() if route_path.exists() else None
 route=console_routes.checked_route(strict_settings(route_bytes) if route_bytes is not None else None)
 action=checked_action(Path(sys.argv[3]).read_bytes())
 previous=strict_settings(Path(sys.argv[5]).read_bytes()) if len(sys.argv)==6 else None
+if restored_diagnostic and route['Route']!='birth':raise ValueError('Diagnostic import cannot run local storage routes')
 if restored_diagnostic:
     if previous is not None:raise ValueError('Diagnostic import cannot use prior owner continuation')
     base,session,ship,expected_turn,package_manifest,package_sha=prepare_restored_diagnostic(
@@ -1401,6 +1402,8 @@ finally:
     try:
         closing_package,_=phase_evidence.relay_package_preflight(out,ship,__file__)
         if closing_package!=package_manifest:raise ValueError('Phase package manifest changed')
+        if (route_path.read_bytes() if route_path.exists() else None)!=route_bytes:
+            raise ValueError('Original finite route descriptor changed')
         phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
         result['FinalWorldPins']=phase_evidence.relay_world_inventory(session)
         result['FinalConfigSHA256']=sha((session/'config.json').read_bytes())

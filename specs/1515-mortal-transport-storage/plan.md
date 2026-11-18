@@ -2962,3 +2962,32 @@ capture. Current expected counts9 route/15 Load; update explicitly when source
 adds cases, never accept zero discovery. Route9PASS includes exact item position
 and duplicate/missing refusal. Wrapper/category source is UNCOMPILED/UNRUN;
 local driver still fails closed before process launch until full wiring completes.
+
+T024 coherent finite-route WIP, 2026-11-18: birth remains genuine GM authoring;
+permission route proves locked selection/no mutation before the real GM turn;
+local route now prepares retrieve, unique Save, deposit and actual Load with
+zero GM actions/accepted turns. Original A remains separate from captured exact
+validated replacement B; no status adoption or manufactured acceptance fields.
+Client-only TERM retains captured stdout. Save archive and item-byte snapshots
+are reused as immutable comparison DATA; current mutable item/permission surfaces,
+ownership, Load receipt and daemon continuity remain fresh. No speedup claim.
+Route DATA has12 passing methods (0.125s), including completed-CR frame gating:
+three new partial/pagination negatives first failed, then passed. Load DATA has
+18 passing methods (0.013s) after13PASS/2causal-stubFAIL baseline; additional
+ordinary-fence/local-mutation/package-pin checks are initial qualification.
+These checks are not native game acceptance. Wrapper counts now12/18; C# build,
+official category and integrated independent source review remain pending.
+Early driver/consumer source saved through82991504. Self-review found live daemon
+continuity incorrectly required future final settlement; that condition is being
+separated from final cleanup, not removed from the final proof. Diagnostic local
+route refusal is moved before its one-use importer; descriptor bytes are checked
+again at closing. No native launch or world mutation occurred in this block.
+T024 live/final separation correction: live same-daemon predicate accepts only
+original plus fresh post-Load continuity DATA; final Load cleanup still requires
+full original-to-final daemon settlement. Added original-only live positive and
+unsettled final negative;19/19 Load controls PASS0.011s. Existing Mortal evidence
+fixture now pins/imports the actual console module: initial migration38-method
+run had18 namespace setup errors, then38/38PASS0.142s after correcting fixture
+namespace. Those setup errors are not causal production RED. Raw evidence stays
+external mortal-t024/load-continuity-live-fix. Wrapper count must now be19.
+Independent coherent source review is underway; no native acceptance implied.

@@ -476,7 +476,11 @@ def relay_load_phase_cleanup_proved(value, client_output, action_cut, expected):
 
 
 def retained_daemon_load_continuity_proved(settlement, continuity):
-    """Fresh captured continuity DATA for the same daemon, not process authority."""
+    """Live continuity DATA for the same daemon, not final settlement or authority.
+
+    Only original running evidence is available at this boundary. Final Load
+    cleanup separately requires the unchanged full daemon settlement predicate.
+    """
     from datetime import datetime
     def timestamp(value):
         if type(value) is not str:raise ValueError('Invalid heartbeat')
@@ -487,7 +491,6 @@ def retained_daemon_load_continuity_proved(settlement, continuity):
         return type(value) is dict and set(value)=={'Pid','StartTicks'} and all(type(value[k]) is int and value[k]>0 for k in value)
     def status(prefix,source):return strict_settings(bytes.fromhex(source[prefix+'StatusRawHex']))
     try:
-        if not daemon_settlement_proved(settlement):return False
         if continuity['SessionPath']!=settlement['SessionPath']:return False
         owner=daemon_pair_decode(settlement,'Original',False)
         if any(daemon_pair_decode(continuity,prefix,False)!=owner for prefix in ('Original','PostLoad')):return False

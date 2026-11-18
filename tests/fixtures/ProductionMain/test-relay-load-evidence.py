@@ -133,6 +133,12 @@ class LoadEvidenceTests(unittest.TestCase):
     def test_retained_daemon_positive_requires_real_continuity_implementation(self):
         value=cleanup(self.expected,self.document,self.installed)
         self.assertTrue(evidence.retained_daemon_load_continuity_proved(value['DaemonSettlement'],value['PostLoadDaemonContinuity']))
+    def test_live_continuity_original_only_but_final_cleanup_still_requires_settlement(self):
+        value=cleanup(self.expected,self.document,self.installed)
+        original_only={key:item for key,item in value['DaemonSettlement'].items() if not key.startswith('Final')}
+        self.assertTrue(evidence.retained_daemon_load_continuity_proved(original_only,value['PostLoadDaemonContinuity']))
+        value['DaemonSettlement']=original_only
+        self.assertFalse(evidence.relay_load_phase_cleanup_proved(value,wire(self.document),0,self.expected))
     def test_retained_daemon_missing_stale_replaced_or_exited_refuses(self):
         original=cleanup(self.expected,self.document,self.installed)
         for mutation in ('missing','pid-reused','launcher-replaced','launcher-exited','stale-heartbeat','foreign-owner','corrupt-raw'):
@@ -181,7 +187,7 @@ class LoadEvidenceTests(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(LoadEvidenceTests)
-    expected_count=18
+    expected_count=19
     if suite.countTestCases()!=expected_count:raise SystemExit('Unexpected Load test count')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
     ok=result.testsRun==expected_count and result.wasSuccessful() and not result.skipped
