@@ -16,6 +16,10 @@ public partial class CanonicalStateNormalizer
             _spiritualLocalityNormalizationOwner, _npcProgressionSource, source);
     }
 
+    internal Task RequireNpcCompletionSourceCurrentAsync() => _npcCompletionSource is null
+        ? Task.CompletedTask : _npcCompletionSource.RequireCurrentAsync(_fs,
+            _writeLease ?? throw new InvalidDataException("Terminal NPC publication lost its held lease."));
+
     private async Task<NpcCompletionInput?> PrepareNpcActivityCompletionsAsync(
         MortalItemAcceptedTurnNormalizationMode mode, AcceptedMechanicsPlan? plan,
         MortalWoundTreatmentPublicationTakeReceipt? treatment)

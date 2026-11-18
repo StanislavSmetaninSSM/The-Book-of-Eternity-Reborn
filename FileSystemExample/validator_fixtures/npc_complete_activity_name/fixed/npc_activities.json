@@ -5,6 +5,7 @@
       "NPCName": "Борин Железнорук",
       "activityName": "Ковка Топора из Звездного Металла",
       "finalState": "Completed",
+      "finalOutcome": "Success",
       "narrativeSummary": "The smith finishes the forging project and sets the blade aside."
     }
   ]

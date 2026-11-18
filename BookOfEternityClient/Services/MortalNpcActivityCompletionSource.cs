@@ -40,13 +40,16 @@ internal sealed class MortalNpcActivityCompletionSource
         var read = PendingTurnSnapshotReader.ReadCurrent(files, lease, Selection);
         if (!read.Success || read.Snapshot is not { } original || original.Realm != "mortal_world")
             throw new InvalidDataException("Terminal NPC publication requires the authenticated ordinary Mortal original.");
+        var originalSoul = original.ReadRequiredBytes(SoulPath);
+        if (!RealmSemantics.IsMortalRealm(Parse(originalSoul)["currentRealm"]?.GetValue<string>()))
+            throw new InvalidDataException("Terminal NPC source requires an original Mortal soul.");
         var guards = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
         foreach (var path in new[] { LiveTurnPreparationService.TurnRequestPath,
             LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })
             guards.Add(path, await files.ReadFileBytesAsync(lease, path));
         var result = new MortalNpcActivityCompletionSource(files, lease, original.SnapshotToken,
             original.SessionId, original.RequestId, original.TurnNumber, original.ReadRequiredBytes(CorePath),
-            original.ReadRequiredBytes(SoulPath), guards);
+            originalSoul, guards);
         await result.RequireCurrentAsync(files, lease);
         return result;
     }

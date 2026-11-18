@@ -47,6 +47,22 @@ public sealed class NpcActivityCompletionContractTests : IDisposable
         Assert.Contains(_validator.ValidateResponse(document.RootElement), issue => issue.Code == "npc_complete_activity_turn_client_owned");
     }
 
+    [Theory]
+    [InlineData("broken")]
+    [InlineData("fixed")]
+    public void ExistingActivityNameFixturesRetainExplicitOutcomeContract(string variant)
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "FileSystemExample", "validator_fixtures",
+            "npc_complete_activity_name", variant, "npc_activities.json");
+        using var document = JsonDocument.Parse(File.ReadAllText(path));
+        Assert.Equal("Success", document.RootElement.GetProperty("completeNPCActivities")[0]
+            .GetProperty("finalOutcome").GetString());
+        Assert.DoesNotContain(_validator.ValidateResponse(document.RootElement), issue =>
+            issue.Code?.StartsWith("npc_complete_activity_outcome_", StringComparison.Ordinal) == true ||
+            issue.Code == "npc_complete_activity_turn_client_owned");
+        // Name cross-reference validity is intentionally not established by response-only validation.
+    }
+
     private static JsonObject Command(string state, string? outcome)
     {
         var command = new JsonObject { ["NPCId"] = "scout", ["NPCName"] = "Mira", ["activityName"] = "Survey", ["finalState"] = state, ["narrativeSummary"] = "The survey ended." };

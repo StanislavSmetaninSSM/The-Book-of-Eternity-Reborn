@@ -77,11 +77,11 @@ public sealed partial class MortalLivingWorldPublicationTests
         await AssertCompletionAsync(context, original);
     }
 
-    private static async Task<EffectMaterializationTestContext> PrepareCompletionAsync(FileSystemManagerHooks? hooks = null)
+    private static async Task<EffectMaterializationTestContext> PrepareCompletionAsync(FileSystemManagerHooks? hooks = null, string originalSoulRealm = "Mortal World")
     {
         var context = await EffectMaterializationTestContext.CreateAsync(hooks);
         await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync()) context.FileSystem.GetOrCreateSessionGeneration(lease);
-        await context.WriteJsonAsync("game_state/meta/soul_state.json", new JsonObject { ["currentRealm"] = "Mortal World" });
+        await context.WriteJsonAsync("game_state/meta/soul_state.json", new JsonObject { ["currentRealm"] = originalSoulRealm });
         await context.WriteJsonAsync(MortalItemIdentityState.StatePath, MortalItemIdentityState.CreateEmptyRoot());
         await context.WriteJsonAsync(MortalLivingWorldSource.WorldTimePath, new JsonObject { ["currentTimeInMinutes"] = 0 });
         var actor = EffectMaterializationTestFixture.CreateSameTurnMortalActor("terminal_scout");

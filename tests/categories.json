@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-npc-activity-completion-repair",
+      "responsibility": "#1516 ordinary engine repairs missing terminal outcome on the same original eight-hour turn, settles both NPC activity effects and appends one story/receipt.",
+      "excludes": "No live relay, net-new NPC, XP/skills, faction project completion or full activity matrix.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.NpcActivityCompletionRepair.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalNpcCompletion_MissingOutcomeRepairsAndSettlesOriginalTurnOnce"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-npc-activity-completion-source",
       "responsibility": "#1516 T019 real issued original/lease lifetime, specialized-route refusal and preservation of unrelated current actor DATA.",
       "excludes": "No live GM journey, full specialized route support or whole issue acceptance.",
@@ -23,7 +47,9 @@
           "tests": [
             "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.NpcCompletionSource_RealIssuedCaptureCannotMoveOrOutliveOperation",
             "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.NpcCompletionSource_QteRouteCannotBorrowOrdinaryIssuedCapture",
-            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryNpcCompletion_PreservesUnrelatedCurrentActorData"
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryNpcCompletion_PreservesUnrelatedCurrentActorData",
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryNpcCompletion_AfterConsumptionRequestChangeRefusesAndRestoresOwnedBytes",
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.NpcCompletionSource_SignedNonMortalSoulCannotBorrowRequestRealm"
           ]
         }
       ]

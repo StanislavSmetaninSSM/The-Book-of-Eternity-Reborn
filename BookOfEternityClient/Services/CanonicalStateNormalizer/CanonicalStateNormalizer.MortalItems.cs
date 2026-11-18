@@ -1966,6 +1966,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
                     await npcSource.RequireCurrentAsync(fs, writeLease);
                 if (!issues.Any(issue => issue.Severity == IssueSeverity.Error) && livingWorld is not null)
                     await livingWorld.RequirePublishedAsync(fs, writeLease);
+                if (!issues.Any(issue => issue.Severity == IssueSeverity.Error))
+                    await boundNormalizer.RequireNpcCompletionSourceCurrentAsync();
                 return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,
                     mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation,
                     guardianMusingsValidation);

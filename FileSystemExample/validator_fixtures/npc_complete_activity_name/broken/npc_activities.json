@@ -5,6 +5,7 @@
       "NPCName": "Борин Железнорук",
       "activityName": "Совершенно другая активность",
       "finalState": "Completed",
+      "finalOutcome": "Success",
       "narrativeSummary": "The smith supposedly wraps up an unrelated task."
     }
   ]

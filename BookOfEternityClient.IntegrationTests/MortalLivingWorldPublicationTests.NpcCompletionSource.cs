@@ -50,6 +50,18 @@ public sealed partial class MortalLivingWorldPublicationTests
     }
 
     [Fact]
+    public async Task NpcCompletionSource_SignedNonMortalSoulCannotBorrowRequestRealm()
+    {
+        await using var context = await PrepareCompletionAsync(originalSoulRealm: "Chaos Sea");
+        await context.WriteJsonAsync("game_state/meta/soul_state.json", new JsonObject { ["currentRealm"] = "Mortal World" });
+        await SubmitCompletionAsync(context);
+        var before = await CaptureAsync(context);
+        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+            await Assert.ThrowsAsync<InvalidDataException>(() => MortalNpcActivityCompletionSource.CaptureOrdinaryAsync(context.FileSystem, lease));
+        await AssertBytesAsync(context, before);
+    }
+
+    [Fact]
     public async Task NpcCompletionSource_QteRouteCannotBorrowOrdinaryIssuedCapture()
     {
         await using var context = await PrepareCompletionAsync();
@@ -62,6 +74,48 @@ public sealed partial class MortalLivingWorldPublicationTests
             var refusal = await Assert.ThrowsAsync<InvalidDataException>(() => ordinary.ForQteNormalization().NormalizeAccumulatedStateWithPlanAsync(backups));
             Assert.Equal("Terminal NPC activity requires its issued ordinary original operation.", refusal.Message);
         }
+        await AssertBytesAsync(context, before);
+    }
+
+    [Fact]
+    public async Task OrdinaryNpcCompletion_AfterConsumptionRequestChangeRefusesAndRestoresOwnedBytes()
+    {
+        var armed = false;
+        var reached = false;
+        byte[]? replacedRequest = null;
+        EffectMaterializationTestContext? current = null;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalReadOpenAsync = path =>
+            {
+                if (!armed || reached || current is null || path != CompletionCore) return Task.CompletedTask;
+                var core = JsonNode.Parse(File.ReadAllText(current.FileSystem.ResolvePath(CompletionCore)).TrimStart('\uFEFF'))!;
+                var sidecar = JsonNode.Parse(File.ReadAllText(current.FileSystem.ResolvePath(CompletionCommands)).TrimStart('\uFEFF'))!;
+                if (core["NPCsInScene"]![0]!["currentActivity"] is not null || sidecar["completeNPCActivities"] is not null)
+                    return Task.CompletedTask;
+                Assert.Equal(2, core["NPCsInScene"]![0]!["completedActivities"]!.AsArray().Count);
+                reached = true;
+                var requestPath = current.FileSystem.ResolvePath(LiveTurnPreparationService.TurnRequestPath);
+                var request = JsonNode.Parse(File.ReadAllText(requestPath).TrimStart('\uFEFF'))!;
+                request["requestId"] = "changed-after-terminal-consumption";
+                replacedRequest = System.Text.Encoding.UTF8.GetBytes(request.ToJsonString());
+                File.WriteAllBytes(requestPath, replacedRequest);
+                return Task.CompletedTask;
+            }
+        };
+        await using var context = await PrepareCompletionAsync(hooks);
+        current = context;
+        var backups = await BackupsAsync(context);
+        await SubmitCompletionAsync(context);
+        var before = await CaptureAsync(context);
+        armed = true;
+        var failure = await Record.ExceptionAsync(() => PublishAsync(context, backups));
+        armed = false;
+        Assert.True(reached, "Must mutate request only after actual core completion and command consumption.");
+        var refused = Assert.IsType<InvalidDataException>(failure);
+        Assert.Equal("Terminal NPC original changed during publication.", refused.Message);
+        // External request mutation is not ours to overwrite. All normalizer-owned bytes roll back.
+        before[LiveTurnPreparationService.TurnRequestPath] = replacedRequest;
         await AssertBytesAsync(context, before);
     }
 
