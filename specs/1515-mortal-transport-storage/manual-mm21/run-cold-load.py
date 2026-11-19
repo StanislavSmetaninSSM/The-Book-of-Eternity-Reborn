@@ -11,6 +11,15 @@ def inventory(root):
         result[p.relative_to(root).as_posix()]={'sha256':digest(p),'mode':stat.S_IMODE(mode.st_mode)}
     return result
 
+def cold_run_succeeded(exit_code,guardian,probe):
+    """Process reaping is not successful navigation or logical closure."""
+    if type(exit_code) is not int or exit_code!=0 or type(guardian) is not dict or type(probe) is not dict:return False
+    if guardian.get('echild') is not True or guardian.get('deadline') is not False:return False
+    if any(type(guardian.get(k)) is not int or guardian[k]!=0 for k in ('driverExitCode','emergencySignals','failures')):return False
+    if any(probe.get(k) is not True for k in ('Success','EOF','ChildRestoredConfiguredBaseline','OwnerRestoredOriginal','TerminalNormalClose')):return False
+    if probe.get('Failure') is not None or probe.get('CleanupFailures')!=[]:return False
+    return all(type(probe.get(k)) is int and probe[k]==0 for k in ('ChildExitCode','TerminalExitCode'))
+
 def main():
     input_path=pathlib.Path(sys.argv[1]);input_sha=os.environ['BOE_REVIEWED_COLD_INPUT_SHA256']
     if digest(input_path)!=input_sha:raise ValueError('Input pin mismatch')
@@ -58,7 +67,12 @@ def main():
     (root/'exit.txt').write_text(str(result.returncode)+'\n')
     check()
     if inventory(runtime)!=normalized or digest(archive)!=spec['ArchiveSHA256']:raise ValueError('Closing package/archive drift')
-    (root/'closing.json').write_text(json.dumps({'InputSHA256':input_sha,'OldQuarantinedPlayUnchanged':True,'RuntimeUnchanged':True,'ArchiveSHA256':digest(archive),'GuardianExit':result.returncode})+'\n')
-    if result.returncode:raise RuntimeError('Cold operation failed; retained, no retry')
+    guardian=json.loads((root/'guardian.json').read_bytes());probe=json.loads((root/'probe/result.json').read_bytes())
+    route_ok=cold_run_succeeded(result.returncode,guardian,probe)
+    if route_ok:
+        proof=json.loads((root/'probe/loaded-proof.json').read_bytes())
+        if proof.get('ArchiveSHA256')!=spec['ArchiveSHA256'] or proof.get('ArchiveName')!=spec['ArchiveName']:raise ValueError('Actual loaded archive proof differs')
+    (root/'closing.json').write_text(json.dumps({'InputSHA256':input_sha,'OldQuarantinedPlayUnchanged':True,'RuntimeUnchanged':True,'ArchiveSHA256':digest(archive),'GuardianExit':result.returncode,'RouteSucceeded':route_ok})+'\n')
+    if not route_ok:raise RuntimeError('Cold operation failed; retained, no retry')
 
 if __name__=='__main__':main()

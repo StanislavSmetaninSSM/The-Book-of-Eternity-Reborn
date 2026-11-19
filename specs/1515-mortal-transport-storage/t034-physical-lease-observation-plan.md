@@ -1371,3 +1371,9 @@ UNRUN. After independent source/DATA gates, only a distinct absent-root one-shot
 cold run may be admitted; mm29 is never replayed. Closed-instance operational-only
 configuration via existing preparer/public persistence is separately authorized
 for design/diff review after normal cold exit; not UI rebinding or hosted Load.
+Correction RED independently accepted686ddbf3: exact frozen raw/cells rejected,
+wrapper conjunction absent,2 target failures/0 errors; before/after unchanged.
+Minimal source now permits only zero/one leading newline, retains entire strict
+success window, and requires typed guardian driver/exit plus probe/child/terminal
+normal closure. Bool-as-zero exits refused; frozen raw joins all acknowledged
+WRITE bytes. Source review and bounded6 DATA GREEN pending; no new runtime yet.

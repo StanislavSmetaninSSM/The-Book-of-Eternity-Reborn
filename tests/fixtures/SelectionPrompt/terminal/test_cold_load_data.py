@@ -74,6 +74,8 @@ class ColdFrozenRepair(unittest.TestCase):
         def sealed(name):
             p=root/name;raw=p.read_bytes();self.assertEqual(hashlib.sha256(raw).hexdigest(),pins[str(p)]);return raw
         raw=sealed('pty.raw');records=[json.loads(x) for x in sealed('terminal.protocol.jsonl').splitlines()]
+        import base64
+        self.assertEqual(raw,b''.join(base64.b64decode(x['command']['bytes'],validate=True) for x in records if x.get('command',{}).get('op')=='WRITE'))
         snaps=[x['reply'] for x in records if x.get('reply',{}).get('op')=='SNAPSHOT'];last=snaps[-1]
         v=types.SimpleNamespace(pending=False,cut=len(raw),lines=last['lines'],cursor=last['cursor'])
         menu=routes.local_load_menu('Хозяйственный двор у нижней лестницы',43,799,'19.11.2026 22:13')
@@ -94,11 +96,11 @@ class ColdFrozenRepair(unittest.TestCase):
         guardian={'echild':True,'driverExitCode':0,'emergencySignals':0,'failures':0,'deadline':False}
         probe={'Success':True,'Failure':None,'CleanupFailures':[],'EOF':True,'ChildRestoredConfiguredBaseline':True,'OwnerRestoredOriginal':True,'TerminalNormalClose':True,'TerminalExitCode':0,'ChildExitCode':0}
         self.assertTrue(f(0,guardian,probe))
-        for key,val in [('driverExitCode',1),('echild',False),('deadline',True),('emergencySignals',1),('failures',1)]:
+        for key,val in [('driverExitCode',1),('driverExitCode',False),('echild',False),('deadline',True),('emergencySignals',1),('failures',1)]:
             self.assertFalse(f(0,dict(guardian,**{key:val}),probe))
-        for key,val in [('Success',False),('Failure','timeout'),('EOF',False),('ChildRestoredConfiguredBaseline',False),('OwnerRestoredOriginal',False),('TerminalNormalClose',False),('TerminalExitCode',-15),('ChildExitCode',143),('CleanupFailures',['unknown'])]:
+        for key,val in [('Success',False),('Failure','timeout'),('EOF',False),('ChildRestoredConfiguredBaseline',False),('OwnerRestoredOriginal',False),('TerminalNormalClose',False),('TerminalExitCode',-15),('ChildExitCode',143),('ChildExitCode',False),('TerminalExitCode',False),('CleanupFailures',['unknown'])]:
             self.assertFalse(f(0,guardian,dict(probe,**{key:val})))
-        self.assertFalse(f(1,guardian,probe))
+        self.assertFalse(f(1,guardian,probe));self.assertFalse(f(False,guardian,probe))
         old=pathlib.Path('/workspace/shared/mm29-cold-load-20261119')
         evidence=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/cold-load-admission/outcome.json').read_bytes()
         self.assertEqual(hashlib.sha256(evidence).hexdigest(),'a5fc3a40a293d37ccba53667e9a6c0b1aa05e4d23b8f0eccf24a635e51e27d60')

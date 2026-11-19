@@ -21,7 +21,7 @@ def cold_main_ready(view,raw,cut,selected):
 def clean_cold_load_message(text):
     # Sole success message, not a substring amid blocked/follow-up diagnostics.
     edge=r'(?:\x1b\[(?:0|32)m)*'
-    return type(text) is str and re.fullmatch(r'\r?\n'+edge+re.escape('Сохранение загружено.')+edge+r'\r?\n',text) is not None
+    return type(text) is str and re.fullmatch(r'(?:\r?\n)?'+edge+re.escape('Сохранение загружено.')+edge+r'\r?\n',text) is not None
 
 def read_cold_archive(path,expected_name,expected_sha):
     path=pathlib.Path(path)
