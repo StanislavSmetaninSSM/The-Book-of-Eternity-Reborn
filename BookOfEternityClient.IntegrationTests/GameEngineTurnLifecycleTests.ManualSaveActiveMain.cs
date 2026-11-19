@@ -130,6 +130,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         public bool KeyAvailable => _inner.KeyAvailable;
         public ConsoleKeyInfo ReadKey(bool intercept = true) { Reads++; return _inner.ReadKey(intercept); }
         public string? ReadLine() => _inner.ReadLine();
+        public void AssertCompleted() => _inner.AssertCompleted();
     }
 
     /// <summary>Runs only beneath the existing native guardian; never borrows a live game world.</summary>
