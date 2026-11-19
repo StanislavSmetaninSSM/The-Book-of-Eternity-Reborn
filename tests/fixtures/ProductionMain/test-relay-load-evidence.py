@@ -25,7 +25,7 @@ def wire(value):return json.dumps(value,separators=(',',':')).encode()+b'\n'
 def daemon(owner):
     proof={'SessionPath':'/owned/game_session'}
     for prefix,settled in [('Original',False),('Final',True)]:
-        status=dict(pid=301,startedAtUtc='2026-11-18T10:00:00Z',heartbeatAtUtc='2026-11-18T10:00:01Z',daemonGuardOwnerId=owner,daemonGuardVersion=1,sessionPath=proof['SessionPath'],status='stopped' if settled else 'running',terminalSettled=settled)
+        status=dict(pid=301,startedAtUtc='2026-11-18T10:00:00Z',heartbeatAtUtc='2026-11-18T10:00:01Z',daemonGuardOwnerId=owner,daemonGuardVersion=1,sessionPath=proof['SessionPath'],status='stopped' if settled else 'running',terminalSettled=settled,errorCount=0)
         guard=dict(version=1,sessionPath=proof['SessionPath'],ownerId=owner,settled=settled)
         for name,value in [('Status',status),('Guard',guard)]:
             raw=wire(value);proof[prefix+name+'RawHex']=raw.hex();proof[prefix+name+'SHA256']=evidence.sha(raw)

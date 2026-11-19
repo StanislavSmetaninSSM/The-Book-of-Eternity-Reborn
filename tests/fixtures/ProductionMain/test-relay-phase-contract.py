@@ -11,7 +11,7 @@ def valid():
     identity={'RunId':'main','RootKey':'/own','GenerationId':'gen','Epoch':1}
     proof={'SessionPath':'/own/game_session'}
     for prefix,settled in [('Original',False),('Final',True)]:
-        status=dict(status='stopped' if settled else 'running',sessionPath='/own/game_session',daemonGuardVersion=1,daemonGuardOwnerId='a'*32,terminalSettled=settled)
+        status=dict(status='stopped' if settled else 'running',sessionPath='/own/game_session',daemonGuardVersion=1,daemonGuardOwnerId='a'*32,terminalSettled=settled,errorCount=0)
         guard=dict(version=1,sessionPath='/own/game_session',ownerId='a'*32,settled=settled)
         for kind,row in [('Status',status),('Guard',guard)]:
             raw=json.dumps(row).encode();proof[prefix+kind+'RawHex']=raw.hex();proof[prefix+kind+'SHA256']=hashlib.sha256(raw).hexdigest()
