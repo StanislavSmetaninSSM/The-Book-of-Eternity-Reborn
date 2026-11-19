@@ -662,3 +662,29 @@ BOM-aware read pattern as existing fixtures while retaining exact raw bytes for
 identity assertions. Separate exact official selectors let unrun Unit2 execute
 first, then the corrected Integration8 once, without repeating a failing group
 merely to reach another descriptor. Production and failed world remain untouched.
+
+### Authored debug qualified offline; retained-carrier causal RED accepted
+
+Two preparation defects are retained separately: initial Integration8 stopped at
+raw BOM manifest decoding before validation, and the first Unit2 lacked the
+actor-specific validated memory context. Neither is a production RED. The final
+fixture uses actual preparation and the actual memory context (Usable/Mortal),
+signed core/journal originals, a first-person append and matching timestamp.
+
+Independent review accepted the final bounded outcome: Unit2 PASS reproduces the
+exact twelve authored debug errors and clears all issues with the corrected
+schema while preserving the GM defer decision. Integration8 has seven negative
+controls PASS and only the byte-identical historical UpdateNPCs carrier FAIL at
+npc_existing_inventory_resend_forbidden. Real Usable original/equality and
+post-validation immutable bytes precede that assertion. Other selected-profile
+resource/soul/player/guardian errors remain explicitly outside this targeted
+predicate; this is not whole-state validation or live readiness. All34 evidence
+hashes,32,070 source/eight Unit outputs and Integration output joins were verified;
+both official runners completed owned cleanup without timeout.
+
+No production fix is included in this checkpoint. A minimal proposed follow-up
+would distinguish the existing full-state validation mode from explicit response
+commands, retaining only exact same-section historical carrier DATA under a
+usable current original. Whole-row, inventory, missing/unusable-original and
+explicit-response negatives must remain strict. No failed world is reused and
+no new live qualification follows from this offline result.
