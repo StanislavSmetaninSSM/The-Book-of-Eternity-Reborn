@@ -1204,3 +1204,32 @@ strict and unchanged. Actual P01 accepted42 + normal one shutdown is now a clean
 predecessor. No runtime repeat, no physical world repair. Next ordinary43 profile
 is separately bound; fresh GM decision is not preselected, Save/cleanup remain
 unproved for that next live phase.
+
+### mm28 ordinary GM43 -> manual Save -> normal closure ACCEPTED
+Independent frozen outcome `128b6ffe714382178d3db0bb19d71d2079b847d213e78ac9facf800360ce4fde`
+verifies all13,111 artifacts. One genuine ordinary request43, independent GM
+reasoned defer before candidate, one reviewed publication and actual accepted43;
+no inventory prologue, access/item grant or forced decision. Actual consumer return
+was received at270.634s before Options270.652s/Save description270.695s. Exact PTY
+save interval620878..620913 contains only CRLF + localized success + CRLF;
+one ACK271.291s and fresh player prompt precede sole shutdown273.480s.
+Manual archive `3e4a90125ecc488d95df3f95fde6bdd810561f17ef3f4f3a0b99995b8b83d61f`
+is genuine Save43, CRC-valid with110 unique entries. Fourteen scoped bytes,
+including accepted story, match the captured and final canonical state; optional
+living history is absent. Before==After proves scoped state/queue preservation,
+not full control-file archive equivalence. Original owner is exactly
+Stopped/OwnedScopeEmpty; client/bridge/daemon/RPC/relay have normal closure,
+EOF/restores, and durable guardian ECHILD/exit0/no emergency/failure/deadline.
+Original remote exec handle is no longer available; saved receipts, not a
+reconstructed exec return, establish settlement. Total275.242s, original budgets.
+
+Strict offline all-file trace settlement:12,099 private files =11,955 physical
+rows/3,985 complete observed triples +143 healthy markers +nonce. Two helper
+sequences are explicitly local post-shutdown projections, not remote close or
+OS-lineage proof. No diagnostic prefix polluted the success interval. Current
+32,074 source/723 producer outputs/8 Unit joins close with only three declared
+offline Python/doc deltas; runtime package remained unchanged. No exhaustive
+observation or timing-neutrality claim. This completes the bounded live ordinary
+GM -> manual Save -> ACK/fresh prompt -> normal shutdown goal. The GM deferred
+issue of chalk; grant, transfer and Load remain separately unqualified. Older
+UNKNOWN worlds were not reused or repaired; no additional live phase is implied.
