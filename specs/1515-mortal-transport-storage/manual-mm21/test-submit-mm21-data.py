@@ -151,8 +151,8 @@ class ProfileBinding(unittest.TestCase):
  def test_actual_binding_shape_and_refusals(self):
   import ast,copy,re
   source=p.with_name('prepare-mm21-profile.py').read_text();tree=ast.parse(source)
-  node=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='checked_continuation_binding');scope={'re':re}
-  exec(compile(ast.Module(body=[node],type_ignores=[]),'<actual-profile-binding>','exec'),scope)
+  nodes=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in ('checked_continuation_binding','continuation_spec')];scope={'re':re}
+  exec(compile(ast.Module(body=nodes,type_ignores=[]),'<actual-profile-binding>','exec'),scope)
   checked=scope['checked_continuation_binding'];base={'Phase':'p02','PreviousSHA256':'1'*64,'GuardianSHA256':'2'*64,'SeedSHA256':'3'*64,'PhasePackageSHA256':'4'*64,'SourcePins':{},'Action':'Прошу разрешение, ничего не беру','ConsoleRoute':{'Route':'permission-with-denial','StorageId':'storage','ItemId':'item'}}
   self.assertEqual(checked(copy.deepcopy(base)),base)
   for key,value in [('Phase','p01'),('PreviousSHA256','BAD'),('Action','bad\ninput'),('ConsoleRoute',{'Route':'birth'})]:
@@ -244,10 +244,10 @@ class PhysicalTraceProfile(unittest.TestCase):
     before={str(p.relative_to(root)):p.read_bytes() for p in root.rglob('*') if p.is_file()}
     with self.assertRaises((ValueError,FileExistsError)):write(base,folder,launcher,authored)
     self.assertEqual(before,{str(p.relative_to(root)):p.read_bytes() for p in root.rglob('*') if p.is_file()})
-  for occupied in ('profile','launcher','dangling-launcher'):
+  for occupied in ('profile','launcher','dangling-launcher','preparation'):
    with self.subTest(occupied=occupied),tempfile.TemporaryDirectory() as tmp:
     root=pathlib.Path(tmp).resolve();base=root/'play';base.mkdir();folder=root/'p01';folder.mkdir();launcher=root/'launch-p01.sh'
-    target=folder/'launch-profile.json' if occupied=='profile' else launcher
+    target=folder/'launch-profile.json' if occupied=='profile' else (root/'launch-preparation.json' if occupied=='preparation' else launcher)
     if occupied=='dangling-launcher':target.symlink_to(root/'missing')
     else:target.write_bytes(b'keep')
     with self.assertRaises(ValueError):write(base,folder,launcher,{'StopNonce':'a'*32})
