@@ -3366,6 +3366,10 @@ public partial class GameEngine
     /// <summary>Completes required console refresh without erasing an already confirmed replacement.</summary>
     /// <param name="result">The established typed result after runtime rebind.</param>
     /// <returns>The same decision with additional blocked follow-up if required refresh fails.</returns>
+    internal static bool IsCleanMortalLoadedCanonicalCandidate(LoadReplacementResult result, string realm)
+        => result is { Disposition: LoadReplacementDisposition.Committed, NeedsFollowUp: false, ContinuationBlocked: false }
+            && RealmSemantics.IsMortalRealm(realm);
+
     internal async Task<LoadReplacementResult> PrepareLoadedConsoleContinuationAsync(LoadReplacementResult result)
     {
         if (result.Disposition != LoadReplacementDisposition.Committed || result.ContinuationBlocked) return result;
@@ -3373,8 +3377,7 @@ public partial class GameEngine
         {
             await SessionOperationContext.RunBoundAsync(_fs, result.EstablishedGeneration!, async () =>
             {
-                var loadedCanonical = !result.NeedsFollowUp &&
-                    RealmSemantics.IsMortalRealm(_stateManager.CurrentState.CurrentRealm);
+                var loadedCanonical = IsCleanMortalLoadedCanonicalCandidate(result, _stateManager.CurrentState.CurrentRealm);
                 if (loadedCanonical)
                     await _validator.RequireLoadedCanonicalIdleAsync(result.EstablishedGeneration!);
                 if (!await WriteGameSettingsForGm())

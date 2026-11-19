@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-loaded-canonical-data",
+      "responsibility": "#1515 T033 distinct clean committed Mortal Load canonical DATA: retained quiescent owner, exact bound/durable generation, result eligibility, marker and directory absence, closing dependency drift and strict raw isolation.",
+      "excludes": "No live game, new owner acquisition, result DTO authority, browser/afterlife or manual refresh extension.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/LoadedCanonicalValidationTests.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.LoadedCanonical.cs",
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LoadedCanonicalValidationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-combined-save-load-continuation",
       "responsibility": "#1515 T033 genuine combined accepted birth, clean actual Save archive, quiescent committed Load/new generation and actual console continuation.",
       "excludes": "No hosted main restart/daemon continuity, live gameplay, second GM action or old combined leaf reruns.",
