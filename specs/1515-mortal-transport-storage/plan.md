@@ -4746,3 +4746,16 @@ Load continuation remain open; no claim for another GM action, Save/Load or full
 One new combined leaf reuses the genuine accepted42 birth and existing runtime SaveLoadService. Existing engine Load/rebind and continuation methods change visibility only (private to internal), bodies unchanged. The real Save must commit without follow-up; its exact returned archive must retain map/index/current location/NPC/cart/story bytes and exclude pending controls. Old generation leases/bindings close before acquiring real quiescent main admission. The typed Load/rebind must first prove commitment, exact archive, distinct established durable generation, restored turn42 and canonical bytes. Actual continuation then runs on that exact result; it may clear the game loop on refusal, so only committed decision/generation/source and selected canonical bytes are asserted afterward. Logger and typed results are retained in finally; the sole desired RED is expected unblocked continuation after admission closure.
 
 No second validator, GM action, browser/afterlife/manual refresh change or hosted bridge Stop/Finish/restart claim. Old combined selectors remain unchanged. Preparation is one reused birth plus one actual Save/Load; measured cost pending. This is unbuilt/unrun source WIP, awaiting save and independent source review before official single-category RED. T033 and T016 remain open.
+
+T033 first execution is NOT desired causal RED. Fresh Integration116.605s,
+177warnings/0errors; exact one case failed in22.9882s after successful real Save,
+ZIP checks, committed Load/new durable generation/turn42 and post-load bytes.
+Continuation stopped at WriteGameSettingsForGm because this fixture had no local
+config.json, before strict validation; no validation issues were logged. This is
+a fixture preparation failure, not proof of the predicted lifecycle refusal.
+Owned fixture removed/no cleanup failure; runner complete. All32,019 sources and
+eight outputs unchanged. Outcome SHA256:
+5578285cef5930a0d32b97b83d3d40c4fc27081dfee38307a70c487c9c0b9b10.
+No retry or production fix. Trace the complete continuation preparation chain,
+then reuse the existing local-settings bootstrap in this current-runtime fixture
+before Save; review that narrow correction before another exact one-case run.
