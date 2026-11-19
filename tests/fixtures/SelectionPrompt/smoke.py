@@ -124,18 +124,13 @@ def expected_dumb_refusal(result):
 
 def inert_geometry_selected(raw, cut, menu):
     """Reuse maintained raw grammar; only this literal inert descriptor skips size admission."""
-    import types
     sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'ProductionMain'))
     import mortal_console_routes as routes
     choices=('s | Ход 43 | Хозяйственный двор у нижней лестницы | 18.11.2026 18:00 | 99999KB','↩️ Назад')
-    def descriptor(header, rows, page_size):
-        if header!='Выберите сохранение:' or tuple(rows)!=choices or page_size!=15:
-            raise ValueError('Not the exact inert geometry descriptor')
-        return {'header':header,'choices':choices,'page_size':page_size}
-    # Private function globals copy, never mutate the live module or its guard.
-    decoder=types.FunctionType(routes.selected_frames.__code__,
-                               dict(routes.selected_frames.__globals__,fixed_menu=descriptor))
-    frames=decoder(raw,cut,menu)
+    if menu.get('header')!='Выберите сохранение:' or tuple(menu.get('choices',()))!=choices or menu.get('page_size')!=15:
+        raise ValueError('Not the exact inert geometry descriptor')
+    descriptor={'header':'Выберите сохранение:','choices':choices,'page_size':15}
+    frames=routes.decode_menu_frames(raw,cut,descriptor,menu)
     return frames[-1] if frames else None
 
 def main():

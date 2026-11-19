@@ -4905,3 +4905,13 @@ prefer an explicit shared raw-decoder entrypoint behind unchanged public admissi
 No build or renderer has run; no geometry/admission behavior is qualified. Preserve
 this intermediate source for recovery, then review the narrow direct-API factor
 and existing parser regressions before any causal renderer execution.
+
+T034 direct-decoder correction (source-only, UNRUN): public selected_frames retains
+its input checks and fixed_menu76 admission, then directly delegates the unchanged
+raw grammar with checked descriptor and prior-close/Clear/command metadata.
+The inert exact78 descriptor calls this DATA-only decoder without code-object or
+global replacement. All live consumers remain on the admitted wrapper. Existing
+20 parser controls and three inert padding/wrap/control-tail controls precede the
+single causal renderer after independent source review. Reuse is per decode call,
+with no new cache, validator injection or configurable production width; no game,
+world change or full-route qualification is claimed.

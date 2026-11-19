@@ -178,6 +178,17 @@ def selected_frames(raw, cut, menu):
     if type(raw) is not bytes or type(cut) is not int or not 0<=cut<=len(raw) or type(menu) is not dict:return None
     try:
         checked=fixed_menu(menu['header'],list(menu['choices']),menu['page_size'])
+    except (ValueError,KeyError,TypeError,UnicodeError):return None
+    return decode_menu_frames(raw,cut,checked,menu)
+
+def decode_menu_frames(raw, cut, checked, menu):
+    """Decode exact raw frame DATA for a descriptor and its transition metadata.
+
+    This does not admit a live menu or authorize input. Live consumers must use
+    selected_frames, which applies fixed_menu before reaching this decoder.
+    """
+    if type(raw) is not bytes or type(cut) is not int or not 0<=cut<=len(raw) or type(menu) is not dict:return None
+    try:
         text=raw[cut:].decode('utf-8')
         def decoration(match):
             if any(int(v or 0) not in (0,1,2,3,4,9,22,23,24,29) for v in match.group(1).split(';')):raise ValueError('Unsupported decoration')
