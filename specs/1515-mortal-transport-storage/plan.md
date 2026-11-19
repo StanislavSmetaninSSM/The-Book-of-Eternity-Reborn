@@ -4593,3 +4593,14 @@ config witness from accepted canonical DATA, retaining mixed provenance and no
 acceptance claim for p02. Add cheap positive/hash/probe-join controls before the
 real diagnostic. Current nine-case result proves the prior admission contract,
 not this as-yet-unimplemented correction or the original live refusal's cause.
+
+T031 separate failed-phase config SOURCE WIP: explicit config path/hash and failed
+probe path/hash now join actual failed-phase FinalConfigSHA256, Success=false and
+accepted0. Exact106 accepted canonical DATA pins remain unchanged; report labels
+mixed provenance without publication authority. Five new cheap source-authored
+cases bring the class to14; independent source review accepts fresh Unit plus
+all14 because shared Prepare changed. This correction is UNBUILT/UNRUN; false/
+accepted0 rejection and mixed-report serialization lack separate negative cases.
+The earlier nine-case outcome was independently verified, including source/output
+joins and cleanup. No real diagnostic yet. Probes are parsed from retained bytes;
+small config hash plus fresh copy/readback fences need no new cache.
