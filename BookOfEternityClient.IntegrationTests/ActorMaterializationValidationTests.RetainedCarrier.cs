@@ -34,7 +34,8 @@ public sealed partial class ActorMaterializationValidationTests
         });
         var manifestBytes = File.ReadAllBytes(_fs.ResolvePath(prepared.ManifestPath));
         var authorityBytes = File.ReadAllBytes(_fs.ResolvePath(prepared.AuthorityPath));
-        var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(manifestBytes,
+        var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+            File.ReadAllText(_fs.ResolvePath(prepared.ManifestPath)),
             LiveTurnPreparationService.ManifestJsonOptions)!;
         Assert.Equal(prepared.RequestId, manifest.RequestId);
         Assert.Equal(43, manifest.TurnNumber);
