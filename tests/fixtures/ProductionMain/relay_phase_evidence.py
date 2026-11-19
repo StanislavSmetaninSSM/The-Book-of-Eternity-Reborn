@@ -26,7 +26,7 @@ def parse_observed_diagnostic_trace_row(filename, raw, nonce, root, pids, owner)
     common={'Nonce','Occurrence','Root','Stage','ProcessId','CaptureMonotonicTimestamp','OriginalPin'}
     require(set(row)==common|({'Purpose','Attempt','CapturedAtUtc'} if kind=='physical' else {'ObservedAtUtc','OriginalClose'}))
     require(row['Nonce']==nonce and row['Root']==root and re.fullmatch('[0-9a-f]{32}',nonce) is not None)
-    require(type(row['ProcessId']) is int and row['ProcessId']>0 and row['ProcessId'] in pids)
+    require(type(row['ProcessId']) is int and row['ProcessId']>0 and (pids is None or row['ProcessId'] in pids))
     require(type(row['Occurrence']) is int and row['Occurrence']>0)
     require(type(row['CaptureMonotonicTimestamp']) is int and row['CaptureMonotonicTimestamp']>0)
     stages={'physical-opened','lease-granted','physical-dispose-completed','contention-exhausted'} if kind=='physical' else {'active-received','helper-before-ready','helper-ready-written','canonical-current-generation-lease-acquired'}
@@ -60,6 +60,70 @@ def parse_observed_diagnostic_trace_row(filename, raw, nonce, root, pids, owner)
             require(set(close)=={'PinId','CloseId','OperationId','Identity','Outcome','ClosingFailed'})
             require(type(close['Outcome']) is int and close['Outcome']==0 and close['ClosingFailed'] is False)
     return kind,row
+
+def summarize_observed_diagnostic_trace(directory, nonce, root, owner, client_pid):
+    """Settle observed DATA only; physical-only PIDs are not OS-owner inventory."""
+    def require(value):
+        if not value:raise ValueError('Unsettled observed diagnostic trace')
+    directory=_restored_plain_path(Path(directory),True)
+    require(stat.S_IMODE(directory.stat().st_mode)==0o700)
+    require(type(client_pid) is int and client_pid>0)
+    files={};physical=[];marker_files=[];bytecount=0
+    marker=_restored_plain_path(directory/'owner-nonce')
+    require(stat.S_IMODE(marker.stat().st_mode)==0o600 and marker.read_bytes()==nonce.encode('ascii'))
+    for path in sorted(directory.iterdir()):
+        path=_restored_plain_path(path);require(stat.S_IMODE(path.stat().st_mode)==0o600)
+        raw=path.read_bytes();files[path.name]=sha(raw)
+        if path.name=='owner-nonce':continue
+        bytecount+=len(raw)
+        if raw.startswith(b'BOE_MAIN_OPERATION_MARKER '):marker_files.append((path.name,raw));continue
+        kind,row=parse_observed_diagnostic_trace_row(path.name,raw,nonce,root,None,owner)
+        require(kind=='physical');physical.append(row)
+    groups={}
+    for row in physical:groups.setdefault((row['ProcessId'],row['Occurrence']),[]).append(row)
+    require(bool(groups))
+    by_pin={}
+    def pin_key(pin):return tuple(pin[k] for k in ('PinId','CloseId','OperationId'))
+    for group in groups.values():
+        group.sort(key=lambda r:r['CaptureMonotonicTimestamp'])
+        require([r['Stage'] for r in group]==['physical-opened','lease-granted','physical-dispose-completed'])
+        base=group[0]
+        require(all({k:v for k,v in r.items() if k not in ('Stage','CapturedAtUtc','CaptureMonotonicTimestamp')}==
+                    {k:v for k,v in base.items() if k not in ('Stage','CapturedAtUtc','CaptureMonotonicTimestamp')} for r in group))
+        require(all(group[i]['CaptureMonotonicTimestamp']<=group[i+1]['CaptureMonotonicTimestamp'] for i in range(2)))
+        if base['OriginalPin'] is not None:by_pin.setdefault((base['ProcessId'],pin_key(base['OriginalPin'])),[]).append(group)
+    allowed={r['ProcessId'] for r in physical}|{client_pid};markers=[]
+    for filename,raw in marker_files:
+        kind,row=parse_observed_diagnostic_trace_row(filename,raw,nonce,root,allowed,owner)
+        require(kind=='marker');markers.append(row)
+    require(len({(r['ProcessId'],r['Occurrence']) for r in markers})==len(markers))
+    per_pid={}
+    for row in markers:per_pid.setdefault(row['ProcessId'],[]).append(row)
+    foreground=0;helpers=0
+    for pid,rows in per_pid.items():
+        rows.sort(key=lambda r:r['CaptureMonotonicTimestamp']);chunks=[]
+        for row in rows:
+            if row['Stage']=='active-received':chunks.append([row])
+            else:
+                require(bool(chunks));chunks[-1].append(row)
+        for chunk in chunks:
+            active=chunk[0];key=(pid,pin_key(active['OriginalPin']));require(key in by_pin)
+            leases=by_pin[key];require(all(active['CaptureMonotonicTimestamp']<=g[0]['CaptureMonotonicTimestamp'] for g in leases))
+            stages=[r['Stage'] for r in chunk]
+            if stages==['active-received']:
+                if pid==client_pid:
+                    purposes={g[0]['Purpose'] for g in leases}
+                    if {'SessionMutation','SessionFinalization'}<=purposes:foreground+=1
+            else:
+                require(stages==['active-received','canonical-current-generation-lease-acquired','helper-before-ready','helper-ready-written'])
+                require(all(pin_key(r['OriginalClose'])==key[1] for r in chunk[2:]))
+                helpers+=1
+    require(foreground>0)
+    return {'PhysicalEvents':len(physical),'PhysicalTriples':len(groups),'HealthyMarkers':len(markers),
+        'HelperReadySequences':helpers,'ForegroundActiveWithMutationAndFinalization':foreground,
+        'IndependentForegroundPid':client_pid,'ObservedPhysicalPids':sorted({r['ProcessId'] for r in physical}),
+        'ObservedBytes':bytecount,'Files':files,'ExhaustiveCoverage':False,
+        'Limits':'Physical-only PIDs are observed DATA, not an independently owned OS inventory. Foreground tuple joins do not identify a specific Save. No timing neutrality or exhaustive observation claim.'}
 
 def load_physical_trace_profile(out, env):
     """Read only the launcher's independently pinned profile; no asset creation."""

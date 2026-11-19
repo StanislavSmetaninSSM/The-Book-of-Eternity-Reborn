@@ -477,6 +477,7 @@ class TraceFreezer(unittest.TestCase):
         pins_path=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/mm27-marker-source/accepted-mixed-pins.json')
         pins=json.loads(pins_path.read_text())
         for name,digest in pins.items():self.assertEqual(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest(),digest)
+        self.assertEqual(set(pins),{str(accepted/'result.json')}|{str(p) for p in (accepted/'external-trace').iterdir()})
         result=json.loads((accepted/'result.json').read_text());owner=result['OriginalIdentity']
         nonce=(accepted/'external-trace/owner-nonce').read_text();pid=531
         with tempfile.TemporaryDirectory() as td:
@@ -511,6 +512,38 @@ class TraceFreezer(unittest.TestCase):
                         (trace/name).write_bytes(('BOE_MAIN_OPERATION_MARKER '+json.dumps(row)+'\n').encode());(trace/name).chmod(0o600)
                     with self.assertRaises(ValueError):call()
             restore();self.assertEqual(call(),summary)
+            # Authored helper sequence cloned from genuine typed DATA, not claimed captured helper execution.
+            active=json.loads(originals[marker].split(b' ',1)[1]);helper_pid=pid+1
+            pin=copy.deepcopy(active['OriginalPin']);pin['PinId']='a'*32;pin['CloseId']='b'*32;pin['OperationId']='c'*32
+            for name,raw in originals.items():
+                if name=='owner-nonce' or '-marker-' in name:continue
+                row=json.loads(raw.split(b' ',1)[1]);row['ProcessId']=helper_pid;row['OriginalPin']=pin
+                row['CaptureMonotonicTimestamp']+=10000
+                p=trace/f"{helper_pid}-{row['Occurrence']}-{row['Stage']}.json"
+                p.write_bytes(('BOE_CANONICAL_LEASE_OBSERVATION '+json.dumps(row)+'\n').encode());p.chmod(0o600)
+            for n,stage in enumerate(('active-received','canonical-current-generation-lease-acquired','helper-before-ready','helper-ready-written')):
+                row=copy.deepcopy(active);row.update(ProcessId=helper_pid,Occurrence=n+1,Stage=stage,CaptureMonotonicTimestamp=active['CaptureMonotonicTimestamp']+n)
+                row['OriginalPin']=pin if n==0 else None
+                row['OriginalClose']=None if n<2 else {**{k:pin[k] for k in ('PinId','CloseId','OperationId','Identity')},'Outcome':0,'ClosingFailed':False}
+                p=trace/f"{helper_pid}-marker-{n+1}-{stage}.json";p.write_bytes(('BOE_MAIN_OPERATION_MARKER '+json.dumps(row)+'\n').encode());p.chmod(0o600)
+            self.assertEqual(call()['HelperReadySequences'],1)
+            (trace/f'{helper_pid}-marker-3-helper-before-ready.json').unlink()
+            with self.assertRaises(ValueError):call()
+            restore()
+            # Actual offline freezer entrypoint, with explicitly authored settled metadata bound to copied real trace.
+            wrapper=pathlib.Path(__file__).resolve().parents[3]/'specs/1515-mortal-transport-storage/manual-mm21/freeze-diagnostic-trace.py'
+            wrapper_ns={'__file__':str(wrapper),'__name__':'freezer_data'}
+            exec(compile(wrapper.read_text(),str(wrapper),'exec'),wrapper_ns)
+            phase=pathlib.Path(td)/'phase';phase.mkdir();trace.rename(phase/'physical-trace')
+            serialized_owner={**owner,'Backend':'LinuxSupervisor'}
+            inputs={'launch-profile.json':{'StopNonce':nonce},'probe-result.json':{'OriginalRunningRecord':{'Identity':serialized_owner},'BasePath':owner['RootKey'],'Success':False},'rpc-journal.json':[{'Entrypoint':'client','OriginalPid':pid}]}
+            digests=[]
+            for name,value in inputs.items():
+                raw=json.dumps(value).encode();(phase/name).write_bytes(raw);digests.append(hashlib.sha256(raw).hexdigest())
+            (phase/'launch.exit').write_text('1\n');output=pathlib.Path(td)/'summary.json'
+            frozen=wrapper_ns['freeze'](phase,*digests,output);self.assertFalse(frozen['RouteSuccess']);self.assertEqual(frozen['HealthyMarkers'],1)
+            with self.assertRaises(FileExistsError):wrapper_ns['freeze'](phase,*digests,output)
+            with self.assertRaises(ValueError):wrapper_ns['freeze'](phase,'0'*64,*digests[1:],pathlib.Path(td)/'bad.json')
         for name,digest in pins.items():self.assertEqual(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest(),digest)
 
 if __name__=='__main__':
