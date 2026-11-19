@@ -306,8 +306,6 @@ public partial class FileSystemManager
             _parentAuthority = parentAuthority;
         }
 
-        internal MainOperationFailureDiagnostic.PhysicalLeaseContext? PhysicalObservation { get; set; }
-        internal int PhysicalAttempt { get; set; }
         internal MainAdmission? MainAdmission {get;set;}
         internal FileSystemManager Owner { get; }
         internal bool IsActive =>
@@ -323,10 +321,7 @@ public partial class FileSystemManager
             try
             {
                 if (stream != null)
-                {
                     await stream.DisposeAsync();
-                    MainOperationFailureDiagnostic.ReportPhysical(PhysicalObservation, "physical-dispose-completed", PhysicalAttempt);
-                }
             }
             finally
             {
@@ -410,6 +405,8 @@ public partial class FileSystemManager
             _parentAuthority = parentAuthority;
         }
 
+        internal MainOperationFailureDiagnostic.PhysicalLeaseContext? PhysicalObservation { get; set; }
+        internal int PhysicalAttempt { get; set; }
         internal MainAdmission? MainAdmission {get;set;}
         internal FileSystemManager Owner { get; }
         internal CanonicalWritePurpose Purpose { get; }
@@ -488,7 +485,10 @@ public partial class FileSystemManager
             try
             {
                 if (stream != null)
+                {
                     await stream.DisposeAsync();
+                    MainOperationFailureDiagnostic.ReportPhysical(PhysicalObservation, "physical-dispose-completed", PhysicalAttempt);
+                }
             }
             catch (Exception ex) { RetainFailure(ex); }
             try { parentAuthority?.Dispose(); }
