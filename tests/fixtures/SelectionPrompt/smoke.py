@@ -135,11 +135,13 @@ def inert_geometry_selected(raw, cut, menu):
 
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
-    assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load','pipe-inventory-cleanup','pipe-load-geometry')
+    assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load','pipe-inventory-cleanup','pipe-load-geometry','pty-load-100','pty-load-80')
     cleanup = mode == 'pipe-inventory-cleanup'
     inventory = mode in ('pipe-inventory','pipe-inventory-cleanup')
-    geometry = mode == 'pipe-load-geometry'
-    load = mode in ('pipe-load','pipe-load-geometry')
+    geometry = mode in ('pipe-load-geometry','pty-load-100','pty-load-80')
+    same_pty = mode in ('pty','pty-load-100','pty-load-80')
+    wrong_width = mode == 'pty-load-80'
+    load = mode == 'pipe-load' or geometry
     fixed_render = inventory or load
     if fixed_render:
         sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'ProductionMain'))
@@ -154,7 +156,7 @@ def main():
         first_label,footer=menu['choices'][0],menu['choices'][-1]
     root.mkdir(parents=True,exist_ok=False)
     master,slave=pty.openpty()
-    fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0))
+    fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,80 if wrong_width else 100,0,0))
     initial=termios.tcgetattr(slave)
     def own():
         os.setsid();fcntl.ioctl(slave,termios.TIOCSCTTY,0);os.tcsetpgrp(slave,os.getpid())
@@ -166,11 +168,11 @@ def main():
     start=time.monotonic();stage=0
     try:
         args=['dotnet',helper,'spectre-inventory-cleanup-smoke' if cleanup else 'spectre-load-geometry-smoke' if geometry else 'spectre-load-smoke' if load else 'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
-        process=subprocess.Popen(args,stdin=slave,stdout=slave if mode=='pty' else subprocess.PIPE,
-                                 stderr=slave if mode=='pty' else subprocess.STDOUT,env=env,preexec_fn=own)
+        process=subprocess.Popen(args,stdin=slave,stdout=slave if same_pty else subprocess.PIPE,
+                                 stderr=slave if same_pty else subprocess.STDOUT,env=env,preexec_fn=own)
         result.update(OriginalPid=process.pid,Argv=args)
-        streams={master:'terminal' if mode=='pty' else 'echo'}
-        if mode!='pty':streams[process.stdout.fileno()]='captured'
+        streams={master:'terminal' if same_pty else 'echo'}
+        if not same_pty:streams[process.stdout.fileno()]='captured'
         raws={fd:(root/(name+'.raw')).open('wb',buffering=0) for fd,name in streams.items()}
         if inventory:
             # Exercise the actual driver's finite selector, not another observer.
@@ -238,18 +240,39 @@ def main():
                     data=b''
                 if not data:closed.add(fd);continue
                 raws[fd].write(data)
-                if mode=='pty' or streams[fd]=='captured':
+                if same_pty or streams[fd]=='captured':
                     captured.extend(data);screen.feed(data)
                 else:control.feed(data)
+            if geometry and (root/'geometry.json').exists():
+                measured=json.loads((root/'geometry.json').read_text())
+                result['ActualGeometry']=measured
+                if same_pty:
+                    expected_width=80 if wrong_width else 100
+                    assert measured['ConsoleWidth']==measured['SpectreWidth']==result['PtySizeReadback'][1]==expected_width
+                    assert not measured['InputRedirected'] and not measured['OutputRedirected']
+            if wrong_width and stage==2:
+                # Exact observed 80-column wrapping from the prior renderer, not
+                # absence of a valid frame or a timeout classified as success.
+                tail=screen.plain[frame_cut:].replace('\r\n','\n')
+                pattern=(r'Выберите сохранение: *\n(?: *\n)*> '+
+                         re.escape(load_menu['choices'][0][:-7])+r' *\n99999KB *\n  '+
+                         re.escape(load_menu['choices'][1])+r' *')
+                at=tail.rfind('Выберите сохранение:')
+                if at>=0 and re.fullmatch(pattern,tail[at:]) and not screen.pending and not screen.decoder.getstate()[0]:
+                    assert result['Inputs']==[{'Key':'Down','Hex':result['Inputs'][0]['Hex']},'Enter']
+                    result['ExpectedWrappedRefusal']=True
+                    result['WrappedRawHex']=bytes(captured[raw_cut:]).hex()
+                    result['NormalExitQualified']=False
+                    break
             ready=lambda choice: (inert_geometry_selected(bytes(captured),raw_cut,menu)==(first_label if choice=='SMOKE_ALPHA' else footer)) if geometry and stage>=2 else (selected_frame(bytes(captured),raw_cut,menu) ==
                 (first_label if choice=='SMOKE_ALPHA' else footer)) if fixed_render else (
-                screen.selected(choice) if mode=='pty' else screen.frame(choice,frame_cut))
+                screen.selected(choice) if same_pty else screen.frame(choice,frame_cut))
             if stage==0 and ready('SMOKE_ALPHA'):
                 if fixed_render:
                     actual=bytes(captured[raw_cut:])
                     assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith(footer.encode())
                     result['InitialCompleteFooterWithoutCR']=True
-                result['InitialRender']=screen.lines() if mode=='pty' else screen.plain[frame_cut:]
+                result['InitialRender']=screen.lines() if same_pty else screen.plain[frame_cut:]
                 arrow=screen.down()
                 result['KeyboardAtDown']=dict(screen.keyboard)
                 assert not control.pending and not control.invalid
@@ -261,7 +284,7 @@ def main():
                     actual=bytes(captured[raw_cut:])
                     assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith(footer.encode())
                     result['MovedCompleteFooterWithoutCR']=True
-                result['MovedRender']=screen.lines() if mode=='pty' else screen.plain[frame_cut:]
+                result['MovedRender']=screen.lines() if same_pty else screen.plain[frame_cut:]
                 if load:
                     previous=menu;raw_cut=len(captured)
                     menu=entry_menu(after_menu(load_menu,previous),load_clear=True)
@@ -276,8 +299,9 @@ def main():
                 result['TransitionCompleteFooterWithoutCR']=True
                 result['TransitionRawHex']=actual.hex()
                 raw_cut=len(captured);frame_cut=len(screen.plain)
-                assert os.write(master,b'\x1b[B')==3
-                result['Inputs'].append({'Key':'Down','Hex':'1b5b42'});stage=3
+                arrow=screen.down()
+                assert os.write(master,arrow)==len(arrow)
+                result['Inputs'].append({'Key':'Down','Hex':arrow.hex()});stage=3
             elif load and stage==3 and ready('SMOKE_BETA'):
                 actual=bytes(captured[raw_cut:])
                 assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith(footer.encode())
@@ -289,6 +313,8 @@ def main():
             if len(closed)==len(streams):break
         result['EOF']=len(closed)==len(streams)
         if result['EOF']:screen.finish();control.finish()
+        if result.get('ExpectedWrappedRefusal'):
+            raise RuntimeError('Expected inert wrong-width refusal; owned cleanup required')
         if not result['EOF']:raise TimeoutError('Actual selection/exit/EOF not observed within 12s')
         result['ExitCode']=process.wait(timeout=1)
         result['TermiosRestored']=termios.tcgetattr(master)==initial
@@ -298,7 +324,7 @@ def main():
         assert receipt['Term']==env['TERM'] and receipt['NoColor']=='1' and receipt['PlainOutput']
         if mode!='pipe-dumb':
             assert stage==(4 if load else 2) and result['ExitCode']==0 and receipt['Selected']==(target if inventory else footer if fixed_render else 'SMOKE_BETA') and receipt['Failure'] is None
-        if mode=='pty':
+        if same_pty:
             assert not receipt['OutputRedirected'] and not receipt['ErrorRedirected']
         else:
             assert receipt['OutputRedirected'] and receipt['ErrorRedirected']
@@ -338,6 +364,9 @@ def main():
             result['ExpectedAnsiRefusal']=expected_dumb_refusal(result)
             result['Success']=result['ExpectedAnsiRefusal']
             if not result['Success']:result['Failure']='Expected ANSI refusal/complete cleanup not proved'
+        if wrong_width and result.get('ExpectedWrappedRefusal'):
+            result['Success']=(result.get('Joined') is True and result.get('CleanupDrained') is True
+                               and result['CleanupFailures']==[] and len(result['Inputs'])==2)
         result['ElapsedSeconds']=time.monotonic()-start
         (root/'result.json').write_text(json.dumps(result,indent=2))
     return 0 if result['Success'] and not result['CleanupFailures'] else 1

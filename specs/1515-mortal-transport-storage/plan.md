@@ -4932,3 +4932,11 @@ Console/Spectre and ioctl, with wrong-width80 refusal control. This is not yet
 implemented or qualified; full exact route and live profile remain gated. No game,
 world mutation or retry occurred; mm20 stays failed/non-predecessor with daemon
 error1 retained separately.
+
+T034 next source-only inert modes use the same PTY for all three standard streams:
+fixed100 must measure actual Console/Spectre100, return exact Back and drain normally
+before unchanged guard76 refuses (expected post-exit RED, not live admission GREEN).
+Fixed80 must observe the exact wrapped suffix before any Load key and explicitly
+qualifies only owned negative cleanup, not normal exit/termios. Unsupported probes,
+controls or geometry mismatch remain failures. Public guard and live driver remain
+unchanged; no run yet, full-route qualification remains open.

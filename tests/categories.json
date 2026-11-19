@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-load-pty-geometry",
+      "responsibility": "#1515 T034 same-PTY fixed100 exact Load78 render/Back/normal exit before unchanged guard76 (expected post-exit RED), and fixed80 actual wrapped refusal with separately owned negative cleanup.",
+      "excludes": "No game, GM, world, authority, production geometry changes or bypass of live admission.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/SpectreSelectionSmoke.cs",
+        "tests/fixtures/SelectionPrompt/smoke.py"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualSamePtyLoadGeometryHasExplicitOutcome"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-load-geometry-renderer",
       "responsibility": "#1515 T034 exact planned 78-column Load row: actual two-prompt Spectre geometry/raw frames and normal Back/EOF before unchanged 76-column admission guard. Causal diagnostic RED; not full-route qualification.",
       "excludes": "No game, GM, world, authority, production geometry changes or bypass of live admission.",

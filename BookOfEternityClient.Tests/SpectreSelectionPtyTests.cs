@@ -32,6 +32,11 @@ public sealed class SpectreSelectionPtyTests
         await RunModeAsync("pipe-load-geometry");
     }
 
+    [Theory]
+    [InlineData("pty-load-100")]
+    [InlineData("pty-load-80")]
+    public Task ActualSamePtyLoadGeometryHasExplicitOutcome(string mode) => RunModeAsync(mode);
+
     /// <summary>Reuses the owned inert renderer process and its exact EOF/guardian cleanup for one explicit console mode.</summary>
     private static async Task RunModeAsync(string mode)
     {
@@ -57,6 +62,14 @@ public sealed class SpectreSelectionPtyTests
         Assert.False(g.GetProperty("deadline").GetBoolean());
         using var result=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(root,"peer/result.json")));
         Assert.True(result.RootElement.GetProperty("Success").GetBoolean(), result.RootElement.ToString());
+        if (mode == "pty-load-80")
+        {
+            Assert.True(result.RootElement.GetProperty("ExpectedWrappedRefusal").GetBoolean());
+            Assert.False(result.RootElement.GetProperty("NormalExitQualified").GetBoolean());
+            Assert.True(result.RootElement.GetProperty("Joined").GetBoolean());
+            Assert.True(result.RootElement.GetProperty("CleanupDrained").GetBoolean());
+            return; // Negative cleanup is not a normal-exit/termios assertion.
+        }
         Assert.True(result.RootElement.GetProperty("EOF").GetBoolean());
         Assert.True(result.RootElement.GetProperty("TermiosRestored").GetBoolean());
     }
