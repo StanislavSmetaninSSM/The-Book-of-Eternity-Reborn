@@ -370,3 +370,20 @@ and eight owning outputs matched before/after. External outcome `03c2ac81…` re
 full evidence. This is detached DATA only, not real tool/preparation admission.
 Current mm24 input must bind accepted publisher tool pins and this saved source;
 independent integrated input review remains mandatory before any seed export.
+
+## mm24 scripted P01 accepted, P02 not started
+
+Both independent outcome contours accepted external outcome `96c2d329…`: all
+10,720 artifact hashes, single authenticated request/response and accepted turn42,
+current package/source/output joins, canonical materialization and normal owned
+cleanup. The same-request post-consumer marker preceded the sole shutdown;
+daemon errors remained 0→0, original scope stopped empty and all children exited0.
+Observed physical trace: 9,873 events, 3,291 complete ordered triples, 4,796,628
+bytes across 53 total PIDs, including foreground20 and bridge50. No malformed or
+partial observed file or PTY physical prefix was found. Captured intervals include
+instrumentation; neither exhaustive coverage, timing neutrality nor the historical
+mm23 holder is established. P01 used the explicitly scripted authored scene, not
+an independent GM decision or access grant. P02 remains unstarted. Its next gate
+is exact retained predecessor/package/world binding plus exclusive fresh trace and
+profile, using the reviewed phase function; genuine GM choice is deferred until
+an authenticated request, with no predetermined council consent or grant.
