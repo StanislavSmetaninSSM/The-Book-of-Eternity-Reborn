@@ -15,7 +15,13 @@ public sealed partial class GameEngineTurnLifecycleTests
 {
     /// <summary>Exercises the ordinary console Save boundary against a genuine active hosted main.</summary>
     [Fact]
-    public async Task ManualSave_ActiveHostedMainWithoutAmbientGrantPublishesAndCloses()
+    public Task ManualSave_ActiveHostedMainWithoutAmbientGrantPublishesAndCloses() => RunManualSaveHostedProbeAsync(0);
+
+    /// <summary>Actual original admission diagnostics must not contaminate the merged Save result stream.</summary>
+    [Fact]
+    public Task ManualSave_HealthyAdmissionTraceStaysOutsideMergedConsole() => RunManualSaveHostedProbeAsync(1);
+
+    private async Task RunManualSaveHostedProbeAsync(int mode)
     {
         Assert.True(OperatingSystem.IsLinux());
         var own = Path.Combine("/tmp", "ms-" + Guid.NewGuid().ToString("N")[..12]);
@@ -32,7 +38,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Path.Combine(own, "guardian.json"), "25000",
             Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"), support,
             "engine-manual-save-active", typeof(GameEngineTurnLifecycleTests).Assembly.Location,
-            package, Path.Combine(own, "result.json"), "0", own], Path.Combine(own, "probe.log"), 30);
+            package, Path.Combine(own, "result.json"), mode.ToString(System.Globalization.CultureInfo.InvariantCulture), own], Path.Combine(own, "probe.log"), 30);
         var guardian = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "guardian.json")))!;
         Assert.True(guardian["echild"]!.GetValue<bool>());
         Assert.Equal(0, guardian["driverExitCode"]!.GetValue<int>());
@@ -46,6 +52,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         // Causal assertion follows real setup/refusal and complete original cleanup.
         Assert.True(result["MenuSucceeded"]!.GetValue<bool>(), result.ToJsonString());
         Assert.True(result["ArchiveVerified"]!.GetValue<bool>(), result.ToJsonString());
+        if (mode == 1)
+        {
+            Assert.True(result["MergedSaveIntervalClean"]!.GetValue<bool>(), result.ToJsonString());
+            Assert.True(result["ExternalActiveMarkerJoined"]!.GetValue<bool>(), result.ToJsonString());
+        }
     }
 
     /// <summary>Preserves a real committed archive across finalization failure or detected replacement.</summary>
@@ -136,7 +147,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <summary>Runs only beneath the existing native guardian; never borrows a live game world.</summary>
     public static async Task WriteManualSaveActiveMainProbeAsync(string package, string output, int mode, string own)
     {
-        Assert.Equal(0, mode);
+        Assert.InRange(mode, 0, 1);
         var launch = NeutralTerminalLaunch.Create(package, own);
         var root = Directory.GetParent(launch.Scratch)!.FullName;
         var seed = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
@@ -157,6 +168,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         var started = false;
         GmSessionRunIdentity? original = null;
         GmSessionRunCoordinator? originalOwner = null;
+        var trace = Path.Combine(own, "external-trace");
+        var nonce = Guid.NewGuid().ToString("N");
+        var oldRoute = Environment.GetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalRouteVariable);
+        var oldPath = Environment.GetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalDirectoryVariable);
+        var oldNonce = Environment.GetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable);
         try
         {
             await host.CallAsync("StartShellAsync");
@@ -168,6 +184,16 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(GmSessionRunDisposition.Running, GmSessionRunRecordCodec.Decode(runningBytes).Disposition);
             Assert.False(host.Terminal.RootExited.IsCompleted);
             result["OriginalIdentity"] = original;
+            if (mode == 1)
+            {
+                Directory.CreateDirectory(trace, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+                var marker = Path.Combine(trace, "owner-nonce");
+                File.WriteAllText(marker, nonce, new System.Text.UTF8Encoding(false));
+                File.SetUnixFileMode(marker, UnixFileMode.UserRead | UnixFileMode.UserWrite);
+                Environment.SetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalRouteVariable, "external");
+                Environment.SetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalDirectoryVariable, trace);
+                Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, nonce);
+            }
             Task body;
             using (ExecutionContext.SuppressFlow()) body = Task.Run(async () =>
             {
@@ -189,9 +215,39 @@ public sealed partial class GameEngineTurnLifecycleTests
                 using var text = new StringWriter();
                 AnsiConsole.Console = AnsiConsole.Create(new AnsiConsoleSettings
                 { Ansi = AnsiSupport.No, ColorSystem = ColorSystemSupport.NoColors, Out = new AnsiConsoleOutput(text) });
+                var originalError = Console.Error;
+                if (mode == 1) Console.SetError(text); // isolated child only; same writer, not a PTY claim
                 try { menuSucceeded = await runtime.Engine.InGameOptionsMenu(); }
                 catch (Exception failure) { menuFailure = failure; }
-                finally { AnsiConsole.Console = prior; }
+                finally { Console.SetError(originalError); AnsiConsole.Console = prior; }
+                if (mode == 1)
+                {
+                    const string description = "Описание (необязательно): ";
+                    var rendered = text.ToString();
+                    var boundary = rendered.LastIndexOf(description, StringComparison.Ordinal);
+                    result["MergedSaveIntervalClean"] = boundary >= 0 &&
+                        rendered[(boundary + description.Length)..] == new LocalizationManager().T("save_success") + Environment.NewLine;
+                    var activeMarkers = new List<JsonElement>();
+                    foreach (var path in Directory.GetFiles(trace, "*.json"))
+                    {
+                        var raw = File.ReadAllText(path);
+                        const string prefix = "BOE_MAIN_OPERATION_MARKER ";
+                        if (!raw.StartsWith(prefix, StringComparison.Ordinal)) continue;
+                        using var row = JsonDocument.Parse(raw[prefix.Length..]);
+                        var value = row.RootElement;
+                        if (value.GetProperty("Stage").GetString() == "active-received") activeMarkers.Add(value.Clone());
+                    }
+                    var joined = false;
+                    if (activeMarkers.Count == 1)
+                    {
+                        var row = activeMarkers[0];
+                        var pin = JsonSerializer.Deserialize<MainOperationReply>(row.GetProperty("OriginalPin"), MainOperationReader.Json)!;
+                        joined = row.GetProperty("Nonce").GetString() == nonce && row.GetProperty("ProcessId").GetInt32() == Environment.ProcessId &&
+                            pin.Ok && pin.State == MainOperationState.Active && pin.Identity == original &&
+                            Guid.TryParseExact(pin.PinId, "N", out _) && Guid.TryParseExact(pin.CloseId, "N", out _) && Guid.TryParseExact(pin.OperationId, "N", out _);
+                    }
+                    result["ExternalActiveMarkerJoined"] = joined;
+                }
                 File.WriteAllText(Path.Combine(own, "menu.txt"), text.ToString());
                 Assert.Equal(runningBytes, File.ReadAllBytes(recordPath));
                 Assert.Equal(generation, File.ReadAllBytes(files.SessionGenerationPath));
@@ -222,6 +278,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         finally
         {
+            Environment.SetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalRouteVariable, oldRoute);
+            Environment.SetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalDirectoryVariable, oldPath);
+            Environment.SetEnvironmentVariable(GmSessionRunCoordinator.StopDiagnosticNonceVariable, oldNonce);
             if (started) await host.CallAsync("StopShellAsync").WaitAsync(TimeSpan.FromSeconds(5));
             await control.CancelAsync();
             await server.WaitAsync(TimeSpan.FromSeconds(5));

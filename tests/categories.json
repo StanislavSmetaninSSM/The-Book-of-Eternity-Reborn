@@ -59437,6 +59437,41 @@
           ]
         }
       ]
+    },
+    {
+      "id": "healthy-main-marker-routing",
+      "responsibility": "#1515 healthy main marker explicit external routing preserves exact merged manual Save stream and failure diagnostics; authored controlled merged sink, not PTY.",
+      "excludes": "No live/world, no parser weakening, no physical/failure suppression; mixed trace DATA admission remains separate.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/MainOperationFailureDiagnostic.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HealthyMarkerRouting.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-engine-save-presentation",
+          "when": "Manual Save result presentation/continuation changes"
+        },
+        {
+          "id": "gm-main-review-closing-linux",
+          "when": "Original participation/closing interpretation changes"
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ManualSave_HealthyAdmissionTraceStaysOutsideMergedConsole",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HealthyMarkerRoutingPreservesFailureChannel"
+          ]
+        }
+      ]
     }
   ]
 }

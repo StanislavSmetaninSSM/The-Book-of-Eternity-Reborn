@@ -434,9 +434,41 @@ class OrdinarySave(unittest.TestCase):
             bad=copy.deepcopy(r);bad['OrdinarySaveProof'][key]=value;self.assertFalse(valid(bad))
         ns['result']=r;exec(compile(ast.Module(body=assignments,type_ignores=[]),'<actual-final-success>','exec'),ns);self.assertTrue(r['Success'])
 
+class MixedTrace(unittest.TestCase):
+    def test_typed_mixed_trace_rows_never_ignore_unknown_or_foreign_data(self):
+        parse=getattr(evidence,'parse_observed_diagnostic_trace_row',None)
+        self.assertTrue(callable(parse),'actual typed diagnostic artifact parser missing')
+        nonce='a'*32;root='/tmp/authored-canonical';pid=41
+        owner=dict(RootKey=root,RunId='b'*32,GenerationId='c'*32,Epoch=2,Backend=2,HostInstanceId='d'*32,BootId='11111111-2222-3333-4444-555555555555')
+        pin=dict(Ok=True,State=1,PinId='e'*32,CloseId='f'*32,OperationId='1'*32,Identity=owner,Error=None)
+        physical=dict(Nonce=nonce,Occurrence=1,Root=root,Purpose='SessionMutation',OriginalPin=pin,Stage='physical-opened',Attempt=1,ProcessId=pid,CapturedAtUtc='2026-11-19T21:10:28Z',CaptureMonotonicTimestamp=100)
+        marker=dict(Nonce=nonce,Occurrence=2,Root=root,Stage='active-received',ProcessId=pid,ObservedAtUtc='2026-11-19T21:10:28Z',CaptureMonotonicTimestamp=101,OriginalPin=pin,OriginalClose=None)
+        def raw(kind,row):return (( 'BOE_CANONICAL_LEASE_OBSERVATION ' if kind=='physical' else 'BOE_MAIN_OPERATION_MARKER ')+json.dumps(row)+'\n').encode()
+        def name(kind,row):return str(row['ProcessId'])+('-marker-' if kind=='marker' else '-')+str(row['Occurrence'])+'-'+row['Stage']+'.json'
+        def call(kind,row,filename=None,data=None):return parse(filename or name(kind,row),raw(kind,row) if data is None else data,nonce,root,{pid},owner)
+        observed=[]
+        for index,stage in enumerate(('physical-opened','lease-granted','physical-dispose-completed')):
+            row={**physical,'Stage':stage,'CaptureMonotonicTimestamp':100+index}
+            self.assertEqual(call('physical',row),('physical',row));observed.append(row)
+        self.assertEqual(call('marker',marker),('marker',marker))
+        self.assertEqual([r['Stage'] for r in observed],['physical-opened','lease-granted','physical-dispose-completed'])
+        for kind,base in (('physical',physical),('marker',marker)):
+            for field,value in [('Nonce','0'*32),('Root','/tmp/foreign'),('ProcessId',42),('ProcessId',True),('Occurrence',0),('Stage','unknown')]:
+                row={**base,field:value}
+                with self.subTest(kind=kind,field=field,value=value),self.assertRaises(ValueError):call(kind,row)
+            with self.assertRaises(ValueError):call(kind,base,filename='wrong.json')
+            with self.assertRaises(ValueError):call(kind,base,data=raw(kind,base)[:-1])
+            with self.assertRaises(ValueError):call(kind,base,data=b'unknown '+raw(kind,base))
+            duplicate=raw(kind,base).replace(b'{',b'{"Nonce":"'+nonce.encode()+b'",',1)
+            with self.assertRaises(ValueError):call(kind,base,data=duplicate)
+            row=copy.deepcopy(base);row['OriginalPin']['Identity']['RunId']='0'*32
+            with self.assertRaises(ValueError):call(kind,row)
+        row=copy.deepcopy(marker);row['OriginalPin']['State']=0
+        with self.assertRaises(ValueError):call('marker',row)
+
 if __name__=='__main__':
-    selected=OrdinarySave if sys.argv[1:]==['ordinary-save'] else Fences
-    expected=8 if selected is OrdinarySave else 11
+    selected=MixedTrace if sys.argv[1:]==['mixed-trace'] else OrdinarySave if sys.argv[1:]==['ordinary-save'] else Fences
+    expected=1 if selected is MixedTrace else 8 if selected is OrdinarySave else 11
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(selected);assert suite.countTestCases()==expected
     result=unittest.TextTestRunner(verbosity=2).run(suite)
     raise SystemExit(0 if result.wasSuccessful() and result.testsRun==expected and not result.skipped else 1)

@@ -1071,3 +1071,17 @@ Bounded healthy-marker routing plan (source/test-first only, reviewer design GO)
   assertion. relay_phase_evidence admission validates namespace+marker only and
   does not enumerate event payloads. No terminal parser/grammar, timeout or world
   changes; exact source/count/command gates precede RED and later implementation.
+
+Healthy routing test-first WIP selection: existing hosted Save probe gains only
+mode1 (same real owner, direct refusal, actual Save and normal Stop). Mode1
+installs private external routing only after original start, merges actual
+consumer stderr/menu into one isolated writer, restores both channels/env and
+keeps all normal cleanup before outer interval/marker assertions. This scripted
+menu does complete its authored ACK; it models the offending output interval,
+not live controller ACK qualification. Five direct route cases preserve actual
+failure Report and legacy/explicit stderr, while three malformed explicit modes
+must suppress healthy output. Expected initial C#6 =4 featureFAIL/2PASS.
+One separately selected actual-artifact mixed DATA method initially fails the
+missing classifier callable; its downstream typed/malformed/foreign cases are
+unexecuted until implementation. No production diagnostic/Save/parser changes,
+no runtime yet. Exact source/count/command review required before bounded RED.
