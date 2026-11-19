@@ -1233,3 +1233,17 @@ observation or timing-neutrality claim. This completes the bounded live ordinary
 GM -> manual Save -> ACK/fresh prompt -> normal shutdown goal. The GM deferred
 issue of chalk; grant, transfer and Load remain separately unqualified. Older
 UNKNOWN worlds were not reused or repaired; no additional live phase is implied.
+
+### Finite next P03 council appeal: test-first wrapper boundary
+Root requests a fresh ordinary44 council appeal on clean accepted P02, not a new
+world or presumed grant. Live driver already admits exact retained predecessor
+and current_max+1; its package and grammar remain unchanged. Preparation and
+one-shot wrappers currently stop at P02. Proposed closed extension is P03<-P02
+(accepted43 -> expected44), ordinary-save only, preserving P01/P02. Authenticate
+binding before output selection; all prior package/guardian/stopped owner/daemon/
+retained-byte checks remain. Additionally require actual prior ordinary Save proof
+and unique current manual archive digest/scoped contents. No arbitrary phase path,
+no source authority fabrication, no item move. Existing pure test module adds four
+actual AST/DATA cases, initially feature RED expected; runtime remains unrun.
+The fresh GM decides only after genuine44. Grant/transfer/hosted Load are separate,
+not implied by requesting consideration of the recorded chalk appeal.

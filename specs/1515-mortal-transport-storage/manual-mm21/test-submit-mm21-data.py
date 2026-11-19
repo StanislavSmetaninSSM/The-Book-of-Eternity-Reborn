@@ -129,7 +129,22 @@ class MainPath(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'exact original queue'):self.call(phase='p01')
   self.assertEqual(self.calls,0)
  def test_unknown_phase_refused_before_worker(self):
-  with self.assertRaises(SystemExit):self.call(phase='p03')
+  with self.assertRaises(SystemExit):self.call(phase='p99')
+  self.assertEqual(self.calls,0)
+
+ def test_p03_uses_only_its_queue_origin_and_once_marker(self):
+  import subprocess
+  old=self.phase;self.phase=self.root/'p03';old.rename(self.phase)
+  self.q=self.phase/'queue/request-data';self.c=self.phase/'candidate.json';self.e=self.phase/'expected.json'
+  with self.assertRaisesRegex(ValueError,'exact original queue'):self.call(phase='p02')
+  self.assertEqual(self.calls,0)
+  def worker(argv,**kwargs):
+   self.assertEqual(argv[1],str(self.phase/'relay/relay_worker.py'));self.assertEqual(argv[3],str(self.q))
+   return subprocess.CompletedProcess(argv,0,'inert','')
+  try:result=self.call(worker,phase='p03')
+  except SystemExit:self.fail('Missing closed p03 publisher phase')
+  self.assertEqual(result,0);self.assertEqual(self.calls,1)
+  with self.assertRaisesRegex(ValueError,'already attempted'):self.call(worker,phase='p03')
   self.assertEqual(self.calls,0)
 
 class ProfileBinding(unittest.TestCase):
@@ -243,6 +258,65 @@ class PhysicalTraceProfile(unittest.TestCase):
   self.assertEqual(len(gates),1)
   action_write=[n for n in tree.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Attribute) and n.value.func.attr=='write_bytes']
   self.assertTrue(action_write);self.assertLess(gates[0].lineno,min(n.lineno for n in action_write))
+
+class P03Continuation(unittest.TestCase):
+ def actual(self):
+  return PhysicalTraceProfile().actual()
+ def test_closed_phase_map_binding_and_turn(self):
+  import copy
+  tree,ns=self.actual();fn=ns.get('continuation_spec')
+  self.assertTrue(callable(fn),'Missing closed continuation map; downstream controls UNEXECUTED')
+  for phase,expected in [('p02',('p01',42,43)),('p03',('p02',43,44))]:
+   self.assertEqual(fn(phase),expected);self.assertEqual(fn(phase,{'AcceptedTurnNumber':expected[1]}),expected)
+   for turn in (41,44,True,'43'):
+    with self.assertRaises(ValueError):fn(phase,{'AcceptedTurnNumber':turn})
+  for phase in ('p01','p04','../p03','p003',None):
+   with self.assertRaises(ValueError):fn(phase)
+  base={'Phase':'p03','PreviousSHA256':'1'*64,'GuardianSHA256':'2'*64,'SeedSHA256':'3'*64,'PhasePackageSHA256':'4'*64,'SourcePins':{},'Action':'Прошу передать просьбу совету, ничего не беру','ConsoleRoute':{'Route':'ordinary-save'}}
+  self.assertEqual(ns['checked_continuation_binding'](copy.deepcopy(base)),base)
+  for route in ({'Route':'permission-with-denial','StorageId':'s','ItemId':'i'},{'Route':'birth'},{'Route':'ordinary-save','StorageId':'s'}):
+   bad=copy.deepcopy(base);bad['ConsoleRoute']=route
+   with self.assertRaises(ValueError):ns['checked_continuation_binding'](bad)
+ def test_actual_prior_save_archive_required(self):
+  import copy,hashlib,sys,shutil
+  tree,ns=self.actual();fn=ns.get('require_previous_manual_save')
+  self.assertTrue(callable(fn),'Missing current manual archive admission; downstream controls UNEXECUTED')
+  sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[3]/'tests/fixtures/ProductionMain'))
+  import relay_phase_evidence as pe
+  # Immutable accepted probe/ZIP DATA only; never modify or invoke the world.
+  outcome_raw=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/mm28-p02-preparation/outcome.json').read_bytes()
+  self.assertEqual(hashlib.sha256(outcome_raw).hexdigest(),'128b6ffe714382178d3db0bb19d71d2079b847d213e78ac9facf800360ce4fde')
+  outcome=json.loads(outcome_raw)
+  probe_path=pathlib.Path('/workspace/shared/mm28-20261119/p02/probe-result.json')
+  self.assertEqual(hashlib.sha256(probe_path.read_bytes()).hexdigest(),outcome['ProbeSHA256'])
+  previous=json.loads(probe_path.read_text());digest=previous['OrdinarySaveProof']['ArchiveSHA256']
+  archives=[pathlib.Path(name) for name,h in outcome['Files'].items() if '/manual_saves/' in name and h==digest]
+  self.assertEqual(len(archives),1);raw=archives[0].read_bytes();self.assertEqual(hashlib.sha256(raw).hexdigest(),digest)
+  for case in ('valid','missing','duplicate','changed','receipt','scoped','link'):
+   with self.subTest(case=case),tempfile.TemporaryDirectory() as tmp:
+    session=pathlib.Path(tmp);folder=session/'saves/manual_saves';folder.mkdir(parents=True);a=folder/'save.zip';a.write_bytes(raw);prev=copy.deepcopy(previous)
+    if case=='missing':a.unlink()
+    if case=='duplicate':(folder/'duplicate.zip').write_bytes(raw)
+    if case=='changed':a.write_bytes(raw+b'changed')
+    if case=='receipt':prev['OrdinarySaveProof']['ArchiveVerified']=False
+    if case=='scoped':
+     for side in ('Before','After'):prev['OrdinarySaveProof'][side]['Files']['game_state/core/player_status.json']='7b7d'
+    if case=='link':a.unlink();a.symlink_to(archives[0])
+    before={str(f.relative_to(session)):f.read_bytes() for f in folder.iterdir() if not f.is_symlink()}
+    if case=='valid':self.assertEqual(fn(prev,session,43,pe),digest)
+    else:
+     with self.assertRaises(ValueError):fn(prev,session,43,pe)
+    self.assertEqual(before,{str(f.relative_to(session)):f.read_bytes() for f in folder.iterdir() if not f.is_symlink()})
+ def test_actual_generated_p03_turn_and_previous(self):
+  import ast
+  tree,ns=self.actual();root=pathlib.Path('/tmp/authored-p03')
+  ns.update(D=root,phase='p03',previous_path=root/'p02/probe-result.json',previous={'AcceptedTurnNumber':43},failure='b'*32,stop='a'*32,profile_sha='c'*64)
+  script=next(n for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='script' for t in n.targets))
+  exec(compile(ast.Module(body=[script],type_ignores=[]),'<actual-p03-launcher>','exec'),ns)
+  self.assertIn('"$ROOT/p02/probe-result.json"',ns['script']);self.assertNotIn('"$ROOT/p01/probe-result.json"',ns['script'])
+  profile=next(n.value for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='profile' for t in n.targets) and isinstance(n.value,ast.Dict))
+  value=next(v for k,v in zip(profile.keys,profile.values) if isinstance(k,ast.Constant) and k.value=='ExpectedTurn')
+  self.assertEqual(eval(compile(ast.Expression(value),'<actual-p03-turn>','eval'),ns),44)
 
 class CurrentProducer(unittest.TestCase):
  def test_exact_current_producer_zero_overlays_and_source_additions(self):
