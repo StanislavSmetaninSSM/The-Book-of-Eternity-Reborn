@@ -70,11 +70,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         var archiveVerified = false;
         var started = false;
         GmSessionRunIdentity? original = null;
+        GmSessionRunCoordinator? originalOwner = null;
         try
         {
             await host.CallAsync("StartShellAsync");
             started = true;
-            original = host.Owner.Identity;
+            originalOwner = host.Owner;
+            original = originalOwner.Identity;
             var recordPath = Path.Combine(root, ".boe_runtime/gm-runs/main.json");
             var runningBytes = File.ReadAllBytes(recordPath);
             Assert.Equal(GmSessionRunDisposition.Running, GmSessionRunRecordCodec.Decode(runningBytes).Disposition);
@@ -138,7 +140,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             var stopped = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(root)!);
             result["OriginalStopped"] = stopped.Disposition == GmSessionRunDisposition.Stopped &&
                 stopped.StopEvidence?.Kind == GmSessionRunStopKind.OwnedScopeEmpty && stopped.Identity == original &&
-                !host.Owner.RetainsAuthority;
+                originalOwner is { RetainsAuthority: false };
             result["FinalRecord"] = stopped;
             result["MenuSucceeded"] = menuSucceeded;
             result["MenuFailure"] = menuFailure?.ToString();
