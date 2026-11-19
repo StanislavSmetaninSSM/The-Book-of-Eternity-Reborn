@@ -4040,3 +4040,37 @@ joins including that exact NuGet publish-only asset, observable seed-export
 completion and independent prelaunch review. Do not resume mm15 or replay unknown
 mm14. This is not acceptance of the automatic helper or a new build-support
 project. No game, relay, GM response or seed export occurred in the serial control.
+
+Manual mm16 preparation and independent prelaunch GO, 2026-11-19. Reused only
+freshly joined immutable successful native/Client/Bridge publications and the
+separate serial TestSupport publication. All three packages contain the same
+explicitly verified NuGet EventLog.Messages asset; no other added/missing/changed
+producer members were allowed. The one actual seed export completed in 2.876
+seconds with driver0, ECHILD, one reaped, no emergency/deadline/failures. The
+manual copy/export/verify operation took 5.449 seconds. Setup41/validation0 and
+acceptedGmTurn=false remain explicit. Runtime and deployed inventories are483
+(Client239+Bridge244), helper249 separately, native4, relay8, non-runtime seed53.
+The actual driver accepts an explicit helper DLL and verifies its full separate
+package; duplicating the helper inside deployed runtime is unnecessary.
+Preparation manifest SHA256:
+`8ac3f89cf63d05b92d0ac3a17fed310baabefeb77cb87ef1266a859e6085b5d7`;
+phase package SHA256:
+`d7aa2e5df02edb3cd7478e6b4c1f3ee59c36c2f82d7158d1908381c5c6170f26`.
+
+Independent prelaunch review verified exact source/output/producer/native/NuGet/
+copy/seed joins, private modes/no links, no live authority/request/queue/config,
+legitimate exporter generation, socket89/107 bytes and noncolliding directories.
+The player action asks for a courtyard/cart/restricted-storage excursion without
+taking or moving goods; no GM response is prepared. The unexecuted launch shell's
+success classifier was tightened to require zero emergency/failures, ECHILD and
+no deadline as well as driver0. Its nine inert AST controls and bash syntax check
+passed; this is not a launch. Corrected launch SHA256:
+`e09f2f1391b05d3acf5dece5607938b7dda15c43f2fde3329c51d82d3e3f369a`;
+launch manifest SHA256:
+`9e3c60a341a4ef6a861906864b93645ae37afad269861544fb8d0a8e59c84139`.
+Independent focused recheck grants one fresh genuine-GM p01 attempt, with unchanged
+600/660/680/720/750 bounds and exact candidate review before publication. No launch
+has occurred at this checkpoint. This note changes plan metadata only after the
+reviewed pins. Automatic T028 remains unqualified, and mm14 remains UNKNOWN;
+failed pre-seed mm15 is preserved, not resumed. Live T016 acceptance and later
+permission/inventory/Save/Load steps are still unproved by this preparation.
