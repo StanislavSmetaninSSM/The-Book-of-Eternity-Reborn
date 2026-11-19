@@ -1315,3 +1315,9 @@ hosted ownership remain separate, unqualified work; this is not hosted A→B.
 Optimization: sealed archive bytes/metadata reused only within one read operation;
 opening/closing digest and mutable namespace checks stay fresh. Tiny screen
 predicates need no cache; no speedup claimed.
+
+Cold DATA RED independently accepted ad2ae4fe: exact three missing-callable
+failures/0 errors,0.001s;32076 source+8 outputs unchanged. Initial authored archive
+member corrected before run to production `save_metadata.json`; downstream
+controls were unexecuted. Minimal three helper implementation now WIP/source
+review, no process driver or cold world created. Runtime proof remains UNRUN.
