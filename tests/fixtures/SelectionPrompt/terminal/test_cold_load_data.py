@@ -35,8 +35,8 @@ class ColdLoadData(unittest.TestCase):
             p=pathlib.Path(t)/'s_20261119_171314.zip'
             def write(duplicate=False):
                 with zipfile.ZipFile(p,'w') as z:
-                    z.writestr('metadata.json',json.dumps({'saveName':'s','turnNumber':43}))
-                    z.writestr('config.json',json.dumps({'MusicEnabled':False,'SoundEnabled':False,'GenerateSceneImages':False,'ImageProvider':'off'}))
+                    z.writestr('save_metadata.json',json.dumps({'saveName':'s','turnNumber':43}))
+                    z.writestr('config.json',json.dumps({'MusicEnabled':False,'SoundEnabled':False,'GenerateSceneImages':False,'ShowImagesInConsole':False,'ImageProvider':'off'}))
                     z.writestr('game_state/test.json','{}')
                     if duplicate:z.writestr('GAME_STATE/test.json','{}')
             write();h=hashlib.sha256(p.read_bytes()).hexdigest();before=p.read_bytes()
