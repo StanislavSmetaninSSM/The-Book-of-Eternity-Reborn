@@ -1410,3 +1410,16 @@ play/modes/directories and runtime, exact ZIP43, reviewed constant three-field
 patch, eight current relay files and empty exclusive queue. No engine/bridge or
 model call; no authority adoption. Full non-config play and ZIP/history must stay
 identical. Cold milestone remains separate from any later hosted operation.
+
+### mm30 closed operational rebind accepted (separate from cold Load)
+Independent outcome928b9981390ccae81accd807aa2f34233c597d86f5e6b7ede76a3c0c59ee8e27
+verified the one admitted preparer invocation, exit0, with no subprocess or hosting.
+Exact config ab0bf5e1→81c5dc62 changes only pipe, relay command and working directory
+from prior mm28 paths to fresh mm30 paths. Full play114 file/mode/directory inventory
+is otherwise identical, including accepted story43, generation, exact manual ZIP43
+3e4a9012 and absent optional history. Runtime239 unchanged; recovered-live contains
+only eight reviewed relay files600, directories700 and empty queue. No current main
+record or bridge status; original config evidence retained outside play. Source32081
+plus eight owning outputs stayed exact. This is closed fixture configuration, NOT
+UI rebinding, hosted start, authority recovery or hosted A→B Load. Future hosting
+requires separate current package/command/owner admission; no old unknown world used.
