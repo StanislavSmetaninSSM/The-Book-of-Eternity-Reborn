@@ -326,3 +326,14 @@ Actual-source tests now reach both P01/P02 launcher composition with the digest
 returned by real profile serialization, unique exact export lines, and refusal
 of existing/dangling outputs before trace creation. Full profile/world remains
 UNRUN; pure28 GREEN is pending source review. No published runtime bytes change.
+
+Independent exclusive profile GREEN accepted:28/28PASS0.161s, exact source/output
+joins. Old manual preparation still requires five bin deltas/eight overlays and
+old producer/package/log paths; it is NOT a valid new-current-producer contract.
+Next narrow source correction will require complete current==producer output
+maps, zero overlays, explicit reviewed noncompiler source additions, separately
+pinned native directory and the actual current standard publish evidence paths.
+One new actual-function pure method in the existing test file establishes this
+contract; select ONLY CurrentProducer (one method), not the already closed28.
+Test-first source is UNRUN and main preparation remains unchanged. No mm24
+creation/export or fake no-op overlays; old worlds and producers untouched.

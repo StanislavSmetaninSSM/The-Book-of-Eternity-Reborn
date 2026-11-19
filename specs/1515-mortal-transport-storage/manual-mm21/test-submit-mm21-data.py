@@ -244,5 +244,28 @@ class PhysicalTraceProfile(unittest.TestCase):
   action_write=[n for n in tree.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Attribute) and n.value.func.attr=='write_bytes']
   self.assertTrue(action_write);self.assertLess(gates[0].lineno,min(n.lineno for n in action_write))
 
+class CurrentProducer(unittest.TestCase):
+ def test_exact_current_producer_zero_overlays_and_source_additions(self):
+  import ast,copy
+  source=pathlib.Path(__file__).with_name('manual-mm21.py');tree=ast.parse(source.read_text())
+  functions=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='require_current_producer_contract']
+  self.assertEqual(len(functions),1,'Missing exact current producer contract; downstream controls UNEXECUTED')
+  ns={'pathlib':pathlib};exec(compile(ast.Module(body=functions,type_ignores=[]),'<actual-producer-contract>','exec'),ns);fn=ns['require_current_producer_contract']
+  src={'engine.cs':'a','driver.py':'b','publish-current.py':'c'}
+  valid={'owningBuildSourcePins':{'engine.cs':'a','driver.py':'old'},'allowedNonCompilerSourceChanges':{'driver.py':'b'},'allowedNonCompilerSourceAdditions':{'publish-current.py':'c'},'outputPins':{'client.dll':'d'},'producerOutputPins':{'client.dll':'d'},'contentOverlays':[]}
+  fn(valid,src)
+  for case in ('changed-output','extra-output','overlay','missing-addition','unreviewed-change','removed-source','compiled-addition','compiled-change'):
+   with self.subTest(case=case):
+    b=copy.deepcopy(valid);current=dict(src)
+    if case=='changed-output':b['producerOutputPins']['client.dll']='old'
+    elif case=='extra-output':b['producerOutputPins']['extra']='e'
+    elif case=='overlay':b['contentOverlays']=[{'no-op':True}]
+    elif case=='missing-addition':b['allowedNonCompilerSourceAdditions']={}
+    elif case=='unreviewed-change':b['allowedNonCompilerSourceChanges']={}
+    elif case=='removed-source':current.pop('engine.cs')
+    elif case=='compiled-addition':current['new.cs']='e';b['allowedNonCompilerSourceAdditions']['new.cs']='e'
+    else:current['engine.cs']='changed';b['allowedNonCompilerSourceChanges']['engine.cs']='changed'
+    with self.assertRaises(ValueError):fn(b,current)
+
 if __name__=='__main__':unittest.main(verbosity=2)
 
