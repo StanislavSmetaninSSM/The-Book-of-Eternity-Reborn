@@ -222,3 +222,12 @@ cache; a final read is required to prove no package drift. OwnedTerminal indepen
 rechecks its executable/dependencies immediately before spawning. This intentional
 fresh boundary is not replaced by stale package metadata. No measured performance
 claim is made for this unrun source block.
+
+
+Pure source-completion DATA executed once after review: package/Save6 PASS
+0.516s, actual route AST28 PASS0.590s. No child/IPC/live module execution. The
+subsequent reviewed source seam correction captures Terminal.send's actual
+post-drain cut for both storage_move entries, updating registered cleanup context
+only after confirmed write. An inert AST subcase injects drained old redraw bytes
+before the write for both actual source blocks. This correction is UNRUN until
+saved/focused review; original passing logs remain separate.

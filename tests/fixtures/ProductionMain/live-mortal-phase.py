@@ -1105,8 +1105,8 @@ def denied_storage_route():
     cut=len(client.capture);client_prompt=False
     register_inventory_cleanup(menu,cut)
     inventory_context['send_confirmed']=False
-    client.send(b'/storage_move\r','fixed denied storage route',lambda:client.console.player(0))
-    inventory_context['send_confirmed']=True
+    cut=client.send(b'/storage_move\r','fixed denied storage route',lambda:client.console.player(0))
+    inventory_context.update(cut=cut,send_confirmed=True)
     cut,selected_cut=finite_select(menu,target['StorageLabel'],cut,20)
     # Locked selection loops back to the same menu; it is not a denial exception.
     menu=console_routes.after_menu(current_inventory_menu(),menu,target['StorageLabel'])
@@ -1164,8 +1164,8 @@ def storage_local_route():
         cut=len(client.capture);client_prompt=False
         register_inventory_cleanup(inventory_menu,cut)
         inventory_context['send_confirmed']=False
-        client.send(b'/storage_move\r','fixed local storage move',lambda:client.console.player(0))
-        inventory_context['send_confirmed']=True
+        cut=client.send(b'/storage_move\r','fixed local storage move',lambda:client.console.player(0))
+        inventory_context.update(cut=cut,send_confirmed=True)
         cut,_=finite_select(inventory_menu,label,cut,20)
         action_label=(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)' if retrieve else
                       f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')

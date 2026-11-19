@@ -187,6 +187,25 @@ class RouteTests(unittest.TestCase):
         peer.send=ambiguous_send
         with self.assertRaises(OSError):ns['finite_select'](ctx['menu'],ctx['menu']['choices'][3],0,5)
         self.assertEqual(ctx['pending_next'],ctx['menu']['choices'][1]);self.assertEqual(ctx['cut'],len(peer.capture))
+        # Execute the actual two command-send/update seams, injecting final-drain
+        # bytes before the physical key. Only the returned post-drain cut is valid.
+        tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
+        for label in ('fixed denied storage route','fixed local storage move'):
+            call=next(n for n in ast.walk(tree) if isinstance(n,ast.Assign) and isinstance(n.value,ast.Call) and len(n.value.args)>1 and isinstance(n.value.args[1],ast.Constant) and n.value.args[1].value==label)
+            parent=next(n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and call in n.body)
+            update=parent.body[parent.body.index(call)+1]
+            context={'cut':1,'send_confirmed':False};capture=bytearray(b'old')
+            class FreshPeer:
+                console=types.SimpleNamespace(player=lambda _:True)
+                def send(self,data,phase,predicate):
+                    self_before=context['send_confirmed']
+                    if self_before:raise AssertionError('Input marked confirmed before write')
+                    capture.extend(b'old complete redraw drained before key')
+                    if not predicate():raise AssertionError('predicate')
+                    return len(capture)
+            namespace={'client':FreshPeer(),'inventory_context':context,'cut':1}
+            exec(compile(ast.Module(body=[call,update],type_ignores=[]),'actual storage command cut','exec'),namespace)
+            self.assertEqual(namespace['cut'],len(capture));self.assertEqual(context['cut'],len(capture));self.assertTrue(context['send_confirmed'])
     def test_actual_finally_inventory_cleanup_precedes_normal_exit_and_no_ctrlc(self):
         tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
         cleanup=next(n for n in ast.walk(tree) if isinstance(n,ast.If) and ast.unparse(n.test)=='inventory_cleanup_required and (not client_prompt)')
