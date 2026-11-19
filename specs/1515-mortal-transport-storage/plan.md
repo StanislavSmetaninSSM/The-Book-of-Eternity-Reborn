@@ -4799,3 +4799,19 @@ Distinct clean-Committed Mortal Load entrypoints preserve existing result semant
 Source-only controls: new LoadedCanonicalValidationTests expected 35 cases (22 existing-shaped physical DATA controls adapted to explicit bound/quiescent access, five missing/wrong/closed/foreign/non-quiescent controls, seven pure result eligibility cases, one exact physical-close flow control). Pure DTO cases assert eligibility only, never owner authority. Real remote/active-pin branch rejection remains subject to focused review; no synthetic authority or native process is claimed. Shared read machinery impact selection is new mortal-loaded-canonical-data plus existing mortal-ordinary-pre-send-data27 (including its five owner/close controls), then unchanged T032 retired-pre-send1 and stable T033 Save/Load1 separately. No broad suite. Stable CombinedMortalLoad SHA9f3c8f75 unchanged. No build/run has occurred for this source; save and independent review are required before execution.
 
 T033 focused correction: preserve the exact captured original quiescent admission and the specific physical frame issued by this read scope. After physical DisposeAsync, only that exact closed local physical frame may be traversed; closed original/remote/foreign frames still refuse and a different quiescent ancestor cannot substitute. The close-flow control uses real BeginPendingSnapshotValidationRead/Open/Dispose/RequireOwnerAfterClose, then confirms the same original and refuses after that original closes. There are THREE fresh read windows: before settings/UI normalization, before system health, and full All; distinct mutating intervals justify each fresh check. Active/remote Loaded-specific runtime branches remain unqualified; no host framework added.
+
+T033 corrected source was saved and remote-ref verified at
+8046541391872d9ae8e7248ed304913f8939f32f. GitHub API recovery into a fresh external
+directory verified exact bytes of both new LoadedCanonical source/test files and
+this plan; this is three-file recovery, not a new whole-checkout qualification.
+Independent focused source review accepted the exact captured physical-close
+handling. Fresh Unit build85.0995s,92warnings/0errors; official PlanOnly selected
+exactly35 Loaded plus27 ordinary controls. Execution62/62 PASS, two descriptors,
+28.4971385s, no skips/duplicates/timeouts and complete owned cleanup. All32,021
+source pins and eight outputs remained unchanged; no loaded-fixture leftovers.
+Outcome SHA256:4d125d91fa1190778696f5d874742a52933febfbe851d3b4ce8e9a0b0d3daa5b.
+Independent outcome review is pending before fresh Integration of unchanged
+T032 pre-send1 and stable T033 Save/Load1. Active/remote Loaded-specific runtime,
+hosted Stop/Finish/restart and live journey remain unqualified. T033/T016 remain
+open; no merge or issue closure. No general speedup claim; fresh mutation-boundary
+reads remain necessary and immutable invocation DATA alone is reused.
