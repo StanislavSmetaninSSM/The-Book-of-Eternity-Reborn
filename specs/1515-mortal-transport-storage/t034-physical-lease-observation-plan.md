@@ -979,3 +979,18 @@ The long notice capture was not persisted, so wrapping is not claimed proven;
 the isolated renderer now has deterministic240-column width and emits complete
 capture in test output and on failed assertion. Production bytes are unchanged. Outcome817852f4 is
 retained separately; corrected source review precedes any further execution.
+
+Corrected bounded GREEN independently accepted (d94490f5, 46 exact artifacts):
+fresh owning Integration build54.41s/139 warnings/zero errors, official exact
+five tests PASS/zero skips/errors/timeouts, runner14.605s and complete cleanup.
+Actual hosted manual Save produces unique valid ZIP43/save_turn43 with exact
+asserted protected members and success notice; direct unadmitted API remains
+refused, original Running identity closes Stopped/OwnedScopeEmpty normally.
+Both real post-commit closing controls retain the decision; generation replacement
+wins unchanged, committed notice is captured, no ReadKey occurs after closing.
+Existing known rollback and committed-warning menu cases remain passing.
+Full source32072/8 owning outputs built==after and Integration joins are exact.
+The original compile-only failure and later3PASS/2oracleFAIL remain separate.
+Only Options caller participation changed; SaveLoad/MainFence remain unchanged.
+This qualifies the isolated hosted/manual boundary, NOT new producer, live GM
+plus Save, Load/transfer or reuse of mm26. No additional runtime is implied.
