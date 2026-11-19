@@ -142,3 +142,14 @@ only live adapter. No execution until saved independent source review. All clien
 inputs share the checked audited writer. Reserved cleanup is one-way, bounded by
 the original absolute cleanup deadline, never a reset or gameplay extension.
 Unknown state/partial write remains no-replay. Bridge/daemon/RPC unchanged.
+
+## Exact deadline handoff implementation
+
+OwnedTerminal stores immutable original absolute work/cleanup bounds at construction,
+starts on work bound, and exposes one irreversible enter_cleanup operation. Only
+that operation changes the active deadline to the already supplied original cleanup
+bound; a second transition, exhausted cleanup, closed/poisoned transport refuses.
+Commands cannot borrow cleanup reserve before handoff. key(...,cleanup=True) is
+required after it; gameplay keys remain forbidden. The live physical writer uses
+the same phase-bound ownership, and tests cover expired work, valid reserved cleanup,
+expired cleanup and second handoff. Existing inert callers retain their fixed bound.

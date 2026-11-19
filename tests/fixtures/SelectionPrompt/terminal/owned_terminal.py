@@ -2,7 +2,11 @@
 import base64, hashlib, json, os, pathlib, select, stat, subprocess, time
 
 class OwnedTerminal:
-    def __init__(self, node, prefix, evidence, deadline, checked_pty_writer):
+    def __init__(self, node, prefix, evidence, deadline, checked_pty_writer, *, cleanup_deadline=None):
+        self.work_deadline=deadline
+        self.cleanup_deadline=deadline if cleanup_deadline is None else cleanup_deadline
+        if self.cleanup_deadline<deadline:raise ValueError('Cleanup precedes work deadline')
+        self.cleanup_entered=False
         self.deadline=deadline; self.writer=checked_pty_writer; self.seq=0
         self.pending=False; self.failed=False; self.closed=False; self.buffer=b''
         self.process=None; self.stderr=None; self.audit=[]; self.evidence=pathlib.Path(evidence)
@@ -104,9 +108,18 @@ class OwnedTerminal:
                 self.writer(data,'terminal-reply',self.seq)
             return result
         except BaseException:self.failed=True;raise
-    def key(self,data,label):
+    def enter_cleanup(self):
+        # Original absolute bounds only; no timeout is restarted by this handoff.
+        if self.cleanup_entered or self.failed or self.closed:raise ValueError('Terminal cleanup handoff unavailable')
+        self.cleanup_entered=True
+        if time.monotonic()>=self.cleanup_deadline:
+            self.failed=True;raise TimeoutError('Original cleanup deadline exhausted')
+        self.deadline=self.cleanup_deadline
+        self._record({'CleanupHandoff':True,'OriginalWorkDeadline':self.work_deadline,'OriginalCleanupDeadline':self.cleanup_deadline})
+    def key(self,data,label,*,cleanup=False):
         # Caller must first drain current PTY output and bind its fresh-menu cut.
         try:
+            if cleanup!=getattr(self,'cleanup_entered',False):raise ValueError('Input belongs to wrong terminal phase')
             if self.pending or self.failed or self.closed:raise ValueError('Unsettled terminal prefix')
             self._time();self.writer(data,'route-key:'+label,self.seq)
         except BaseException as error:

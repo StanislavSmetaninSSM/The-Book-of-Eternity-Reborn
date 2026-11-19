@@ -244,8 +244,8 @@ internal static partial class OwnedTerminalScenarioDriver
                 await RunPendingAvailabilityAsync(folder,host!,type,Rpc,(IOwnedTerminalSession)originalSession,result);
                 result["Success"]=true;return 0;
             }
-            if(mode=="production-main-console-continue") {
-                await RunActualConsoleContinueAsync(folder,host!,type,Rpc,(IOwnedTerminalSession)originalSession,result);
+            if(mode is "production-main-console-continue" or "production-main-console-continue-pty") {
+                await RunActualConsoleContinueAsync(folder,host!,type,Rpc,(IOwnedTerminalSession)originalSession,result,mode=="production-main-console-continue-pty");
                 result["Success"]=true;return 0;
             }
             if(mode=="production-main-console-runtime") {

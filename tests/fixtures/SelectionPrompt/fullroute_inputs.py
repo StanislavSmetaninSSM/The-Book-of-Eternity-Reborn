@@ -108,11 +108,12 @@ class AcknowledgedTerminalView:
     """Read-only callback-fenced terminal evidence for this one literal route."""
     def __init__(self, terminal, captured):
         self.terminal=terminal;self.captured=captured;self.cut=0;self.seq=0
-        self.pending=True;self.lines=[];self.modes={}
+        self.pending=True;self.lines=[];self.modes={};self.cursor={}
     def observe(self, raw):
         value=self.terminal.feed(raw)
         self.pending=value['pending'];self.modes=value['modes'];self.seq=value['seq'];self.cut=len(self.captured)
-        if not self.pending:self.lines=self.terminal.snapshot()['lines']
+        if not self.pending:
+            snapshot=self.terminal.snapshot();self.lines=snapshot['lines'];self.cursor=snapshot['cursor']
     @property
     def keyboard(self):return {'cursor':self.modes.get('applicationCursorKeysMode',False),'keypad':self.modes.get('applicationKeypadMode',False)}
     def arrow(self, up=False):

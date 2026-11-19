@@ -6,7 +6,7 @@ UTF-8 action-file immutable-evidence-helper-dll [previous-phase-result]. Initial
 turn. Later phases preserve the same canonical world and require complete prior
 logical/physical-owner cleanup evidence; no replay or scripted GM output.
 """
-import datetime, io, zipfile
+import datetime, io, zipfile, copy
 import errno, fcntl, hashlib, json, os, pty, re, select, shutil, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
 import relay_phase_evidence as phase_evidence
@@ -737,10 +737,37 @@ if relay_mode:result.update(ConfiguredModel='dots-finish-relay',TestRelay=True,O
 if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',ControlledRefusal=True,ProviderCalls=0)
 result.update(SeededLiveMortal=not restored_diagnostic,SeedSessionId=historical_session,BasePath=str(base),SeedManifestSha256=hashlib.sha256(seed_bytes).hexdigest(),ExpectedTurnNumber=expected_turn,SetupMarkerIsAcceptedGmTurn=False)
 if restored_diagnostic:result.update(RestoredAcceptedDataDiagnostic=True,DiagnosticSourceProbeSHA256=seed['SourceProbeSHA256'],RuntimeSource=seed['RuntimeSource'],NotT021Qualification=True)
+def terminal_fixture_admission():
+    # Explicit immutable source package only; no checkout fallback/download.
+    root=out/'terminal-fixture';pins=package_manifest.get('TerminalFixturePins')
+    if type(pins) is not dict or not pins:raise ValueError('Missing prepared terminal fixture pins')
+    actual={str(p.relative_to(root)) for p in root.rglob('*') if p.is_file()}
+    if actual!=set(pins):raise ValueError('Terminal fixture inventory mismatch')
+    for rel,digest in pins.items():
+        path=root/rel
+        if path.is_symlink() or any(p.is_symlink() for p in path.parents) or sha(path.read_bytes())!=digest:raise ValueError('Terminal source pin/link mismatch')
+    node=Path(package_manifest['TerminalNodePath'])
+    if not node.is_absolute() or node.is_symlink() or sha(node.read_bytes())!=package_manifest['TerminalNodeSHA256']:raise ValueError('Terminal Node mismatch')
+    return root,node,out/'terminal-deps'
+
 class Terminal:
     def __init__(self,name,args,captured_output=False):
+        self.console=None
+        if name=='client':captured_output=False
         self.name=name;self.master,self.slave=pty.openpty();self.capture=bytearray();self.echo=bytearray();self.eof=False;self.captured_output=captured_output
         fcntl.ioctl(self.slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0));self.initial=termios.tcgetattr(self.slave)
+        self.configured=copy.deepcopy(self.initial)
+        if name=='client':
+            self.configured[3]&=~(termios.ECHO|termios.ECHONL)
+            termios.tcsetattr(self.slave,termios.TCSANOW,self.configured)
+            if termios.tcgetattr(self.slave)!=self.configured:raise ValueError('Client noecho baseline mismatch')
+            os.set_blocking(self.master,False)
+            module_root,node,prefix=terminal_fixture_admission()
+            sys.dont_write_bytecode=True
+            sys.path.insert(0,str(module_root/'SelectionPrompt/terminal'))
+            from client_session import ClientSession
+            (out/'client-terminal').mkdir(exist_ok=False)
+            self.console=ClientSession(self.master,self.capture,out/'client-terminal',str(node),str(prefix),start+work_seconds,start+client_cleanup_seconds,lambda:drain_client(self))
         def own():
             os.setsid();fcntl.ioctl(self.slave,termios.TIOCSCTTY,0);os.tcsetpgrp(self.slave,os.getpid())
         child_env=console_routes.client_environment(env) if name=='client' else env
@@ -755,9 +782,14 @@ class Terminal:
         self.closed_streams=set()
         peers.append(self);journal.append({'At':elapsed(),'Entrypoint':name,'Argv':args,'OriginalPid':self.process.pid,
             'OutputMode':'captured-pipe' if captured_output else 'original-pty','StdinMode':'original-controlling-pty'})
-    def send(self,data,phase):
+    def send(self,data,phase,predicate=None):
         assert elapsed()<(total_seconds if cleaning else work_seconds) and self.process.poll() is None
         assert active_phase_deadline is None or time.monotonic()<active_phase_deadline
+        if self.console is not None:
+            if predicate is None:raise RuntimeError('Client write lacks exact current predicate')
+            cut=self.console.send(data,phase,predicate)
+            journal.append({'At':elapsed(),'Terminal':self.name,'Phase':phase,'ActionCut':cut,'TerminalSeq':self.console.view.seq,'Kind':'route-key'})
+            return cut
         journal.append({'At':elapsed(),'Terminal':self.name,'Phase':phase,'Input':data.decode('utf-8')})
         assert os.write(self.master,data)==len(data), 'Ambiguous partial foreground write; never replay'
     def text(self,offset=0):
@@ -785,8 +817,12 @@ def pump(delay=.02):
                 evidence.raw(p.name+('-echo' if kind=='echo' else ''),b)
                 journal.append({'At':elapsed(),'Terminal':p.name,'ObservedStream':kind,'ByteStart':len(target),'ByteEnd':len(target)+len(b)})
             target.extend(b)
+            if b and p.console is not None:p.console.feed(b)
         p.eof=len(p.closed_streams)==len(p.streams)
     if elapsed()>total_seconds:raise TimeoutError('Driver total bound')
+def drain_client(peer):
+    while select.select([f for f in peer.streams if f not in peer.closed_streams],[],[],0)[0]:
+        peer.console.terminal._time();pump(0)
 def until(test,seconds,label):
     deadline=min(start+(total_seconds if cleaning else work_seconds),time.monotonic()+seconds)
     if active_phase_deadline is not None:deadline=min(deadline,active_phase_deadline)
@@ -950,18 +986,26 @@ def current_request(offset):
                 'StagingFiles':len(signature[1]),'StagingBytes':sum(r[1] for r in signature[1])})
         pump(.1)
 def fresh_main(client,offset):
-    fresh(client,'Продолжить',offset)
-    until(lambda:re.search(r'8\.\s*[^\r\n]*Выход',client.text(offset)) is not None,8,'fresh eight-item main menu')
+    until(lambda:client.console.main(offset,0),8,'fresh complete main menu')
 def fresh_player(client,offset,seconds=12):
-    until(lambda:current_player_prompt_at(client.text(offset))>=0,seconds,'fresh cooperative player prompt')
+    until(lambda:client.console.player(offset),seconds,'fresh cooperative player prompt')
+def options_choice(number,label):
+    cut=client.send(b'/options\r','current player: Options',lambda:client.console.player(0))
+    until(lambda:client.console.view.options(cut,'💾 Сохранить',True),8,'actual complete Options')
+    prior=cut;cut=client.send(str(number).encode(),'Options numeric selection',lambda:client.console.view.options(prior,'💾 Сохранить',True))
+    until(lambda:client.console.view.options(cut,label,False),8,'actual selected Options row')
+    prior=cut
+    return client.send(b'\r','Options Enter',lambda:client.console.view.options(prior,label,False))
 def exit_client(client):
     global client_exit_attempted
-    assert not client_exit_attempted, 'Do not replay an ambiguous UI close sequence'
+    assert not client_exit_attempted,'Do not replay ambiguous UI close'
     client_exit_attempted=True
-    offset=len(client.capture);client.send(b'/options\r','current prompt: game menu');fresh(client,'Игровое меню',offset)
-    offset=len(client.capture);client.send(b'4\r','observed game menu: exit to menu');fresh_main(client,offset)
-    client.send(b'8\r','observed eight-item main menu: exit');until(lambda:client.process.poll() is not None,8,'client normal exit')
-    assert client.process.returncode==0
+    cut=options_choice(4,'🏠 Выйти в главное меню');fresh_main(client,cut)
+    prior=cut;cut=client.send(b'8','main select Exit',lambda:client.console.main(prior,0))
+    until(lambda:client.console.main(cut,7),8,'actual selected main Exit')
+    prior=cut;client.send(b'\r','main Exit Enter',lambda:client.console.main(prior,7))
+    until(lambda:client.process.poll() is not None,8,'client normal exit');assert client.process.returncode==0
+
 def finite_select(menu,label,cut,maximum_rows,commit=True):
     # One input per observed ordered transition. A duplicate redraw is not a move.
     global inventory_context
@@ -992,12 +1036,17 @@ def finite_select(menu,label,cut,maximum_rows,commit=True):
         if selected==label:
             selected_cut=cut;after=len(client.capture)
             if commit and context is not None:inventory_context=None  # Enter may leave inventory; never infer return.
-            if commit:client.send(b'\r','fixed menu exact selected row: '+label)
+            if commit:
+                from fullroute_inputs import retained_selection
+                proof={'raw':bytes(client.capture),'menu':menu,'selected':selected}
+                after=client.send(b'\r','fixed menu exact selected row: '+label,lambda:retained_selection(bytes(client.capture),proof)==selected)
             return after,selected_cut
         if menu['choices'].index(selected)+1>=len(menu['choices']):raise RuntimeError('Menu cycle before exact target')
         prior=selected;cut=len(client.capture)
         if context is not None:context.update(cut=cut,pending_next=menu['choices'][menu['choices'].index(selected)+1],send_confirmed=False)
-        client.send(b'\x1b[B','fixed menu observed next row')
+        from fullroute_inputs import retained_selection
+        proof={'raw':bytes(client.capture),'menu':menu,'selected':selected}
+        cut=client.send(lambda:client.console.view.arrow(),'fixed menu observed next row',lambda:retained_selection(bytes(client.capture),proof)==selected)
         if context is not None:context['send_confirmed']=True
     raise RuntimeError('Fixed menu exceeds visible bounded rows; no pagination')
 
@@ -1041,7 +1090,7 @@ def denied_storage_route():
     cut=len(client.capture);client_prompt=False
     register_inventory_cleanup(menu,cut)
     inventory_context['send_confirmed']=False
-    client.send(b'/storage_move\r','fixed denied storage route')
+    client.send(b'/storage_move\r','fixed denied storage route',lambda:client.console.player(0))
     inventory_context['send_confirmed']=True
     cut,selected_cut=finite_select(menu,target['StorageLabel'],cut,20)
     # Locked selection loops back to the same menu; it is not a denial exception.
@@ -1100,7 +1149,7 @@ def storage_local_route():
         cut=len(client.capture);client_prompt=False
         register_inventory_cleanup(inventory_menu,cut)
         inventory_context['send_confirmed']=False
-        client.send(b'/storage_move\r','fixed local storage move')
+        client.send(b'/storage_move\r','fixed local storage move',lambda:client.console.player(0))
         inventory_context['send_confirmed']=True
         cut,_=finite_select(inventory_menu,label,cut,20)
         action_label=(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)' if retrieve else
@@ -1216,7 +1265,7 @@ client=bridge=daemon=None;client_wait=False;client_prompt=False
 ledger_witness=ledger_binding=None
 try:
     client=Terminal('client',['dotnet',str(ship/'BookOfEternityClient/BookOfEternityClient.dll'),str(base),'--plain-output'],captured_output=True)
-    fresh(client,'Продолжить',0)
+    until(lambda:client.console.main(0,0),12,'actual startup Continue menu')
     launcher=str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1')
     bridge=Terminal('bridge',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-bridge','visible','-SessionPath',str(session)])
     record_path=base/'.boe_runtime/gm-runs/main.json';status_path=session/'game_state/control/gm_bridge_status.json'
@@ -1248,8 +1297,8 @@ try:
         if sha(accepted_raw)!=seed['SourceProbeSHA256']:raise ValueError('Diagnostic accepted source changed before owner join')
         phase_evidence.require_restored_diagnostic_owner(record['Identity'],strict_settings(accepted_raw),base,daemon_owner)
         result['DiagnosticFreshOwnerQualified']=True
-    offset=len(client.capture);client.send(b'\r','observed Continue selected')
-    preparation_phase(lambda:current_player_prompt_at(client.text(offset))>=0,'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
+    offset=client.send(b'\r','observed Continue selected',lambda:client.console.main(0,0))
+    preparation_phase(lambda:client.console.player(offset),'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
     if route['Route']=='permission-with-denial':denied_storage_route()
     if route['Route']=='storage-local-proof':
         storage_local_route()
@@ -1257,7 +1306,7 @@ try:
         provider_bridge_offset=len(bridge.capture)
         ledger_witness=phase_evidence.capture_terminal_ledger_witness(session)
         (out/'pre-action-terminal-ledger-witness.json').write_bytes(ledger_witness)
-        offset=len(client.capture);action_cut=offset;client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
+        offset=client.send((action+'\r').encode(),'one genuine game action',lambda:client.console.player(0));action_cut=offset;result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
         current_request(offset)
         request_bytes=(session/'input/turn_request.json').read_bytes();request=json.loads(request_bytes);result['ActualRequest']=request;result['ActualRequestSHA256']=sha(request_bytes)
         assert request['playerAction']==action and request['turnNumber']==expected_turn

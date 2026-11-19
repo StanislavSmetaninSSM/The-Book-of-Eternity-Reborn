@@ -3,6 +3,9 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmConsoleRuntimeAdmissionTests
 {
     [Fact]
+    public Task ActualConsoleContinue_RealPtyPlayerAndExitRetainOriginalOwner()=>
+        ProductionMainLinuxFixture.RunAsync("production-main-console-continue-pty");
+    [Fact]
     public Task SameClient_LocalMenuAdmissionThenRemoteOwner_ReentersCurrentSession()=>
         ProductionMainLinuxFixture.RunAsync("production-main-local-remote-consumer");
     [Fact]

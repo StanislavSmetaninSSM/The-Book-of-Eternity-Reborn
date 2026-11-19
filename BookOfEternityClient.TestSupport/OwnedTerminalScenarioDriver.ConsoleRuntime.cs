@@ -10,10 +10,34 @@ namespace BookOfEternityClient.Tests;
 internal static partial class OwnedTerminalScenarioDriver
 {
     private static async Task RunActualConsoleContinueAsync(string folder,object host,Type hostType,
-        Func<object,Task<JsonElement>> rpc,IOwnedTerminalSession original,Dictionary<string,object?> evidence)
+        Func<object,Task<JsonElement>> rpc,IOwnedTerminalSession original,Dictionary<string,object?> evidence,bool rawPty=false)
     {
         var root=Path.Combine(folder,"root");var session=Path.Combine(root,"game_session");
         if(File.Exists(Path.Combine(session,"output/narrative_response.json")))throw new InvalidOperationException("Preparation must exercise missing-output read.");
+        int exitCode;string output,error;
+        if(rawPty)
+        {
+            var start=new System.Diagnostics.ProcessStartInfo("/usr/bin/python3") {UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=Path.Combine(folder,"ship")};
+            var node=Environment.GetEnvironmentVariable("BOE_TERMINAL_NODE") ?? throw new InvalidOperationException("Pinned Node required");
+            var prefix=Environment.GetEnvironmentVariable("BOE_TERMINAL_PREFIX") ?? throw new InvalidOperationException("Pinned terminal packages required");
+            var peer=Path.Combine(folder,"console-wire");
+            foreach(var arg in new[]{Path.Combine(folder,"ship/console-fixture/SelectionPrompt/terminal/console_navigation.py"),node,prefix,
+                Path.Combine(folder,"ship/BookOfEternityClient/BookOfEternityClient.dll"),root,peer})start.ArgumentList.Add(arg);
+            using var child=System.Diagnostics.Process.Start(start)!;
+            var stdout=child.StandardOutput.ReadToEndAsync();var stderr=child.StandardError.ReadToEndAsync();
+            try {await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(12));} // Original8s work + bounded owned cleanup only.
+            finally {if(!child.HasExited){child.Kill(entireProcessTree:true);await child.WaitForExitAsync();}}
+            output=await stdout;error=await stderr;exitCode=child.ExitCode;
+            using var receipt=JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(peer,"result.json")));
+            var value=receipt.RootElement;
+            if(!value.GetProperty("Success").GetBoolean() || !value.GetProperty("NoScriptedInput").GetBoolean()
+                || !value.GetProperty("EOF").GetBoolean() || !value.GetProperty("ChildRestoredConfiguredBaseline").GetBoolean()
+                || !value.GetProperty("OwnerRestoredOriginal").GetBoolean())throw new InvalidOperationException("Actual console wire outcome failed: "+value);
+            evidence["ActualConsoleWire"]=value.Clone();
+            output=System.Text.Encoding.UTF8.GetString(await File.ReadAllBytesAsync(Path.Combine(peer,"pty.raw")));
+        }
+        else
+        {
         var script=Path.Combine(folder,"console-continue-input.json");
         await File.WriteAllTextAsync(script,"{\"steps\":[{\"kind\":\"key\",\"key\":\"Enter\"},{\"kind\":\"text\",\"text\":\"/options\"},{\"kind\":\"key\",\"key\":\"D4\"},{\"kind\":\"key\",\"key\":\"Enter\"},{\"kind\":\"key\",\"key\":\"Up\"},{\"kind\":\"key\",\"key\":\"Enter\"}]}");
         var start=new System.Diagnostics.ProcessStartInfo("dotnet"){UseShellExecute=false,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=Path.Combine(folder,"ship")};
@@ -22,9 +46,10 @@ internal static partial class OwnedTerminalScenarioDriver
         var stdout=child.StandardOutput.ReadToEndAsync();var stderr=child.StandardError.ReadToEndAsync();
         try {await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(8));}
         finally {if(!child.HasExited){child.Kill();await child.WaitForExitAsync();}}
-        var output=await stdout;var error=await stderr;
+        output=await stdout;error=await stderr;exitCode=child.ExitCode;
         await File.WriteAllTextAsync(Path.Combine(folder,"actual-console-continue.log"),output+"\n"+error);
-        if(child.ExitCode!=0)throw new InvalidOperationException("Actual console Continue failed: "+output+error);
+        }
+        if(exitCode!=0)throw new InvalidOperationException("Actual console Continue failed: "+output+error);
         if(!output.Contains("Ваш ход",StringComparison.Ordinal) || !output.Contains("Игровое меню",StringComparison.Ordinal))
             throw new InvalidOperationException("Actual console did not reach the player prompt/game menu.");
         if(File.Exists(Path.Combine(session,"input/turn_request.json")) || original.RootExited.IsCompleted)
@@ -39,7 +64,7 @@ internal static partial class OwnedTerminalScenarioDriver
             receipts.Add(reply);
         }
         if(receipts.Count==0)throw new InvalidOperationException("Actual console used no original connection.");
-        evidence["ActualConsoleContinueExitCode"]=child.ExitCode;evidence["ActualConsoleOriginalReceipts"]=receipts;
+        evidence["ActualConsoleContinueExitCode"]=exitCode;evidence["ActualConsoleOriginalReceipts"]=receipts;
         var stop=await rpc(new{command="shutdown",rootKey=main.Identity.RootKey,expectedMainIdentity=main.Identity});
         if(!stop.GetProperty("ok").GetBoolean())throw new InvalidOperationException("Actual console original stop unconfirmed.");
         evidence["OriginalShutdownReceipt"]=stop;

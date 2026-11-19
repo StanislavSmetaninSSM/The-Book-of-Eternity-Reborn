@@ -37,7 +37,8 @@ export class Admission {
           else if('ABCDG'.includes(end)) ok=/^\d*$/.test(args)&&vals[0]<=100;
           else if(end==='H'||end==='f') ok=/^\d*(;\d*)?$/.test(args)&&vals.every(x=>x<=100);
           else if(end==='K') ok=/^[012]?$/.test(args);
-          else if(end==='J') ok=args==='2'||args==='3';
+          else if(end==='J') ok=args===''||args==='0'||args==='2'||args==='3';
+          else if(end==='s'||end==='u') ok=args===''; // Actual cooperative draft save/restore cursor.
           if(!ok) throw Error('Unadmitted CSI '+JSON.stringify(seq));
           i+=seq.length;continue;
         }

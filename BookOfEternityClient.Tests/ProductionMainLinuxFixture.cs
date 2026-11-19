@@ -13,7 +13,7 @@ internal static class ProductionMainLinuxFixture
     internal static async Task RunAsync(string mode)
     {
         Assert.True(OperatingSystem.IsLinux(),"M1 requires actual Linux execution.");
-        var repo=TestRepoPaths.RepoRoot;var folder=Path.Combine(repo,"TestResults/production-main",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(folder);
+        var repo=TestRepoPaths.RepoRoot;var folder=Path.Combine(mode=="production-main-console-continue-pty" ? TestDiagnosticPaths.Root : Path.Combine(repo,"TestResults"),"production-main",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(folder);
         var daemonStopControl=mode is "production-main-daemon-stop" or "production-main-daemon-coordinated-stop";
         var reusableRelay=mode.StartsWith("production-main-relay-",StringComparison.Ordinal);
         if(reusableRelay) {
@@ -56,6 +56,20 @@ internal static class ProductionMainLinuxFixture
         if(mode.StartsWith("production-main-daemon-",StringComparison.Ordinal)) File.Copy(Path.Combine(repo,"tests/fixtures/ProductionMain/idle-daemon-stop.py"),Path.Combine(ship,"idle-daemon-stop.py"));
         if(mode=="production-main-daemon-stop" && Environment.GetEnvironmentVariable("BOE_TEST_FOREGROUND_CLOSE_TRACE")=="1")
             File.Copy(Path.Combine(repo,"tests/fixtures/ProductionMain/daemon-close-diagnostic.ps1"),Path.Combine(ship,"daemon-close-diagnostic.ps1"));
+        if(mode=="production-main-console-continue-pty") {
+            var target=Path.Combine(ship,"console-fixture");
+            string[] sources=["SelectionPrompt/fullroute_inputs.py","ProductionMain/mortal_console_routes.py",
+                "SelectionPrompt/terminal/client_ui.py","SelectionPrompt/terminal/console_navigation.py",
+                "SelectionPrompt/terminal/owned_terminal.py","SelectionPrompt/terminal/pty_probe.py",
+                "SelectionPrompt/terminal/sidecar.mjs","SelectionPrompt/terminal/policy.mjs","SelectionPrompt/terminal/provenance.json"];
+            var pins=new Dictionary<string,string>();
+            foreach(var relative in sources) {
+                var input=Path.Combine(repo,"tests/fixtures",relative);var destination=Path.Combine(target,relative);
+                Directory.CreateDirectory(Path.GetDirectoryName(destination)!);File.Copy(input,destination);
+                pins[relative]=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(destination))).ToLowerInvariant();
+            }
+            File.WriteAllText(Path.Combine(folder,"console-wire-source-pins.json"),JsonSerializer.Serialize(pins));
+        }
         var playerBin=Path.Combine(folder,"player-bin");Directory.CreateDirectory(playerBin);
         foreach(var executable in new[]{"dotnet","pwsh"}) {
             var resolved=(Environment.GetEnvironmentVariable("PATH")??"").Split(Path.PathSeparator).Select(d=>Path.Combine(d,executable)).First(File.Exists);
