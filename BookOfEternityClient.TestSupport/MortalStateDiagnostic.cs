@@ -10,7 +10,8 @@ namespace BookOfEternityClient.Tests;
 internal static class MortalStateDiagnostic
 {
     internal sealed record Entry(string Path, string Source, string SHA256);
-    internal sealed record Manifest(string SourceRoot, string ProbePath, string ProbeSHA256, Entry[] Files);
+    internal sealed record ConfigWitness(string Path, string SHA256, string FailedProbePath, string FailedProbeSHA256);
+    internal sealed record Manifest(string SourceRoot, string ProbePath, string ProbeSHA256, Entry[] Files, ConfigWitness? FailedPhaseConfig = null);
     internal static string Hash(string path) => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant();
     private static void NoLinks(string path)
     {
@@ -54,7 +55,25 @@ internal static class MortalStateDiagnostic
             throw new InvalidDataException("Not accepted source DATA");
         var expected=probe.RootElement.GetProperty("FinalWorldPins").EnumerateObject().ToDictionary(p=>p.Name,p=>p.Value.GetString()!,StringComparer.Ordinal);
         if (expected.Count != 106) throw new InvalidDataException("Expected exact 106 source DATA pins");
-        expected.Add("config.json",probe.RootElement.GetProperty("FinalConfigSHA256").GetString()!);
+        if(m.FailedPhaseConfig is { } config)
+        {
+            foreach(var path in new[]{config.Path,config.FailedProbePath})
+            {
+                if(Path.GetFullPath(path)!=path||!Under(path,source)) throw new InvalidDataException("Noncanonical failed-phase config witness path");
+                NoLinks(path);
+            }
+            var failedProbeBytes=File.ReadAllBytes(config.FailedProbePath);
+            if(Convert.ToHexString(SHA256.HashData(failedProbeBytes)).ToLowerInvariant()!=config.FailedProbeSHA256) throw new InvalidDataException("Failed-phase probe hash differs");
+            using var failedProbe=JsonDocument.Parse(failedProbeBytes);
+            var failed=failedProbe.RootElement;
+            if(failed.GetProperty("Success").GetBoolean() || failed.GetProperty("AcceptedGameTurns").GetInt32()!=0 ||
+                failed.GetProperty("FinalConfigSHA256").GetString()!=config.SHA256 || Hash(config.Path)!=config.SHA256)
+                throw new InvalidDataException("Failed-phase config join differs");
+            var configEntry=m.Files.SingleOrDefault(e=>e.Path=="config.json");
+            if(configEntry is null||configEntry.Source!=config.Path||configEntry.SHA256!=config.SHA256) throw new InvalidDataException("Config entry differs from explicit witness");
+            expected.Add("config.json",config.SHA256);
+        }
+        else expected.Add("config.json",probe.RootElement.GetProperty("FinalConfigSHA256").GetString()!);
         if (m.Files.Length != expected.Count || m.Files.Select(e=>e.Path).Distinct(StringComparer.Ordinal).Count()!=expected.Count)
             throw new InvalidDataException("DATA inventory differs");
         foreach(var e in m.Files)
@@ -115,7 +134,7 @@ internal static class MortalStateDiagnostic
                 catch(Exception ex) { collectionFailures.Add("Source recheck: "+ex); }
             }
         }
-        var result=new { Kind="strict-relocated-state-diagnostic",PublicationAuthority=false,LiveCauseQualified=false,ManifestSHA256=manifestHash,Issues=issues,Exception=failure,CollectionFailures=collectionFailures,OwnedRoot=ownedRoot,Before=before,AfterConstructor=afterConstructor,AfterValidation=after,SourceUnchanged=sourceUnchanged };
+        var result=new { Kind="strict-relocated-state-diagnostic",PublicationAuthority=false,LiveCauseQualified=false,ManifestSHA256=manifestHash,Provenance=declared.FailedPhaseConfig is null ? "accepted-source DATA and config" : "mixed: 106 accepted-source DATA; config from failed unaccepted phase",FailedPhaseConfig=declared.FailedPhaseConfig,Issues=issues,Exception=failure,CollectionFailures=collectionFailures,OwnedRoot=ownedRoot,Before=before,AfterConstructor=afterConstructor,AfterValidation=after,SourceUnchanged=sourceUnchanged };
         await using(var output=new FileStream(resultPath,FileMode.CreateNew,FileAccess.Write,FileShare.None)) await JsonSerializer.SerializeAsync(output,result,new JsonSerializerOptions {WriteIndented=true});
         return failure is null && collectionFailures.Count==0 && sourceUnchanged==true ? 0 : 1;
     }

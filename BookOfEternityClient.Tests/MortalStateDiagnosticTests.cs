@@ -83,4 +83,40 @@ public sealed class MortalStateDiagnosticTests
         }
         finally {Directory.Delete(root,true);}
     }
+    [Theory]
+    [InlineData("valid")]
+    [InlineData("config-hash")]
+    [InlineData("probe-hash")]
+    [InlineData("probe-join")]
+    [InlineData("probe-path")]
+    public void FailedPhaseConfigHasExplicitSeparateProvenance(string mode)
+    {
+        var root=Path.Combine(TestDiagnosticPaths.Root,"mortal-state-diagnostic",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(root);
+        try
+        {
+            var source=Path.Combine(root,"source");Directory.CreateDirectory(source);
+            var data=Path.Combine(source,"data");File.WriteAllText(data,"{}");var hash=MortalStateDiagnostic.Hash(data);
+            var config=Path.Combine(source,"failed-config.json");File.WriteAllText(config,"{\"phase\":2}");var configHash=MortalStateDiagnostic.Hash(config);
+            var pins=Enumerable.Range(0,106).ToDictionary(i=>"game_state/data"+i+".json",_=>hash);
+            var probe=Path.Combine(source,"accepted.json");File.WriteAllText(probe,JsonSerializer.Serialize(new {Success=true,AcceptedGameTurns=1,FinalWorldPins=pins,FinalConfigSHA256=hash}));
+            var failed=Path.Combine(source,"failed.json");File.WriteAllText(failed,JsonSerializer.Serialize(new {Success=false,AcceptedGameTurns=0,FinalConfigSHA256=mode=="probe-join"?hash:configHash}));
+            var entries=pins.Keys.Select(n=>new MortalStateDiagnostic.Entry(n,data,hash)).Append(new("config.json",config,configHash)).ToArray();
+            var witness=new MortalStateDiagnostic.ConfigWitness(config,mode=="config-hash"?hash:configHash,mode=="probe-path"?Path.Combine(source,"..","source","failed.json"):failed,mode=="probe-hash"?hash:MortalStateDiagnostic.Hash(failed));
+            var manifest=Path.Combine(root,"manifest.json");File.WriteAllText(manifest,JsonSerializer.Serialize(new MortalStateDiagnostic.Manifest(source,probe,MortalStateDiagnostic.Hash(probe),entries,witness)));
+            var dest=Path.Combine(root,"destination");
+            if(mode=="valid")
+            {
+                var admitted=MortalStateDiagnostic.Prepare(manifest,dest);
+                Assert.NotNull(admitted.FailedPhaseConfig);Assert.Equal(configHash,MortalStateDiagnostic.Hash(Path.Combine(dest,"game_session/config.json")));
+                Assert.Equal(107,MortalStateDiagnostic.Inventory(dest).Count);
+            }
+            else
+            {
+                Assert.Throws<InvalidDataException>(()=>MortalStateDiagnostic.Prepare(manifest,dest));
+                Assert.False(Directory.Exists(dest));Assert.False(File.Exists(dest+".reservation"));
+            }
+            Assert.Equal(configHash,MortalStateDiagnostic.Hash(config));
+        }
+        finally {Directory.Delete(root,true);}
+    }
 }
