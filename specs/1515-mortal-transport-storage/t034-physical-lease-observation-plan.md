@@ -1042,3 +1042,32 @@ physical containment only. mm27 is nonpredecessor, no ACK/retry/repair/reuse.
 Next source-only design must route healthy markers via existing explicit
 external diagnostics (or narrowly suppress healthy-only output), preserving
 failure diagnostics; no parser stripping, grammar relaxation or timeout change.
+
+Bounded healthy-marker routing plan (source/test-first only, reviewer design GO):
+- Keep all failure Report/Write stderr bytes and exception semantics unchanged.
+  Healthy Mark honors existing explicit diagnostic route: external goes through
+  the same fresh private/nonfollowing/outside-root/32-byte owner-marker/CreateNew
+  checks as physical trace; invalid explicit configuration never falls back.
+  Preserve legacy nonce-only stderr ONLY when both route and directory are absent;
+  explicit stderr requires absent directory. No new environment switch/logger.
+- Four existing Mark calls receive their already-known files.BasePath as ordinary
+  DATA. Closed existing stages only; distinct PID-marker-occurrence filenames,
+  actual pin/close payload unchanged, capture time before synchronous sink IO.
+  Factor only existing private writer checks; no authority reads, retries,
+  overwrite, directory creation, async collector or timing-neutral claim.
+- Test-first causal seam reuses the isolated genuine hosted manual-Save fixture.
+  In its child only, actual consumer stderr and actual menu use the same writer,
+  restored in finally. Exact post-description success interval must be clean;
+  actual Active marker must instead join external PID/nonce/original operation.
+  This is a merged-stream model, NOT an actual PTY/emulator qualification.
+  Existing original owner cleanup still precedes outer feature assertions.
+- Minimal direct Mark controls retain unset/stderr behavior and reject malformed
+  explicit routing while proving actual failure Report remains on stderr. A
+  tiny mixed-sink DATA check must authenticate physical versus healthy filename/
+  prefix/stage/nonce/PID disjointly, reject unknown/partial rows, and keep physical
+  triple invariants untouched. Live freezing must not silently ignore new files.
+- SelectionPrompt smoke remains physical-only: its isolated local fixture never
+  opens a hosted original, so no healthy Mark is expected; do not broaden that
+  assertion. relay_phase_evidence admission validates namespace+marker only and
+  does not enumerate event payloads. No terminal parser/grammar, timeout or world
+  changes; exact source/count/command gates precede RED and later implementation.
