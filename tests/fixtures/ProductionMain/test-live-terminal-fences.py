@@ -92,11 +92,18 @@ class Fences(unittest.TestCase):
         return fn
     def test_physical_trace_real_namespace_and_pinned_environment(self):
         fn=self.trace_admission()
-        cases=('valid','missing-route','empty-route','stderr','unknown','missing-path','empty-path','other-path','other-nonce','under-base','equal-base','ancestor','linked-parent','linked-marker','fifo-marker','public-dir','public-marker','wrong-marker','short-marker','missing-marker','missing-dir','relative')
+        cases=('valid','missing-route','empty-route','stderr','unknown','missing-path','empty-path','other-path','other-nonce','under-base','equal-base','ancestor','linked-parent','linked-marker','fifo-marker','public-dir','public-marker','wrong-marker','short-marker','missing-marker','missing-dir','relative','missing-stop','malformed-stop','long-marker','dotdot','trailing-separator','fifo-directory')
         for case in cases:
             with self.subTest(case=case):
                 root,base,out,trace,marker,profile,env=self.trace_case()
-                if case=='missing-route':env.pop('BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE')
+                if case=='missing-stop':profile.pop('StopNonce')
+                elif case=='malformed-stop':profile['StopNonce']='not-a-nonce';env['BOE_MAIN_STOP_DIAGNOSTIC_NONCE']='not-a-nonce'
+                elif case=='long-marker':marker.write_bytes(b'a'*33)
+                elif case in ('dotdot','trailing-separator'):
+                    path=str(out)+'/../p01/physical-trace' if case=='dotdot' else str(trace)+'/'
+                    profile['PhysicalTrace']['Directory']=path;env['BOE_TEST_CANONICAL_LEASE_TRACE_DIR']=path
+                elif case=='fifo-directory':marker.unlink();trace.rmdir();os.mkfifo(trace,0o600)
+                elif case=='missing-route':env.pop('BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE')
                 elif case in ('empty-route','stderr','unknown'):env['BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE']={'empty-route':'','stderr':'stderr','unknown':'other'}[case]
                 elif case=='missing-path':env.pop('BOE_TEST_CANONICAL_LEASE_TRACE_DIR')
                 elif case=='empty-path':env['BOE_TEST_CANONICAL_LEASE_TRACE_DIR']=''
@@ -130,26 +137,34 @@ class Fences(unittest.TestCase):
             node=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name==cls)
             init=next(n for n in node.body if isinstance(n,ast.FunctionDef) and n.name=='__init__')
             for name in names:
-                root,base,out,trace,marker,profile,env=self.trace_case();env['BOE_MAIN_STOP_DIAGNOSTIC_NONCE']='b'*32
-                acquired=[]
-                def stop(*a,**kw):acquired.append('acquire');raise RuntimeError('Acquisition reached')
-                ns=dict(phase_evidence=evidence,base=base,out=out,trace_profile=profile,env=env,peers=[],result={},
-                    pty=types.SimpleNamespace(openpty=stop),rpc_helper_arguments=stop,ship=root,session=base/'game_session',__file__='inert')
-                exec(compile(ast.Module(body=[init],type_ignores=[]),'<actual-init>','exec'),ns)
-                with self.assertRaises(ValueError):ns['__init__'](types.SimpleNamespace(),name,[]) if cls=='Terminal' else ns['__init__'](types.SimpleNamespace())
-                self.assertEqual(acquired,[])
+                for valid in (True,False):
+                    root,base,out,trace,marker,profile,env=self.trace_case()
+                    if not valid:env['BOE_MAIN_STOP_DIAGNOSTIC_NONCE']='b'*32
+                    acquired=[];sentinel=RuntimeError('First inert acquisition')
+                    def stop(*a,**kw):acquired.append('acquire');raise sentinel
+                    ns=dict(phase_evidence=evidence,base=base,out=out,trace_profile=profile,env=env,peers=[],result={},
+                        pty=types.SimpleNamespace(openpty=stop),rpc_helper_arguments=lambda *a:[],ship=root,session=base/'game_session',__file__='inert',
+                        console_routes=types.SimpleNamespace(client_environment=lambda value:dict(value)),subprocess=types.SimpleNamespace(Popen=stop,PIPE=1))
+                    exec(compile(ast.Module(body=[init],type_ignores=[]),'<actual-init>','exec'),ns)
+                    with self.assertRaises(RuntimeError if valid else ValueError) as caught:ns['__init__'](types.SimpleNamespace(),name,[]) if cls=='Terminal' else ns['__init__'](types.SimpleNamespace())
+                    if valid:self.assertIs(caught.exception,sentinel)
+                    self.assertEqual(acquired,['acquire'] if valid else [])
+                    if not valid:self.assertEqual(list(out.glob('rpc-helper.*.log')),[])
     def test_actual_final_client_environment_is_checked_before_popen(self):
-        fn=self.trace_admission();root,base,out,trace,marker,profile,env=self.trace_case()
-        terminal=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='Terminal');init=next(n for n in terminal.body if isinstance(n,ast.FunctionDef) and n.name=='__init__');body=next(n for n in init.body if isinstance(n,ast.Try)).body
-        first=next(i for i,n in enumerate(body) if isinstance(n,ast.Assign) and any(isinstance(x,ast.Name) and x.id=='child_env' for x in n.targets));last=next(i for i,n in enumerate(body[first:],first) if isinstance(n,ast.Assign) and any(isinstance(x,ast.Attribute) and x.attr=='process' for x in n.targets))
-        calls=[]
-        def popen(*a,**kw):calls.append(kw);raise RuntimeError('Popen reached')
-        def mutate(value):return dict(value,BOE_MAIN_STOP_DIAGNOSTIC_NONCE='b'*32)
-        ns=dict(phase_evidence=evidence,base=base,out=out,trace_profile=profile,env=env,console_routes=types.SimpleNamespace(client_environment=mutate),name='client',self=types.SimpleNamespace(slave=11),args=[],ship=root,captured_output=False,own=lambda:None,subprocess=types.SimpleNamespace(Popen=popen,PIPE=1,STDOUT=2))
-        with self.assertRaises(ValueError):exec(compile(ast.Module(body=body[first:last+1],type_ignores=[]),'<actual-final-child-env>','exec'),ns)
-        self.assertEqual(calls,[])
+        fn=self.trace_admission()
+        terminal=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='Terminal');init=next(n for n in terminal.body if isinstance(n,ast.FunctionDef) and n.name=='__init__')
+        for drift in (False,True):
+            root,base,out,trace,marker,profile,env=self.trace_case();calls=[];sentinel=RuntimeError('First inert PTY acquisition')
+            def stop(*a,**kw):calls.append('openpty');raise sentinel
+            def mutate(value):return dict(value,BOE_MAIN_STOP_DIAGNOSTIC_NONCE='b'*32) if drift else dict(value)
+            ns=dict(phase_evidence=evidence,base=base,out=out,trace_profile=profile,env=env,console_routes=types.SimpleNamespace(client_environment=mutate),peers=[],result={},pty=types.SimpleNamespace(openpty=stop))
+            exec(compile(ast.Module(body=[init],type_ignores=[]),'<actual-full-client-init>','exec'),ns)
+            with self.assertRaises(ValueError if drift else RuntimeError) as caught:ns['__init__'](types.SimpleNamespace(),'client',[])
+            if not drift:self.assertIs(caught.exception,sentinel)
+            self.assertEqual(calls,[] if drift else ['openpty'])
+            self.assertFalse((out/'client-terminal').exists())
     def test_actual_receipt_trace_refusal_precedes_run(self):
-        fn=self.trace_admission();root,base,out,trace,marker,profile,env=self.trace_case();env['BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE']=''
+        fn=self.trace_admission();root,base,out,trace,marker,profile,env=self.trace_case()
         matches=[]
         for parent in ast.walk(tree):
             for _,body in ast.iter_fields(parent):
@@ -160,11 +175,15 @@ class Fences(unittest.TestCase):
                         while start and not (isinstance(body[start-1],ast.Expr) and isinstance(body[start-1].value,ast.Call) and isinstance(body[start-1].value.func,ast.Attribute) and body[start-1].value.func.attr=='receipt_package_proved'):start-=1
                         matches.append(body[max(0,start-1):i+1])
         self.assertEqual(len(matches),1);calls=[]
-        def run(*a,**kw):calls.append(kw);raise RuntimeError('Run reached')
+        sentinel=RuntimeError('Run reached')
+        def run(*a,**kw):calls.append(kw);raise sentinel
         pe=types.SimpleNamespace(require_physical_trace_admission=fn,receipt_package_proved=lambda *a:None)
         ns=dict(phase_evidence=pe,base=base,out=out,trace_profile=profile,env=env,receipt_helper=root/'helper.dll',package_manifest={'ReceiptHelperPins':{}},subprocess=types.SimpleNamespace(run=run),baseline=root,session=base/'game_session',receipt_check_budget=lambda *a:1,start=0,work_seconds=660,time=types.SimpleNamespace(monotonic=lambda:0))
-        with self.assertRaises(ValueError):exec(compile(ast.Module(body=matches[0],type_ignores=[]),'<actual-receipt-prelaunch>','exec'),ns)
-        self.assertEqual(calls,[])
+        for valid in (True,False):
+            calls.clear();env['BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE']='external' if valid else ''
+            with self.assertRaises(RuntimeError if valid else ValueError) as caught:exec(compile(ast.Module(body=matches[0],type_ignores=[]),'<actual-receipt-prelaunch>','exec'),ns)
+            if valid:self.assertIs(caught.exception,sentinel)
+            self.assertEqual(len(calls),1 if valid else 0)
 
     def package(self):
         temporary=tempfile.TemporaryDirectory();self.addCleanup(temporary.cleanup)
