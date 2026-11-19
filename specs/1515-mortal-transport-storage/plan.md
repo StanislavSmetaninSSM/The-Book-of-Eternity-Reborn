@@ -4761,3 +4761,25 @@ then reuse the existing local-settings bootstrap in this current-runtime fixture
 before Save; review that narrow correction before another exact one-case run.
 
 T033 fixture-only correction (source WIP, not executed): after genuine original retirement and before Save, use the SAME runtime.StateManager.BootstrapLocalStorageAsync; verify existing generation is unchanged and read config through the existing typed local-settings reader. The exact produced config bytes must be in the actual returned ZIP and restored before continuation. Do not assert config equality after continuation, because actual settings synchronization may normalize it. Full source-chain inspection found no other mandatory missing input: settings projection/mod manifest use the existing coordinator, UI normalization/response construction reuse the accepted birth paths. Production bodies and final unblocked contract remain unchanged. Desired causal RED requires actual strict validation issues in the retained logger, not merely the final assertion or another setup exception. First setup-failure evidence remains separate; save/review required before another build/run.
+
+T033 corrected fixture now reaches desired causal RED. Fresh Integration54.8241s,
+130warnings/0errors; official exact-one run23.3907227s fails only the final
+unblocked-continuation assertion after real Save/ZIP config+carriers, committed
+Load/new durable generation/turn42, post-canonical checks and admission closure.
+Actual consumer logs the same three strict-validation codes. The returned decision
+remains Committed with its generation, but NeedsFollowUp/ContinuationBlocked=true;
+one GM call only. Owned fixture removed/no cleanup failure; runner complete.
+All32,019 source pins and eight outputs unchanged. Outcome SHA256:
+662b1c87128f68a8d53e7eb62dd49b5ddfb9525eb334b9a9ae4540fbf57d78a3.
+Independent outcome review is separate. Earlier absent-config failure remains
+preparation failure, not retroactively causal RED. No production Load fix yet.
+
+Conditional narrow design: clean committed Mortal Load uses a distinct canonical
+purpose under the actual quiescent owner and exact bound/durable generation.
+Preflight must precede settings/UI normalization, which can remove orphan markers;
+close read before mutations, then fresh full-All/closing source and marker checks.
+Reuse invocation DATA, not pre-send participation or completed-publication proof.
+Load result DTO is not authority. Invalid/blocked/follow-up results, wrong owner/
+generation, pending original/markers, drift/reentry and raw/default/Browser/nonMortal
+must retain their refusals or existing semantics. Failed continuation still retains
+committed replacement with blocked follow-up, never blind replay or false rollback.
