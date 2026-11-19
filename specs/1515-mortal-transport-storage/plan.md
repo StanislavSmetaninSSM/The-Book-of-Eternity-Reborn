@@ -4604,3 +4604,15 @@ accepted0 rejection and mixed-report serialization lack separate negative cases.
 The earlier nine-case outcome was independently verified, including source/output
 joins and cleanup. No real diagnostic yet. Probes are parsed from retained bytes;
 small config hash plus fresh copy/readback fences need no new cache.
+
+T031 mixed-config bounded verification: fresh Unit38.10s/70warnings/0errors;
+official mortal-state-diagnostic-data14/14 PASS, runner9.4073528s, no skips,
+duplicates or timeout; owned cleanup complete. All32,016 source and eight output
+pins unchanged. Actual107-file admission was independently checked:96 retained
+baseline files plus10 unchanged companions match accepted p01; separate config
+matches failed p02. Paths/hash/link checks pass; no authority/runtime/queue copied.
+Concrete single strict-validator command is prepared against the complete current
+TestSupport build with existing60s guardian, new destination and external result.
+Final command/output/outcome review is pending; nothing executed. Operational
+config is DATA only; relocated/root-dependent failures still cannot prove the
+live post-health refusal. No speculative gameplay fix, world replay or new owner.
