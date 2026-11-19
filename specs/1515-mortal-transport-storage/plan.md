@@ -3962,3 +3962,30 @@ remain separate. No guardian or game was started during this preflight.
 `published_join` now returns its single captured inventory instead of rereading
 that directory immediately. No cache or freshness boundary changed. All corrected
 execution remains UNRUN pending focused source review and fresh owning build.
+
+T028 bounded GREEN, 2026-11-19, source
+`102f689b2b250da989662b4ab298cc1e05902a7e`. The local index/HEAD were reconciled
+to that published checkpoint only after checking all 32,014 tracked file bytes;
+generated Python caches were left untracked. Guardian descriptor admission passed.
+The separately bootstrapped guardian was built by the existing native script in
+2 seconds, not by the helper itself; source/compiler/provenance/binary pins were
+verified. Fresh Unit build: 82.34 seconds, 91 warnings, zero errors. Exact
+PlanOnly selected two wrappers. Official `test-csharp.ps1 -Category
+mortal-live-preparation-data,mortal-live-preparation-process -NoBuild` completed
+2/2 PASS in 14.7820600 seconds, DATA first, no skips/duplicates/timeouts and complete
+owned cleanup. Inner DATA: 20/20 in 0.058 seconds; actual inert process controls:
+4/4 in 0.363 seconds. Normal and nonzero(7) children closed without emergency;
+timeout(137) and adopted setsid survivor used one emergency signal each and were
+correctly rejected as successful operations. All four guardian reports reached
+ECHILD with zero failures. Both wrapper exit/output tasks completed with exit0
+and empty cleanup error lists. Original source/data and eight outputs stayed
+exact across the run; final manifest SHA256
+`0e30eaa5223687c8f686b0cb9c58228a0b823170e193ea9aab230f0c1c8fd0fe`.
+Raw remains outside Git in `mortal-t028/isolated-green`. This note changes only
+plan metadata after those pin checks. Independent outcome review is pending.
+The helper's whole real native/publish/export/deploy path and occupied-destination
+refusal remain UNRUN; no new game or GM relay has been started. Next is one bounded
+real prepare-only integration with full producer/copy joins, not a live claim.
+Optimization: one inventory read is reused only within the immediate published
+copy comparison; final freshness checks remain. Inert process controls avoid
+compilation/export/game setup, without replacing the forthcoming real preparation.
