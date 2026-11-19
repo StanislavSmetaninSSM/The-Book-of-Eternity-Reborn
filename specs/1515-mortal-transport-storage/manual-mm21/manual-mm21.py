@@ -22,6 +22,18 @@ def require_current_producer_contract(b,src):
  if b['outputPins']!=b['producerOutputPins']:raise ValueError('Current producer must equal current owning outputs')
  if b['contentOverlays']!=[]:raise ValueError('Current producer accepts zero overlays only')
 
+def checked_tools():
+ expected={'dotnet','pwsh','python3','cc','readelf','git'}
+ if set(b['toolPins'])!=expected:raise ValueError('Exact preparation tool set required')
+ for name,row in b['toolPins'].items():
+  path=shutil.which(name)
+  if path is None or str(pathlib.Path(path).resolve(strict=True))!=row['path'] or h(pathlib.Path(row['path']))!=row['sha256']:
+   raise ValueError('Preparation tool path/hash drift: '+name)
+
+def require_published_rows(rows,expected):
+ actual={row['path']:{'sha256':row['sha256'],'mode':row['mode']} for row in rows}
+ if len(actual)!=len(rows) or actual!=expected:raise ValueError('Published hash/mode membership drift')
+
 os.environ.update(POWERSHELL_TELEMETRY_OPTOUT='1',POWERSHELL_UPDATECHECK='Off',DOTNET_CLI_TELEMETRY_OPTOUT='1')
 R=pathlib.Path('/workspace/shared/mortal-isolated-20261119');h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 if len(sys.argv)!=3:raise ValueError('Reviewed input manifest and new destination required')
@@ -36,7 +48,9 @@ b=json.loads(input_bytes);assert b['destination']==str(D)
 E=input_path.parent;serial=E;producer=pathlib.Path(b['immutableProducerRoot']);old=pathlib.Path(b['nativeDirectory'])
 for path in (producer,old):
  assert path.is_absolute() and path==path.resolve() and not any(x.is_symlink() for x in [path,*path.parents]) and path.is_dir()
-assert h(producer/'published.json')==b['currentProducerPublishedSHA256']
+producer_bytes=(producer/'published.json').read_bytes()
+assert hashlib.sha256(producer_bytes).hexdigest()==b['currentProducerPublishedSHA256']
+current_producer=json.loads(producer_bytes)
 assert h(producer/'outcome.json')==b['currentProducerOutcomeSHA256']
 assert h(producer/'logs/publish-BookOfEternityClient.TestSupport.outcome.json')==b['currentProducerHelperPublishOutcomeSHA256']
 assert not os.path.lexists(D)
@@ -59,6 +73,7 @@ for name in b['sourcePins']:
  assert name and not member.is_absolute() and str(member)==name and '..' not in member.parts and '\\' not in name
 src=source_inventory();assert src==b['sourcePins'],'Source membership/hash drift'
 require_current_producer_contract(b,src)
+checked_tools()
 assert src['tests/fixtures/ProductionMain/live-mortal-phase.py']==os.environ['MM21_REVIEWED_DRIVER_SHA256']
 def checked_output(name,digest):
  member=pathlib.PurePosixPath(name)
@@ -100,6 +115,7 @@ for project,path in packages.items():
  assert extra not in expected;expected[extra]=h(nuget)
  assetdata=json.loads((R/project/'obj/project.assets.json').read_text());matches=[v['System.Diagnostics.EventLog/8.0.0']['runtimeTargets'][extra] for v in assetdata['targets'].values() if 'System.Diagnostics.EventLog/8.0.0' in v];assert matches and all(x=={'assetType':'runtime','rid':'win'} for x in matches)
  rows=m.inventory(path);actual={x['path']:x['sha256'] for x in rows};assert actual==expected,(project,sorted(set(actual)-set(expected)),sorted(set(expected)-set(actual)))
+ require_published_rows(rows,current_producer['packages'][project]['files'])
  verified[project]=rows
 overlays=b['contentOverlays'] # Exactly empty, checked before checkout imports.
 import relay_phase_evidence as pe
@@ -141,6 +157,8 @@ assert h(producer/'outcome.json')==b['currentProducerOutcomeSHA256']
 assert h(producer/'logs/publish-BookOfEternityClient.TestSupport.outcome.json')==b['currentProducerHelperPublishOutcomeSHA256']
 assert output_inventory()==b['outputPins']
 assert source_inventory()==src
+checked_tools()
+for project,path in packages.items():require_published_rows(m.inventory(path),current_producer['packages'][project]['files'])
 for name,digest in b['outputPins'].items():checked_output(name,digest)
 for name,digest in b['unitOutputsCorroboration'].items():checked_output(name,digest)
 manifest={'kind':'manual-standard-preparation','prepared':True,'acceptedGmTurn':False,'elapsedSeconds':time.monotonic()-start,'inputSHA256':h(D/'preparation-inputs.json'),'seedManifestSHA256':h(D/'seed-manifest.json'),'packageSHA256':h(D/'p01/relay-phase-package.json'),'seed':seed,'inventories':{n:m.inventory(p) for n,p in {'native':D/'native','runtime':D/'package','deployed':session/'_runtime','helper':D/'receipt-helper','relay':D/'p01/relay','world':session,'terminal':D/'p01/terminal-fixture','terminalDeps':D/'p01/terminal-deps'}.items()},'exportOutcome':result,'sourceOutputUnchanged':True,'OldWorldReadOrCopied':False,'NoGameOrRelayLaunched':True}

@@ -355,3 +355,10 @@ input/readiness assembly using accepted fresh producer239/244/249, current
 admission/profile sources, zero overlays and separate native provenance. Actual
 setup-only export/profile creation requires independent integrated source/input
 gate; launch and response publication remain later explicit gates.
+
+Integrated preparation review added two concrete closure requirements before
+creation: reuse accepted publisher six-tool resolved path/SHA pins at admission
+and closing, and bind actual published full hash+mode rows to its pinned immutable
+published.json before copying and at closing. Both are now SOURCE WIP; existing
+CurrentProducer pure1 is extended with actual-function mode/member and tool-drift
+controls, not a new suite. Final current input must include toolPins. No prep ran.

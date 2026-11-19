@@ -246,10 +246,10 @@ class PhysicalTraceProfile(unittest.TestCase):
 
 class CurrentProducer(unittest.TestCase):
  def test_exact_current_producer_zero_overlays_and_source_additions(self):
-  import ast,copy
+  import ast,copy,hashlib,types
   source=pathlib.Path(__file__).with_name('manual-mm21.py');tree=ast.parse(source.read_text())
-  functions=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='require_current_producer_contract']
-  self.assertEqual(len(functions),1,'Missing exact current producer contract; downstream controls UNEXECUTED')
+  functions=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in ('require_current_producer_contract','checked_tools','require_published_rows')]
+  self.assertEqual(len(functions),3,'Missing exact producer admission functions')
   ns={'pathlib':pathlib};exec(compile(ast.Module(body=functions,type_ignores=[]),'<actual-producer-contract>','exec'),ns);fn=ns['require_current_producer_contract']
   driver='tests/fixtures/ProductionMain/live-mortal-phase.py';addition='specs/1515-mortal-transport-storage/manual-mm21/publish-current.py'
   src={'engine.cs':'a',driver:'b',addition:'c'}
@@ -271,6 +271,22 @@ class CurrentProducer(unittest.TestCase):
      b['owningBuildSourcePins']['resource.json']='old';current['resource.json']='new';b['allowedNonCompilerSourceChanges']['resource.json']='new'
     else:current['engine.cs']='changed';b['allowedNonCompilerSourceChanges']['engine.cs']='changed'
     with self.assertRaises(ValueError):fn(b,current)
+  rows=[{'path':'member','sha256':'hash','mode':0o644}];expected={'member':{'sha256':'hash','mode':0o644}}
+  ns['require_published_rows'](rows,expected)
+  for changed in ([dict(rows[0],mode=0o755)],[dict(rows[0],sha256='changed')],rows+rows,[dict(rows[0],path='foreign')]):
+   with self.assertRaises(ValueError):ns['require_published_rows'](changed,expected)
+  with tempfile.TemporaryDirectory() as tmp:
+   root=pathlib.Path(tmp);pins={}
+   for name in ('dotnet','pwsh','python3','cc','readelf','git'):
+    path=root/name;path.write_bytes(name.encode());pins[name]={'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+   ns.update(b={'toolPins':pins},shutil=types.SimpleNamespace(which=lambda name:str(root/name)),h=lambda path:hashlib.sha256(path.read_bytes()).hexdigest())
+   ns['checked_tools']()
+   (root/'dotnet').write_bytes(b'changed')
+   with self.assertRaises(ValueError):ns['checked_tools']()
+   (root/'dotnet').write_bytes(b'dotnet');ns['shutil']=types.SimpleNamespace(which=lambda name:None if name=='dotnet' else str(root/name))
+   with self.assertRaises(ValueError):ns['checked_tools']()
+   ns['shutil']=types.SimpleNamespace(which=lambda name:str(root/name));pins.pop('git')
+   with self.assertRaises(ValueError):ns['checked_tools']()
 
 if __name__=='__main__':unittest.main(verbosity=2)
 
