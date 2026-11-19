@@ -1259,3 +1259,37 @@ preparation now names its own phase output exclusively (no P02 overwrite).
 No production, driver, relay transport or managed output changed. Current retained
 P02 and new exclusive P03 profile require their own gate before live. Sole GM
 readiness accepts the council appeal, with outcome undecided until signed44.
+
+### mm28 P03 failed: authored pronoun omission, no repair publication
+Independent `dcee07cf51aad8c09d7ec4459fbfcb87519d351749ea5467024bb6924c0d535c`
+verifies24,604 frozen artifacts. One genuine44 council appeal and one reviewed
+GM packet; the pending/no-grant decision was independent. Author and content
+reviewer incorrectly treated implicit first-person verbs as satisfying the actual
+literal-pronoun journal rule. At22:36:57Z repair attempt1 correctly reported
+`actor_thought_journal_not_first_person`: new «Сверил…» lacked explicit «я/мне/мой/мы».
+This is an authored packet/review defect, not a production validation defect.
+No44 was accepted, no Save44, and no grant/item change was requested.
+
+Parent/root later permitted only a new correlated repair request using the
+existing packaged per-request protocol, without altering the original phase-wide
+attempt guard. Fresh author authority check refused because original was already
+Stopped and queue closed. No repair candidate, repair technical receipt, repair
+worker call or repair response exists; prepared offline check script was never
+executed. Original response was not retried.
+
+Independent timeline: standard daemon validation-repair artifact-stall handling
+at22:40:10Z (elapsed186s/no-progress185s; min120/no-progress180 and dispatch sent)
+stopped its exact original. Later status RPC495.846..495.890s hit EPIPE because
+bridge had exited; this is not evidence of a primary FIFO defect. Original19941
+returned1, total510.427s;0 shutdown attempts, normal route cleanup unconfirmed.
+Durable original Stopped/OwnedScopeEmpty and guardian ECHILD/driver1/reaped3 prove
+bounded containment, not successful route cleanup or rollback. Strict offline
+trace summary refused unqualified local post-shutdown rows; no classifier relaxed.
+
+Current world is QUARANTINED: canonical clock510 and staged appeal journal remain,
+while accepted story remains41/42/43; pending snapshot/repair/backups remain.
+No clean predecessor or rollback claim. Verified prior manual Save43 remains the
+only recovery candidate; any later fresh owned run must use supported actual Load,
+not copying canonical files or reviving this owner. No new live recovery authorized
+by this checkpoint. Future author preflight must check the exact literal-pronoun
+predicate and all response fields, not only debug heading structure.
