@@ -16,7 +16,81 @@ def options(selected, initial=True):
     return (text + '\r\n  ' + OPTIONS_FOOTER).encode()
 
 
+def padding_case(split=17):
+    # Authored exact source-shaped five-row Spectre redraw, not a live-world input.
+    # The excluded prefix models the recorded action cut; only this frame is parsed.
+    header='🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)'
+    choices=['💰 Деньги: 500','⚔ ⚔️ Основная рука: Древний меч','📦 Древний меч [Оружие]','📦 🔒 Запертая кладовая разметочных материалов (1 пр.)','← Назад']
+    menu=routes.entry_menu(routes.fixed_menu(header,choices,20),command='/storage_move')
+    styled='\r\x1b[6A\x1b[1m🎒 📦 Инвентарь\x1b[0m  \x1b[2m(⚖ 1.8kg/45.0kg кг)\x1b[0m  \x1b[2m(выберите для просмотра / управления)\x1b[0m'
+    rows=[' '*75,'  '+choices[0]+' '*59,'> '+choices[1]+' '*43,'  '+choices[2]+' '*50,'  '+choices[3]+' '*19,'  '+choices[4]+' '*66]
+    frame=(styled+'\r\n'+'\r\n'.join(rows)).encode();assert len(frame)==718
+    raw=b'X'*17001+frame;end=len(raw)-66+split;captured=bytearray(raw[:end])
+    view=AcknowledgedTerminalView(None,captured);view.pending=False;view.cut=end;view.seq=57
+    view.cursor={'x':9+split,'y':24};view.lines=['']*18+[header]+rows
+    view.modes={'applicationCursorKeysMode':True,'applicationKeypadMode':True}
+    frames=routes.selected_frames(bytes(captured),17001,menu);assert frames==[choices[1]]
+    proof={'raw':bytes(captured),'menu':menu,'selected':choices[1],'cut':17001,'frames':list(frames),
+           'ack':{'cut':view.cut,'seq':view.seq,'cursor':dict(view.cursor),'lines':list(view.lines)},'view':view}
+    return raw,captured,view,proof
+
+
 class FullRouteInputData(unittest.TestCase):
+    def test_same_window_retained_padding_all_split_points(self):
+        for split in range(66):
+            with self.subTest(split=split):
+                raw,captured,view,proof=padding_case(split)
+                if split==17:self.assertEqual((len(proof['raw']),len(raw)),(17670,17719))
+                self.assertEqual(retained_selection(bytes(captured),proof),proof['selected'])
+                captured[:]=raw;view.cut=len(raw);view.seq=59;view.cursor={'x':75,'y':24}
+                self.assertEqual(routes.selected_frames(raw,17001,proof['menu']),proof['frames'])
+                self.assertEqual(retained_selection(raw,proof),proof['selected'])
+
+    def test_actual_client_final_drain_padding_sends_one_current_down(self):
+        import sys,pathlib
+        sys.path.insert(0,str(pathlib.Path(__file__).with_name('terminal')))
+        from client_session import ClientSession
+        raw,captured,view,proof=padding_case();sent=[];session=ClientSession.__new__(ClientSession)
+        session.capture=captured;session.view=view
+        session.terminal=types.SimpleNamespace(_time=lambda:None,key=lambda data,label,**kw:sent.append(data))
+        def final_drain():
+            captured[:]=raw;view.cut=len(raw);view.seq=59;view.cursor={'x':75,'y':24}
+        session.drain=final_drain;failure=None;cut=None
+        try:cut=session.send(lambda:view.arrow(),'fixed menu observed next row',lambda:retained_selection(bytes(captured),proof)==proof['selected'])
+        except ValueError as error:failure=str(error)
+        self.assertIsNone(failure,'Actual final-drain padding must not be mistaken for a newer frame')
+        self.assertEqual(sent,[b'\x1bOB']);self.assertEqual(cut,17719)
+
+    def test_retained_padding_refuses_new_partial_control_or_changed_selection(self):
+        raw,captured,view,proof=padding_case()
+        invalid=[b'\r',b'\b',b'\x1b[2K ',b'\x1b[1C ',b'\r\x1b[6A'+b'partial',b' '*100]
+        for tail in invalid:
+            with self.subTest(tail=tail):
+                captured[:]=proof['raw']+tail;view.cut=len(captured);view.seq=59;view.cursor={'x':75,'y':24}
+                try:value=retained_selection(bytes(captured),proof)
+                except ValueError:value=None
+                self.assertIsNone(value)
+        for defect in ('pending','cut','seq','cursor-x','cursor-y','cells'):
+            with self.subTest(defect=defect):
+                raw,captured,view,proof=padding_case();captured[:]=raw;view.cut=len(raw);view.seq=59;view.cursor={'x':75,'y':24}
+                if defect=='pending':view.pending=True
+                if defect=='cut':view.cut-=1
+                if defect=='seq':view.seq=proof['ack']['seq']
+                if defect=='cursor-x':view.cursor['x']=74
+                if defect=='cursor-y':view.cursor['y']=23
+                if defect=='cells':view.lines[21]='> changed selected row'
+                try:value=retained_selection(bytes(captured),proof)
+                except ValueError:value=None
+                self.assertIsNone(value)
+        raw,captured,view,proof=padding_case();view.seq=59
+        frame=raw[17001:];changed=frame.replace(('> '+proof['selected']).encode(),('  '+proof['selected']).encode()).replace('  📦 Древний меч [Оружие]'.encode(),'> 📦 Древний меч [Оружие]'.encode())
+        for tail in (b' '*49+frame[:80],b' '*49+changed):
+            captured[:]=proof['raw']+tail;view.cut=len(captured)
+            try:value=retained_selection(bytes(captured),proof)
+            except ValueError:value=None
+            self.assertIsNone(value)
+        with self.assertRaises(ValueError):retained_selection(b'changed-prefix'+raw,proof)
+
     def test_coalesced_transition_retains_current_without_replaying_history(self):
         self.assertTrue(ordered_transition(['archive', 'archive', 'Back'], 'archive', 'Back'))
         menu = routes.fixed_menu('Load', ['archive', 'Back'], 15)
@@ -172,7 +246,7 @@ class FullRouteInputData(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(FullRouteInputData)
-    assert suite.countTestCases() == 13
+    assert suite.countTestCases() == 16
     result = unittest.TextTestRunner(verbosity=2).run(suite)
-    assert result.testsRun == 13 and not result.skipped
+    assert result.testsRun == 16 and not result.skipped
     raise SystemExit(0 if result.wasSuccessful() else 1)
