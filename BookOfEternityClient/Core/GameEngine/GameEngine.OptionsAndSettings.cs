@@ -1188,7 +1188,7 @@ public partial class GameEngine
     /// <see langword="true"/> to keep the current session open, or <see langword="false"/> to return to the main menu.
     /// Unsafe storage continuation propagates its typed failure to the game loop.
     /// </returns>
-    private async Task<bool> InGameOptionsMenu()
+    internal async Task<bool> InGameOptionsMenu()
     {
         var choice = ShowSingleChoiceMenu(
             _loc.T("in_game_options"),
