@@ -362,3 +362,11 @@ and closing, and bind actual published full hash+mode rows to its pinned immutab
 published.json before copying and at closing. Both are now SOURCE WIP; existing
 CurrentProducer pure1 is extended with actual-function mode/member and tool-drift
 controls, not a new suite. Final current input must include toolPins. No prep ran.
+
+The two integrated closure corrections are now independently source/DATA accepted.
+The same affected CurrentProducer method passed once (0.008 s, exit 0), including
+actual-function tool and full published-mode refusal controls; all 32,067 sources
+and eight owning outputs matched before/after. External outcome `03c2ac81…` retains
+full evidence. This is detached DATA only, not real tool/preparation admission.
+Current mm24 input must bind accepted publisher tool pins and this saved source;
+independent integrated input review remains mandatory before any seed export.
