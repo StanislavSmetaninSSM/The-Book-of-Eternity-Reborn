@@ -60,6 +60,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var nextGeneration = Guid.NewGuid().ToString("N");
         string? archivePath = null;
         byte[]? archiveBytes = null;
+        var input = new ManualSaveCountingInput();
+        var readsAtClosing = -1;
         files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             {
@@ -68,6 +70,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     closing++;
                     archivePath = Assert.Single(Directory.GetFiles(files!.ResolvePath("saves/manual_saves"), "*.zip"));
                     archiveBytes = File.ReadAllBytes(archivePath);
+                    readsAtClosing = input.Reads; // all prompt/paste reads are already complete
                     if (!replace) return Task.FromException(sentinel);
                     var generation = JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!.AsObject();
                     generation["generationId"] = nextGeneration;
@@ -77,7 +80,6 @@ public sealed partial class GameEngineTurnLifecycleTests
             });
         PortableSaveFixture.Seed(files);
         var originalGeneration = JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!["generationId"]!.GetValue<string>();
-        var input = new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4));
         var runtime = CreateGameEngineRuntime(files, input);
         await using var audio = runtime.AudioService;
         runtime.GameLoop.SetSession("manual-save-close", 43);
@@ -85,9 +87,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var text = new StringWriter();
         AnsiConsole.Console = AnsiConsole.Create(new AnsiConsoleSettings
         { Ansi = AnsiSupport.No, ColorSystem = ColorSystemSupport.NoColors, Out = new AnsiConsoleOutput(text) });
+        AnsiConsole.Console.Profile.Width = 240; // deterministic presentation, not terminal/controller geometry
         Exception? failure;
         try { failure = await Record.ExceptionAsync(() => runtime.Engine.InGameOptionsMenu()); }
         finally { AnsiConsole.Console = prior; }
+        _directGachaOutput?.WriteLine("Manual Save close rendered output (replace=" + replace + "):\n" + text);
         Assert.Equal(1, closing);
         SaveCreationResult decision;
         if (replace)
@@ -95,7 +99,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             var replacement = Assert.IsType<SessionReplacedException>(failure);
             Assert.Equal(originalGeneration, replacement.ExpectedGeneration);
             decision = Assert.IsType<SaveCreationResult>(replacement.Data["EstablishedOperationResult"]);
-            Assert.Contains(CommittedSaveContinuationException.PlayerMessage, text.ToString());
+            Assert.True(text.ToString().Contains(CommittedSaveContinuationException.PlayerMessage, StringComparison.Ordinal), text.ToString());
             Assert.Equal(nextGeneration, JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!["generationId"]!.GetValue<string>());
         }
         else
@@ -110,11 +114,22 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(archivePath, files.ResolvePath(decision.DestinationRelativePath!));
         Assert.Equal(archiveBytes, File.ReadAllBytes(archivePath!));
         Assert.Single(Directory.GetFiles(files.ResolvePath("saves/manual_saves"), "*.zip"));
-        Assert.True(input.KeyAvailable); // ordinary success ACK was not consumed
+        Assert.True(readsAtClosing >= 1);
+        Assert.Equal(readsAtClosing, input.Reads); // no ReadKey, including fallback, after actual closing
         var loc = new LocalizationManager();
         Assert.DoesNotContain(loc.T("save_success"), text.ToString());
         Assert.DoesNotContain(loc.T("save_failed"), text.ToString());
         Assert.False(SessionOperationContext.TryGetExpectedGeneration(files.BasePath, out _));
+    }
+
+    private sealed class ManualSaveCountingInput : IConsoleInputSource
+    {
+        private readonly QueuedConsoleInputSource _inner = new(Enumerable.Repeat(Key(ConsoleKey.Enter), 4));
+        internal int Reads { get; private set; }
+        public bool IsScripted => _inner.IsScripted;
+        public bool KeyAvailable => _inner.KeyAvailable;
+        public ConsoleKeyInfo ReadKey(bool intercept = true) { Reads++; return _inner.ReadKey(intercept); }
+        public string? ReadLine() => _inner.ReadLine();
     }
 
     /// <summary>Runs only beneath the existing native guardian; never borrows a live game world.</summary>

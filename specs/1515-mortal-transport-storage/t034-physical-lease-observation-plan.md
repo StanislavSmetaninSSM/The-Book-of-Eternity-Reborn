@@ -966,3 +966,16 @@ committed-warning/rollback menu2. Replacement control alters only its isolated
 fixture generation at the established finalization hook, never hosted authority.
 One owner per test and fresh generation/closing checks; no caching or framework.
 All implementation/control changes remain unbuilt/unrun pending source review.
+
+First correction run is not GREEN: five executed, hosted positive and both
+existing rollback/warning controls pass, two new late oracle assertions fail.
+Build122.46s/187 warnings/zero errors; official runner14.926s, cleanup complete.
+Independent46-artifact review confirms exact typed committed/replacement results
+before the failing assertions. Source proves TextComposer paste draining consumes
+prequeued keys before Save, so remaining-key assertion was invalid. The test now
+counts every delegated ReadKey including fallback and snapshots the count in
+real post-commit closing, after both prompts; no later read is permitted.
+The long notice capture was not persisted, so wrapping is not claimed proven;
+the isolated renderer now has deterministic240-column width and emits complete
+capture in test output and on failed assertion. Production bytes are unchanged. Outcome817852f4 is
+retained separately; corrected source review precedes any further execution.
