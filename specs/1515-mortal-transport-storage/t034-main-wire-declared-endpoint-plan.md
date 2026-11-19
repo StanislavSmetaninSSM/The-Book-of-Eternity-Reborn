@@ -1,18 +1,30 @@
-# Main-wire declared endpoint fidelity (SOURCE proposal; no execution)
+# Main-wire declared endpoint fidelity
 
-## Current verification status (Stage A complete, Stage B UNRUN)
+## Current verification status (inert main-wire independently accepted)
 
-Fresh owning Unit/TestSupport build succeeded: 39.66s, 70 warnings, 0 errors.
-Official PlanOnly selected exactly five DATA cases (6.4687917s); official execution
-passed 5/5, no failures/skips, 9.5580504s total (84ms test duration), owned-tree
-cleanup complete. All 32,053 source records match before/built/after; eight owning
-DLL/PDB output pins match built/after and all five reviewed source pins match.
-External outcome SHA256: 00e4319beda646619b2a3bbfc6c9223d7fea5d308e0110e8917fde7bd3b263e8.
-Independent outcome review is pending. Stage B actual main-wire remains UNRUN;
-no connector, socket/FIFO or native owner was exercised by these pure DATA cases.
-The SOURCE-only/UNRUN paragraphs below describe their earlier checkpoint, not
-this completed Stage A. No compiler source changed for this status update.
+Stage A: fresh Unit/TestSupport build39.66s,70warnings/0errors; PlanOnly5 and
+pureDATA5/5 PASS9.5580504s, owned cleanup complete. Outcome00e4319b…263e8
+was independently accepted. No compiler source changed afterward.
 
+First Stage B attempt failed before IPC/UI at fixture line73 because my invocation
+omitted BOE_TERMINAL_PREFIX (and BOE_TERMINAL_NODE). This orchestration setup error
+is not a transport/game defect. Outcome961e2c35…022e5 retains all769 artifacts;
+scenario/guardian were absent, so runner cleanup is not original-owner proof.
+
+After complete env review, one authorized corrected invocation in a new inert root
+passed1/1 in23.7569301s. Exact advertised linux-fifo-v1 used the shipped connector;
+first status was alreadyReady before existing fixture setReady. Actual foreground
+Continue→empty cooperative player→Options→main→Exit used6routekeys and3upstream
+terminal replies; client7.8684s remained within8s.16original ClosedObserved receipts,
+exact original stopped-within-scope/no-authority shutdown proof and ScopedRetired
+were verified. Child0/EOF/configured-baseline restoration, separate original-termios
+restoration, sidecar normalclose0 and guardianECHILD/driver0/noemergency/failures/
+deadline were observed.32053sources+8outputs unchanged, Node+17deps exact.
+Outcome94b37f56485397da4f945544c03248d9491395ddff2c63a6bb68dc1d281cb2ff
+was independently accepted against all 813 artifact hashes, exact source/output joins,
+actual terminal protocol and original-owner receipts. This qualifies only inert wire behavior, not live GM,
+accepted world, archive commit or hosted replacement. Prior failures remain retained.
+Historical SOURCE-only/UNRUN notes below describe their checkpoint dates.
 
 ## Facts
 
