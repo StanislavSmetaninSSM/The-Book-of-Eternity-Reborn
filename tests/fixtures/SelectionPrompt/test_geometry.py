@@ -1,6 +1,6 @@
 """T034 inert descriptor controls using the maintained raw-frame grammar."""
 import unittest
-from smoke import inert_geometry_selected, inert_initial_pty_cut, inert_wrapped_load, noecho_baseline, require_noecho
+from smoke import inert_geometry_selected, inert_initial_pty_cut, inert_wrapped_load, noecho_baseline, require_noecho, measured_load_profile
 ROWS=('s | Ход 43 | Хозяйственный двор у нижней лестницы | 18.11.2026 18:00 | 99999KB','↩️ Назад')
 MENU={'header':'Выберите сохранение:','choices':ROWS,'page_size':15}
 HEADER='Выберите сохранение:\n'
@@ -51,8 +51,35 @@ class GeometryTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'input refused'):require_noecho(bad)
             self.assertEqual(bad,saved)
 
+    def test_closed_profile_boundaries_and_default(self):
+        import mortal_console_routes as routes
+        name='Хозяйственный двор у нижней лестницы'
+        with self.assertRaises(ValueError):routes.local_load_menu(name,43,99999)
+        self.assertTrue(routes.local_load_menu(name,43,123)) # exact76 default
+        self.assertTrue(routes.local_load_menu(name,43,99999,profile=routes.OWNED_PTY_LOAD_PROFILE))
+        with self.assertRaises(ValueError):routes.local_load_menu(name+'X',43,99999,profile=routes.OWNED_PTY_LOAD_PROFILE)
+        with self.assertRaises(ValueError):routes.local_load_menu(name,43,99999,profile='unknown')
+    def test_profile_revalidated_after_transition(self):
+        import mortal_console_routes as routes
+        menu=routes.local_load_menu('Хозяйственный двор у нижней лестницы',43,99999,profile=routes.OWNED_PTY_LOAD_PROFILE)
+        menu=routes.entry_menu(routes.after_menu(menu,menu),load_clear=True)
+        raw=(HEADER+'> '+ROWS[0]+'\n  '+ROWS[1]).encode()
+        self.assertEqual(routes.selected_frame(raw,0,menu),ROWS[0])
+        for bad in (dict(menu,profile='unknown'),{k:v for k,v in menu.items() if k!='profile'}):
+            self.assertIsNone(routes.selected_frame(raw,0,bad))
+    def test_profile_cannot_expand_other_menu(self):
+        import mortal_console_routes as routes
+        with self.assertRaises(ValueError):routes.fixed_menu('Inventory',['X'*78,'Back'],20,routes.OWNED_PTY_LOAD_PROFILE)
+    def test_measurement_requires_exact_geometry_noecho_all_stdio(self):
+        measured=dict(ConsoleWidth=100,SpectreWidth=100,ConsoleHeight=25,SpectreHeight=25,InputRedirected=False,OutputRedirected=False,ErrorRedirected=False)
+        attrs=noecho_baseline([1,2,3,0,4,5,[]])
+        self.assertTrue(measured_load_profile(measured,[25,100,0,0],attrs))
+        for key,value in [('ConsoleWidth',80),('SpectreWidth',80),('OutputRedirected',True),('InputRedirected',True),('ErrorRedirected',True),('ConsoleHeight',24)]:
+            with self.assertRaises(ValueError):measured_load_profile(dict(measured,**{key:value}),[25,100,0,0],attrs)
+        with self.assertRaises(ValueError):measured_load_profile(measured,[25,80,0,0],attrs)
+
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(GeometryTests)
-    assert suite.countTestCases()==7
+    assert suite.countTestCases()==11
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.wasSuccessful() and result.testsRun==7 and not result.skipped else 1)
+    raise SystemExit(0 if result.wasSuccessful() and result.testsRun==11 and not result.skipped else 1)

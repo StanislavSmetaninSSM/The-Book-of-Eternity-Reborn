@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "mortal-load-pty-geometry",
-      "responsibility": "#1515 T034 same-PTY fixed100 exact Load78 render/Back/normal exit before unchanged guard76 (expected post-exit RED), and fixed80 actual wrapped refusal with separately owned negative cleanup.",
+      "responsibility": "#1515 T034 same-PTY fixed100 exact Load78 render/Back/normal exit with closed measured Load78 DATA profile, and fixed80 actual wrapped refusal with separately owned negative cleanup. Default PIPE76 unchanged.",
       "excludes": "No game, GM, world, authority, production geometry changes or bypass of live admission.",
       "changeHints": [
         "BookOfEternityClient.TestSupport/SpectreSelectionSmoke.cs",

@@ -23,7 +23,7 @@ internal static class SpectreSelectionSmoke
             File.WriteAllText(Path.Combine(evidence, "geometry.json"), JsonSerializer.Serialize(new {
                 ConsoleWidth = Console.WindowWidth, ConsoleHeight = Console.WindowHeight,
                 SpectreWidth = AnsiConsole.Profile.Width, SpectreHeight = AnsiConsole.Profile.Height,
-                InputRedirected = Console.IsInputRedirected, OutputRedirected = Console.IsOutputRedirected
+                InputRedirected = Console.IsInputRedirected, OutputRedirected = Console.IsOutputRedirected, ErrorRedirected = Console.IsErrorRedirected
             }));
             if (load)
             {

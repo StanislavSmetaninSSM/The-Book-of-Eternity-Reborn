@@ -169,6 +169,16 @@ def termios_data(attributes):
             [({'Hex':x.hex()} if isinstance(x,bytes) else x) for x in v]
             for v in attributes]
 
+def measured_load_profile(measured, size, attributes):
+    """Fixture measurement, not process ownership or live input authority."""
+    if (size!=[25,100,0,0] or any(type(measured.get(k)) is not int or measured[k]!=v for k,v in
+        (('ConsoleWidth',100),('SpectreWidth',100),('ConsoleHeight',25),('SpectreHeight',25)))
+        or any(measured.get(k) is not False for k in ('InputRedirected','OutputRedirected','ErrorRedirected'))):
+        raise ValueError('Measured terminal does not match fixed owned PTY profile')
+    require_noecho(attributes)
+    from mortal_console_routes import OWNED_PTY_LOAD_PROFILE
+    return OWNED_PTY_LOAD_PROFILE
+
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
     assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load','pipe-inventory-cleanup','pipe-load-geometry','pty-load-100','pty-load-80')
@@ -209,6 +219,8 @@ def main():
             observed=termios.tcgetattr(master)
             result.setdefault('BeforeInputTermios',[]).append(termios_data(observed))
             require_noecho(observed) # snapshot only; raw grammar still rejects racing echo
+            size=list(struct.unpack('HHHH',fcntl.ioctl(master,termios.TIOCGWINSZ,b'\0'*8)))
+            assert size==result['PtySizeReadback'], 'Owned terminal geometry changed; input refused'
         assert os.write(master,key)==len(key)
     try:
         if owned_noecho:
@@ -304,7 +316,7 @@ def main():
                 result['WrappedRawHex']=bytes(captured[raw_cut:]).hex()
                 result['NormalExitQualified']=False
                 break
-            ready=lambda choice: (inert_geometry_selected(bytes(captured),raw_cut,menu)==(first_label if choice=='SMOKE_ALPHA' else footer)) if geometry and stage>=2 else (selected_frame(bytes(captured),raw_cut,menu) ==
+            ready=lambda choice: (inert_geometry_selected(bytes(captured),raw_cut,menu)==(first_label if choice=='SMOKE_ALPHA' else footer)) if geometry and mode!='pty-load-100' and stage>=2 else (selected_frame(bytes(captured),raw_cut,menu) ==
                 (first_label if choice=='SMOKE_ALPHA' else footer)) if fixed_render else (
                 screen.selected(choice) if same_pty else screen.frame(choice,frame_cut))
             if stage==0 and ready('SMOKE_ALPHA'):
@@ -317,6 +329,10 @@ def main():
                         expected_width=80 if wrong_width else 100
                         assert measured['ConsoleWidth']==measured['SpectreWidth']==result['PtySizeReadback'][1]==expected_width
                         assert not measured['InputRedirected'] and not measured['OutputRedirected']
+                        if mode=='pty-load-100':
+                            profile=measured_load_profile(measured,result['PtySizeReadback'],termios.tcgetattr(master))
+                            load_menu=local_load_menu('Хозяйственный двор у нижней лестницы',43,99999,profile=profile)
+                            result['QualifiedDataProfile']=profile
                 if fixed_render:
                     actual=bytes(captured[raw_cut:])
                     assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith(footer.encode())
@@ -381,8 +397,8 @@ def main():
         if geometry:
             result['ActualGeometry']=json.loads((root/'geometry.json').read_text())
             result['RenderedAndExitedBeforeGuard']=True
-            # This unchanged guard is the expected causal RED, not setup failure.
-            local_load_menu('Хозяйственный двор у нижней лестницы',43,99999)
+            # Default PIPE still refuses; measured fixed PTY profile has bounded DATA admission.
+            local_load_menu('Хозяйственный двор у нижней лестницы',43,99999,profile=result.get('QualifiedDataProfile'))
         result['Success']=mode!='pipe-dumb'
     except BaseException as error:
         result['Failure']=type(error).__name__+': '+str(error)

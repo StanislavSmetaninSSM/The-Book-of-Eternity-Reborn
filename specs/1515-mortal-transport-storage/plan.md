@@ -4959,3 +4959,22 @@ Separately, independent review accepted the saved P01 scripted/P02 genuine-live-
 Independent outcome 131a23b33e631c75f1fdf3c0ba99d8415f3b2390d4776971e733576959a017d8 verifies five DATA methods PASS, fresh owning build 27.0504s / 44 warnings / zero errors, and official two cases: one PASS, one FAIL (24.2868s, no outer timeout). At width80 the exact wrapped negative is qualified with no Load keys. At width100 Console/Spectre/ioctl all measure100, but literal input echo ^[OB follows the sole application Down between complete inventory redraws; strict grammar refuses, no Enter or Load occurs. This is not the post-exit guard76 RED. Both children joined/drained, guardians ECHILD with no emergency/failure/deadline; neither normal exit/termios is qualified. All32026 source and8 output pins remain exact. Per-send termios chronology was not captured and remains unknown.
 
 The next inert-only SOURCE sets an owned pre-spawn ECHO/ECHONL-off baseline, preserving every other terminal attribute, records original/configured/readback and checks before each input. Strict raw parsing remains. Child restoration is evaluated against the configured baseline before separate owner restoration to original; a manual restoration cannot make failed child cleanup pass. Seven DATA methods are authored; no execution yet, pending source review. No production-driver or game behavior change and no new live world.
+
+T034 noecho outcome independently accepted: seven DATA methods passed; owning
+build2.003s zero warnings/errors; official two cases 1 PASS/1 causal FAIL14.4876s.
+PTY100 actual Console/Spectre/ioctl100 rendered exact Load78 and returned Back;
+child0/EOF/configured-baseline restoration preceded unchanged guard76 refusal.
+Owner restoration of original terminal was separately verified. PTY80 exact wrap
+refused without Load keys, with negative owned cleanup only. All32026 source/eight
+output pins unchanged. Outcome9cad0de799b36343292fffa4b2e807d2ff4b019714ff772039b9b3294c334e3a.
+
+Next source-only admission is a closed owned-pty-100x25-noecho-load78 DATA profile:
+default76 and production PIPE topology unchanged. Only source-shaped sole-save
+Load rows may use bound78; unknown profile/other menu/79 columns refuse. Raw parser
+revalidates profile after entry/close metadata transitions. Inert measurement must
+match ioctl, Console/Spectre geometry, all nonredirected standard streams and
+noecho before use; every input rechecks current ioctl and noecho. This is no owner
+or input authority. The existing100 case now targets GREEN after normal exit;
+80 negative is unchanged. Actual live topology/fullroute remain unqualified,
+including application-mode SS3 handling versus current live hardcoded CSI.
+No fullroute code factoring, game or world operation is part of this checkpoint.

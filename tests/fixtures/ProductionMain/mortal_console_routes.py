@@ -83,19 +83,28 @@ def client_environment(environment):
     """Isolated client console capability; no mutation of bridge/daemon/RPC env."""
     return dict(environment, TERM='xterm-256color')
 
-def fixed_menu(header, choices, page_size):
+OWNED_PTY_LOAD_PROFILE='owned-pty-100x25-noecho-load78'
+
+def fixed_menu(header, choices, page_size, profile=None):
     """Closed, source-specific finite menu DATA; never authorizes a game mutation."""
     if type(header) is not str or type(choices) is not list or not choices or type(page_size) is not int:
         raise ValueError('Explicit finite menu required')
     if len(choices)>page_size or len(set(choices))!=len(choices):raise ValueError('Pagination or duplicate choices')
+    if profile is not None and (profile!=OWNED_PTY_LOAD_PROFILE or header!='Выберите сохранение:'
+                                or page_size!=15 or len(choices)!=2 or choices[-1]!='↩️ Назад'
+                                or re.fullmatch(r's \| Ход [0-9]+ \| .+ \| [0-9]{2}\.[0-9]{2}\.[0-9]{4} [0-9]{2}:[0-9]{2} \| [0-9]{1,5}KB',choices[0]) is None):
+        raise ValueError('Unsupported closed Load geometry profile')
+    limit=78 if profile is not None else 76
     def safe(line):
-        return bool(line) and not any(ord(c)<32 or c=='\x7f' or unicodedata.category(c)=='Cf' for c in line) and sum(2 if unicodedata.east_asian_width(c) in 'WF' else 1 for c in line)<=76
+        return bool(line) and not any(ord(c)<32 or c=='\x7f' or unicodedata.category(c)=='Cf' for c in line) and sum(2 if unicodedata.east_asian_width(c) in 'WF' else 1 for c in line)<=limit
     if not all(safe(line) for line in header.split('\n')) or not all(type(x) is str and safe(x) for x in choices):
         raise ValueError('Unsupported control or wrapped menu')
     footer=choices[-1]
     if any(x.startswith(footer) or footer.startswith(x) for x in choices[:-1]):
         raise ValueError('Terminal row prefix collision')
-    return {'header':header,'choices':tuple(choices),'page_size':page_size}
+    value={'header':header,'choices':tuple(choices),'page_size':page_size}
+    if profile is not None:value['profile']=profile
+    return value
 
 def inventory_menu(inventory, location, player_status):
     """Small supported fixture inventory; unsupported canonical labels refuse before input."""
@@ -177,7 +186,7 @@ def selected_frames(raw, cut, menu):
     """Exact emitted frames; only SGR and the source-sized CR/cursor-up redraw prefix are accepted."""
     if type(raw) is not bytes or type(cut) is not int or not 0<=cut<=len(raw) or type(menu) is not dict:return None
     try:
-        checked=fixed_menu(menu['header'],list(menu['choices']),menu['page_size'])
+        checked=fixed_menu(menu['header'],list(menu['choices']),menu['page_size'],menu.get('profile'))
     except (ValueError,KeyError,TypeError,UnicodeError):return None
     return decode_menu_frames(raw,cut,checked,menu)
 
@@ -245,10 +254,10 @@ def decode_menu_frames(raw, cut, checked, menu):
     return selections
 
 
-def local_load_menu(location_name, turn, size_kb, timestamp='18.11.2026 18:00'):
+def local_load_menu(location_name, turn, size_kb, timestamp='18.11.2026 18:00', *, profile=None):
     """Fixed sole-save visible contract; size bound is operational, not a predicted ZIP size."""
     if type(size_kb) is not int or not 0<=size_kb<=99999:raise ValueError('Unsupported Save size display')
-    return fixed_menu('Выберите сохранение:',[f's | Ход {turn} | {location_name} | {timestamp} | {size_kb}KB','↩️ Назад'],15)
+    return fixed_menu('Выберите сохранение:',[f's | Ход {turn} | {location_name} | {timestamp} | {size_kb}KB','↩️ Назад'],15,profile)
 
 def item_position(location,inventory,storage_id,item_id):
     """Exact observed target position, never permission to move an item."""
