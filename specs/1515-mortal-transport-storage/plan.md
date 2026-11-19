@@ -4349,3 +4349,16 @@ target are unchanged. Helper source SHA256:
 No renderer run had yet occurred, so this is a review-found fixture setup defect,
 not an observed runtime result. T030 separately tracks the proven local-menu
 failure cleanup ordering; it is not silently bundled into the observer fix.
+
+T029 real Spectre causal RED, 2026-11-19. Fresh serial Unit/helper build completed
+34.44s,0 errors/70 warnings. Official PlanOnly selected exactly the two renderer
+leaves. Execution:1 inventory FAIL/1 Load PASS in12.033s. The exact five-row
+inventory running the unchanged actual finite_select reproduced the SAME cycle
+error after only one Down, capture cut700; this is a genuine renderer RED, not
+merely injected DATA and not the corrected markup setup defect. Failed inventory
+has Joined/CleanupDrained=true, no cleanup failures; normal EOF=false and termios
+unreported, so no normal-success claim. Guardian driver1/ECHILD/reaped1/emergency0/
+failures0 proves owned physical cleanup. Unchanged Load leaf exited0 with normal
+EOF/termios. Before/built/after inventories agree on32014 source paths and eight
+built outputs. Evidence retained locally under mortal-t029/renderer-red, no raw
+committed. The narrow observer correction is next; T030 cleanup remains separate.
