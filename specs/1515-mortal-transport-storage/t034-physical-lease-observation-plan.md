@@ -1377,3 +1377,7 @@ Minimal source now permits only zero/one leading newline, retains entire strict
 success window, and requires typed guardian driver/exit plus probe/child/terminal
 normal closure. Bool-as-zero exits refused; frozen raw joins all acknowledged
 WRITE bytes. Source review and bounded6 DATA GREEN pending; no new runtime yet.
+Correction GREEN independently accepted b56de35d:6 pure PASS/0.024s, source32078+
+8 outputs unchanged. Frozen actual whole frame passes without broad filtering;
+previous guardian0/driver1 route is rejected. A separate absent-root mm30 cold
+attempt is next only after exact current input/command review. No mm29 replay.
