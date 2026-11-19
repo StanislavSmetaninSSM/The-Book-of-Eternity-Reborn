@@ -766,3 +766,16 @@ ordinary-save43 profile/request and fresh independent GM decision. Original
 600/660/680/720/750 budgets and one-shot reserve remain unchanged. A justified
 defer counts only if the ordinary turn is accepted and its normal Save succeeds;
 it is not a grant or a combined transfer/Load result.
+
+The frozen test-only implementation uses one optional continuation callback in
+the existing combined fixture, selected only by a new exact integration case.
+All existing42 assertions finish first. The second dispatch directly validates
+its real signed reader authority and exact original/current retained core; it
+requires an UpdateNPCs historical steward with empty inventory and turn42.
+It loads the existing corrected authored debug DATA, binding only actual actor
+name/ID/location; existing output helper gains a default-off no-due omission
+flag, requiring both actual due counts zero and absent report. Existing callers
+are unchanged. The actual engine must accept43 with one story append, clock505,
+exact journal afterimage, preserved relevant canonical bytes and retired markers.
+Official selector mortal-ordinary-response-dry is exactly one case, UNRUN pending
+independent source/command review. No Save or live claim follows from dry success.

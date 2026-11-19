@@ -78,18 +78,27 @@ public sealed partial class GameEngineTurnLifecycleTests
         return runtime;
     }
 
-    private async Task WriteMortalLivingWorldJourneyOutputAsync(TurnRequest request, string narrative, string[] changedPaths, string? actorReasoning = null)
+    private async Task WriteMortalLivingWorldJourneyOutputAsync(TurnRequest request, string narrative, string[] changedPaths, string? actorReasoning = null, bool omitNoDueProgressionReport = false)
     {
         var control = request.ProgressionControl!;
-        await WriteJsonAsync(ProgressionScheduleService.ReportPath, new { progressionProcessingReport = new
+        if (omitNoDueProgressionReport)
         {
-            sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
-            worldCyclesProcessed = control.WorldCyclesAlreadyPendingBeforeTurn,
-            factionCyclesProcessed = control.FactionCyclesAlreadyPendingBeforeTurn,
-            newLastWorldSimulationTimeInMinutes = control.LastWorldSimulationTimeInMinutes + control.WorldCyclesAlreadyPendingBeforeTurn * control.WorldCycleMinutes,
-            newLastFactionSimulationTimeInMinutes = control.LastFactionSimulationTimeInMinutes + control.FactionCyclesAlreadyPendingBeforeTurn * control.FactionCycleMinutes
-        }});
-        changedPaths = changedPaths.Append(ProgressionScheduleService.ReportPath).ToArray();
+            Assert.Equal(0, control.WorldCyclesAlreadyPendingBeforeTurn);
+            Assert.Equal(0, control.FactionCyclesAlreadyPendingBeforeTurn);
+            Assert.False(_fs.FileExists(ProgressionScheduleService.ReportPath));
+        }
+        else
+        {
+            await WriteJsonAsync(ProgressionScheduleService.ReportPath, new { progressionProcessingReport = new
+            {
+                sessionId = request.SessionId, requestId = request.RequestId, turnNumber = request.TurnNumber,
+                worldCyclesProcessed = control.WorldCyclesAlreadyPendingBeforeTurn,
+                factionCyclesProcessed = control.FactionCyclesAlreadyPendingBeforeTurn,
+                newLastWorldSimulationTimeInMinutes = control.LastWorldSimulationTimeInMinutes + control.WorldCyclesAlreadyPendingBeforeTurn * control.WorldCycleMinutes,
+                newLastFactionSimulationTimeInMinutes = control.LastFactionSimulationTimeInMinutes + control.FactionCyclesAlreadyPendingBeforeTurn * control.FactionCycleMinutes
+            }});
+            changedPaths = changedPaths.Append(ProgressionScheduleService.ReportPath).ToArray();
+        }
         var timestamp = DateTime.UtcNow.ToString("o");
         await WriteJsonAsync("output/narrative_response.json", new { response = narrative, timestamp });
         await WriteJsonAsync("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });

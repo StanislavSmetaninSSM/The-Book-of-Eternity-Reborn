@@ -355,6 +355,35 @@
       ]
     },
     {
+      "id": "mortal-ordinary-response-dry",
+      "responsibility": "#1515 mm26 coherent offline actual engine birth42 then ordinary defer43: real signed original, full accepted pipeline, no due report, retained NPC/access/items and retired story/cleanup.",
+      "excludes": "Deterministic in-process author only; no live GM, console, Save, transfer, Load, native package or failed-world reuse.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CombinedMortalOrdinary.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CombinedMortalBirth.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MortalLivingWorldJourney.cs"
+      ],
+      "related": [
+        "mortal-author-debug-contract",
+        "mortal-retained-carrier-contract"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CombinedMortalBirth_OrdinaryDeferAcceptsThroughActualPipeline"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-retired-birth-pre-send",
       "responsibility": "#1515 T032 genuine combined publication and retired original followed by the actual ordinary pre-send consumer, preserving canonical carriers and complete logged issues.",
       "excludes": "No second GM action, live world, strict API relaxation or repeat of the old five combined selections.",
