@@ -802,3 +802,21 @@ response-path evidence, not live GM, console Save, transfer or Load evidence.
 The earlier catalog-only setup failure remains separate; no C# rebuild/repeat
 was needed after that correction. Next is the separate exact current producer
 input admission, then clean preparation; no package/world has yet been created.
+
+### Current producer accepted before mm26 preparation
+
+A final incremental owning build closed the catalog-only provenance gap in
+1.35 s (zero warnings/errors), with unchanged compiled outputs, not newly emitted
+binaries. Before/built source and eight Unit outputs matched; all 723 bin bytes
+and modes plus Integration outputs remained identical to accepted dry evidence.
+No allowlist or preparation implementation changed and no tests were repeated.
+
+Independent fixture_premises review then accepted exactly three existing guarded
+standard --no-build/--no-restore publishes. Actual complete 239/244/249 published
+hash/mode inventories equal current bins plus native2/EventLog1 assets, with
+zero overlays. Original children exited0 with both EOF and normal ECHILD guardian
+reports, no emergency/failure/deadline; elapsed 1.119/1.073/1.318 s. All 746 artifact
+hashes and closing 32,071 source/723 bins/eight owning outputs/assets14/tools6
+were independently checked. This accepts producer bytes only; mm26 is still
+absent. Next is exact separately reviewed seed-export/profile preparation, not
+automatic live launch. All failed worlds remain untouched.
