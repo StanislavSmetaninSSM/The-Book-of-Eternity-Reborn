@@ -1,5 +1,6 @@
 """Opt-in cold-host admission DATA; no game or original-world writes."""
-import copy,hashlib,json,pathlib,tempfile,unittest
+import ast,copy,hashlib,json,pathlib,tempfile,unittest,types
+from unittest.mock import patch
 import relay_phase_evidence as actual
 
 class ColdHostAdmission(unittest.TestCase):
@@ -49,5 +50,42 @@ class ColdHostAdmission(unittest.TestCase):
         validate(identity,expected)
         for changes in ({'RootKey':'/tmp/old-play'},{'GenerationId':'e'*32},{'RunId':'b'*32},{'RunId':'c'*32},{'Epoch':True},{'Epoch':0}):
             with self.assertRaises(ValueError):validate(dict(identity,**changes),expected)
+
+class ColdHostWiring(unittest.TestCase):
+    def function(self,name):
+        source=pathlib.Path(__file__).with_name('live-mortal-phase.py')
+        tree=ast.parse(source.read_text());nodes=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name==name]
+        self.assertEqual(len(nodes),1,'missing actual cold driver boundary: '+name)
+        scope={'Path':pathlib.Path,'phase_evidence':actual,'sha':lambda raw:hashlib.sha256(raw).hexdigest()}
+        exec(compile(ast.Module(body=nodes,type_ignores=[]),str(source),'exec'),scope)
+        return scope[name]
+
+    def test_actual_cold_setup_reaches_only_existing_package_gate_after_authentication(self):
+        function=self.function('prepare_cold_loaded_phase')
+        fixture=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/cold-load-admission/cold-host-data.json')
+        raw=fixture.read_bytes();self.assertEqual(hashlib.sha256(raw).hexdigest(),'0eb98ec444c504ce9e6b227cd9211fc445d9b259459e7516ecaa0395fbd8f321')
+        descriptor=json.loads(raw);out=pathlib.Path(descriptor['PhasePath']);calls=[];sentinel=RuntimeError('inert package sentinel')
+        def package(phase,ship,driver):
+            calls.append((phase,ship,driver));self.assertEqual(phase,out);self.assertEqual(ship,pathlib.Path(descriptor['RuntimeRoot']));raise sentinel
+        with patch.object(actual,'relay_package_preflight',package):
+            with self.assertRaises(RuntimeError) as caught:function(descriptor,out,pathlib.Path('/unused/helper.dll'),'driver',None,'ordinary-save',43)
+            self.assertIs(caught.exception,sentinel);self.assertEqual(len(calls),1)
+            for previous,route,turn in [({},'ordinary-save',43),(None,'birth',43),(None,'ordinary-save',44)]:
+                with self.assertRaises(ValueError):function(descriptor,out,pathlib.Path('/unused/helper.dll'),'driver',previous,route,turn)
+            self.assertEqual(len(calls),1)
+
+    def test_actual_cold_operational_branch_preserves_config_and_precreated_queue(self):
+        function=self.function('cold_loaded_operational_context')
+        with tempfile.TemporaryDirectory() as name:
+            root=pathlib.Path(name);out=root/'recovered-live';(out/'queue').mkdir(parents=True,mode=0o700)
+            session=root/'play/game_session';session.mkdir(parents=True);config=session/'config.json';raw=b'{"preserved":true}';config.write_bytes(raw)
+            admitted={'ConfigBytes':raw,'Command':'exact-reviewed-command','Pipe':'og-abcdef123456','TemporaryRoot':str(root/'rt')}
+            value=function(admitted,out,session)
+            self.assertEqual(value,('og-abcdef123456','exact-reviewed-command',out/'queue',root/'rt'))
+            self.assertEqual(config.read_bytes(),raw);self.assertFalse((root/'rt').exists());self.assertEqual(list((out/'queue').iterdir()),[])
+            config.write_bytes(b'{}')
+            with self.assertRaises(ValueError):function(admitted,out,session)
+            config.write_bytes(raw);(out/'queue/occupied').write_bytes(b'x')
+            with self.assertRaises(ValueError):function(admitted,out,session)
 
 if __name__=='__main__':unittest.main()
