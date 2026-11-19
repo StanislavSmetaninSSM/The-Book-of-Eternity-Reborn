@@ -1,5 +1,8 @@
 """Bounded DATA controls for the actual full-route input observer. No child/UI."""
 import unittest
+import ast
+import pathlib
+import fullroute_inputs as actual_inputs
 import types
 from unittest.mock import patch
 from fullroute_inputs import (OPTIONS, DESCRIPTIONS, OPTIONS_FOOTER, options_frame,
@@ -35,7 +38,107 @@ def padding_case(split=17):
     return raw,captured,view,proof
 
 
+def actual_choose_factory(captured, view, pump, send, result, initial_cut):
+    # Keep actual run setup and every nested definition unchanged. Only its unexecuted
+    # scripted route tail is replaced with a return of choose and captured-state DATA.
+    source=pathlib.Path(actual_inputs.__file__).read_text()
+    node=next(n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name=='run')
+    starts=[i for i,n in enumerate(node.body) if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call)
+            and isinstance(n.value.func,ast.Name) and n.value.func.id=='stage' and len(n.value.args)==1
+            and isinstance(n.value.args[0],ast.Constant) and n.value.args[0].value=='locked-denial']
+    assert len(starts)==1
+    node.body=node.body[:starts[0]]+ast.parse('return choose, lambda: (cut, previous, previous_selected)').body
+    namespace=dict(vars(actual_inputs));exec(compile(ast.fix_missing_locations(ast.Module(body=[node],type_ignores=[])),
+        'actual fullroute choose DATA seam','exec'),namespace)
+    return namespace['run'](pathlib.Path('/authored-inert-unused'),captured,view,pump,send,result,10**12,initial_cut,None)
+
+
+def enter_padding_case(split=17):
+    # Source-shaped version of immutable failed WRITE43/45 at10938/11617/11666.
+    _,_,_,old=padding_case()
+    header=old['menu']['header']
+    choices=list(old['menu']['choices'])
+    choices[3]='📦 Запертая кладовая разметочных материалов (1 пр.) → управление'
+    menu=routes.fixed_menu(header,choices,20)
+    styled='\r\x1b[6A\x1b[1m🎒 📦 Инвентарь\x1b[0m  \x1b[2m(⚖ 1.8kg/45.0kg кг)\x1b[0m  \x1b[2m(выберите для просмотра / управления)\x1b[0m'
+    def frame(selected):
+        rows=[' '*75]+[('> ' if i==selected else '  ')+label+' '*padding
+            for i,(label,padding) in enumerate(zip(choices,[59,43,50,9,66]))]
+        return (styled+'\r\n'+'\r\n'.join(rows)).encode(),[header]+rows
+    complete,lines=frame(3)
+    assert len(complete)==728
+    captured=bytearray(b'X'*10938+complete[:-66]+b' '*split)
+    view=AcknowledgedTerminalView(None,captured);view.pending=False;view.cut=len(captured);view.seq=43
+    view.cursor={'x':9+split,'y':6};view.lines=lines+['']*(25-len(lines))
+    view.modes={'applicationCursorKeysMode':True,'applicationKeypadMode':True}
+    panel=routes.fixed_menu('📦 Запертая кладовая разметочных материалов\n  Предметов внутри: 1',
+        ['📥 Положить предмет в хранилище (1 в инвентаре)','📤 Забрать предмет из хранилища (1 внутри)','← Назад к инвентарю'],10)
+    panel_rows=['📦 Запертая кладовая разметочных материалов'+' '*7,'  Предметов внутри: 1'+' '*29,' '*50,
+        '> '+panel['choices'][0]+' ','  '+panel['choices'][1]+' '*6,'  '+panel['choices'][2]+' '*29]
+    rendered='\x1b[?25l'+'\r\n'.join(panel_rows)
+    close=b'\r'+b'\x1b[2K\x1b[1A'*6+b'\x1b[2K\x1b[?25h'
+    successor=close+rendered.encode()+('\r\x1b[5A'+'\r\n'.join(panel_rows)).encode()
+    return captured,view,menu,frame,panel,successor,panel_rows
+
+
 class FullRouteInputData(unittest.TestCase):
+    def test_actual_choose_enter_uses_confirmed_postdrain_cut(self):
+        for split in range(67):
+            with self.subTest(split=split):
+                captured,view,menu,frame,panel,successor,panel_rows=enter_padding_case(split)
+                keys=[];pending=[];cuts=[]
+                def drain():
+                    captured.extend(b' '*(66-split));view.cut=len(captured);view.seq+=2;view.cursor={'x':75,'y':6}
+                terminal=types.SimpleNamespace(key=lambda key,label:keys.append(key))
+                def send(key,label,predicate):
+                    fresh_route_key(terminal,view,drain,key,label,predicate,10**12)
+                    cuts.append(len(captured));pending.append(successor);return len(captured)
+                def pump():
+                    if not pending:raise ValueError('No further authored output; stale successor boundary')
+                    captured.extend(pending.pop());view.cut=len(captured);view.seq+=2
+                    view.cursor={'x':50,'y':5};view.lines=panel_rows+['']*19
+                choose,state=actual_choose_factory(captured,view,pump,send,{},10938)
+                choose(menu,menu['choices'][3])
+                self.assertEqual(cuts,[11666]);self.assertEqual(keys,[b'\r'])
+                failure=None
+                try:choose(panel,panel['choices'][0],enter=False)
+                except ValueError as error:failure=str(error)
+                self.assertIsNone(failure,'Same real successor must parse from confirmed Enter cut, not pending padding')
+                self.assertEqual(state()[0],11666)
+
+    def test_actual_choose_arrow_excludes_predrain_same_selection_redraw(self):
+        captured,view,menu,frame,_,_,_=enter_padding_case()
+        keys=[];pending=[];cuts=[]
+        def drain():
+            duplicate,lines=frame(3);captured.extend(b' '*49+duplicate)
+            view.cut=len(captured);view.seq+=2;view.cursor={'x':75,'y':6};view.lines=lines+['']*18
+        terminal=types.SimpleNamespace(key=lambda key,label:keys.append(key))
+        def send(key,label,predicate):
+            fresh_route_key(terminal,view,drain,key,label,predicate,10**12)
+            cuts.append(len(captured));pending.append(frame(4));return len(captured)
+        def pump():
+            if not pending:raise ValueError('No further authored output; stale arrow boundary')
+            raw,lines=pending.pop();captured.extend(raw);view.cut=len(captured);view.seq+=2
+            view.cursor={'x':75,'y':6};view.lines=lines+['']*18
+        choose,state=actual_choose_factory(captured,view,pump,send,{},10938)
+        failure=None
+        try:choose(menu,menu['choices'][4],enter=False)
+        except ValueError as error:failure=str(error)
+        self.assertIsNone(failure)
+        self.assertEqual(keys,[b'\x1bOB']);self.assertEqual(cuts,[12394]);self.assertEqual(state()[0],12394)
+
+    def test_actual_choose_uncertain_send_does_not_publish_new_boundary(self):
+        captured,view,menu,_,_,_,_=enter_padding_case();keys=[]
+        primary=RuntimeError('uncertain inert write sentinel')
+        def drain():
+            captured.extend(b' '*49);view.cut=len(captured);view.seq+=2;view.cursor={'x':75,'y':6}
+        def key(data,label):keys.append(data);raise primary
+        def send(data,label,predicate):return fresh_route_key(types.SimpleNamespace(key=key),view,drain,data,label,predicate,10**12)
+        choose,state=actual_choose_factory(captured,view,lambda:None,send,{},10938)
+        with self.assertRaises(RuntimeError) as caught:choose(menu,menu['choices'][3])
+        self.assertIs(caught.exception,primary);self.assertEqual(keys,[b'\r'])
+        self.assertEqual(state(),(10938,None,None))
+
     def test_same_window_retained_padding_all_split_points(self):
         for split in range(66):
             with self.subTest(split=split):
@@ -266,7 +369,7 @@ class FullRouteInputData(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(FullRouteInputData)
-    assert suite.countTestCases() == 17
+    assert suite.countTestCases() == 20
     result = unittest.TextTestRunner(verbosity=2).run(suite)
-    assert result.testsRun == 17 and not result.skipped
+    assert result.testsRun == 20 and not result.skipped
     raise SystemExit(0 if result.wasSuccessful() else 1)

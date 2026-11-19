@@ -152,3 +152,44 @@ undetectable. SamePTY, UI grammar, terminal controls and45/55/60 unchanged.
 This UI wiring is UNRUN pending source review; do not infer foreground qualification
 from local35 or separately drained helper stderr. Owning32.76s build can be reused
 for Python/doc-only wiring if exact compiler/output joins hold. No mainwire or live.
+
+### External fullroute FAILED, independently verified; no retry
+
+The sole source-feff35c0 fullroute attempt failed1/1 at original45.031495s
+(official56.2528697s). Independent review joined129artifacts,32065source/8outputs
+and exactly two noncompiler deltas versus the32.76s build. Locked denial returned
+empty action with unchanged DATA; retrieve opened its storage panel only.
+No transfer/Save/deposit/Load occurred. Raw12686bytes equals26ordered emulator
+WRITEs; raw and all26snapshots contain no physical prefix. External69events,
+30528bytes,23complete triples belong to actualforegroundPID304/currentnonce,
+private0700/0600 paths and exact localroot/nullpin. These are observations of the
+captured prefix, NOT accepted whole-UI qualification or exhaustive holder proof.
+
+Original child was killed/joined/drained and owner termios restored; sidecar
+ABORT-15 joinedEOF is not normalCLOSE. Normal childEOF/configuredrestore and
+managed receipt are absent; inert fixture remains diagnostic DATA. Guardian
+ECHILD/driver1/noemergency/failure/deadline proves physical containment only.
+No new live world or package is admitted; no timeout increase/replay/repair.
+
+Both reviewers reconstructed the narrow inert caller error from source/protocol:
+selected inventory frame WRITE43 ends11617 atcursor26; final pre-key drain
+WRITE45 adds49spaces to11666/cursor75, then Enter. Existing choose stores its
+successor cut BEFORE send, unlike live finite_select's post-send returned cut.
+Thus predecessor grammar can see49continuation spaces as a standalone old frame
+before the real close and correctly refuse. Local11617 is source-derived, not
+logged variable evidence. Next bounded test-first DATA must exercise actual
+nestedchoose+real parser and finaldrain, compare11617/11666, audit BOTH inert
+arrow/Enter boundaries and uncertain-send state. Options/Save post-send cuts and
+Save ACK's deliberately retained full outcome interval remain unchanged. No
+parser/geometry/name/lock/sink/budget change is justified by this failure.
+
+The next test-only source block keeps actual production/driver logic unchanged:
+existing Python DATA grows17→20 methods. The AST seam retains actual run setup
+and all nested definitions and replaces only the unexecuted route tail with
+choose/state return. Real parser, retained-window checks and fresh_route_key
+remain active. Authored source-shaped failed-window rows exercise all67footer
+splits (including no-extra-padding baseline), finaldrain same-selection redraw
+before one Down, and uncertain Enter preserving original exception without
+publishing a new cut/previous. Planned initial RED is three new method failures
+with original17 unchanged; actual results remain UNRUN until source review.
+No raw terminal capture is committed and no source guard is relaxed.
