@@ -26,11 +26,37 @@ try {
   Write-GmCanonicalText $SessionPath $target 'one 🌌'
   if($Scenario -like '*caught-loss') {
    $global:BoeMainOperationContext.process.StandardInput.Dispose()
+   if($Scenario -like '*snapshot-stopping') {
+    $script:snapshotContext=$global:BoeMainOperationContext
+    $script:beforeSequence=$script:snapshotContext.sequence
+    try {[void](Get-GmDaemonSnapshot -Paths @('game_state/control/f2-live.txt'))}
+    catch {
+     $script:refused=Test-GmDaemonReadFailure $_
+     $script:endSequence=$script:snapshotContext.sequence
+     $script:endAction=$script:snapshotContext.lastAction
+     $script:endReply=$script:snapshotContext.lastCommandReply
+     throw
+    }
+    throw 'Snapshot unexpectedly admitted after original Stop'
+   }
    try {Write-GmCanonicalText $SessionPath $target 'must refuse'}catch {$script:refused=$true}
    return 42
   }
   if($Scenario -like '*stopping') {
    [Console]::Out.WriteLine('original-active');[Console]::Out.Flush();[void][Console]::ReadLine()
+   if($Scenario -like '*snapshot-stopping') {
+    $script:snapshotContext=$global:BoeMainOperationContext
+    $script:beforeSequence=$script:snapshotContext.sequence
+    try {[void](Get-GmDaemonSnapshot -Paths @('game_state/control/f2-live.txt'))}
+    catch {
+     $script:refused=Test-GmDaemonReadFailure $_
+     $script:endSequence=$script:snapshotContext.sequence
+     $script:endAction=$script:snapshotContext.lastAction
+     $script:endReply=$script:snapshotContext.lastCommandReply
+     throw
+    }
+    throw 'Snapshot unexpectedly admitted after original Stop'
+   }
    try {Write-GmCanonicalText $SessionPath $target 'must refuse'}catch {$script:refused=$true}
    return 42
   }
@@ -44,6 +70,15 @@ try {
   return $result
  }
 } catch {$failed=$_.Exception}
+if($Scenario -like '*snapshot-stopping') {
+ $ctx=$script:snapshotContext
+ if(-not $failed -or -not (Test-GmDaemonReadFailure $failed) -or -not $script:refused){throw 'Actual snapshot refusal missing'}
+ if($script:endSequence -ne $script:beforeSequence+3 -or $script:endAction -cne 'daemon-request-end' -or $script:endReply.daemonReadRefused -ne $true){throw 'Expected successful begin/chunk then actual end refusal'}
+ if(-not $ctx.closeObserved -or $ctx.lost -or -not $ctx.disposed -or $ctx.exitCode -ne 0 -or $ctx.terminalClose.outcome -ne 1 -or $ctx.terminalClose.closingFailed){throw 'Original Failed close not settled'}
+ foreach($key in @('pinId','closeId','operationId')){if($ctx.originalClose.$key -cne $ctx.terminalClose.$key){throw 'Original close tuple changed'}}
+ [ordered]@{success=$true;refusedAtEnd=$true;beginChunkAcknowledged=$true;originalClose=$ctx.originalClose;terminalClose=$ctx.terminalClose;closeObserved=$ctx.closeObserved;lost=$ctx.lost;helperExitCode=$ctx.exitCode}|ConvertTo-Json -Depth 8 -Compress
+ return
+}
 if($Scenario -like '*caught-loss') {
  if(-not $script:refused -or $failed.Data['EstablishedOperationResult'] -ne 42){throw 'Caught pre-receipt loss returned ordinary success or lost established value.'}
 } elseif($Scenario -like '*reply-loss') {

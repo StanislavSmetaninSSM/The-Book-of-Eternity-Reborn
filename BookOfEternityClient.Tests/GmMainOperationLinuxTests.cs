@@ -2,6 +2,24 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 public sealed class GmMainOperationLinuxTests
 {
+    [Fact]
+    public Task ActualDaemonSnapshotAfterStop_RefusesEndAndClosesOriginal()=>
+        GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-helper-snapshot-stopping");
+
+    [Theory]
+    [InlineData("Process-TurnCore")]
+    [InlineData("Process-QteEffectResolutionRequestCore")]
+    public async Task ActualDaemonFinally_PreservesPrimaryAndResetsLocalState(string function)
+    {
+        var start=new System.Diagnostics.ProcessStartInfo("pwsh"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
+        foreach(var arg in new[]{"-NoProfile","-File",Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/GmMainOperation/daemon-finally.ps1"),"-RepoRoot",TestRepoPaths.RepoRoot,"-FunctionName",function})start.ArgumentList.Add(arg);
+        using var process=System.Diagnostics.Process.Start(start)!;
+        var output=process.StandardOutput.ReadToEndAsync();var error=process.StandardError.ReadToEndAsync();
+        try {await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(10));}
+        finally {if(!process.HasExited){process.Kill(true);await process.WaitForExitAsync();}await Task.WhenAll(output,error);}
+        Assert.True(process.ExitCode==0,(await output)+(await error));
+    }
+
     [Theory]
     [InlineData("same")]
     [InlineData("run")]

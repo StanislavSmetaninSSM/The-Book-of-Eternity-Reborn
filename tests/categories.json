@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-daemon-stop-finally-regression",
+      "responsibility": "#1589/#1515 actual retained helper snapshot end refusal after durable Stop, exact Failed close; source-derived ordinary/QTE catch-finally primary preservation and unconditional local reset.",
+      "excludes": "No live world, GM turn, Stop/Running guard changes, new transport or orderly-harness witness qualification.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "tests/fixtures/GmMainOperation/"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualDaemonSnapshotAfterStop_RefusesEndAndClosesOriginal",
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualDaemonFinally_PreservesPrimaryAndResetsLocalState"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-main-wire-declared-endpoint-data",
       "responsibility": "T034 fixture-only advertised endpoint admission: independent root/original owner/durable generation, endpoint continuity, physical owner loss and command-specific reply retention. Pure authored DATA refuses before connector.",
       "excludes": "No IPC, native owner, bootstrap, network, main-wire runtime or sandbox-policy qualification.",
