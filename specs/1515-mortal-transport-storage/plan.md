@@ -3823,3 +3823,37 @@ Optimization: reuse the existing bounded wrapper and pure socket calculation;
 no cache, registry or new execution framework. Actual preparation costs and
 owned subprocess settlement remain unimplemented and unmeasured. Source review
 and remote preservation precede the first official causal RED execution.
+
+T028 isolated recovery and causal RED, 2026-11-19. Source checkpoint
+`2ab8ddf35c83028fac9eee8b3ddda5ebd3fd7099` was cloned afresh from GitHub into
+`/workspace/shared/mortal-isolated-20261119`; HEAD, clean checkout and new source
+hashes were checked. This is source recovery, not recovery of mm14 execution.
+The earlier dependency restore lost its execution handle during a runtime-context
+restart. Its final outcome remains unknown; no global process absence or cleanup
+was proved, and its checkout/cache were left untouched. The new restore used
+independent package, HTTP/plugin cache, scratch/temp and CLI-home directories.
+Official signature verification remained enabled. SDK 10.0.404, NET/ASP.NET
+8.0.34 and PowerShell 7.7.0 were verified from official pinned archives.
+
+The one isolated Unit restore exited 0 in 104.04 seconds. Fresh Unit build took
+83.82 seconds with 91 warnings and zero errors. The exact official PlanOnly
+selected one wrapper; `scripts/test-csharp.ps1 -Category
+mortal-live-preparation-data -NoBuild` completed that one expected FAIL in
+9.6805337 seconds, no timeout, skips or duplicates, owned cleanup complete.
+All nine Python methods executed: seven failing methods and two passing socket
+controls. Python's eight assertion failures include two drift subtests within
+one method; no import/build/setup error is counted as causal RED. Failure proves
+missing preparation functionality in the explicit stubs, not a historical game
+failure. The child exited 1, both output pumps and exit task completed, and its
+cleanup error list was empty. Before/built/after inventories agree on 32,013
+repository source/data files and eight owning outputs; these are not a claim of
+32,013 compiler inputs. Final pin-manifest SHA256:
+`685afaf462e9a2882b3ba30baa37c9bb2d87e243e14e4a88cb93f69eec28ec2c`.
+Raw evidence remains outside Git under `mortal-t028/isolated-red`.
+Independent SOURCE GO preceded this run; independent outcome review is pending.
+Integration/native preparation and new world/relay execution remain UNRUN.
+Next: minimal GREEN helper and remaining bounded controls, then one real
+prepare-only integration before any separately reviewed mm15 live launch.
+Cost assessment: independent directories avoid concurrent mutation with the
+unknown old restore; cold dependency download is one recovery cost, not a
+performance comparison. Reuse this fresh owning build only with unchanged pins.
