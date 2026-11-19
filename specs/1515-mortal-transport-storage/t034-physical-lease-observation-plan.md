@@ -387,3 +387,36 @@ an independent GM decision or access grant. P02 remains unstarted. Its next gate
 is exact retained predecessor/package/world binding plus exclusive fresh trace and
 profile, using the reviewed phase function; genuine GM choice is deferred until
 an authenticated request, with no predetermined council consent or grant.
+
+## mm24 P02 failed before request; autoplay work stopped
+
+Independent outcome review verified external `26aa06e4…` and all 2,423 artifacts.
+Original launch17433 exited1 after42.372s: no genuine action/request43, GM decision,
+answer or accepted turn; shutdown attempts0. Seven committed inputs reached the
+locked row and its returned inventory, then one Down. Source/protocol reconstruction
+identifies a distinct descriptor-lifetime defect: live finite_select retains the
+entry-only after_menu predecessor requirement after advancing the cut to20651;
+the complete718-byte Equipment redraw contains no old predecessor-close, so the
+strict parser refuses. Cleanup repeats that descriptor and also times out. This
+is not the previous padding bug, geometry, echo or physical-trace contamination.
+No controller/parser/timeout change or replay was made.
+
+Story42, location and inventory remain unchanged; six operational control/context
+files differ. Original owner remains Running/epoch2 and daemon unsettled. RPC
+helper0/EOF, sidecar ABORT-15/join/EOF and guardian ECHILD/driver1/reaped6 prove only
+their scoped closure/physical containment, not logical game cleanup. The trace has
+1,649 captured events:549 complete triples and one bridge open/grant without a
+captured dispose. mm24 is not a continuation predecessor and will not be revived.
+
+The historical mm19 denial proof remains separate: exact probe `d0c4abcd…` contains
+locked selection17961, Back/fresh prompt22914 and unchanged story/history/queue and
+location/inventory hashes. Its later permission turn failed; this is not a combined
+grant→transfer chain or a reusable predecessor. Ordinary player text already uses
+the genuine supported relay path without an inventory prologue. There is no ID-
+direct /storage_move console command or existing external manual-input handoff in
+this owned driver. Shipped structured Web storage is a separate real host/session
+path, not the current console endpoint. No new interface or browser architecture
+was implemented. The selected next scope is an independently reviewed finite
+ordinary-request→fresh GM decision→ordinary Save path on clean proven state;
+transfer/Load remain separate later proofs. No new world or runtime is authorized
+by this checkpoint itself.
