@@ -181,11 +181,12 @@ def measured_load_profile(measured, size, attributes):
 
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
-    assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load','pipe-inventory-cleanup','pipe-load-geometry','pty-load-100','pty-load-80')
+    assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load','pipe-inventory-cleanup','pipe-load-geometry','pty-load-100','pty-load-80','pty-fullroute')
+    fullroute = mode == 'pty-fullroute'
     cleanup = mode == 'pipe-inventory-cleanup'
     inventory = mode in ('pipe-inventory','pipe-inventory-cleanup')
     geometry = mode in ('pipe-load-geometry','pty-load-100','pty-load-80')
-    same_pty = mode in ('pty','pty-load-100','pty-load-80')
+    same_pty = mode in ('pty','pty-load-100','pty-load-80','pty-fullroute')
     wrong_width = mode == 'pty-load-80'
     load = mode == 'pipe-load' or geometry
     fixed_render = inventory or load
@@ -204,7 +205,7 @@ def main():
     master,slave=pty.openpty()
     fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,80 if wrong_width else 100,0,0))
     initial=termios.tcgetattr(slave)
-    owned_noecho=same_pty and geometry
+    owned_noecho=same_pty and (geometry or fullroute)
     configured=noecho_baseline(initial) if owned_noecho else initial
     def own():
         os.setsid();fcntl.ioctl(slave,termios.TIOCSCTTY,0);os.tcsetpgrp(slave,os.getpid())
@@ -230,7 +231,7 @@ def main():
             readback=termios.tcgetattr(slave)
             result['ConfiguredReadback']=termios_data(readback)
             assert readback==configured
-        args=['dotnet',helper,'spectre-inventory-cleanup-smoke' if cleanup else 'spectre-load-geometry-smoke' if geometry else 'spectre-load-smoke' if load else 'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
+        args=['dotnet',helper,'mortal-fullroute-smoke' if fullroute else 'spectre-inventory-cleanup-smoke' if cleanup else 'spectre-load-geometry-smoke' if geometry else 'spectre-load-smoke' if load else 'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
         process=subprocess.Popen(args,stdin=slave,stdout=slave if same_pty else subprocess.PIPE,
                                  stderr=slave if same_pty else subprocess.STDOUT,env=env,preexec_fn=own)
         result.update(OriginalPid=process.pid,Argv=args)
@@ -295,7 +296,43 @@ def main():
                 assert selected_frame(bytes(captured),0,menu)==target
                 assert not captured.endswith(b'\r') and bytes(captured).rstrip(b' ').endswith(footer.encode())
             result['ActualFiniteSelector']=True;result['Target']=target;stage=2
-        while time.monotonic()-start<12:
+        if fullroute:
+            # Same owned transport/cleanup as the qualified geometry modes. No new process scheme.
+            from fullroute_inputs import run as run_fullroute
+            def pump_fullroute():
+                if process.poll() not in (None, 0):
+                    report=root/'fullroute-result.json'
+                    raise RuntimeError('Actual fullroute child failed: '+(report.read_text() if report.exists() else str(process.returncode)))
+                for fd in select.select([f for f in streams if f not in closed],[],[],.02)[0]:
+                    try:data=os.read(fd,65536)
+                    except OSError as error:
+                        if fd!=master or error.errno!=errno.EIO:raise
+                        data=b''
+                    if not data:closed.add(fd);continue
+                    raws[fd].write(data);captured.extend(data);screen.feed(data)
+            full_deadline=start+45
+            while inert_initial_pty_cut(bytes(captured),screen.keyboard) is None:
+                if time.monotonic()>=full_deadline:raise TimeoutError('Actual initial PTY mode')
+                pump_fullroute()
+            first_cut=inert_initial_pty_cut(bytes(captured),screen.keyboard)
+            # Geometry is published atomically by this fixture before its first real prompt.
+            while not (root/'geometry.json').exists():
+                if time.monotonic()>=full_deadline:raise TimeoutError('Fullroute setup/geometry')
+                pump_fullroute()
+            measured=json.loads((root/'geometry.json').read_text())
+            result['ActualGeometry']=measured
+            profile=measured_load_profile(measured,result['PtySizeReadback'],termios.tcgetattr(master))
+            result['QualifiedDataProfile']=profile
+            def route_send(key,label):
+                write_input(key)
+                result['Inputs'].append({'Hex':key.hex(),'Phase':label,'CaptureCut':len(captured)})
+            run_fullroute(root,captured,screen,pump_fullroute,route_send,result,full_deadline,first_cut,profile)
+            while time.monotonic()<full_deadline:
+                pump_fullroute()
+                if process.poll() is not None and slave>=0:os.close(slave);slave=-1
+                if len(closed)==len(streams):break
+            stage=5
+        while not fullroute and time.monotonic()-start<12:
             for fd in select.select([f for f in streams if f not in closed],[],[],.02)[0]:
                 try:data=os.read(fd,65536)
                 except OSError as ex:
@@ -380,26 +417,34 @@ def main():
         if result['EOF']:screen.finish();control.finish()
         if result.get('ExpectedWrappedRefusal'):
             raise RuntimeError('Expected inert wrong-width refusal; owned cleanup required')
-        if not result['EOF']:raise TimeoutError('Actual selection/exit/EOF not observed within 12s')
+        if not result['EOF']:raise TimeoutError('Actual selection/exit/EOF not observed within original bounded deadline')
         result['ExitCode']=process.wait(timeout=1)
         result['ChildRestoredConfiguredBaseline']=termios.tcgetattr(master)==configured
         result['TermiosRestored']=result['ChildRestoredConfiguredBaseline']
-        receipt=json.loads((root/'choice.json').read_text())
-        result['Choice']=receipt
-        assert result['TermiosRestored'] and not receipt['InputRedirected']
-        assert receipt['Term']==env['TERM'] and receipt['NoColor']=='1' and receipt['PlainOutput']
-        if mode!='pipe-dumb':
-            assert stage==(4 if load else 2) and result['ExitCode']==0 and receipt['Selected']==(target if inventory else footer if fixed_render else 'SMOKE_BETA') and receipt['Failure'] is None
-        if same_pty:
-            assert not receipt['OutputRedirected'] and not receipt['ErrorRedirected']
+        if fullroute:
+            receipt=json.loads((root/'fullroute-result.json').read_text())
+            result['FullRouteReceipt']=receipt
+            assert result['ExitCode']==0 and receipt['Success'] and receipt['FixtureRootAbsent']
+            assert receipt['CleanupFailures']==[] and result['ChildRestoredConfiguredBaseline']
+            assert [entry['Stage'] for entry in receipt['Stages']]==['locked-denial','retrieve','save','deposit','load-focus-back']
+            result['Success']=True
         else:
-            assert receipt['OutputRedirected'] and receipt['ErrorRedirected']
-        if geometry:
-            result['ActualGeometry']=json.loads((root/'geometry.json').read_text())
-            result['RenderedAndExitedBeforeGuard']=True
-            # Default PIPE still refuses; measured fixed PTY profile has bounded DATA admission.
-            local_load_menu('Хозяйственный двор у нижней лестницы',43,99999,profile=result.get('QualifiedDataProfile'))
-        result['Success']=mode!='pipe-dumb'
+            receipt=json.loads((root/'choice.json').read_text())
+            result['Choice']=receipt
+            assert result['TermiosRestored'] and not receipt['InputRedirected']
+            assert receipt['Term']==env['TERM'] and receipt['NoColor']=='1' and receipt['PlainOutput']
+            if mode!='pipe-dumb':
+                assert stage==(4 if load else 2) and result['ExitCode']==0 and receipt['Selected']==(target if inventory else footer if fixed_render else 'SMOKE_BETA') and receipt['Failure'] is None
+            if same_pty:
+                assert not receipt['OutputRedirected'] and not receipt['ErrorRedirected']
+            else:
+                assert receipt['OutputRedirected'] and receipt['ErrorRedirected']
+            if geometry:
+                result['ActualGeometry']=json.loads((root/'geometry.json').read_text())
+                result['RenderedAndExitedBeforeGuard']=True
+                # Default PIPE still refuses; measured fixed PTY profile has bounded DATA admission.
+                local_load_menu('Хозяйственный двор у нижней лестницы',43,99999,profile=result.get('QualifiedDataProfile'))
+            result['Success']=mode!='pipe-dumb'
     except BaseException as error:
         result['Failure']=type(error).__name__+': '+str(error)
     finally:

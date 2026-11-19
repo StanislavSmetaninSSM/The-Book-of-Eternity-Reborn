@@ -24,7 +24,7 @@ internal static class MortalFullRouteSmoke
     private static readonly string[] ObservedPaths = [StorageTransportMoveService.InventoryPath,
         StorageTransportMoveService.CurrentLocationPath, MortalLocationMaterializationContract.WorldMapPath,
         MortalLocationIdentityState.StatePath, MortalItemIdentityState.StatePath,
-        MortalStorageAccessProjection.StatePath, "story.md", "config.json"];
+        MortalStorageAccessProjection.StatePath, "stories/t034.md", "config.json"];
 
     internal static async Task<int> RunAsync(string evidence, string plainOutput)
     {
@@ -63,8 +63,10 @@ internal static class MortalFullRouteSmoke
                     var bytes = await files.ReadFileBytesAsync(path);
                     pins[path] = bytes == null ? null : Hash(bytes);
                 }
-                foreach (var path in new[] { "game_state/control/turn_request.json", "game_state/control/turn_complete.json",
-                    "game_state/control/pending_turn_snapshot.json", "game_state/control/validation_repair_request.json" })
+                foreach (var path in new[] { "input/turn_request.json", "ready/turn_complete.json", "ready/turn_error.json",
+                    PendingTurnSnapshotAuthority.AuthorityPath, PendingPlayerActionService.PendingPath,
+                    "game_state/control/pending_turn_snapshot.json", "game_state/control/validation_repair_request.json",
+                    "game_state/control/validation_repair_ready.json" })
                     Require(!files.FileExists(path), "Unexpected turn/repair authority: " + path);
                 Require(!Directory.Exists(files.ResolvePath("game_state/control/pending_turn_snapshot")), "Unexpected original directory.");
                 return pins;
@@ -124,21 +126,25 @@ internal static class MortalFullRouteSmoke
             Require(loadBefore.OrderBy(x => x.Key).SequenceEqual((await Pins()).OrderBy(x => x.Key)), "Back-only Load changed DATA.");
             Require(Hash(File.ReadAllBytes(archive.FileName)) == archive.Item2, "Back-only Load changed archive.");
             Write("completed.json", new { Success = true, Generation = generation, Turn = loop.TurnNumber,
-                Stages = stages, ProviderCalls = 0, ArchiveCommitAttempted = false, HostedReplacementClaimed = false });
+                Stages = stages, ProviderConstructed = false, LoadCommitAttempted = false, HostedReplacementClaimed = false });
 
             async Task ExplorerStage(string stage)
             {
                 var prior = await Pins(); Write("stage.json", new { Stage = stage, Generation = generation, Before = prior });
-                var action = await GameEngine.DispatchExplorerForCurrentSessionAsync(files, explorer, "/storage_move");
-                Require(string.IsNullOrEmpty(action), "Local route returned a GM action.");
-                var after = await Pins(); stages.Add(new { Stage = stage, ReturnedAction = action, Before = prior, After = after });
+                // The existing expected-generation participation owns the actual public dispatch,
+                // rather than a second CurrentSession scope that could adopt a replacement.
+                var action = await Expected(() => explorer.TryProcessCommand("/storage_move"));
+                Require(action == string.Empty, "Local route refused/null or returned a GM action.");
+                var after = await Pins(); Require(prior["stories/t034.md"] == after["stories/t034.md"], "Local Explorer changed story.");
+                stages.Add(new { Stage = stage, ReturnedAction = action, Before = prior, After = after });
                 Write(stage + ".json", stages.Last());
             }
             async Task OptionsStage(string stage)
             {
                 var prior = await Pins(); Write("stage.json", new { Stage = stage, Generation = generation, Before = prior });
                 Require(await Expected(engine.InGameOptionsMenu), "Options did not return continuation.");
-                var after = await Pins(); stages.Add(new { Stage = stage, Returned = true, Before = prior, After = after });
+                var after = await Pins(); Require(prior["stories/t034.md"] == after["stories/t034.md"], "Options changed story.");
+                stages.Add(new { Stage = stage, Returned = true, Before = prior, After = after });
                 Write(stage + ".json", stages.Last());
             }
         }
@@ -177,13 +183,14 @@ internal static class MortalFullRouteSmoke
         await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
         async Task Put(string path, JsonNode value) => await files.WriteFileAtomicAsync(lease, path, value.ToJsonString());
         var sword = MortalItemTestFixture.CreateCanonicalRoot(SwordId);
-        sword["name"] = "Древний меч"; sword["type"] = "Оружие"; sword["weight"] = 1.8; sword["equipmentSlot"] = "mainHand";
+        sword["name"] = "Древний меч"; sword["type"] = "Оружие"; sword["weight"] = 1.8; sword["equipmentSlot"] = "MainHand";
+        sword["materialization"]!["sections"]!["equipment"] = new JsonObject { ["state"] = "populated", ["reason"] = null };
         MortalItemTestFixture.ResealCanonical(sword);
         var chalk = MortalItemTestFixture.CreateCanonicalRoot(ChalkId);
-        chalk["name"] = "Кусочек разметочного мела"; chalk["type"] = "Бытовой предмет"; chalk["weight"] = 0.1;
+        chalk["name"] = "Кусочек разметочного мела"; chalk["type"] = "Бытовой предмет"; chalk["weight"] = 0.02; chalk["volume"] = 0.01;
         MortalItemTestFixture.ResealCanonical(chalk);
         await Put(StorageTransportMoveService.InventoryPath, new JsonObject { ["items"] = new JsonArray(sword.DeepClone()),
-            ["equippedItems"] = new JsonObject { ["mainHand"] = SwordId }, ["money"] = 500, ["totalWeight"] = "1.8kg", ["maxWeight"] = "45.0kg", ["isOverloaded"] = false });
+            ["equippedItems"] = new JsonObject { ["MainHand"] = SwordId }, ["money"] = 500, ["totalWeight"] = "1.8kg", ["maxWeight"] = "45.0kg", ["isOverloaded"] = false });
         var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(LocationId, LocationName, discoveryTier: "visited");
         location["locationStorages"] = new JsonArray(MortalLocationTestFixture.CreateStorageMetadata(StorageId, StorageName, false));
         location["materialization"]!["sections"]!["storageMetadata"] = new JsonObject { ["disposition"] = "populated", ["reason"] = null };
@@ -196,7 +203,7 @@ internal static class MortalFullRouteSmoke
         await Put(MortalItemIdentityState.StatePath, MortalItemTestFixture.CreateIndexForCarriers(
             (sword, "player_inventory", "player", null), (chalk, "location_storage", LocationId, StorageId)));
         await Put("game_state/meta/soul_state.json", new JsonObject { ["soulName"] = "T034 fixture", ["currentRealm"] = "Mortal World", ["currentIncarnation"] = 2 });
-        await files.WriteFileAtomicAsync(lease, "story.md", "# T034 authored geometry DATA\n");
+        await files.WriteFileAtomicAsync(lease, "stories/t034.md", "# T034 authored geometry DATA\n");
         var bootstrap = MortalBootstrapStateBuilder.BuildFreshMortalBootstrapFiles(2, 41, null, null, null, DateTimeOffset.UnixEpoch);
         foreach (var path in new[] { StorageTransportMoveService.VehiclesPath, "game_state/npcs/npc_skills.json", "game_state/inventory/item_bonds.json", "game_state/inventory/item_text_updates.json" })
             await Put(path, bootstrap[path]);

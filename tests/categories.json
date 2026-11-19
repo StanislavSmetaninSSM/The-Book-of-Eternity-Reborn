@@ -2,6 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-local-fullroute-geometry",
+      "responsibility": "#1515 T034 one actual local Explorer locked denial, authored access arrangement, real retrieve, custom Options/Save, deposit and Back-only Load focus on owned PTY100/noecho. Verifies actual archive and per-stage canonical/generation observations; no fake player prompt.",
+      "excludes": "No GM decision, accepted game turn, archive Enter/Load commit, hosted replacement, live transport change, old world or provider.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MortalFullRouteSmoke.cs",
+        "tests/fixtures/SelectionPrompt/fullroute_inputs.py"
+      ],
+      "related": [
+        "mortal-load-pty-geometry"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualLocalStorageSaveAndBackOnlyLoadUseRealUi"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-load-pty-geometry",
       "responsibility": "#1515 T034 same-PTY fixed100 exact Load78 render/Back/normal exit with closed measured Load78 DATA profile, and fixed80 actual wrapped refusal with separately owned negative cleanup. Default PIPE76 unchanged.",
       "excludes": "No game, GM, world, authority, production geometry changes or bypass of live admission.",

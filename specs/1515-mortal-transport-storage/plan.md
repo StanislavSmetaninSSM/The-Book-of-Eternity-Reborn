@@ -4990,3 +4990,38 @@ The initial profile preparation attempt had9DATA PASS/2importsetupERROR before a
 ### T034 actual full-route fixture design accepted
 
 Independent design review accepted the frozen t034-fullroute-plan.md (d2f3429e3b0b6ee00b8a17a27ca55416c541adb9c5940b1fd14d28ca96ab733c) for implementation, not execution. Actual Explorer, custom Options/Save and Back-only Load are required, with captured-generation admission, real participating services and typed fixture installation. The only production seam is unchanged-body Options visibility. Review completed fixture source before execution; unknown position queries stop. No archive Enter, hosted replacement, GM permission or live acceptance is claimed by this geometry fixture.
+
+### T034 actual full-route source WIP (not executed)
+
+The accepted construction plan now has a bounded TestSupport implementation and
+one exact `mortal-local-fullroute-geometry` Fact. The only production change is
+unchanged-body `InGameOptionsMenu` private→internal. Real console input/clipboard,
+Explorer, storage transition service, custom Options and Save are used. Bootstrap
+captures a genuine generation; every stage uses existing ExpectedSession
+participation, with public Explorer dispatch inside that same boundary, not a
+second generation-adopting scope. Null dependencies belong only to excluded
+GM/Load-commit branches. The typed authored location/item/index/resource fixtures
+are not accepted game state or a GM permission decision.
+
+Early constructor review found and corrected equipment disposition/reseal,
+archived `stories/` path, exact input/ready/pending authority absence checks,
+null-vs-empty Explorer result, and chalk weight/volume .02/.01. Early WIP remains
+historical UNRUN source, not a failed runtime experiment. The full fixture checks
+locked no-mutation, actual retrieve/deposit identity, one real Save archive's
+metadata and selected exact ZIP bytes, and Load focus/Back without archive Enter.
+Stage receipts are external observations, never fabricated player prompts or
+hosted lifecycle receipts. Unsupported cursor-position queries stop, without DSR
+answers. Save sends replacement text `s` through actual TextComposer; archive
+metadata must prove the exact final name. Save description and ACK are separate.
+
+Optimization: one service graph, one typed fixture installation/resource composition
+and one archive per child; no duplicate Save, full GameEngine startup, live seed,
+provider or broad validator. Fresh per-stage DATA hashes/generation/absence checks
+are intentional because actual local transfers mutate carriers. Existing PTY,
+noecho/readback, raw parser, child join/drain and guardian infrastructure are reused.
+The new multi-stage case has an explicit 45s original child-work deadline, 55s
+outer guardian and 60s wrapper observation, within its 2-minute category including
+native tool setup. Existing single-prompt budgets and live transport are unchanged.
+No build, Python fixture execution, game/world run or runtime success is claimed.
+Independent completed constructor/input/source review and saved checkpoint precede
+any bounded execution. Fullroute and live T016 remain open.

@@ -37,6 +37,9 @@ public sealed class SpectreSelectionPtyTests
     [InlineData("pty-load-80")]
     public Task ActualSamePtyLoadGeometryHasExplicitOutcome(string mode) => RunModeAsync(mode);
 
+    [Fact]
+    public Task ActualLocalStorageSaveAndBackOnlyLoadUseRealUi() => RunModeAsync("pty-fullroute");
+
     /// <summary>Reuses the owned inert renderer process and its exact EOF/guardian cleanup for one explicit console mode.</summary>
     private static async Task RunModeAsync(string mode)
     {
@@ -50,9 +53,9 @@ public sealed class SpectreSelectionPtyTests
         var helper = Path.Combine(AppContext.BaseDirectory,"BookOfEternityClient.TestSupport.dll");
         Assert.True(File.Exists(helper));
         await RunAsync(Path.Combine(package,"host-guardian"),
-            [Path.Combine(root,"guardian.json"),"20000","/usr/bin/python3",
+            [Path.Combine(root,"guardian.json"),mode == "pty-fullroute" ? "55000" : "20000","/usr/bin/python3",
              Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/SelectionPrompt/smoke.py"),
-             Path.Combine(root,"peer"),helper,mode], root, "guardian", 25);
+             Path.Combine(root,"peer"),helper,mode], root, "guardian", mode == "pty-fullroute" ? 60 : 25);
         using var guardian = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(root,"guardian.json")));
         var g = guardian.RootElement;
         Assert.True(g.GetProperty("echild").GetBoolean());
