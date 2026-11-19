@@ -10,7 +10,10 @@
         "tests/fixtures/SelectionPrompt/fullroute_inputs.py"
       ],
       "related": [
-        "mortal-load-pty-geometry"
+        {
+          "id": "mortal-load-pty-geometry",
+          "when": "Changing shared owned PTY geometry or Load menu admission."
+        }
       ],
       "requirements": {
         "frontendBuild": false,
