@@ -4151,3 +4151,40 @@ accepted native birth is retained but is not a completed continuing journey.
 Unchecked later bookkeeping does not itself establish new gameplay defects;
 unexplained historical failures and the unqualified T028 remain separate. No
 previously passing tests were repeated for this read-only reconciliation.
+
+T016 mm17 bounded attempt: settled failure, no GM publication, 2026-11-19.
+The separately reviewed manual preparation completed once in 4.993 seconds; seed
+export took 2.722 seconds with driver0/ECHILD and no emergency/failures/deadline.
+Preparation manifest ad487d64cc3b982cba2f22a5acf3498200a6b9d349e7262b318af5f0498de851,
+phase package 8142c79fdb3515351fad2621707a180d0f564475e5046e9f115c1c18b264ed17.
+Independent package review checked all source/output/native/dependency/copy joins,
+fresh setup41 with no authority/queue and the explicit no-provider/opt-out profile.
+The ordinary use_default launch and original-handle observation were permitted;
+no escalation, policy bypass or mm16 access occurred. This does not prove an
+absolute no-network environment or identify the cause of the mm16 review denial.
+
+A genuine turn42 request was captured; a separately authored nine-write candidate
+received full independent content GO at SHA256
+fc5442ee8f40b8258ad3f88c2bfb84cf1d3c1b42f9f1fe0ba3c0c2f44e4f0126.
+However, coordination consumed the submission window and the executor's external
+prepublication assertion treated absent output files as None rather than the
+contract sentinel 'missing'. It refused before calling relay_worker answer.
+There was no GM publication, execution or accepted turn; the three expected new
+output files were genuinely absent, not changed after authoring. This is a test
+operation error, not a demonstrated gameplay defect. The matching error was
+reproduced with cheap DATA; four correct/mismatched existing/absent cases passed
+in 0.001 seconds. No late publication, timeout increase or replay was attempted.
+
+Original launch finished exit1 after 639.709 seconds, one genuine player action
+and zero accepted turns: TimeoutError, one-turn phase ended without acceptance.
+Probe SHA256 955ff03166c2659ed50f836ab4188f2aac8f35aadc9d2883a365aa7008b685cc.
+Executor evidence reports exact original shutdown ACK/Stopped/OwnedScopeEmpty,
+all three terminal zero exits/EOF/termios, RPC closure and same daemon settlement.
+Guardian reports ECHILD, driver1, reaped2, emergency0, failures0, deadlinefalse;
+coordinator readback confirms the probe hash, exit1 and guardian report. Full
+independent outcome/cleanup verification is pending. Story remains setup only.
+mm17 must not be promoted to an accepted predecessor. T016 remains open.
+Next prepare any corrected one-shot external precheck before a new run, not
+under the live deadline, and independently review it. No new gameplay operation
+is authorized by this checkpoint itself. Immutable producer reuse remains valid;
+new live authority and seed must be freshly established, never cached or replayed.
