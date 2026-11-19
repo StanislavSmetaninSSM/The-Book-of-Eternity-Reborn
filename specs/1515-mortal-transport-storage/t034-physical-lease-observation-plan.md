@@ -1005,3 +1005,12 @@ current bins plus native2/EventLog1 extras, zero overlays; source32072/tools6/
 assets14/Unit8 close unchanged. This accepts producer bytes only. Next stage
 is one separately reviewed fresh mm27 setup41 export/profile, then separately
 admitted scripted42 and ordinary43. No failed mm26 bytes are reused.
+
+mm27 fresh setup/profile independently accepted (1cb64a17): standard export
+setup41/validation0, no accepted GM, export2.974s/total7.419s with clean original
+guardian/EOF. All16 artifacts, eight exact inventories and full539 play bytes
+join current producer; exclusive private trace/profile/launcher intact. Exact
+P01 launcher c8cdca08/profile629ce308 keeps original600/660/680/720/750 limits.
+Independent semantic baseline agrees with unchanged scripted P01 template.
+Only a separately authenticated genuine42 response may be published once;
+ordinary43 decision and accepted-turn Save remain separate, unqualified stages.
