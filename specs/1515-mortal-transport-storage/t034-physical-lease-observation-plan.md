@@ -898,3 +898,34 @@ exhaustive observation claim. mm26 is now UNKNOWN/nonpredecessor; do not retry,
 repair, continue or reuse its world. Accepted ordinary GM43 is proven separately;
 manual Save and the combined scenario are FAILED. No production fix or new run
 is implied by this checkpoint.
+
+### Next bounded causal block: ordinary manual Save under an active main
+
+Tracked #1515/#1589 continuation; no mm26 reuse, package refresh or live run.
+The proposed regression uses the existing native guardian/neutral BridgeHost
+fixture and actual typed InGameOptionsMenu with queued ordinary input. Seed one
+PortableSaveFixture before starting the genuine owner, use a distinct consumer
+FileSystemManager with no ambient grant, and retain the exact Running record.
+Reuse the existing narrow FixtureHost wrapper through test-only accessibility;
+no cloned reflection logic, synthetic main record or new transport/harness.
+A direct unadmitted SaveLoad call remains an explicit refusal control. Capture
+the menu result/failure, always stop/join the original owner, then assert the
+positive archive/metadata/protected DATA and clean owner outcome. Initial RED
+must be the actual admission error after setup witnesses, not setup/cleanup.
+
+The intended participating boundary is the explicit Options Save action after
+name/description entry, not prompts/ACK and not every arbitrary SaveLoad caller.
+After causal RED, reuse existing SessionOperationContext current-generation
+participation for that action only; close before rendering/ACK. Preserve the
+actual SaveCreationResult through a later main-close failure, including a
+committed-but-blocked result, with no retry or relabeling. MainRunFence, global
+SaveLoad admission and foreign/closing/identity guards remain unchanged.
+Independent source review must settle the exact typed result handling before
+implementation. Existing console rollback/committed-warning controls and a
+small affected original-main guard selection accompany GREEN, not broad suites.
+
+Optimization: one real owner setup per new positive test, existing fixture and
+service DATA only. No new cache, registry, worker or repeated discovery; owner,
+generation, acquisition and closing checks stay fresh and cannot be cached.
+No performance improvement is claimed; native setup/test elapsed is measured
+separately. Test/source preparation remains UNRUN pending design/source gates.
