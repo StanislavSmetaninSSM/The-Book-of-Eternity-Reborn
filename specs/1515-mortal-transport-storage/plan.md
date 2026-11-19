@@ -4188,3 +4188,36 @@ Next prepare any corrected one-shot external precheck before a new run, not
 under the live deadline, and independently review it. No new gameplay operation
 is authorized by this checkpoint itself. Immutable producer reuse remains valid;
 new live authority and seed must be freshly established, never cached or replayed.
+
+T016 mm17 independent outcome accepted; mm18 prelaunch checkpoint, 2026-11-19.
+Independent review confirmed the mm17 original wire shutdown ACK and durable
+Stopped identity, OwnedScopeEmpty, relay child/I-O closure, all terminal/RPC/daemon
+settlements and guardian ECHILD without emergency/failure. No response/reply/
+execution was published; output is empty and story is setup41 only. Operational
+files did change; this is not a claim that every world byte remained unchanged.
+
+The next external one-shot submission script is prepared before the live window.
+Review caught and corrected turn_identity field access, pin-before-import ordering,
+verified packet snapshot binding and reserve against both original deadlines.
+Full-main DATA uses the maintained real read_request with independent temporary
+queue/pending/owner and replaces only the final worker invocation with an inert
+call. Final codec-shaped controls: 17/17 PASS, 0.101 seconds; independent recheck
+accepted the corrections. The worker receives an exclusive fsynced/read-back
+snapshot of the reviewed bytes; an exclusive attempt marker prevents retries even
+after uncertainty. Reserve is min(request600, original-driver660), at least60s;
+original identity and start are frozen at request discovery, never renewed.
+This is external test-operation validation, not a gameplay fix or T028 acceptance.
+
+mm18 preparation completed once with original exit0 in 5.410 seconds; seed export
+2.973 seconds, driver0/ECHILD/reaped1/no emergency/failures/deadline. New lawful
+seed41/validation0/acceptedGmTurn=false; runtime/deployed483, helper249, relay8,
+native4 and seed53. Source/producer/native/NuGet/copy joins were independently
+verified, including 32,014 tracked source/data pins, 723 outputs and 8 Unit pins.
+Preparation manifest 259455b1d8fa2bd6d96effde4273f4b6d5105d4997ea21a4397b1820426b36d2;
+launch SHA256 437bf4fe3ceba0d0d3ce2b4d262d019a319aa2a30a7fe19d564d0084b375ba4e.
+Independent package review grants technical GO to submit one normal use_default
+operation to the approval mechanism. No accepted gameplay is asserted here.
+The upcoming attempt must use its own request, GM authoring and content review;
+no candidate/world/authority is copied from mm17. mm16 remains untouched UNKNOWN.
+Only this checkpoint prose changes after the reviewed source/data pins; runtime,
+driver and gameplay sources remain frozen. No build or passed suite was repeated.
