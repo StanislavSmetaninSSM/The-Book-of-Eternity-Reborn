@@ -4834,3 +4834,27 @@ and the separate final #1515 reconciliation gates remain open.
 T032/T033 independent bounded acceptance: Unit62/62 (Loaded35 plus ordinary27), Integration2/2 (unchanged retired pre-send and genuine Save/Load continuation), exact source/output joins and owned cleanup accepted. T033 qualifies only in-process committed canonical continuation, not hosted replacement or live T016. Active/remote Loaded gate is not runtime-qualified.
 
 T016 mm20 fresh manual preparation completed without game/relay launch. Current owning Integration and Unit corroborations matched; no repeated compile or passed tests. Three current no-build serial publishes settled normally, followed by one fresh setup41 seed export with validation0, no accepted GM turn. Inventories: runtime/deployed483 each, helper249, relay8, native4, seed53 (world536 includes deployed runtime). Source/compiler/native joins and exact EventLog runtimeTarget provenance retained externally. Initial external publish-script path-parenthesis error occurred before any process/publish and is retained separately; corrected script then ran the three publishes once each. Export original exit0, EOF/ECHILD, no emergency/failure/deadline. New p01 has fresh private environment/nonces, unchanged opt-outs and ImageProvider off, fixed600/660/680/720/750 budgets. No owner, pending request, queue, operational config or launch artifact. Independent package/prelaunch review is required before any game start. mm16 untouched; no failed-world reuse.
+
+T016 mm20 is a failed author/review scheduling attempt, not an accepted predecessor.
+One normal launch produced a genuine turn42 request; the complete nine-write GM
+candidate independently passed content review, but after the fixed submission
+cutoff. The one-shot submitter was never invoked; no timeout/reserve was widened.
+Original exec64322 ended exit1 after637.763s, accepted0/action1, with no response,
+reply, started/execution marker or submitted packet. Seed story remained unchanged.
+Claimed original cleanup includes stopped owner/OwnedScopeEmpty, one shutdown,
+RPC0/EOF, all three terminal exit0/EOF/termios and guardian ECHILD with no emergency,
+failure or deadline; independent outcome review is pending. Daemon settled but
+errorCount1 remains explicit: participating-admission helper IOException during
+shutdown. This is not proof that the prior shutdown anomaly is fixed.
+External compact outcome SHA256:
+95d52b0fce8c8577ef8966bad9001c7c583afb8ecf6eb8723646ec64b9b81144.
+All99 final world pins and config were rechecked. No game action was retried.
+
+Before another launch, T034 requires complete immutable GM-content preparation
+and independent review outside the live deadline, followed only by bounded fresh
+request/snapshot binding and refusal on mismatch. Its separate deterministic
+future harness finding is an actual proposed Load label of78 columns against the
+current76-column preflight bound; that does not invalidate birth content. Reproduce
+the exact full menu with real Spectre and verified fixed terminal geometry before
+adjusting supported bounds. Do not change canonical names to satisfy the harness,
+guess a menu selection, or start another world before the full inert route passes.
