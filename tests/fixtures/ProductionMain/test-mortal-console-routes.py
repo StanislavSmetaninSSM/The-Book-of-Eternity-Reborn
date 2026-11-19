@@ -119,6 +119,57 @@ class RouteTests(unittest.TestCase):
         peer.send=send
         with self.assertRaises(TimeoutError):run()
         self.assertEqual(peer.keys,[b'\x1b[B'])
+    def inventory_cleanup_fixture(self, prompt=True):
+        source=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
+        nodes=[n for n in source.body if isinstance(n,ast.FunctionDef) and n.name in ('finite_select','settle_inventory_cleanup')]
+        labels=['💰 Деньги: 500','⚔ ⚔️ Основная рука: Древний меч','📦 Древний меч [Оружие]','📦 🔒 Кладовая материалов совета (1 пр.)','← Назад']
+        menu=console_routes.fixed_menu('🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)',labels,20)
+        def frame(n):return ('\r\x1b[6A'+menu['header']+'\n'+'\n'.join(('> ' if i==n else '  ')+s for i,s in enumerate(labels))).encode()
+        class Peer:
+            def __init__(self):self.capture=bytearray(frame(0));self.keys=[];self.pending=[frame(0),frame(1)];self.index=1
+            def send(self,key,phase):
+                self.keys.append(key)
+                if key==b'\x1b[B':self.index+=1;self.pending.append(frame(self.index))
+                elif key==b'\r' and prompt:self.pending.append('Ваш ход\n > '.encode())
+        peer=Peer();ctx={'menu':menu,'cut':0,'selected':labels[0],'pending_next':labels[1]}
+        def until(predicate,*unused):
+            for _ in range(10):
+                if predicate():return
+                if peer.pending:peer.capture.extend(peer.pending.pop(0))
+            raise TimeoutError('Fixed cleanup deadline')
+        def fresh_player(client,cut,*unused):until(lambda:'Ваш ход'.encode() in bytes(client.capture[cut:]),0,'prompt')
+        ns={'client':peer,'console_routes':console_routes,'until':until,'fresh_player':fresh_player,'inventory_context':ctx,'client_prompt':False,'result':{'Failure':'original injected failure'}}
+        exec(compile(ast.Module(body=nodes,type_ignores=[]),'actual inventory cleanup','exec'),ns)
+        return ns,peer,frame
+    def test_cleanup_finishes_pending_duplicate_then_back_without_ctrlc(self):
+        ns,peer,_=self.inventory_cleanup_fixture();self.assertTrue(ns['settle_inventory_cleanup']())
+        self.assertEqual(peer.keys,[b'\x1b[B']*3+[b'\r']);self.assertTrue(ns['client_prompt'])
+        self.assertIsNone(ns['inventory_context']);self.assertEqual(ns['result']['Failure'],'original injected failure')
+    def test_cleanup_unknown_or_partial_inventory_never_sends_keys(self):
+        for bad in ('missing','partial','foreign'):
+            with self.subTest(bad=bad):
+                ns,peer,_=self.inventory_cleanup_fixture()
+                if bad=='missing':ns['inventory_context']=None
+                elif bad=='partial':peer.capture.extend(b'\r\x1b[6Apartial');peer.pending=[]
+                else:peer.capture=bytearray(b'Submenu\n> different');peer.pending=[]
+                with self.assertRaises((RuntimeError,TimeoutError)):ns['settle_inventory_cleanup']()
+                self.assertEqual(peer.keys,[]);self.assertFalse(ns['client_prompt'])
+    def test_cleanup_back_enter_without_prompt_is_not_retried(self):
+        ns,peer,_=self.inventory_cleanup_fixture(prompt=False)
+        with self.assertRaises(TimeoutError):ns['settle_inventory_cleanup']()
+        keys=list(peer.keys);self.assertEqual(keys,[b'\x1b[B']*3+[b'\r'])
+        with self.assertRaises(RuntimeError):ns['settle_inventory_cleanup']()
+        self.assertEqual(peer.keys,keys);self.assertFalse(ns['client_prompt'])
+    def test_cleanup_pending_skip_refuses_without_input(self):
+        ns,peer,frame=self.inventory_cleanup_fixture();peer.capture=bytearray(frame(3));peer.pending=[]
+        with self.assertRaises(RuntimeError):ns['settle_inventory_cleanup']()
+        self.assertEqual(peer.keys,[])
+    def test_inventory_context_records_pending_before_input_uncertainty(self):
+        ns,peer,_=self.inventory_cleanup_fixture();ctx=ns['inventory_context'];ctx['pending_next']=None;peer.pending=[]
+        def ambiguous_send(*unused):raise OSError('injected input uncertainty')
+        peer.send=ambiguous_send
+        with self.assertRaises(OSError):ns['finite_select'](ctx['menu'],ctx['menu']['choices'][3],0,5)
+        self.assertEqual(ctx['pending_next'],ctx['menu']['choices'][1]);self.assertEqual(ctx['cut'],len(peer.capture))
     def test_actual_local_branch_is_separate_from_genuine_gm_send(self):
         tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
         matches=[n for n in ast.walk(tree) if isinstance(n,ast.If) and
@@ -198,6 +249,6 @@ class RouteTests(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(RouteTests)
-    if suite.countTestCases()!=18:raise SystemExit('Expected exactly eighteen finite-route DATA methods')
+    if suite.countTestCases()!=23:raise SystemExit('Expected exactly twenty-three finite-route DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==18 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==23 and result.wasSuccessful() and not result.skipped else 1)

@@ -4396,3 +4396,14 @@ source pins and compiled outputs remain exact; only this checkpoint changed.
 T029 is complete within the inert observer scope. T030 and the real T016 journey
 are still open. Next bounded work is the proven local-menu failure-cleanup ordering,
 not replay or repair of mm18 and not relaxation of active operation pins.
+
+T030 first RED preparation, 2026-11-19. Actual-driver AST controls now expect
+pending input to be recorded before a possibly failing send and exact inventory
+cleanup to return through Back and a fresh player prompt. An unused fail-closed
+cleanup seam permits causal tests without changing existing runtime cleanup.
+DATA23:20 PASS/one assertion FAIL/two behavior ERROR,0.586s. Missing/partial/
+foreign/pending-invalid contexts remain no-input refusals. An initial authored
+non-ASCII bytes literal typo was corrected before the behavior run, not counted
+as RED. Implementation and real inert cleanup renderer remain UNRUN; no current
+owner is touched and original mm18 uncertainty is unchanged. Reuse is restricted
+to transient menu descriptor/input-progress DATA, never owner or permission.

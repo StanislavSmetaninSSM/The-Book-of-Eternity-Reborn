@@ -993,6 +993,10 @@ def finite_select(menu,label,cut,maximum_rows,commit=True):
         client.send(b'\x1b[B','fixed menu observed next row')
     raise RuntimeError('Fixed menu exceeds visible bounded rows; no pagination')
 
+def settle_inventory_cleanup():
+    # T030 RED-only fail-closed seam, not wired into cleanup yet.
+    raise RuntimeError('Exact inventory cleanup unavailable')
+
 def local_observation():
     return {'StorySHA256':sha(story.read_bytes()),
         'History':phase_evidence.history_witness_at(session),
