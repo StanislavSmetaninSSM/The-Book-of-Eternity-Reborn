@@ -1669,7 +1669,9 @@ public partial class GameEngine
         // throws: an abandoned visit must not bind the next freeform action.
         var consoleVisit = browserAction is null ? _explorer.ConsumePendingElyaraVisit(action, sessionGeneration) : null;
         using (_fs.MeasureOperation("PlayerTurn.Stage.ValidateBeforeTurn"))
-            if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
+            if (!await (browserAction is null
+                    ? ValidateBeforeOrdinaryPlayerTurnAsync()
+                    : ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода")))
                 return null;
 
         var hotOrigin = BeginHotOrdinaryOriginal(ordinal, sessionGeneration, browserAction);

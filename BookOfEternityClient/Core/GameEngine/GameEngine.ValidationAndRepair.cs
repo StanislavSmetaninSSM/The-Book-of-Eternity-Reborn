@@ -41,6 +41,10 @@ internal enum AcceptedTurnValidationDisposition
 
 public partial class GameEngine
 {
+    /// <summary>Runs the ordinary console pre-send consumer without issuing a request or beginning another turn.</summary>
+    internal Task<bool> ValidateBeforeOrdinaryPlayerTurnAsync()
+        => ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода");
+
     private const string WoundNarrativeOutputPath =
         "output/narrative_response.json";
     private const string GmBridgeIdleWithoutTerminalSignalHarnessSource = "gm_bridge_idle_without_terminal_signal";

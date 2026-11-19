@@ -23,8 +23,13 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task CombinedMortalBirth_CompletedPublicationRechecksEveryRepair(string repairMode)
         => RunCombinedMortalBirthAsync(false, repairMode);
 
+    /// <summary>Checks the ordinary pre-send consumer after genuine publication and retirement, without issuing another turn.</summary>
+    [Fact]
+    public Task CombinedMortalBirth_RetiredAcceptedStatePassesOrdinaryPreSend()
+        => RunCombinedMortalBirthAsync(false, null, validateRetiredState: true);
+
     /// <summary>Runs the same full ordinary candidate, optionally correcting only journal/output DATA after publication.</summary>
-    private async Task RunCombinedMortalBirthAsync(bool unresolvedEffect, string? repairMode)
+    private async Task RunCombinedMortalBirthAsync(bool unresolvedEffect, string? repairMode, bool validateRetiredState = false)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string currentPath = "game_state/world/current_location.json";
@@ -439,6 +444,44 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(_fs.FileExists(LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
         Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
         Assert.False(_fs.FileExists("game_state/control/validation_diagnostic_failure_report.json"));
+        if (validateRetiredState)
+        {
+            Assert.Equal(42, runtime.GameLoop.TurnNumber);
+            Assert.Equal(1, calls);
+            Assert.False(_fs.FileExists(LiveTurnPreparationService.TurnRequestPath));
+            Assert.False(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+            Assert.False(_fs.FileExists("ready/turn_complete.json"));
+            Assert.False(await runtime.Engine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync());
+            Assert.True(runtime.Engine.HasRetiredOrdinaryOriginal);
+            // Preserve already-published canonical carriers, not fresh authored commands.
+            var retainedBytes = new Dictionary<string, byte[]>();
+            foreach (var path in new[] { currentPath, mapPath, npcPath, StorageTransportMoveService.VehiclesPath })
+                retainedBytes.Add(path, (await _fs.ReadFileBytesAsync(path))!);
+            await File.WriteAllTextAsync(Path.Combine(artifact, "ordinary-pre-send-prerequisites.json"),
+                System.Text.Json.JsonSerializer.Serialize(new { AcceptedTurn = runtime.GameLoop.TurnNumber,
+                    GmCalls = calls, OriginalState = "Ended", PendingAbsent = true, TypedIdle = true }));
+            bool admitted;
+            try
+            {
+                admitted = await runtime.Engine.ValidateBeforeOrdinaryPlayerTurnAsync();
+            }
+            finally
+            {
+                // The actual consumer logs every issue with code/path/expected/actual/repair hint.
+                // Capture even an exception; never invoke a second validator to infer its result.
+                await File.WriteAllTextAsync(Path.Combine(artifact, "ordinary-pre-send-logger.txt"), _journeyLogger.Describe());
+            }
+            foreach (var pair in retainedBytes) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+            Assert.Equal(1, calls);
+            Assert.Equal(42, runtime.GameLoop.TurnNumber);
+            Assert.True(runtime.Engine.HasRetiredOrdinaryOriginal);
+            foreach (var path in new[] { LiveTurnPreparationService.TurnRequestPath,
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,
+                "game_state/control/validation_repair_request.json", "ready/turn_complete.json" })
+                Assert.False(_fs.FileExists(path), path);
+            Assert.True(admitted, "Retired accepted canonical state refused the ordinary pre-send consumer: " +
+                _journeyLogger.Describe() + "; evidence: " + artifact);
+        }
     }
 
     /// <summary>Tees the existing diagnostic stream without replacing the production emitter or limiting captured evidence.</summary>

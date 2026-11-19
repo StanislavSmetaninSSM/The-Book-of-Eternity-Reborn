@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-retired-birth-pre-send",
+      "responsibility": "#1515 T032 genuine combined publication and retired original followed by the actual ordinary pre-send consumer, preserving canonical carriers and complete logged issues.",
+      "excludes": "No second GM action, live world, strict API relaxation or repeat of the old five combined selections.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CombinedMortalBirth.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CombinedMortalBirth_RetiredAcceptedStatePassesOrdinaryPreSend"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-state-diagnostic-data",
       "responsibility": "#1515 T031 strict relocated diagnostic manifest admission: existing destination, traversal, source hash, link refusal, owned-root report boundaries and exact DATA-only copy. No validator or game execution.",
       "excludes": "No live root, seed export, owner adoption or diagnostic cause qualification.",
@@ -86,23 +110,53 @@
       "id": "mortal-menu-frame-data",
       "responsibility": "#1515 T027 twenty authored captured-pipe frame contracts, including complete padded inventory and selected footer without final CR.",
       "excludes": "No real renderer, owner, world or live acceptance. Initial no-output recognition failures are causal RED only after fixture assertions.",
-      "changeHints": ["tests/fixtures/ProductionMain/mortal_console_routes.py", "tests/fixtures/ProductionMain/test-mortal-menu-frame.py"],
+      "changeHints": [
+        "tests/fixtures/ProductionMain/mortal_console_routes.py",
+        "tests/fixtures/ProductionMain/test-mortal-menu-frame.py"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.MortalMenuFrameTests.CapturedPipeFixedMenuFrameContracts"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalMenuFrameTests.CapturedPipeFixedMenuFrameContracts"
+          ]
+        }
+      ]
     },
     {
       "id": "mortal-menu-frame-renderer",
       "responsibility": "#1515 T029 actual five-row inert Spectre inventory through shipped finite selector, plus inventory-to-Load closing/Clear transition; exact returned choices and owned EOF/guardian cleanup.",
       "excludes": "No game, bootstrap, GM, world, main-owner lifecycle or publication authority.",
-      "changeHints": ["BookOfEternityClient.TestSupport/SpectreSelectionSmoke.cs", "tests/fixtures/SelectionPrompt/smoke.py"],
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/SpectreSelectionSmoke.cs",
+        "tests/fixtures/SelectionPrompt/smoke.py"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualFiveRowInventoryUsesFiniteSelectorAndReturnsLockedTarget", "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualInventoryFailureClosesBackAndPromptWithoutCtrlC", "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualLongLocationLoadPipeFrameIsUnwrappedAndReturnsBack"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualFiveRowInventoryUsesFiniteSelectorAndReturnsLockedTarget",
+            "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualInventoryFailureClosesBackAndPromptWithoutCtrlC",
+            "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualLongLocationLoadPipeFrameIsUnwrappedAndReturnsBack"
+          ]
+        }
+      ]
     },
     {
       "id": "mortal-explorer-participation-data",
@@ -894,12 +948,29 @@
       "id": "mortal-console-route-data",
       "responsibility": "#1515 T024 finite captured-console route DATA and exact Load A-to-B observation with retained original daemon and separate local-zero-GM cleanup. T029 exact ordered transitions tolerate duplicate redraws without extra keys; skip/backward/cycle and incomplete newest frames fail closed.",
       "excludes": "No actual menu, native owner, save/load or gameplay acceptance; no generic input script or daemon restart qualification.",
-      "changeHints": ["tests/fixtures/ProductionMain/mortal_console_routes.py", "tests/fixtures/ProductionMain/test-mortal-console-routes.py", "tests/fixtures/ProductionMain/test-relay-load-evidence.py", "BookOfEternityClient.Tests/MortalConsoleRouteTests.cs"],
+      "changeHints": [
+        "tests/fixtures/ProductionMain/mortal_console_routes.py",
+        "tests/fixtures/ProductionMain/test-mortal-console-routes.py",
+        "tests/fixtures/ProductionMain/test-relay-load-evidence.py",
+        "BookOfEternityClient.Tests/MortalConsoleRouteTests.cs"
+      ],
       "related": [],
-      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.MortalConsoleRouteTests.FiniteConsoleRouteDataContracts", "BookOfEternityClient.Tests.MortalConsoleRouteTests.RetainedDaemonLoadDataContracts"]}]
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalConsoleRouteTests.FiniteConsoleRouteDataContracts",
+            "BookOfEternityClient.Tests.MortalConsoleRouteTests.RetainedDaemonLoadDataContracts"
+          ]
+        }
+      ]
     },
     {
       "id": "mortal-rejected-cleanup-data",

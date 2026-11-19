@@ -25,6 +25,10 @@ public partial class GameEngine
     private long _hotStageOrdinal;
     private long _hotReadyOrdinal;
     private HotOrdinaryOriginal? _hotOrdinaryOriginal;
+
+    /// <summary>Observes retirement only; exposes no original, ownership or mutation capability.</summary>
+    internal bool HasRetiredOrdinaryOriginal => _hotOrdinaryOriginal is { State: "Ended" };
+
     private HotRepairReadyRead? _hotRepairReady;
     private enum HotRepairRoute { Pending, Ordinary, Worker, DiagnosticOnly }
     private HotRepairRoute _hotRepairRoute;

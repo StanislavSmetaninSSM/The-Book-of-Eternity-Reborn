@@ -4650,3 +4650,9 @@ remove historical entities, forge a snapshot or loosen mutation validation.
 Design must explicitly separate idle canonical checking from authored mutation,
 preserving raw-response, unusable-original and active-turn boundaries. No live
 retry before bounded RED/GREEN/review; this automatic proof is not live acceptance.
+
+
+### T032 source-only consumer regression checkpoint
+T031 bounded relocated diagnosis is accepted, not recovery of the original uncaptured Debug issue list. T032 remains open. The unexecuted strict-direct draft was corrected during source planning: strict All remains mutation-strict, not the future GREEN contract. A narrow internal ordinary pre-send consumer initially delegates unchanged to the existing strict consumer; only console staging and the new single Fact use it, browser/default paths remain unchanged. A read-only boolean retirement observation replaces new reflection and exports no owner capability.
+
+Reuse the existing genuine combined birth once; no second GM turn or second validator. Capture the existing complete issue logger even on exception, retain four canonical carriers byte-exact, and assert accepted42/calls1/retired original/no request or pending authority before and after the consumer. Existing scripted Enter handles the error pause without repair. This is source-only WIP: no build, RED or GREEN execution yet. Optimization: reuse the existing accepted fixture and logger; fresh validation is the operation under test, so caching it would invalidate the regression. Costs remain unmeasured until the narrow official category; old five leaves are not selected.
