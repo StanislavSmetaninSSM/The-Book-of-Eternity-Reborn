@@ -470,3 +470,17 @@ actual Save and archive matrix, uncertain ACK, postaccept ordering/deadline, and
 route-specific final success; actual method counts are frozen after authoring,
 not guessed in this design. Only affected pure classes and directly affected
 shared-Save caller controls will run after source review.
+
+### Ordinary Save test-first WIP (UNRUN)
+
+Eight selected `OrdinarySave` methods in the existing terminal-fences DATA module
+author the five reviewed contours. The actual live module is never imported;
+whole FunctionDefs and exact preflight/final assignments are extracted with AST.
+Profile target guarding is checked from actual source; Save uses controlled UI
+leaves and real clean-outcome/archive parsing. Temporary ZIP DATA permits
+recomposed resource authority but refuses scoped byte drift, history fabrication,
+duplicate metadata and path aliases. Original 11 fence methods remain separate.
+Expected initial feature RED: eight methods fail at missing route/helper/gate or
+existing inventory/final-success behavior; downstream new matrices remain unrun
+until implementation. No runtime, world, production or finite_select change.
+Source review and remote preservation precede this exact pure selection.

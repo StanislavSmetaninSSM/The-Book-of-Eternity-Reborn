@@ -224,7 +224,203 @@ class Fences(unittest.TestCase):
             elif change=='link':(p.parent/'linked-dir').symlink_to(p.parent,target_is_directory=True)
             else:p.chmod(stat.S_IMODE(p.stat().st_mode)^stat.S_IXUSR)
             with self.assertRaises(ValueError):evidence.terminal_package_preflight(root,m)
+
+class OrdinarySave(unittest.TestCase):
+    """#1515 short path: actual AST and authored DATA, never the live top module."""
+    def actual(self,name,ns=None):
+        nodes=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name==name]
+        self.assertEqual(len(nodes),1,'Missing actual '+name+'; downstream controls UNEXECUTED')
+        ns={} if ns is None else ns
+        exec(compile(ast.Module(body=nodes,type_ignores=[]),'<actual-'+name+'>','exec'),ns)
+        return ns[name]
+    def helper(self,name):
+        fn=getattr(evidence,name,None)
+        self.assertTrue(callable(fn),'Missing '+name+'; downstream controls UNEXECUTED')
+        return fn
+    def test_closed_route_and_continuation_binding(self):
+        import mortal_console_routes as routes,re
+        route={'Route':'ordinary-save'}
+        try:observed=routes.checked_route(route)
+        except ValueError as ex:self.fail('ordinary-save route missing: '+str(ex))
+        self.assertEqual(observed,route)
+        for bad in ({'Route':'ordinary-save','ItemId':'x'},{'Route':'ordinary-save','StorageId':'x'},{'Route':'ordinary-save-extra'}):
+            with self.assertRaises(ValueError):routes.checked_route(bad)
+        p=pathlib.Path(__file__).resolve().parents[3]/'specs/1515-mortal-transport-storage/manual-mm21/prepare-mm21-profile.py'
+        profile=ast.parse(p.read_text());node=next(n for n in profile.body if isinstance(n,ast.FunctionDef) and n.name=='checked_continuation_binding')
+        ns={'re':re};exec(compile(ast.Module(body=[node],type_ignores=[]),'<actual-binding>','exec'),ns)
+        binding=dict(Phase='p02',PreviousSHA256='a'*64,GuardianSHA256='b'*64,SeedSHA256='c'*64,PhasePackageSHA256='d'*64,SourcePins={},Action='Ask, do not take.',ConsoleRoute=route)
+        self.assertEqual(ns['checked_continuation_binding'](binding),binding)
+        for field,value in [('PreviousSHA256',None),('Phase','p01'),('ConsoleRoute',{'Route':'ordinary-save','ItemId':'x'})]:
+            bad=copy.deepcopy(binding);bad[field]=value
+            with self.assertRaises(ValueError):ns['checked_continuation_binding'](bad)
+        # Execute the actual guarded target lookup only. No top-level profile work.
+        target=[n for n in ast.walk(profile) if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Attribute) and n.value.func.attr=='storage_target']
+        self.assertEqual(len(target),1)
+        parents={id(c):n for n in ast.walk(profile) for c in ast.iter_child_nodes(n)}
+        guard=parents[id(target[0])]
+        self.assertIsInstance(guard,ast.If,'ordinary continuation must not read inventory target')
+        calls=[];ns={'route':route,'routes':types.SimpleNamespace(storage_target=lambda *a:calls.append(a))}
+        exec(compile(ast.Module(body=[guard],type_ignores=[]),'<actual-profile-target-guard>','exec'),ns)
+        self.assertEqual(calls,[])
+    def test_actual_inventory_preflight_skips_ordinary_only(self):
+        candidates=[n for n in tree.body if isinstance(n,ast.If) and any(isinstance(c,ast.Call) and isinstance(c.func,ast.Name) and c.func.id=='current_inventory_menu' for c in ast.walk(n))]
+        self.assertEqual(len(candidates),1);node=candidates[0]
+        sentinel=RuntimeError('inert inventory reached')
+        def inventory():raise sentinel
+        for route in ('ordinary-save','birth','permission-with-denial','storage-local-proof'):
+            ns={'route':{'Route':route},'current_inventory_menu':inventory}
+            if route in ('birth','ordinary-save'):
+                try:exec(compile(ast.Module(body=[node],type_ignores=[]),'<actual-preflight>','exec'),ns)
+                except RuntimeError as ex:
+                    if ex is sentinel:self.fail('ordinary-save incorrectly enters inventory preflight')
+                    raise
+            else:
+                with self.assertRaises(RuntimeError) as caught:exec(compile(ast.Module(body=[node],type_ignores=[]),'<actual-preflight>','exec'),ns)
+                self.assertIs(caught.exception,sentinel)
+    def save_scope(self,turn=43,uncertain=False,warning=False,multiple=False):
+        import io,zipfile
+        tmp=tempfile.TemporaryDirectory();self.addCleanup(tmp.cleanup);session=pathlib.Path(tmp.name)
+        saves=session/'saves/manual_saves';saves.mkdir(parents=True)
+        (saves/'prior.zip').write_bytes(b'prior archive unchanged')
+        capture=bytearray();calls=[];primary=RuntimeError('uncertain ACK')
+        view=types.SimpleNamespace(prompt=lambda text,cut:text.encode() in capture[cut:])
+        def options(*args):calls.append('options');capture.extend('Название сохранения:'.encode());return 0
+        def send(data,label,predicate):
+            self.assertTrue(predicate());cut=len(capture);calls.append(label)
+            if 'Save name' in label:capture.extend('Описание (необязательно):'.encode())
+            elif 'Save description' in label:
+                capture.extend('✅ Игра сохранена\r\n'.encode())
+                for name in (('new.zip','extra.zip') if multiple else ('new.zip',)):
+                    with zipfile.ZipFile(saves/name,'w') as z:z.writestr('save_metadata.json',json.dumps({'saveName':'s','turnNumber':turn}))
+            elif 'acknowledge' in label:
+                if uncertain:raise primary
+                if warning:capture.extend('Требуется служебная проверка хранилища сохранений.\r\n'.encode())
+                capture.extend(b'\x1b[2J\x1b[Hplayer')
+            return cut
+        def until(predicate,*args):self.assertTrue(predicate())
+        ns=dict(session=session,client=types.SimpleNamespace(capture=capture,console=types.SimpleNamespace(view=view),send=send),
+            options_choice=options,until=until,fresh_player=lambda *a:calls.append('fresh-player'),result={},
+            io=io,zipfile=zipfile,strict_settings=evidence.strict_settings,sha=evidence.sha,
+            clean_save_player_interval=clean,client_prompt=True,inventory_cleanup_required=False)
+        return ns,calls,primary,saves
+    def test_actual_shared_save_ui_current_turn_and_local_previous(self):
+        # Same actual helper, not an authored implementation of Save.
+        for expected in (43,42):
+            ns,calls,_,saves=self.save_scope(expected)
+            fn=self.actual('save_current_turn',ns);value=fn(expected)
+            self.assertEqual(value['Metadata']['turnNumber'],expected)
+            self.assertTrue(value['CleanOutcomeBeforeFirstPlayerClear'])
+            self.assertEqual((saves/'prior.zip').read_bytes(),b'prior archive unchanged')
+            self.assertEqual(sum('acknowledge' in c for c in calls),1);self.assertEqual(calls[-1],'fresh-player')
+        # Keep the actual existing local caller's -1; ordinary must use current turn.
+        local=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='storage_local_route')
+        uses=[n for n in ast.walk(local) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='save_current_turn']
+        self.assertEqual(len(uses),1);self.assertEqual(ast.unparse(uses[0].args[0]),'expected_turn - 1')
+    def test_actual_save_uncertain_ack_warning_multiple_and_wrong_turn(self):
+        for mode in ('uncertain','warning','multiple','wrong-turn'):
+            ns,calls,primary,_=self.save_scope(42 if mode=='wrong-turn' else 43,uncertain=mode=='uncertain',warning=mode=='warning',multiple=mode=='multiple')
+            fn=self.actual('save_current_turn',ns)
+            with self.assertRaises((RuntimeError,ValueError)) as caught:fn(43)
+            if mode=='uncertain':self.assertIs(caught.exception,primary);self.assertNotIn('fresh-player',calls)
+            self.assertLessEqual(sum('acknowledge' in c for c in calls),1)
+            self.assertNotIn('OrdinarySaveProof',ns['result'])
+    def data_case(self):
+        tmp=tempfile.TemporaryDirectory();self.addCleanup(tmp.cleanup);s=pathlib.Path(tmp.name);q=s/'queue';q.mkdir()
+        paths=('game_state/meta/soul_state.json','game_state/core/player_status.json','game_state/world/world_time.json',
+            'game_state/control/progression_schedule.json','game_state/world/world_map.json','game_state/world/location_identity_index.json',
+            'game_state/world/current_location.json','game_state/inventory/items.json','game_state/inventory/item_identity_index.json',
+            'game_state/misc/vehicles.json','game_state/npcs/npc_core.json','game_state/npcs/npc_journals.json','game_state/npcs/item_journals.json')
+        for name in paths:
+            p=s/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(json.dumps({'scoped':name}).encode())
+        story=s/'stories/mortal_life_1.jsonl';story.parent.mkdir();story.write_bytes(b'{"turn":43,"narrative":"current"}\n')
+        result={'AcceptedTurnNumber':43,'AcceptedGameTurns':1,'GenuineActionsSent':1,'StoryPath':str(story),'StoryAfterSHA256':evidence.sha(story.read_bytes())}
+        return s,q,story,result
+    def test_scoped_archive_bytes_history_aliases_and_operational_stability(self):
+        import io,zipfile,warnings
+        capture=self.helper('ordinary_save_snapshot');verify=self.helper('verify_ordinary_save_archive')
+        s,q,story,result=self.data_case()
+        authority=s/'game_state/resources/resource_owner_authority.json';authority.parent.mkdir();authority.write_bytes(b'old authority')
+        snap=capture(s,story,q,result)
+        self.assertEqual(snap['Files']['game_state/world/mortal_living_world_history.json'],None)
+        self.assertNotIn('game_state/resources/resource_owner_authority.json',snap['Files'])
+        self.assertIn('game_state/control/progression_schedule.json',snap['Files'])
+        def archive(change=None):
+            b=io.BytesIO()
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore',UserWarning)
+                with zipfile.ZipFile(b,'w') as z:
+                    z.writestr('save_metadata.json',json.dumps({'saveName':'s','turnNumber':42 if change=='turn' else 43}))
+                    for path,raw in snap['Files'].items():
+                        if raw is not None:z.writestr(path,b'changed' if change==path else bytes.fromhex(raw))
+                    z.writestr('game_state/resources/resource_owner_authority.json',b'new recomposed authority')
+                    if change=='duplicate':z.writestr('save_metadata.json',b'{}')
+                    if change=='alias':z.writestr('game_state/world/../world/world_time.json',b'alias')
+                    if change=='history':z.writestr('game_state/world/mortal_living_world_history.json',b'fabricated')
+            return b.getvalue()
+        self.assertTrue(verify(archive(),snap,43))
+        for bad in ('turn','duplicate','alias','history','game_state/world/world_time.json',story.relative_to(s).as_posix()):
+            with self.subTest(bad=bad),self.assertRaises(ValueError):verify(archive(bad),snap,43)
+        history=s/'game_state/world/mortal_living_world_history.json';history.write_bytes(b'{"actual":"history"}')
+        snap=capture(s,story,q,result);self.assertTrue(verify(archive(),snap,43))
+        for name in ('input/turn_request.json','game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json','ready/turn_complete.json','ready/turn_error.json'):
+            p=s/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b'{}')
+            with self.subTest(name=name),self.assertRaises(ValueError):capture(s,story,q,result)
+            p.unlink()
+        for key in ('AcceptedTurnNumber','AcceptedGameTurns','GenuineActionsSent'):
+            bad=dict(result);bad[key]=0
+            with self.subTest(key=key),self.assertRaises(ValueError):capture(s,story,q,bad)
+        (q/'unsettled').write_bytes(b'extra');self.assertNotEqual(capture(s,story,q,result),snap)
+    def test_actual_postaccept_gate_precedes_save_without_renewing_deadline(self):
+        for mode in ('ok','refused','late'):
+            events=[];now=[200.];primary=RuntimeError('consumer refusal');result={'AcceptedGameTurns':1,'AcceptedTurnNumber':43}
+            def gate(deadline):
+                events.append(('consumer',deadline))
+                if mode=='refused':raise primary
+                if mode=='late':now[0]=761.
+            def snapshot(*args):events.append('snapshot');return {'Files':{},'Turn':43}
+            def save(turn):events.append(('save',turn));return {'ArchiveBytes':b'archive'}
+            ns=dict(route={'Route':'ordinary-save'},result=result,start=100.,work_seconds=660,time=types.SimpleNamespace(monotonic=lambda:now[0]),
+                wait_daemon_consumer_returned=gate,save_current_turn=save,session='data',story='story',relay_queue='queue',expected_turn=43,
+                phase_evidence=types.SimpleNamespace(ordinary_save_snapshot=snapshot,verify_ordinary_save_archive=lambda *a:True),sha=evidence.sha)
+            fn=self.actual('ordinary_save_after_acceptance',ns)
+            if mode=='ok':fn();self.assertEqual(events[0],('consumer',760.));self.assertEqual(events[1],'snapshot');self.assertIn(('save',43),events)
+            else:
+                with self.assertRaises((RuntimeError,TimeoutError)) as caught:fn()
+                if mode=='refused':self.assertIs(caught.exception,primary)
+                self.assertEqual(events,[('consumer',760.)]);self.assertNotIn('OrdinarySaveProof',result)
+        # This helper must be invoked by actual postaccept orchestration, not tests only.
+        calls=[n for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='ordinary_save_after_acceptance']
+        self.assertEqual(len(calls),1)
+    def test_actual_consumer_gate_uses_minimum_original_deadline(self):
+        node=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='wait_daemon_consumer_returned')
+        self.assertTrue(node.args.defaults,'pre-Save original bound parameter missing; matrix UNEXECUTED')
+        for requested in (50.,900.):
+            clock=[0.];proof={};result={'ActualRequest':{'sessionId':'s','requestId':'r','turnNumber':43},'ActualRequestSHA256':'a'*64,'DaemonSettlement':{'OriginalStatusRawHex':json.dumps({'pid':1}).encode().hex()}}
+            limit=min(680.,requested)
+            def parse(*args):clock[0]=limit;return proof
+            ns=dict(route={'Route':'ordinary-save'},result=result,daemon_return_cut=0,json=json,env={},daemon_owner='owner',original={},start=0,client_cleanup_seconds=680,
+                time=types.SimpleNamespace(monotonic=lambda:clock[0]),phase_evidence=types.SimpleNamespace(daemon_consumer_returned=parse),daemon=types.SimpleNamespace(capture=b'',process=types.SimpleNamespace(poll=lambda:None)),pump=lambda:None)
+            fn=self.actual('wait_daemon_consumer_returned',ns)
+            with self.assertRaises(TimeoutError):fn(requested)
+            self.assertNotIn('DaemonConsumerReturned',result)
+    def test_actual_final_success_requires_exact_save_proof(self):
+        assignments=[n for n in ast.walk(tree) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Subscript) and isinstance(t.value,ast.Name) and t.value.id=='result' and isinstance(t.slice,ast.Constant) and t.slice.value=='Success' for t in n.targets)]
+        self.assertEqual(len(assignments),1)
+        ns=dict(result={'AcceptedGameTurns':1,'AcceptedTurnNumber':43},route={'Route':'ordinary-save'},client=None,phase_cleanup_proved=lambda r:True,phase_evidence=evidence)
+        exec(compile(ast.Module(body=assignments,type_ignores=[]),'<actual-final-success>','exec'),ns)
+        self.assertFalse(ns['result']['Success'],'accepted+clean without Save must not qualify ordinary-save')
+        valid=self.helper('ordinary_save_proved')
+        snapshot={'Turn':43,'StoryPath':'stories/mortal_life_1.jsonl','Files':{'stories/mortal_life_1.jsonl':b'accepted'.hex()},'Queue':{},'AcceptedGameTurns':1,'GenuineActionsSent':1}
+        proof={'Turn':43,'Before':snapshot,'After':copy.deepcopy(snapshot),'ArchiveSHA256':evidence.sha(b'archive'),'ArchiveVerified':True,'CleanOutcomeBeforeFirstPlayerClear':True,'StorySHA256':evidence.sha(b'accepted')}
+        r=dict(AcceptedTurnNumber=43,AcceptedGameTurns=1,GenuineActionsSent=1,StoryAfterSHA256=evidence.sha(b'accepted'),OrdinarySaveProof=proof)
+        self.assertTrue(valid(r))
+        for key,value in [('Turn',42),('ArchiveVerified',False),('ArchiveSHA256',''),('StorySHA256','0'*64),('After',{})]:
+            bad=copy.deepcopy(r);bad['OrdinarySaveProof'][key]=value;self.assertFalse(valid(bad))
+        ns['result']=r;exec(compile(ast.Module(body=assignments,type_ignores=[]),'<actual-final-success>','exec'),ns);self.assertTrue(r['Success'])
+
 if __name__=='__main__':
-    suite=unittest.defaultTestLoader.loadTestsFromTestCase(Fences);assert suite.countTestCases()==11
+    selected=OrdinarySave if sys.argv[1:]==['ordinary-save'] else Fences
+    expected=8 if selected is OrdinarySave else 11
+    suite=unittest.defaultTestLoader.loadTestsFromTestCase(selected);assert suite.countTestCases()==expected
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.wasSuccessful() and result.testsRun==11 and not result.skipped else 1)
+    raise SystemExit(0 if result.wasSuccessful() and result.testsRun==expected and not result.skipped else 1)
