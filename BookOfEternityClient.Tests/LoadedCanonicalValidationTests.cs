@@ -300,6 +300,29 @@ public sealed class LoadedCanonicalValidationTests
         Assert.Equal(new LoadReplacementResult(disposition, "archive", "generation", followUp, null, blocked), result);
     }
 
+    [Fact]
+    public async Task CloseFlow_OnlyItsCapturedPhysicalFrameMayRetireWhileOriginalRemainsLive()
+    {
+        using var f = new Fixture();
+        await f.InitializeAsync();
+        using var owner = f.Files.BeginMainAdmission();
+        await owner.AcquireAsync(quiescentOnly: true);
+        await SessionOperationContext.RunBoundAsync(f.Files, f.Generation!, async () =>
+        {
+            var original = f.Files.RequireLoadedCanonicalAdmission(f.Generation!);
+            Assert.Same(owner, original);
+            var scope = f.Files.BeginPendingSnapshotValidationRead(CancellationToken.None);
+            await scope.OpenAsync();
+            var physical = scope.Lease!.MainAdmission!;
+            await scope.DisposeAsync();
+            scope.RequireOwnerAfterClose();
+            Assert.True(physical.Closed);
+            Assert.Same(original, f.Files.RequireLoadedCanonicalAdmission(f.Generation!, original, physical));
+        });
+        owner.Dispose();
+        await Assert.ThrowsAnyAsync<Exception>(() => f.IdleAsync());
+    }
+
     private sealed class Fixture : IDisposable
     {
         private readonly string _root = Path.Combine(Path.GetTempPath(), "boe-loaded-canonical-" + Guid.NewGuid().ToString("N"));

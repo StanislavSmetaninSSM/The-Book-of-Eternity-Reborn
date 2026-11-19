@@ -17,17 +17,26 @@ public partial class FileSystemManager
             if(!p.Closed && p.RootIdentity==CanonicalRootAuthorityIdentity)throw new InvalidOperationException("Load IPC cannot borrow a filesystem admission.");
     }
     /// <summary>Checks the retained local quiescent Load admission without acquiring or adopting an owner.</summary>
-    internal void RequireLoadedCanonicalAdmission(string generation)
+    internal MainAdmission RequireLoadedCanonicalAdmission(string generation,
+        MainAdmission? expectedOwner = null, MainAdmission? justClosedPhysical = null)
     {
         if (string.IsNullOrWhiteSpace(generation) || HasBrowserOriginalOperation ||
             !SessionOperationContext.TryGetExpectedGeneration(BasePath, out var bound) || bound != generation)
             throw new InvalidOperationException("Loaded canonical validation requires its exact bound generation.");
         for (var entry = MainAdmissions.Value; entry is not null; entry = entry.Parent)
         {
+            if (ReferenceEquals(entry, justClosedPhysical) && entry.Closed && entry.PhysicalScope &&
+                !entry.WasRemote && !entry.OwnsRemote && expectedOwner is not null)
+                continue; // Only this read's captured physical frame may remain at the AsyncLocal head after disposal.
             if (entry.Closed || entry.RootIdentity != CanonicalRootAuthorityIdentity)
                 throw new InvalidOperationException("Loaded canonical admission is closed or belongs to another root.");
             entry.RequireLocalQuiescentAccess();
-            if (entry.QuiescentRequested) return;
+            if (entry.QuiescentRequested)
+            {
+                if (expectedOwner is not null && !ReferenceEquals(entry, expectedOwner))
+                    throw new InvalidOperationException("Loaded canonical validation lost its exact original owner.");
+                return entry;
+            }
         }
         throw new InvalidOperationException("Loaded canonical validation has no retained quiescent Load admission.");
     }

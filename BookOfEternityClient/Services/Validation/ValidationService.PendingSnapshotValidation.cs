@@ -102,12 +102,14 @@ public partial class ValidationService
         _worldValidationInvocation.Value = admitted;
         Exception? primary = null;
         List<ValidationIssue>? issues = null;
+        FileSystemManager.MainAdmission? loadedOwner = null, loadedPhysical = null;
         try
         {
             // The synchronous issuer installs ambient ownership in this flow before OpenAsync yields.
-            if (loadedGeneration is not null) _fs.RequireLoadedCanonicalAdmission(loadedGeneration);
+            if (loadedGeneration is not null) loadedOwner = _fs.RequireLoadedCanonicalAdmission(loadedGeneration, loadedOwner);
             invocation.Physical = beginRead();
             await invocation.Physical.OpenAsync();
+            if (loadedGeneration is not null) loadedPhysical = invocation.Physical.Lease!.MainAdmission;
             invocation.Evidence = CapturePendingSnapshotEvidence(invocation.Physical);
             invocation.Active = true;
             OrdinaryCanonicalRead? idleRead = null;
@@ -123,7 +125,7 @@ public partial class ValidationService
                 }
                 if (loadedGeneration is not null)
                 {
-                    _fs.RequireLoadedCanonicalAdmission(loadedGeneration);
+                    _fs.RequireLoadedCanonicalAdmission(loadedGeneration, loadedOwner);
                     if (_fs.ReadExistingSessionGeneration(invocation.Physical.Lease!) != loadedGeneration)
                         throw new InvalidDataException("Loaded canonical generation changed.");
                 }
@@ -142,7 +144,7 @@ public partial class ValidationService
             invocation.Evidence.RequireSame(CapturePendingSnapshotEvidence(invocation.Physical));
             if (loadedGeneration is not null)
             {
-                _fs.RequireLoadedCanonicalAdmission(loadedGeneration);
+                _fs.RequireLoadedCanonicalAdmission(loadedGeneration, loadedOwner);
                 if (_fs.ReadExistingSessionGeneration(invocation.Physical.Lease!) != loadedGeneration)
                     throw new InvalidDataException("Loaded canonical generation changed while validating.");
             }
@@ -175,7 +177,7 @@ public partial class ValidationService
         }
         if (primary != null) ExceptionDispatchInfo.Capture(primary).Throw();
         invocation.Physical!.RequireOwnerAfterClose();
-        if (loadedGeneration is not null) _fs.RequireLoadedCanonicalAdmission(loadedGeneration);
+        if (loadedGeneration is not null) _fs.RequireLoadedCanonicalAdmission(loadedGeneration, loadedOwner, loadedPhysical);
         LogValidationErrors(issues!);
         return issues!;
     }
