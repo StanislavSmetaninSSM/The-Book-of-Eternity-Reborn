@@ -1381,3 +1381,19 @@ Correction GREEN independently accepted b56de35d:6 pure PASS/0.024s, source32078
 8 outputs unchanged. Frozen actual whole frame passes without broad filtering;
 previous guardian0/driver1 route is rejected. A separate absent-root mm30 cold
 attempt is next only after exact current input/command review. No mm29 replay.
+
+### mm30 cold Save43 Load and normal exit accepted
+Independent3c77a0e263ba6463397839bfa3e6fd1aad83b631b869909464623e7274b265e5
+verifies366 frozen artifacts. Original91955, one distinct absent-root cold run:
+exact manual Save43 name/SHA, actual main-menu Load, sole direct success and
+fresh turn43/player prompt; Options exit then actual main-menu exit. Runtime5.52s,
+child/sidecar/driver0, EOF, both termios proofs and guardian ECHILD/no emergency,
+failures or deadline. All14 scoped state/story files exactly match archive,
+accepted story41/42/43, absent optional history, config semantic equality, ZIP
+unchanged. No active owner/endpoint or GM dispatch; old quarantined play820 exact.
+This is actual cold restoration plus normal console closure, NOT hosted A→B.
+
+Next separately authorized closed operational rebind is source design only:
+existing preparer strict config helpers/atomic writer, exactly command/cwd/pipe,
+new-root-only relay paths, every other setting and game DATA/history/ZIP unchanged.
+No UI rebind claim, no authority adoption or hosting under the cold acceptance.
