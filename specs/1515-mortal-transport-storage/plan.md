@@ -4538,3 +4538,16 @@ RPC0/EOF, same daemon settled with turnCount0/errorCount0, guardianECHILD/driver
 emergency0/failures0/deadlinefalse. Clean closure does not promote failed p02 into
 an accepted predecessor. Preserve this result and determine the exact client
 refusal before a new controlled scenario; mm16/mm18 remain untouched.
+
+T031 source-ranked diagnosis: StagePlayerTurnBodyAsync validates current state
+before BeginHotOrdinaryOriginal, rollback snapshot and turn-request construction.
+The normal pre-send ValidateGameStateAsync error branch emits the observed panel
+and returns false; the completed-location exception branch is not used here.
+Thus this is pre-stage full-state rejection, not GM publication failure or proof
+of rollback. Exact issues remain unavailable because this panel only logs via
+Debug. Retained p02 original-baseline96 canonical files match accepted p01 pins;
+ten unchanged lore/story/output companions are available separately. Next is a
+reviewed isolated real-validator DATA reproduction, no runtime/owner transfer and
+no original-world mutation. Copy/root-dependent refusal must not be mistaken for
+identification of the live issue. Track T031 before adding its bounded diagnostic
+fixture. No gameplay fix is justified yet; no new live run is authorized here.
