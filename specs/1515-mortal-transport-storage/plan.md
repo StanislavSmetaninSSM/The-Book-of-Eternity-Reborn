@@ -4498,3 +4498,21 @@ This PRECEDES ACK status04:48:01.4930137 by about11ms, so do not describe it as
 an after-ACK error or as fixed. Same original daemon final pair is settled.
 Independent review must assess actual predecessor qualification before p02.
 This is still only birth; denied access, permission and move/save/load remain.
+
+T016 mm19 p01 independent outcome accepted as a closed predecessor: exact packet
+through execution, one story42 after setup prefix, receipts/resource identities,
+restricted access/no movement, typed NotRequired and all original-owner closure
+joins verified. Daemon status-write anomaly remains; final same-owner settled
+pair satisfies the existing continuation contract, not a claim of error-free run.
+
+Separate p02 preparation was source-reviewed and executed once,exit0,0.942s.
+Whole play601 and p01 202 files remain byte/mode exact. New phase has13 files,
+private directories0700; original owner remains Stopped, no queue/launch/probe.
+Actual accepted IDs: loc_6eff542f7458420e9212a5e0d3d734ea,
+storage_council_materials, itm_b0a2d549891c4a64a22a3edb8e86c8b8.
+The current T029/T030 driver must first prove locked selection returns without
+mutation, then send one real permission request43; no goods taken. Fresh nonces
+and owner/daemon are required. Manifest:
+a05925f673f099e737f776865eaec9adcf9d624ec184e050f0d15a20855e82e0;
+launch f9b99b5e2a81e0ef00934adf58470875bb484edb3cff3dac98cd8834ffb1ed59.
+No phase-two result is claimed yet; final delta prelaunch review remains separate.
