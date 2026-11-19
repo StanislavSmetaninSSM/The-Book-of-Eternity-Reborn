@@ -128,3 +128,27 @@ event refusal and the actual serializer with a partial-throwing writer. This is
 OS disk-full/close-failure reproduction. Production never deletes/repairs these
 files; only the isolated fixture deletes its own temporary tree after assertions.
 All implementation/expanded tests are UNRUN pending exact source review.
+
+### Routing local35 and actual remote3 independently accepted; UI source WIP
+
+Saved4a83d1c6 source passed local35/35 with fresh Integration116.53s,
+183warnings/0errors, actual24.2185702s, owned cleanup complete. Independent
+review joined18artifacts and32065source/8outputs; all expanded controls ran.
+Fresh Unit/Support32.76s/44warnings/0errors then exact remote3/3 passed
+15.3317252s with explicit child stderr. Independent review joined36artifacts,
+32065source/8outputs/6producer assemblies and native provenance; actual helper
+PID529 emitted9correlated Active-pin events, one write-bounded mutation cycle,
+then original end refusal/Failed close and durableStopped/OwnedScopeEmpty with
+helper0, bothreadjoins and clean guardian. No new game/world or historical-holder
+claim; no actual diskfull/OSclose-failure qualification.
+
+Next source-only change is existing smoke.py fullroute branch: private external
+trace directory/marker before the same foreground child, explicit child-only
+route/nonce/path. After actual child0/EOF/receipt, check current childPID/root
+correlation, exact observed triples/private files, no physical prefix in raw or
+acknowledged snapshots, and raw==captured==ordered emulatorWRITE payloads. Record
+observed count/bytes and check/whole elapsed; missing whole events remain
+undetectable. SamePTY, UI grammar, terminal controls and45/55/60 unchanged.
+This UI wiring is UNRUN pending source review; do not infer foreground qualification
+from local35 or separately drained helper stderr. Owning32.76s build can be reused
+for Python/doc-only wiring if exact compiler/output joins hold. No mainwire or live.

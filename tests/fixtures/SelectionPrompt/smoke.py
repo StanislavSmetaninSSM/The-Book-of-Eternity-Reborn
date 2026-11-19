@@ -1,5 +1,5 @@
 """T024 inert default Spectre console probe. Never answers terminal queries."""
-import codecs, errno, fcntl, json, os, pathlib, pty, re, select, struct, subprocess, sys, termios, time
+import base64, hashlib, stat, uuid, codecs, errno, fcntl, json, os, pathlib, pty, re, select, struct, subprocess, sys, termios, time
 
 # Small read-only screen projection for the cursor operations Spectre renders.
 # Unsupported sequences fail explicitly; this is not an input/DSR responder.
@@ -233,6 +233,18 @@ def main():
             result['ConfiguredReadback']=termios_data(readback)
             assert readback==configured
         if fullroute:
+            # Diagnostic DATA outside the inert canonical tree; never split/redirect foreground stderr.
+            trace=root/'physical-trace'
+            trace.mkdir(mode=0o700)
+            trace_nonce=uuid.uuid4().hex
+            marker=trace/'owner-nonce'
+            fd=os.open(marker,os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600)
+            with os.fdopen(fd,'wb') as output:
+                assert output.write(trace_nonce.encode('ascii'))==32
+            assert stat.S_IMODE(trace.stat().st_mode)==0o700 and stat.S_IMODE(marker.stat().st_mode)==0o600
+            env['BOE_MAIN_STOP_DIAGNOSTIC_NONCE']=trace_nonce
+            env['BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE']='external'
+            env['BOE_TEST_CANONICAL_LEASE_TRACE_DIR']=str(trace)
             sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent/'terminal'))
             from owned_terminal import OwnedTerminal
             from pty_probe import PtyWriter
@@ -476,6 +488,50 @@ def main():
             assert result['ExitCode']==0 and receipt['Success'] and receipt['FixtureRootAbsent']
             assert receipt['CleanupFailures']==[] and result['ChildRestoredConfiguredBaseline']
             assert [entry['Stage'] for entry in receipt['Stages']]==['locked-denial','retrieve','save','deposit','load-focus-back']
+            # Child is joined/EOF before trace reads. Missing/partial rows fail qualification;
+            # even complete observed triples cannot prove no wholly dropped occurrence.
+            trace_check=time.monotonic()
+            prefix=b'BOE_CANONICAL_LEASE_OBSERVATION '
+            raw=(root/'terminal.raw').read_bytes()
+            protocol=[json.loads(line) for line in (root/'terminal.protocol.jsonl').read_text().splitlines()]
+            emitted=b''.join(base64.b64decode(entry['command']['bytes'],validate=True)
+                for entry in protocol if entry.get('command',{}).get('op')=='WRITE')
+            assert raw==bytes(captured)==emitted and prefix not in raw
+            assert all(prefix.decode() not in line for line in screen.lines)
+            assert all(prefix.decode() not in line for entry in protocol
+                if entry.get('reply',{}).get('op')=='SNAPSHOT' for line in entry['reply']['lines'])
+            assert not trace.is_symlink() and stat.S_IMODE(trace.stat().st_mode)==0o700
+            assert not marker.is_symlink() and marker.read_bytes()==trace_nonce.encode('ascii')
+            assert stat.S_IMODE(marker.stat().st_mode)==0o600
+            observed={}; trace_files={}; trace_bytes=0
+            canonical=root/'isolated-data'
+            for path in sorted(trace.iterdir()):
+                if path==marker:continue
+                metadata=path.lstat()
+                assert stat.S_ISREG(metadata.st_mode) and not path.is_symlink() and stat.S_IMODE(metadata.st_mode)==0o600
+                data=path.read_bytes()
+                assert data.startswith(prefix) and data.endswith(b'\n') and data.count(b'\n')==1
+                row=json.loads(data[len(prefix):])
+                assert row['Nonce']==trace_nonce and type(row['ProcessId']) is int and row['ProcessId']==process.pid
+                assert type(row['Occurrence']) is int and row['Occurrence']>0 and type(row['Attempt']) is int and row['Attempt']>0
+                assert row['Stage'] in ('physical-opened','lease-granted','physical-dispose-completed')
+                assert type(row['CaptureMonotonicTimestamp']) is int and row['CaptureMonotonicTimestamp']>0
+                observed_root=pathlib.Path(row['Root'])
+                assert observed_root.is_absolute() and (observed_root==canonical or canonical in observed_root.parents)
+                assert row['OriginalPin'] is None # Local authored fixture, not a hosted-main authority proof.
+                assert path.name==str(process.pid)+'-'+str(row['Occurrence'])+'-'+row['Stage']+'.json'
+                observed.setdefault(row['Occurrence'],[]).append(row)
+                trace_bytes+=len(data);trace_files[path.name]=hashlib.sha256(data).hexdigest()
+            assert observed and any(row['Root']==str(canonical) for rows in observed.values() for row in rows)
+            for rows in observed.values():
+                rows.sort(key=lambda row:row['CaptureMonotonicTimestamp'])
+                assert [row['Stage'] for row in rows]==['physical-opened','lease-granted','physical-dispose-completed']
+                assert len({(row['Root'],row['Purpose'],row['Attempt']) for row in rows})==1
+            result['PhysicalExternalTrace']={'ForegroundPid':process.pid,'Nonce':trace_nonce,
+                'Directory':str(trace),'ObservedOccurrences':len(observed),'ObservedEvents':len(trace_files),
+                'ObservedBytes':trace_bytes,'Files':trace_files,'PhysicalPrefixAbsent':True,
+                'RawEqualsOrderedEmulatorWrites':True,'CheckSeconds':time.monotonic()-trace_check,
+                'Scope':'Observed local intervals only; missing whole occurrences undetectable; synchronous IO may perturb timing'}
             terminal.close()
             result['TerminalNormalClose']=terminal.closed
             result['TerminalInputs']=terminal_writer.audit
