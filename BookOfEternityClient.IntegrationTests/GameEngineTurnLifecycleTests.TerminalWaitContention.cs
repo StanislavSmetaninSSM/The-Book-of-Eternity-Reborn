@@ -24,9 +24,15 @@ public sealed partial class GameEngineTurnLifecycleTests
         var opened = 0;
         var inspections = 0;
         var physicalStart = 0;
-        Task? holderTask = null;
-        var holderAcquired = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        var releaseHolder = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        FileStream? held = null;
+        long holderOpenedAt = 0, holderReleasedAt = 0;
+        void ReleaseRawHolder()
+        {
+            var original = Interlocked.Exchange(ref held, null);
+            if (original == null) return;
+            original.Dispose();
+            holderReleasedAt = Stopwatch.GetTimestamp(); // Test-owned physical fact, not a production event.
+        }
         var originalError = Console.Error;
         var oldNonce = Environment.GetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE");
         var nonce = Guid.NewGuid().ToString("N");
@@ -35,17 +41,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         var files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             {
-                CanonicalWriteLockContendedAsync = async () =>
+                CanonicalWriteLockContendedAsync = () =>
                 {
                     if (armed)
                     {
                         Interlocked.Increment(ref contentions);
-                        if (mode == "released")
-                        {
-                            releaseHolder.TrySetResult();
-                            await holderTask!;
-                        }
+                        if (mode == "released") ReleaseRawHolder();
                     }
+                    return Task.CompletedTask;
                 },
                 AfterCanonicalWriteLockOpenedAsync = () =>
                 {
@@ -64,7 +67,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             settings.GmTimeoutSeconds = 900;
         }, new GameEngineSessionFinalizationHooks
         {
-            AtCheckpointAsync = async checkpoint =>
+            AtCheckpointAsync = checkpoint =>
             {
                 if (checkpoint == SessionFinalizationCheckpoint.TerminalWaitStarted)
                 {
@@ -73,22 +76,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                     // not a preparation write or diagnostic read, meets this independent handle.
                     if (mode != "post-open-integrity")
                     {
-                        using (ExecutionContext.SuppressFlow())
-                            holderTask = Task.Run(async () =>
-                            {
-                                var holderFiles = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
-                                await using var actualHolder = await holderFiles.AcquireCanonicalWriteLeaseAsync();
-                                holderAcquired.TrySetResult();
-                                await releaseHolder.Task;
-                            });
-                        var first = await Task.WhenAny(holderAcquired.Task, holderTask).WaitAsync(TimeSpan.FromSeconds(5));
-                        if (first == holderTask) await holderTask;
-                        await holderAcquired.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                        held = new FileStream(files.CanonicalWriteLockPath, FileMode.Open,
+                            FileAccess.ReadWrite, FileShare.None);
+                        holderOpenedAt = Stopwatch.GetTimestamp();
                     }
                     armed = true;
                 }
                 if (checkpoint == SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired)
                     Interlocked.Increment(ref inspections);
+                return Task.CompletedTask;
             }
         }, files);
         var paths = new[] { "input/turn_request.json", "ready/turn_complete.json", "game_state/world/weather.json" };
@@ -119,8 +115,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         finally
         {
             armed = false;
-            releaseHolder.TrySetResult();
-            try { if (holderTask != null) await holderTask.WaitAsync(TimeSpan.FromSeconds(5)); }
+            try { ReleaseRawHolder(); }
             catch (Exception error) { cleanupFailure = error; }
             // A failed assertion/observation does not abandon the original waiter or its tasks.
             // The original ready signal remains available after release; Escape is only teardown.
@@ -146,6 +141,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             mode, outcome, Failure = failure?.ToString(), CleanupFailure = cleanupFailure?.ToString(),
             observedContentions, observedOpened, observedInspections,
+            RawPhysicalHolderOpenedAt = holderOpenedAt, RawPhysicalHolderReleasedAt = holderReleasedAt,
             OriginalTaskCompleted = operation?.IsCompleted == true,
             OriginalTaskStatus = operation?.Status.ToString(), FreshLeaseAcquired = true,
             ElapsedSeconds = elapsed.Elapsed.TotalSeconds
@@ -199,7 +195,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var openedRows = observations.Where(x => PhysicalStage(x) == "physical-opened").ToArray();
         var grants = observations.Where(x => PhysicalStage(x) == "lease-granted").ToArray();
         var closes = observations.Where(x => PhysicalStage(x) == "physical-dispose-completed").ToArray();
-        Assert.Equal(mode == "released" ? 2 : 1, openedRows.Length);
+        Assert.Equal(mode == "exhausted" ? 0 : 1, openedRows.Length);
         Assert.Equal(openedRows.Length, closes.Length);
         foreach (var openedRow in openedRows)
         {
@@ -207,7 +203,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             var close = Assert.Single(closes.Where(x => x.GetProperty("Occurrence").GetInt64() == id));
             Assert.True(close.GetProperty("CaptureMonotonicTimestamp").GetInt64() >= openedRow.GetProperty("CaptureMonotonicTimestamp").GetInt64());
         }
-        Assert.Equal(mode == "post-open-integrity" ? 0 : mode == "released" ? 2 : 1, grants.Length);
+        Assert.Equal(mode == "released" ? 1 : 0, grants.Length);
         foreach (var grant in grants)
         {
             var id = grant.GetProperty("Occurrence").GetInt64();
@@ -224,8 +220,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         if (mode == "released")
         {
-            // Original holder really closed before the waiting original could open.
-            Assert.True(closes[0].GetProperty("CaptureMonotonicTimestamp").GetInt64() <= openedRows[1].GetProperty("CaptureMonotonicTimestamp").GetInt64());
+            // Raw-holder timestamps are separate test facts, not manufactured BOE events.
+            Assert.True(holderOpenedAt > 0 && holderReleasedAt >= holderOpenedAt);
+            Assert.True(holderReleasedAt <= openedRows[0].GetProperty("CaptureMonotonicTimestamp").GetInt64());
         }
     }
 
