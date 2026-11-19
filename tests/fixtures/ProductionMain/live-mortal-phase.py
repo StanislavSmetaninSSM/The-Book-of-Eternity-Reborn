@@ -573,12 +573,7 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-evidence':
     else:raise AssertionError('Config duplicate admitted')
     print(json.dumps({'InertMortalEvidenceChecks':40,'ProcessesStarted':0}));sys.exit(0)
 
-def require_native_bootstrap_path_budget(temp_root):
-    # NativeLineageOwner currently checks this before constructing a socket,
-    # including the inherited-pipe fallback. Mirror, never weaken, that guard.
-    count=len((str(Path(temp_root)/('boe-native-'+'0'*32)/'owner')).encode('utf-8'))
-    if count>107:raise ValueError(f'Fixture native bootstrap path is {count} UTF-8 bytes; maximum 107. Choose a fresh shorter phase root.')
-    return count
+from relay_phase_evidence import require_native_bootstrap_path_budget
 
 if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-native-path-budget':
     suffix=len(('/boe-native-'+'0'*32+'/owner').encode('utf-8'))

@@ -3799,3 +3799,27 @@ per-world. No cross-world cache, registry or cached ownership. Record actual
 native/publish/export/hash durations later; no performance claim is made now.
 No GM contract or prompt update is required: this packages existing supported
 sources and setup through their owners, without changing authoring or gameplay.
+
+T028 RED source WIP, 2026-11-19 (UNRUN). Six frozen source paths:
+- `tests/fixtures/ProductionMain/prepare-mortal-live.py`
+- `tests/fixtures/ProductionMain/test-mortal-preparation.py`
+- `tests/fixtures/ProductionMain/relay_phase_evidence.py`
+- `tests/fixtures/ProductionMain/live-mortal-phase.py`
+- `BookOfEternityClient.Tests/MortalPreparationTests.cs`
+- `tests/categories.json`
+
+The new `mortal-live-preparation-data` category selects only
+`MortalPreparationTests.PrepareOnlyDataContracts`: one bounded existing Python
+wrapper, nine methods. Expected RED is seven assertion failures from safe
+unimplemented admission/inventory/coordinator results and two unchanged socket
+boundary passes; these are predictions, not executed results. The injected
+stage-failure and unsettled-exit-zero controls require reaching the first stage
+and no later stage/readiness; they cannot qualify a real preparation. No process,
+destination, manifest or authority is created by the stub. The existing socket
+budget function moved unchanged into `relay_phase_evidence.py`; the live driver
+imports it instead of duplicating it, and tests never import the executable
+driver. `git diff --check` passed. No build, test or native launch occurred.
+Optimization: reuse the existing bounded wrapper and pure socket calculation;
+no cache, registry or new execution framework. Actual preparation costs and
+owned subprocess settlement remain unimplemented and unmeasured. Source review
+and remote preservation precede the first official causal RED execution.

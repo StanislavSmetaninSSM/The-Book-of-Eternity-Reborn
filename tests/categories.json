@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-live-preparation-data",
+      "responsibility": "#1515 T028 nine prepare-only input/inventory/stage-failure/socket DATA contracts.",
+      "excludes": "No real build, native execution, publication, seed export, prepared-world qualification or live launch.",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/prepare-mortal-live.py",
+        "tests/fixtures/ProductionMain/test-mortal-preparation.py"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalPreparationTests.PrepareOnlyDataContracts"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-menu-frame-data",
       "responsibility": "#1515 T027 twenty authored captured-pipe frame contracts, including complete padded inventory and selected footer without final CR.",
       "excludes": "No real renderer, owner, world or live acceptance. Initial no-output recognition failures are causal RED only after fixture assertions.",

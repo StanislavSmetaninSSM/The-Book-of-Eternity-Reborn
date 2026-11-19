@@ -608,3 +608,11 @@ def checked_mortal_outcome(value,request):
             or a['resultMinute']-a['lastWorldMinute']>=a['worldCycleMinutes'] or a['resultMinute']-a['lastFactionMinute']>=a['factionCycleMinutes']):
             raise ValueError('Nonapplicable outcome claims due/invalid clock')
     return value
+
+
+def require_native_bootstrap_path_budget(temp_root):
+    # NativeLineageOwner currently checks this before constructing a socket,
+    # including the inherited-pipe fallback. Mirror, never weaken, that guard.
+    count=len((str(Path(temp_root)/('boe-native-'+'0'*32)/'owner')).encode('utf-8'))
+    if count>107:raise ValueError(f'Fixture native bootstrap path is {count} UTF-8 bytes; maximum 107. Choose a fresh shorter phase root.')
+    return count
