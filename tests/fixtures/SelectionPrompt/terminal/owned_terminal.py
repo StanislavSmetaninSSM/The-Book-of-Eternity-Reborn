@@ -63,10 +63,32 @@ class OwnedTerminal:
                 data=data[count:]
             reply=self._read()
             self._record({'reply':reply})
-            if reply.get('seq')!=self.seq:raise ValueError('Terminal sequence mismatch')
+            if type(reply) is not dict or type(reply.get('seq')) is not int or reply['seq']!=self.seq:
+                raise ValueError('Terminal sequence mismatch')
+            self._validate_reply(op,reply)
             return reply
         except BaseException as error:
             self.failed=True;self._record({'failure':repr(error),'command':value});raise
+    @staticmethod
+    def _validate_reply(op,value):
+        def cursor(state):
+            return type(state) is dict and set(state)=={'x','y'} and all(type(state[k]) is int for k in state) and 0<=state['x']<=100 and 0<=state['y']<25
+        def modes(value):
+            boolean={'applicationCursorKeysMode','applicationKeypadMode','bracketedPasteMode','insertMode','originMode','reverseWraparoundMode','sendFocusMode','synchronizedOutputMode','wraparoundMode'}
+            return type(value) is dict and set(value)==boolean|{'mouseTrackingMode'} and all(type(value[k]) is bool for k in boolean) and value['mouseTrackingMode']=='none'
+        if op=='WRITE':
+            if set(value)!={'op','seq','pending','replies','cursor','modes'} or value['op']!='WRITTEN' or type(value['pending']) is not bool or type(value['replies']) is not list or not cursor(value['cursor']) or not modes(value['modes']):
+                raise ValueError('Malformed WRITTEN result')
+            for response in value['replies']:
+                if type(response) is not dict or set(response)!={'bytes','state'} or type(response['bytes']) is not str or not cursor(response['state']):raise ValueError('Malformed response')
+                data=base64.b64decode(response['bytes'],validate=True)
+                expected=('\x1b[%d;%dR'%(response['state']['y']+1,response['state']['x']+1)).encode()
+                if data!=expected:raise ValueError('Reply/state mismatch')
+        elif op=='SNAPSHOT':
+            if set(value)!={'op','seq','cursor','lines'} or value['op']!='SNAPSHOT' or not cursor(value['cursor']) or type(value['lines']) is not list or len(value['lines'])!=25 or any(type(line) is not str for line in value['lines']):raise ValueError('Malformed SNAPSHOT result')
+        elif op=='CLOSE':
+            if set(value)!={'op','seq'} or value['op']!='CLOSED':raise ValueError('Malformed CLOSED result')
+        else:raise ValueError('Unknown operation')
     def _record(self,value):
         self.audit.append(value)
         with open(self.evidence/'terminal.protocol.jsonl','a') as output:output.write(json.dumps(value)+'\n')
@@ -83,8 +105,11 @@ class OwnedTerminal:
         except BaseException:self.failed=True;raise
     def key(self,data,label):
         # Caller must first drain current PTY output and bind its fresh-menu cut.
-        if self.pending or self.failed or self.closed:raise ValueError('Unsettled terminal prefix')
-        self._time();self.writer(data,'route-key:'+label,self.seq)
+        try:
+            if self.pending or self.failed or self.closed:raise ValueError('Unsettled terminal prefix')
+            self._time();self.writer(data,'route-key:'+label,self.seq)
+        except BaseException as error:
+            self.failed=True;self._record({'keyFailure':repr(error),'label':label,'seq':self.seq});raise
     def snapshot(self):
         if self.pending:raise ValueError('Partial terminal prefix')
         result=self._command('SNAPSHOT')

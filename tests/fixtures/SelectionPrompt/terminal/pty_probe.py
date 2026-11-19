@@ -58,7 +58,9 @@ def main():
     finally:
         if child is not None and child.poll() is None:
             try:child.terminate();child.wait(timeout=1)
-            except subprocess.TimeoutExpired:child.kill();child.wait(timeout=1)
+            except subprocess.TimeoutExpired:
+                try:child.kill();child.wait(timeout=1)
+                except BaseException as error:cleanup.append(repr(error))
             except BaseException as error:cleanup.append(repr(error))
         if terminal is not None and not terminal.closed:
             proof=terminal.abort()

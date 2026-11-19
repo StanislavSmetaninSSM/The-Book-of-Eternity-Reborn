@@ -21,6 +21,15 @@ def main():
                 for byte in raw:terminal.feed(bytes([byte]))
                 result=terminal.feed(b'\x1b[6n')
                 assert result['cursor']=={'x':width,'y':0},(text,result)
+            # Authored visible-line goldens, not derived from terminal snapshots.
+            scenario=['⚙️ Игровое меню','⚔️ Древний меч [Оружие]','📦 Запертая кладовая разметочных материалов','Хозяйственный двор у нижней лестницы','é 中文']
+            terminal.feed(b'\x1b[2J\x1b[1;1H'+('\r\n'.join(scenario)).encode())
+            snapshot=terminal.snapshot()
+            assert snapshot['lines']==scenario+['']*20,snapshot
+            for separator,expected in [(b'\n','   Z'),(b'\r\n','Z')]:
+                terminal.feed(b'\x1b[2J\x1b[1;1Habc'+separator+b'Z')
+                snapshot=terminal.snapshot()
+                assert snapshot['lines']==['abc',expected]+['']*23,snapshot
             terminal.feed(b'\x1b[2J\x1b[1;1H'+b'a'*99)
             result=terminal.feed('📦'.encode()+b'\x1b[6n')
             assert result['cursor']=={'x':2,'y':1}

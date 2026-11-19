@@ -23,7 +23,7 @@ class Controls(unittest.TestCase):
     def transport(self,reply):
         value=Transport(self.folder.name,reply);self.addCleanup(value.release);return value
     def test_callback_reply_precedes_key_and_pending_blocks_key(self):
-        t=self.transport({'op':'WRITTEN','seq':1,'pending':False,'replies':[{'bytes':'G1sxOzRS'}]})
+        t=self.transport({'op':'WRITTEN','seq':1,'pending':False,'replies':[{'bytes':'G1sxOzRS','state':{'x':3,'y':0}}],'cursor':{'x':3,'y':0},'modes':{**dict.fromkeys(['applicationCursorKeysMode','applicationKeypadMode','bracketedPasteMode','insertMode','originMode','reverseWraparoundMode','sendFocusMode','synchronizedOutputMode','wraparoundMode'],False),'mouseTrackingMode':'none'}})
         sent=[];t.writer=lambda *value:sent.append(value)
         t.feed(b'abc\x1b[6n');t.key(b'x','one')
         self.assertEqual([x[1] for x in sent],['terminal-reply','route-key:one'])
@@ -31,10 +31,12 @@ class Controls(unittest.TestCase):
         with self.assertRaises(ValueError):t.key(b'x','two')
         self.assertEqual(len(sent),2)
     def test_bad_sequence_poison_snapshot_and_no_key(self):
-        t=self.transport({'op':'SNAPSHOT','seq':2})
-        with self.assertRaises(ValueError):t.snapshot()
-        self.assertTrue(t.failed)
-        with self.assertRaises(ValueError):t.key(b'x','forbidden')
+        for reply in [{'op':'SNAPSHOT','seq':2},{'op':'SNAPSHOT','seq':True},[],{'op':'SNAPSHOT','seq':1,'cursor':{'x':False,'y':0},'lines':['']*25}]:
+            with self.subTest(reply=reply):
+                t=self.transport(reply)
+                with self.assertRaises(ValueError):t.snapshot()
+                self.assertTrue(t.failed)
+                with self.assertRaises(ValueError):t.key(b'x','forbidden')
     def test_wrong_snapshot_opcode_poison(self):
         t=self.transport({'op':'CLOSED','seq':1})
         with self.assertRaises(ValueError):t.snapshot()
@@ -68,6 +70,19 @@ class Controls(unittest.TestCase):
         writer.deadline=0
         with self.assertRaises(TimeoutError):writer(b'x','key',1)
         self.assertEqual(writer.audit,[])
+        for partial in (False,True):
+            with self.subTest(partial=partial):
+                t=self.transport({});attempts=[]
+                def refuse(data,kind,seq):
+                    attempts.append(data[:1] if partial else b'')
+                    raise OSError('Injected uncertain writer failure')
+                t.writer=refuse
+                with self.assertRaises(OSError):t.key(b'abc','first')
+                self.assertTrue(t.failed)
+                with self.assertRaises(ValueError):t.key(b'abc','retry-forbidden')
+                with self.assertRaises(ValueError):t.close()
+                self.assertEqual(len(attempts),1);self.assertFalse(t.closed)
+
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(Controls)
