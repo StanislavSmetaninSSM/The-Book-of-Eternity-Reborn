@@ -820,3 +820,22 @@ hashes and closing 32,071 source/723 bins/eight owning outputs/assets14/tools6
 were independently checked. This accepts producer bytes only; mm26 is still
 absent. Next is exact separately reviewed seed-export/profile preparation, not
 automatic live launch. All failed worlds remain untouched.
+
+### Fresh mm26 preparation accepted; live remains unstarted
+
+Independent fixture_premises review accepted the one standard preparation:
+all 18 artifact hashes and eight actual hash/mode inventories matched
+4 native / 483 runtime / 483 deployed / 249 helper / 8 relay / 536 world /
+9 terminal source / 17 dependencies. All 539 retained play hashes matched the
+exclusive profile's beforeimage. Fresh setup-only story41 has validation0 and
+no accepted GM turn. The sole seed export exited0 in 2.725 s, both EOF, normal
+ECHILD guardian, no emergency/failure/deadline and empty stderr; preparation
+reported 7.278 s. Current source/owning/package joins were unchanged.
+
+The generated P01 launcher and pinned profile were independently reconstructed
+and checked with the original budgets. Physical trace is private and contains
+only its exact StopNonce marker. No launch, origin, queue, request, probe or
+candidate exists. mm26 is technically prepared, not live-qualified; separate
+fresh semantic baseline and explicit one-launch admission still precede scripted
+P01. Ordinary43 and its Save remain later independent stages, with no inventory
+prologue and no predetermined GM outcome. Old failed worlds remain untouched.
