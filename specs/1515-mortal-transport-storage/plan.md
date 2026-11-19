@@ -3893,3 +3893,25 @@ inventory DATA is reused for final manifest assembly after fresh closing joins.
 Hashing and fresh exporter validation intentionally repeat at copy/source
 boundaries; elapsed external-stage costs are retained, but no cost reduction or
 runtime result is claimed. No gameplay, prompt or authority schema changed.
+
+T028 independent SOURCE review rejected the first implementation checkpoint
+803e2809: package self-pins did not bind copies to producer outputs; process-group
+cleanup reaped its leader before signalling and did not prove escaped-child
+settlement; failed outcomes were only in memory. No execution was authorized.
+The current correction joins every managed/dependency/content publish member to
+its corresponding pinned producer output tree, with only the two explicit native
+Content members replaced from fresh native assets. Relay copies join source.
+Unexpected publish-specific files fail rather than being silently accepted.
+Per-stage and terminal-failure diagnostic files are retained, separately from
+readiness. `checkoutHead`, `publishedCheckpoint` and actual checkout changes are
+recorded distinctly; exact source pins bind dirty bytes, not a false clean-commit
+claim. Two cheap copy controls bring the pending DATA count to 17, all UNRUN.
+
+Process supervision remains a SOURCE NO-GO pending the smallest supported
+bootstrap decision: reuse the existing LinuxHost guardian as an explicitly pinned
+prebuilt tool input to supervise even the first native compiler stage. The
+existing guardian owns direct/adopted child pidfds and reports ECHILD; do not add
+a parallel Python process-tree owner or treat process-group absence as proof.
+Actual small normal/timeout/escaped-survivor controls remain required before real
+preparation. This checkpoint is incomplete and must not be used to prepare a
+world; no build, test or native run has occurred.

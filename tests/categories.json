@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "mortal-live-preparation-data",
-      "responsibility": "#1515 T028 fifteen prepare-only input/inventory/stage-failure/socket DATA contracts.",
+      "responsibility": "#1515 T028 seventeen prepare-only input/inventory/stage-failure/socket DATA contracts.",
       "excludes": "No real build, native execution, publication, seed export, prepared-world qualification or live launch.",
       "changeHints": [
         "tests/fixtures/ProductionMain/prepare-mortal-live.py",

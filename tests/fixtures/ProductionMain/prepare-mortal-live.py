@@ -132,6 +132,35 @@ def native_join(repo, native, commit):
     return inventory(native)
 
 
+def published_join(repo, published, project, output_pins, native):
+    """Bind every published member to its owning build output or fresh native input.
+
+These executable SDK projects have no publish-only managed transform under
+--no-build. Only the two explicitly injected native Content members differ.
+Unexpected publish-generated files fail closed rather than being self-pinned.
+"""
+    prefix=project+'/bin/Debug/net8.0/'
+    expected={name[len(prefix):]:value for name,value in output_pins.items() if name.startswith(prefix)}
+    if not expected:raise ValueError('Missing producer inventory')
+    for name in ('boe-lineage-supervisor','package-manifest.json'):
+        expected['runtimes/linux-x64/native/'+name]=digest(native/name)
+    actual={row['path']:row['sha256'] for row in inventory(published)}
+    if actual!=expected:raise ValueError('Published producer copy mismatch: '+project)
+    return inventory(published)
+
+
+def copied_source_join(source, copied):
+    """Require copied relay DATA to match the actual tracked-source tree exactly."""
+    expected={row['path']:row['sha256'] for row in inventory(source)}
+    actual={row['path']:row['sha256'] for row in inventory(copied)}
+    if not expected or actual!=expected:raise ValueError('Relay source copy mismatch')
+
+
+def write_diagnostic(path, payload):
+    """Persist one owned stage/terminal outcome outside Git, never readiness."""
+    with Path(path).open('x') as stream:json.dump(payload,stream,indent=2)
+
+
 def private_tree(root):
     """Restrict newly owned output trees, retaining executable file bits only."""
     for path in [Path(root),*Path(root).rglob('*')]:
@@ -146,7 +175,10 @@ def prepare(repo, destination, build_manifest):
     if build.get('configuration')!='Debug' or build.get('framework')!='net8.0' or not build.get('toolVersions'):
         raise ValueError('Owning build configuration/tool versions required')
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True,timeout=10).strip()
-    if commit!=build['sourceCommit']:raise ValueError('Owning build commit mismatch')
+    if commit!=build['sourceCommit']:raise ValueError('Owning build checkout HEAD mismatch')
+    published=build.get('publishedCheckpoint','')
+    if len(published)!=40 or any(c not in '0123456789abcdef' for c in published):raise ValueError('Published checkpoint required separately')
+    dirty=subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True,timeout=10).splitlines()
     source=build['sourcePins'];outputs=build['outputPins']
     tracked=subprocess.check_output(['git','ls-files','-z'],cwd=repo,timeout=10).decode().split('\0')
     tracked={name for name in tracked if name and (repo/name).is_file()}
@@ -163,9 +195,9 @@ def prepare(repo, destination, build_manifest):
     if admit_inputs(dest,repo,repo,source,outputs)['admitted'] is not True:raise ValueError('Preparation input refusal')
     require_native_bootstrap_path_budget(dest/'p01'/'tmp')
     if not dest.parent.is_dir() or dest.parent.stat().st_mode & 0o022:raise ValueError('Unsafe destination parent')
-    old_umask=os.umask(0o077)
+    old_umask=os.umask(0o077);owned=False
     try:
-        dest.mkdir(mode=0o700);logs=dest/'logs';logs.mkdir();native=dest/'native';package=dest/'package'
+        dest.mkdir(mode=0o700);owned=True;logs=dest/'logs';logs.mkdir();native=dest/'native';package=dest/'package'
         helper=dest/'receipt-helper';phase=dest/'p01';phase.mkdir();seed_path=dest/'seed-manifest.json'
         driver=repo/'tests/fixtures/ProductionMain/live-mortal-phase.py';evidence=driver.with_name('relay_phase_evidence.py')
         projects={'publish-client':('BookOfEternityClient',package/'BookOfEternityClient'),
@@ -194,6 +226,8 @@ def prepare(repo, destination, build_manifest):
                     (phase/'relay-phase-package.json').write_text(json.dumps(pins,indent=2)+'\n')
                 else:
                     if not pins_match(repo,source) or not pins_match(repo,outputs):raise ValueError('Closing input drift')
+                    for project,target in projects.values():published_join(repo,target,project,outputs,native)
+                    copied_source_join(repo/'tools/gm-relay',phase/'relay')
                     if inventory(package)!=inventory(session/'_runtime'):raise ValueError('Runtime deployment drift')
                     relay_package_preflight(phase,session/'_runtime',driver)
                     if strict_settings((phase/'relay-phase-package.json').read_bytes())['ReceiptHelperPins']!=relay_inventory(helper):raise ValueError('Helper deployment drift')
@@ -208,15 +242,28 @@ def prepare(repo, destination, build_manifest):
             result=run_owned(argv,repo,logs,name);outcomes[name]=result
             if name=='native' and result['exitCode']==0:native_join(repo,native,commit)
             return result
-        result=prepare_stages(stage)
+        def observed_stage(name):
+            try:
+                result=stage(name)
+                outcomes[name]=result
+                write_diagnostic(logs/(name+'.outcome.json'),result)
+                return result
+            except BaseException as error:
+                failure={'stage':name,'exceptionType':type(error).__name__,'exception':str(error),'prepared':False}
+                write_diagnostic(logs/(name+'.outcome.json'),failure)
+                raise
+        result=prepare_stages(observed_stage)
         if result['failedStage'] is not None:raise ValueError('Preparation failed: '+result['failedStage'])
-        manifest={'schemaVersion':1,'kind':'mortal-live-preparation','prepared':True,'sourceCommit':commit,
+        manifest={'schemaVersion':1,'kind':'mortal-live-preparation','prepared':True,'checkoutHead':commit,'publishedCheckpoint':published,'checkoutChanges':dirty,
                   'configuration':'Debug','framework':'net8.0','toolVersions':build['toolVersions'],
                   'owningBuildManifest':str(build_path),'owningBuildManifestSHA256':hashlib.sha256(build_raw).hexdigest(),
                   'sourcePins':source,'outputPins':outputs,'inventories':verified,'stages':outcomes,
                   'seedManifestSHA256':digest(seed_path),'packageManifestSHA256':digest(phase/'relay-phase-package.json')}
         with (dest/'preparation.json').open('x') as stream:json.dump(manifest,stream,indent=2)
         return manifest
+    except BaseException as error:
+        if owned:write_diagnostic(dest/'preparation-failed.json',{'prepared':False,'exceptionType':type(error).__name__,'exception':str(error)})
+        raise
     finally:os.umask(old_umask)
 
 if __name__=='__main__':

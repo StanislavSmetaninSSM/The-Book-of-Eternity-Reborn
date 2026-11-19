@@ -4,5 +4,5 @@ namespace BookOfEternityClient.Tests;
 public sealed class MortalPreparationTests
 {
     [Fact]
-    public Task PrepareOnlyDataContracts() => MortalConsoleRouteTests.RunAsync("test-mortal-preparation.py", 15);
+    public Task PrepareOnlyDataContracts() => MortalConsoleRouteTests.RunAsync("test-mortal-preparation.py", 17);
 }

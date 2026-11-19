@@ -112,8 +112,35 @@ class PreparationTests(unittest.TestCase):
         with self.assertRaisesRegex(OSError,'injected'):prep.prepare_stages(run)
         self.assertEqual(calls,['native']);self.assertFalse(self.dest.exists())
 
+    def test_published_files_join_producer_and_native_not_selfpins(self):
+        import shutil
+        native=self.root/'native';native.mkdir();published=self.root/'published';published.mkdir()
+        for name in ('boe-lineage-supervisor','package-manifest.json'):(native/name).write_bytes(name.encode())
+        producer={'Client/bin/Debug/net8.0/Client.dll':hashlib.sha256(b'managed').hexdigest(),
+                  'Client/bin/Debug/net8.0/Client.deps.json':hashlib.sha256(b'deps').hexdigest()}
+        (published/'Client.dll').write_bytes(b'managed');(published/'Client.deps.json').write_bytes(b'deps')
+        shipped=published/'runtimes/linux-x64/native';shipped.mkdir(parents=True)
+        for name in ('boe-lineage-supervisor','package-manifest.json'):shutil.copyfile(native/name,shipped/name)
+        self.assertEqual(len(prep.published_join(self.source,published,'Client',producer,native)),4)
+        for path in (published/'Client.dll',published/'Client.deps.json',shipped/'boe-lineage-supervisor',shipped/'package-manifest.json'):
+            original=path.read_bytes()
+            for mutation in ('alter','missing'):
+                if mutation=='alter':path.write_bytes(b'foreign')
+                else:path.unlink()
+                with self.subTest(path=path.name,mutation=mutation),self.assertRaises(ValueError):
+                    prep.published_join(self.source,published,'Client',producer,native)
+                path.write_bytes(original)
+    def test_relay_copy_matches_original_source(self):
+        import shutil
+        copied=self.root/'copied';shutil.copytree(self.source,copied)
+        prep.copied_source_join(self.source,copied)
+        (copied/'input.cs').write_bytes(b'altered')
+        with self.assertRaises(ValueError):prep.copied_source_join(self.source,copied)
+        (copied/'input.cs').unlink()
+        with self.assertRaises(ValueError):prep.copied_source_join(self.source,copied)
+
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(PreparationTests)
-    if suite.countTestCases()!=15:raise SystemExit('Expected exactly fifteen preparation DATA methods')
+    if suite.countTestCases()!=17:raise SystemExit('Expected exactly seventeen preparation DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==15 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==17 and result.wasSuccessful() and not result.skipped else 1)
