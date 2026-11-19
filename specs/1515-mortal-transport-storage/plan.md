@@ -4616,3 +4616,18 @@ TestSupport build with existing60s guardian, new destination and external result
 Final command/output/outcome review is pending; nothing executed. Operational
 config is DATA only; relocated/root-dependent failures still cannot prove the
 live post-health refusal. No speculative gameplay fix, world replay or new owner.
+
+T031 single isolated strict diagnostic executed after independent14-case,
+107-input and complete246-helper-file launch review. Original command59642 exited0
+in2.626s; guardianECHILD/driver0/reaped1, no emergency/failure/deadline, both streams
+EOF. ValidateGameStateAsync returned three Errors: vehicle_unknown_current_location,
+npc_existing_inventory_resend_forbidden and npc_scene_location_mismatch. No thrown
+exception or collection failure. All107 copied DATA files stayed exact through
+constructor/validation; only two empty lock files were created in the new root.
+Original sources/probes and helper outputs remain exact. Result SHA256:
+ced40884589b5aee91ffc8bc42f7fb5ca2dfde61efbe1877f69fffe3a01a6086.
+Mixed accepted-canonical/failed-phase-config provenance remains explicit. These
+are diagnostic observations, not yet qualified as the live refusal's exact cause;
+independent source/outcome review is next. No game action, repair, replay,
+original-world write or new live owner occurred. No gameplay fix is justified
+until content-only versus relocation/authority effects are distinguished.
