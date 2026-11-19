@@ -48,18 +48,42 @@ def ordered_transition(frames, prior, expected):
         moved |= row == expected
     return moved
 
+def selection_proof(raw, cut, menu, selected, view):
+    frames=routes.selected_frames(raw,cut,menu)
+    if not frames or frames[-1]!=selected or view.pending or view.cut!=len(raw):
+        raise ValueError('Current complete selected window unproved')
+    return {'raw':raw,'cut':cut,'menu':menu,'selected':selected,'frames':list(frames),
+            'ack':{'cut':view.cut,'seq':view.seq,'cursor':dict(view.cursor),'lines':list(view.lines)},'view':view}
+
 def retained_selection(raw, proof):
-    # A prior validated frame is usable only if no newer bytes exist. A partial
-    # newest draw never falls back; complete appended draws must retain selection.
+    # Preserve the exact validated window. Trailing padding belongs to its last
+    # row, not to an invented standalone next frame. No raw/control stripping.
     if not raw.startswith(proof['raw']):
         raise ValueError('Capture prefix changed')
     if len(raw) == len(proof['raw']):
         return proof['selected']
-    frames = routes.selected_frames(raw, len(proof['raw']), proof['menu'])
-    if not frames:
-        return None
-    if any(row != proof['selected'] for row in frames):
-        raise ValueError('Unrequested selection after retained frame')
+    if 'cut' not in proof:
+        # Existing suffix-only DATA callers retain their strict old contract.
+        frames=routes.selected_frames(raw,len(proof['raw']),proof['menu'])
+        if not frames:return None
+        if any(row!=proof['selected'] for row in frames):raise ValueError('Unrequested selection after retained frame')
+        return proof['selected']
+    before=routes.selected_frames(proof['raw'],proof['cut'],proof['menu'])
+    frames=routes.selected_frames(raw,proof['cut'],proof['menu'])
+    if not before or before!=proof['frames'] or before[-1]!=proof['selected'] or not frames:return None
+    if frames[:len(before)]!=before or any(row!=proof['selected'] for row in frames[len(before):]):
+        raise ValueError('Unrequested selection after retained window')
+    view=proof['view'];ack=proof['ack']
+    if view.pending or view.cut!=len(raw) or ack['cut']!=len(proof['raw']) or type(view.seq) is not int or view.seq<=ack['seq']:return None
+    if len(frames)==len(before):
+        tail=raw[len(proof['raw']):]
+        old=ack['cursor'];new=view.cursor
+        if tail!=b' '*len(tail) or len(view.lines)!=25 or view.lines!=ack['lines']:return None
+        if any(type(v) is not int for v in (old.get('x'),old.get('y'),new.get('x'),new.get('y'))):return None
+        if not (0<=old['x']<new['x']<100 and 0<=old['y']==new['y']<25 and new['x']-old['x']==len(tail)):return None
+        footer=('> ' if proof['selected']==proof['menu']['choices'][-1] else '  ')+proof['menu']['choices'][-1]
+        line=view.lines[new['y']]
+        if not line.startswith(footer) or any(c!=' ' for c in line[len(footer):]):return None
     return proof['selected']
 
 def options_frame(raw, cut, selected, *, initial):
@@ -208,12 +232,14 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
             if retained['menu'] != menu:
                 raise ValueError('Retained selection belongs to another menu')
             selected = wait(lambda: retained_selection(bytes(captured), retained), 'Complete current retained frame')
+            window_cut=retained['cut'];window_menu=retained['menu']
             retained = None
         else:
             frames = wait(lambda: routes.selected_frames(bytes(captured), cut, observed_menu), 'Complete fresh menu')
             if len(set(frames)) != 1:
                 raise ValueError('Unrequested selection change')
             selected = frames[-1]
+            window_cut=cut;window_menu=observed_menu
         visited = {selected}
         while selected != target:
             index = menu['choices'].index(selected)
@@ -222,7 +248,7 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
                 raise ValueError('Unexpected navigation cycle')
             expected = menu['choices'][next_index]
             boundary = len(captured)
-            proof={'raw':bytes(captured),'menu':menu,'selected':selected}
+            proof=selection_proof(bytes(captured),window_cut,window_menu,selected,screen)
             send(lambda: screen.arrow(up), 'Up' if up else 'Down', lambda: retained_selection(bytes(captured),proof)==selected)
             def transition():
                 fresh = routes.selected_frames(bytes(captured), boundary, menu)
@@ -232,15 +258,15 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
             if selected in visited:
                 raise ValueError('True menu cycle')
             visited.add(selected)
-            cut = boundary
+            cut = boundary;window_cut=boundary;window_menu=menu
         if enter:
             cut = len(captured)
-            proof={'raw':bytes(captured),'menu':menu,'selected':selected}
+            proof=selection_proof(bytes(captured),window_cut,window_menu,selected,screen)
             send(b'\r', 'Enter exact ' + target, lambda: retained_selection(bytes(captured),proof)==selected)
             previous = menu
             previous_selected = target
         else:
-            retained = {'raw': bytes(captured), 'menu': menu, 'selected': selected}
+            retained = selection_proof(bytes(captured),window_cut,window_menu,selected,screen)
             previous = None
         result.setdefault('Selected', []).append(target)
 

@@ -4,6 +4,15 @@ sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/"SelectionProm
 import mortal_console_routes as console_routes
 from mortal_console_routes import checked_route, storage_target, fresh_selection, require_local_unchanged, client_environment, selected_frame, item_position
 
+class AuthoredView:
+    """Synchronous DATA peer acknowledgement, not terminal execution evidence."""
+    def __init__(self,peer):self.peer=peer;self.pending=False;self.cursor={'x':0,'y':0};self.lines=['']*25
+    @property
+    def cut(self):return len(self.peer.capture)
+    @property
+    def seq(self):return len(self.peer.capture)
+    def arrow(self):return b'\x1b[B'
+
 class RouteTests(unittest.TestCase):
     def state(self):
         return {'locationId':'loc1','locationStorages':[{'storageId':'st1','name':'Council store',
@@ -70,11 +79,11 @@ class RouteTests(unittest.TestCase):
                 return cut
         def until(predicate,*unused):
             if not predicate():raise TimeoutError('No fresh frame')
-        peer=Peer();peer.console=types.SimpleNamespace(view=types.SimpleNamespace(arrow=lambda:b'\x1b[B'));ns={'client':peer,'console_routes':console_routes,'until':until}
+        peer=Peer();peer.console=types.SimpleNamespace(view=AuthoredView(peer));ns={'client':peer,'console_routes':console_routes,'until':until}
         exec(compile(ast.Module(body=[node],type_ignores=[]),'actual finite selector','exec'),ns)
         ns['finite_select'](console_routes.fixed_menu('Menu',['Alpha','Beta'],20),'Beta',0,2)
         self.assertEqual(peer.keys,[b'\x1b[B',b'\r'])
-        peer=Peer(False);peer.console=types.SimpleNamespace(view=types.SimpleNamespace(arrow=lambda:b'\x1b[B'));ns['client']=peer
+        peer=Peer(False);peer.console=types.SimpleNamespace(view=AuthoredView(peer));ns['client']=peer
         with self.assertRaises(TimeoutError):ns['finite_select'](console_routes.fixed_menu('Menu',['Alpha','Beta'],20),'Beta',0,2)
         self.assertEqual(peer.keys,[b'\x1b[B'])
     def selection_sequence(self, transitions, target_index=3):
@@ -91,7 +100,7 @@ class RouteTests(unittest.TestCase):
                 self.keys.append(key)
                 if key==b'\x1b[B':self.pending.extend(next(self.turn,[]))
                 return cut
-        peer=Peer();peer.console=types.SimpleNamespace(view=types.SimpleNamespace(arrow=lambda:b'\x1b[B'));peer.frame=frame
+        peer=Peer();peer.console=types.SimpleNamespace(view=AuthoredView(peer));peer.frame=frame
         def until(predicate,*unused):
             for _ in range(8):
                 if predicate():return
@@ -147,7 +156,7 @@ class RouteTests(unittest.TestCase):
                 if key==b'\x1b[B':self.index+=1;self.pending.append(frame(self.index))
                 elif key==b'\r' and prompt:self.pending.append('Ваш ход\n >  '.encode())
                 return cut
-        peer=Peer();peer.console=types.SimpleNamespace(view=types.SimpleNamespace(arrow=lambda:b'\x1b[B'));ctx={'menu':menu,'cut':0,'selected':labels[0],'pending_next':labels[1],'send_confirmed':True}
+        peer=Peer();peer.console=types.SimpleNamespace(view=AuthoredView(peer));ctx={'menu':menu,'cut':0,'selected':labels[0],'pending_next':labels[1],'send_confirmed':True}
         def until(predicate,*unused):
             for _ in range(10):
                 if predicate():return

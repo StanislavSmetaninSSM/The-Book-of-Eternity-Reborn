@@ -308,8 +308,14 @@ def main():
             result['ActualFiniteSelector']=True;result['Target']=target;stage=2
         if fullroute:
             # Same owned transport/cleanup as the qualified geometry modes. No new process scheme.
-            from fullroute_inputs import run as run_fullroute, fresh_route_key
+            from fullroute_inputs import run as run_fullroute, fresh_route_key, routes, ordered_transition
+            # One deterministic delivery split of REAL renderer bytes, inert mode only.
+            # No bytes are rewritten/replayed and raw physical reads stay untouched.
+            padding_armed=False;padding_done=False;padding_held=b'';padding_buffer=b'';padding_cut=None
+            def deliver(data):
+                captured.extend(data);screen.observe(data)
             def pump_fullroute():
+                nonlocal padding_buffer,padding_held,padding_done
                 if process.poll() not in (None, 0):
                     report=root/'fullroute-result.json'
                     raise RuntimeError('Actual fullroute child failed: '+(report.read_text() if report.exists() else str(process.returncode)))
@@ -319,7 +325,23 @@ def main():
                         if fd!=master or error.errno!=errno.EIO:raise
                         data=b''
                     if not data:closed.add(fd);continue
-                    raws[fd].write(data);captured.extend(data);screen.observe(data)
+                    raws[fd].write(data)
+                    if padding_held:raise RuntimeError('Padding must be released only by final pre-key drain')
+                    if padding_armed and not padding_done:
+                        padding_buffer+=data
+                        game=root/'isolated-data/game_session'
+                        current=lambda name:json.loads((game/name).read_text(encoding='utf-8-sig'))
+                        expected_menu=routes.inventory_menu(current('game_state/inventory/items.json'),current('game_state/world/current_location.json'),{})
+                        frames=routes.selected_frames(padding_buffer,0,expected_menu)
+                        footer=('  '+expected_menu['choices'][-1]).encode()+b' '*66
+                        if frames and ordered_transition(frames,expected_menu['choices'][0],expected_menu['choices'][1]) and padding_buffer.endswith(footer):
+                            padding_held=padding_buffer[-49:];prefix=padding_buffer[:-49]
+                            if padding_held!=b' '*49:raise RuntimeError('Unexpected actual padding bytes')
+                            deliver(prefix);padding_done=True
+                            result['PaddingSplit']={'ActionCut':padding_cut,'PrefixEnd':len(captured),'HeldBytes':49,'Selected':frames[-1],'BeforeCursor':dict(screen.cursor),'BeforeLines':list(screen.lines),'BeforeSeq':screen.seq,'ReleasedInFinalDrain':False}
+                        # A mismatched/incomplete actual shape remains unqualified under
+                        # the original deadline, rather than inventing a renderer frame.
+                    else:deliver(data)
             full_deadline=start+45
             while inert_initial_pty_cut(bytes(captured),screen.keyboard) is None:
                 if time.monotonic()>=full_deadline:raise TimeoutError('Actual initial PTY mode')
@@ -334,13 +356,26 @@ def main():
             profile=measured_load_profile(measured,result['PtySizeReadback'],termios.tcgetattr(master))
             result['QualifiedDataProfile']=profile
             def drain_fullroute():
+                nonlocal padding_held
+                if padding_held:
+                    deliver(padding_held);padding_held=b''
+                    result['PaddingSplit'].update(ReleasedInFinalDrain=True,AfterCut=len(captured),AfterCursor=dict(screen.cursor),AfterSeq=screen.seq,SameCells=screen.lines==result['PaddingSplit']['BeforeLines'])
                 while select.select([f for f in streams if f not in closed],[],[],0)[0]:
                     if time.monotonic()>=full_deadline:raise TimeoutError('Original pre-key drain deadline')
                     pump_fullroute()
             def route_send(key,label,predicate):
+                nonlocal padding_armed,padding_cut
+                released_before=result.get('PaddingSplit',{}).get('ReleasedInFinalDrain',False)
                 resolved=fresh_route_key(terminal,screen,drain_fullroute,key,label,predicate,full_deadline)
                 result['Inputs'].append({'Hex':resolved.hex(),'Phase':label,'CaptureCut':len(captured),'TerminalSeq':screen.seq})
+                if label=='Down' and not padding_armed:
+                    padding_armed=True;padding_cut=len(captured)
+                elif padding_done and not released_before:
+                    if label!='Down' or resolved!=screen.arrow():raise RuntimeError('Padding drain must precede exactly next Down')
+                    result['PaddingSplit']['NextKeyHex']=resolved.hex()
+                    result['PaddingSplit']['NextKeyCut']=len(captured)
             run_fullroute(root,captured,screen,pump_fullroute,route_send,result,full_deadline,first_cut,profile)
+            if not padding_done or padding_held or not result['PaddingSplit'].get('NextKeyHex') or not result['PaddingSplit']['ReleasedInFinalDrain']:raise RuntimeError('Required actual padding split was not exercised')
             while time.monotonic()<full_deadline:
                 pump_fullroute()
                 if process.poll() is not None and slave>=0:os.close(slave);slave=-1

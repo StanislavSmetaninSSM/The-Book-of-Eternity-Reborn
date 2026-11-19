@@ -1103,21 +1103,19 @@ def finite_select(menu,label,cut,maximum_rows,commit=True,*,cleanup=False):
         # One unchanged deadline covers any number of same-selection redraws.
         until(transitioned,5,'fresh fixed menu ordered transition')
         if context is not None:context.update(selected=selected,pending_next=None,cut=cut,tail_prior=prior)
+        from fullroute_inputs import retained_selection,selection_proof
+        proof=selection_proof(bytes(client.capture),cut,menu,selected,client.console.view)
         if selected==label:
             selected_cut=cut;after=len(client.capture)
             if commit and context is not None:inventory_context=None  # Enter may leave inventory; never infer return.
             if commit:
-                from fullroute_inputs import retained_selection
-                proof={'raw':bytes(client.capture),'menu':menu,'selected':selected}
                 after=client.send(b'\r','fixed menu exact selected row: '+label,lambda:retained_selection(bytes(client.capture),proof)==selected,cleanup=cleanup)
             return after,selected_cut
         if menu['choices'].index(selected)+1>=len(menu['choices']):raise RuntimeError('Menu cycle before exact target')
         prior=selected;cut=len(client.capture)
         if context is not None:context.update(cut=cut,pending_next=menu['choices'][menu['choices'].index(selected)+1],send_confirmed=False)
-        from fullroute_inputs import retained_selection
-        proof={'raw':bytes(client.capture),'menu':menu,'selected':selected}
         cut=client.send(lambda:client.console.view.arrow(),'fixed menu observed next row',lambda:retained_selection(bytes(client.capture),proof)==selected,cleanup=cleanup)
-        if context is not None:context['send_confirmed']=True
+        if context is not None:context.update(cut=cut,send_confirmed=True)
     raise RuntimeError('Fixed menu exceeds visible bounded rows; no pagination')
 
 def register_inventory_cleanup(menu,cut):
@@ -1289,12 +1287,12 @@ def storage_local_route():
     if load_menu['choices'][0]!=load_label:raise RuntimeError('Actual Load metadata label differs from preflight contract')
     client_prompt=False;cut=options_choice(2,'📂 Загрузить')
     # Select the exact archive row without activating it yet; its receipt SourceKey must match.
-    load_cut=finite_select(console_routes.entry_menu(load_menu,load_clear=True),load_label,cut,15,commit=False)[0]
+    load_cut,load_selection_cut=finite_select(console_routes.entry_menu(load_menu,load_clear=True),load_label,cut,15,commit=False)
     if archive.read_bytes()!=archive_bytes:raise RuntimeError('Original Save archive changed before Load')
     continuity['LoadActionUtc']=datetime.datetime.now(datetime.timezone.utc).isoformat()
     original=None;original_record=None # An unconfirmed replacement is not permission to stop A or adopt status B.
-    from fullroute_inputs import retained_selection
-    load_proof={'raw':bytes(client.capture),'menu':console_routes.entry_menu(load_menu,load_clear=True),'selected':load_label}
+    from fullroute_inputs import retained_selection,selection_proof
+    load_proof=selection_proof(bytes(client.capture),load_selection_cut,console_routes.entry_menu(load_menu,load_clear=True),load_label,client.console.view)
     load_cut=client.send(b'\r','one actual Load of original unique archive',lambda:current_client_load_profile()==load_menu['profile'] and retained_selection(bytes(client.capture),load_proof)==load_label)
     result['LoadActionCut']=load_cut
     until(lambda:b'boe-load-session-completed' in bytes(client.capture[load_cut:]),30,'actual completed Load observation')
