@@ -25,6 +25,7 @@ class OwnedTerminal:
             raise ValueError('Pinned Node v24.22.3 binary mismatch')
         self.stderr=open(self.evidence/'terminal.stderr.raw','xb')
         try:
+            self._time() # Admission after provenance work, before any child starts.
             self.process=subprocess.Popen([node,str(here/'sidecar.mjs'),str(prefix)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr)
             os.set_blocking(self.process.stdin.fileno(),False)
             ready=self._read()
