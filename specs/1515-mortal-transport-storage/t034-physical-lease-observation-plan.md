@@ -244,3 +244,23 @@ perturb timing and observed intervals are not exhaustive. This closes the
 bounded external-routing inert UI gate, not hosted Load, live GM, historical
 mm23 holder attribution or new package/world admission. Next is read-only exact
 current-production package preparation review; no old world/package mutation.
+
+### Current producer refresh SOURCE WIP, not executed
+
+The accepted owning build is physical-routing-remote32.76s, not historical39.63s.
+Read-only re-enumeration still finds723current bin members (236/241/246) and
+exact18changed paths versus old mm23 input pins, but the full newly frozen map,
+not that count, is the admission authority. New current producer uses three
+standard ProductionMainLinuxFixture publish commands with --no-build --no-restore,
+existing native provenance and exactly three publish extras per project: native
+supervisor/manifest plus restored EventLog.Messages win runtimeTarget. No overlays.
+
+Authored publish-current.py/sh reuse existing run_owned guardian per50s publish,
+with full source/bin/Unit/tool/native/restore-asset admission before checkout
+imports or destination creation, strict full published membership and post-command
+source/bin checks. Failed/unknown preparation stops without repair/retry. Scripts
+and concrete external input manifest require independent admission before execution.
+No game/world/export is included. Live external route inheritance is a separate
+read-only source mapping now: every relevant process must use an admitted owned
+marker matching its actual nonce; default-disabled silence is not coverage proof.
+No already accepted local/native/UI test is repeated for package-only preparation.
