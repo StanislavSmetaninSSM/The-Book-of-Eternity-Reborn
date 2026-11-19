@@ -706,3 +706,24 @@ This is client-side interpretation of retained DATA, not a new GM command or
 permission: existing GM no-resend instructions and afterlife contracts remain
 unchanged. The worked failed/fixed authored debug fixtures preserve the separate
 GM defer decision. No live world, package refresh or retry is authorized here.
+
+### Retained historical carrier correction: bounded GREEN accepted
+
+Independent fixture_premises review accepted the exact source and final outcome.
+Fresh Unit build took 52.87 s (20 warnings, zero errors); actual official
+mortal-author-debug-contract ran exactly 2/2 PASS in 11.678 s. Fresh Integration
+build took 1.33 s (zero warnings/errors); mortal-retained-carrier-contract ran
+exactly 8/8 PASS in 20.224 s. The unchanged usable same-section historical row
+no longer receives the targeted inventory resend error; all seven mutation,
+explicit-response and missing/unusable-original controls still reject. The
+separate authored debug fixture reproduces all twelve original schema errors
+and clears all issues with corrected labels, without changing the defer decision.
+
+All 36 external evidence hashes, recorded 32,070-source membership, eight owning
+Unit outputs and Integration outputs joined; built/after inventories match.
+Both official runners completed owned cleanup without timeout or skipped cases.
+Unrelated minimal selected-profile baseline diagnostics remain outside the
+asserted inventory contract. This is neither full-state nor live acceptance.
+No world was changed, no failed world reused, no package published, and no
+further game run is authorized by this result. Existing operation DATA and
+comparison are reused; no new read/cache or measured speedup is claimed.
