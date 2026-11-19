@@ -52,12 +52,21 @@ public sealed class DeclaredBridgeFixtureAdmissionTests
         using var live=JsonDocument.Parse("{\"ok\":true,\"status\":"+Status()+"}");
         Assert.ThrowsAny<Exception>(()=>gate.CheckReply(live.RootElement,false));
         Assert.ThrowsAny<Exception>(()=>gate.CheckReply(live.RootElement,true));
-        var status=System.Text.Json.Nodes.JsonNode.Parse(Status())!.AsObject();
-        status["shellPid"]=null;
-        status["terminalStop"]=JsonSerializer.SerializeToNode(new {identity=new {runId=Owner.RunId,backend=Owner.Backend,guarantee=Owner.Guarantee,rootPid=Owner.RootPid},state="stopped-within-scope",cleanupComplete=true,authorityRetained=false});
+        using var initial=JsonDocument.Parse(Status());
+        var wireOptions=new JsonSerializerOptions {PropertyNamingPolicy=JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition=System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+            Converters={new System.Text.Json.Serialization.JsonStringEnumConverter(JsonNamingPolicy.KebabCaseLower)}};
+        var status=JsonSerializer.SerializeToNode(new {SessionPath=Root+"/game_session",PipeName="authored",
+            TerminalRunId=Owner.RunId,ShellPid=(int?)null,TerminalOwnerRetained=false,TerminalUncertain=false,
+            TransportEndpoint=initial.RootElement.GetProperty("transportEndpoint").Clone(),
+            TerminalStop=new TerminalStopEvidence(Owner,BookOfEternityClient.Services.GmWorkers.GmWorkerStopState.StoppedWithinScope,"owned",true,false)},wireOptions)!;
+        Assert.Null(status["shellPid"]);
+        Assert.False(status.AsObject().ContainsKey("shellPid"));
         var valid="{\"ok\":true,\"status\":"+status.ToJsonString()+"}";
         using var retired=JsonDocument.Parse(valid);gate.CheckReply(retired.RootElement,true);
-        foreach(var invalid in new[]{valid.Replace("\"terminalOwnerRetained\":false","\"terminalOwnerRetained\":true"),
+        using var explicitNull=JsonDocument.Parse(valid.Replace("\"terminalRunId\":", "\"shellPid\":null,\"terminalRunId\":"));
+        gate.CheckReply(explicitNull.RootElement,true);
+        foreach(var invalid in new[]{valid.Replace("\"terminalRunId\":","\"shellPid\":123,\"terminalRunId\":"),valid.Replace("\"terminalOwnerRetained\":false","\"terminalOwnerRetained\":true"),
             valid.Replace("\"terminalUncertain\":false","\"terminalUncertain\":true"),
             valid.Replace("\"rootPid\":123","\"rootPid\":456"),
             valid.Replace("\"cleanupComplete\":true","\"cleanupComplete\":false"),

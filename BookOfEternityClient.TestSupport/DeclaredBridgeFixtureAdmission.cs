@@ -56,7 +56,7 @@ internal sealed class DeclaredBridgeFixtureAdmission
         {
             var stop=status.GetProperty("terminalStop");var stopped=stop.GetProperty("identity");
             if(status.GetProperty("terminalOwnerRetained").GetBoolean() || status.GetProperty("terminalUncertain").GetBoolean() ||
-                status.GetProperty("shellPid").ValueKind!=JsonValueKind.Null || status.GetProperty("terminalRunId").GetString()!=owner.RunId ||
+                (status.TryGetProperty("shellPid",out var retiredPid) && retiredPid.ValueKind!=JsonValueKind.Null) || status.GetProperty("terminalRunId").GetString()!=owner.RunId ||
                 stop.GetProperty("state").GetString()!="stopped-within-scope" || !stop.GetProperty("cleanupComplete").GetBoolean() ||
                 stop.GetProperty("authorityRetained").GetBoolean() || stopped.GetProperty("runId").GetString()!=owner.RunId ||
                 stopped.GetProperty("backend").GetString()!=owner.Backend || stopped.GetProperty("guarantee").GetString()!=owner.Guarantee ||

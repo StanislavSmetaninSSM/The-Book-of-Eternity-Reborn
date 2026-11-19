@@ -96,3 +96,13 @@ current durable generation/record/status and physical tasks are freshly checked
 before each request, so cached coordinates confer no authority.
 
 Parent verified fresh exact-commit recovery of four source files at 9d0e590 to external recovery-9d0e590; hashes join constructor81a435 and plan45670d. This is bounded source recovery, not checkout/build recovery.
+
+Final response-shape inspection: both actual serializers use camelCase, kebab-case
+enums and WhenWritingNull. BridgeResponse.Shutdown contains ok/status; its
+ShutdownAfterResponse flag is JsonIgnore. TerminalRunId and TransportEndpoint
+remain set at retirement, bool false fields remain serialized, TerminalStop is
+nonnull with original identity. ShellPid alone becomes null and is therefore
+omitted. New-mode admission allows omitted/explicit-null retired PID only with
+the complete positive stop proof; any live PID refuses. Authored positive now
+serializes actual TerminalStopEvidence with matching options and asserts omission;
+legacy production serializer and other modes remain unchanged.
