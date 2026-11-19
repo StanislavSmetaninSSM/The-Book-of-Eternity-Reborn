@@ -48,14 +48,15 @@ class Fences(unittest.TestCase):
                 def __truediv__(self,other):return self
                 def mkdir(self,**kw):pass
                 def __str__(self):return 'inert-path'
-            ns=dict(pty=types.SimpleNamespace(openpty=lambda:(10,11)),fcntl=types.SimpleNamespace(ioctl=lambda *a:step('ioctl')),
+            root,base,out,trace,marker,trace_profile,trace_env=self.trace_case()
+            ns=dict(phase_evidence=evidence,base=base,trace_profile=trace_profile,pty=types.SimpleNamespace(openpty=lambda:(10,11)),fcntl=types.SimpleNamespace(ioctl=lambda *a:step('ioctl')),
                 termios=types.SimpleNamespace(TIOCSWINSZ=1,TCSANOW=2,ECHO=1,ECHONL=2,
                     tcgetattr=lambda fd:step('baseline',attrs if 'configured' not in events else [0,0,0,0,0,0,[]]),
                     tcsetattr=lambda *a:events.append('configured')),
                 struct=types.SimpleNamespace(pack=lambda *a:b''),copy=copy,os=fakeos,
                 terminal_fixture_admission=lambda:step('preflight',(Path(),Path(),Path())),
-                sys=types.SimpleNamespace(path=[],dont_write_bytecode=False),out=Path(),start=0,work_seconds=660,client_cleanup_seconds=680,
-                console_routes=types.SimpleNamespace(client_environment=lambda env:env),env={},ship='inert',
+                sys=types.SimpleNamespace(path=[],dont_write_bytecode=False),out=out,start=0,work_seconds=660,client_cleanup_seconds=680,
+                console_routes=types.SimpleNamespace(client_environment=lambda env:env),env=trace_env,ship='inert',
                 subprocess=types.SimpleNamespace(Popen=lambda *a,**kw:step('popen',child),TimeoutExpired=TimeoutError),
                 evidence=types.SimpleNamespace(raw=lambda *a:step('evidence')),observed_processes=[],
                 process_observer=types.SimpleNamespace(register=lambda pid:pid),peers=peers,
@@ -92,6 +93,19 @@ class Fences(unittest.TestCase):
         return fn
     def test_physical_trace_real_namespace_and_pinned_environment(self):
         fn=self.trace_admission()
+        root,base,out,trace,marker,profile,env=self.trace_case()
+        path=out/'launch-profile.json';raw=json.dumps(profile).encode();path.write_bytes(raw)
+        env['BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256']=hashlib.sha256(raw).hexdigest()
+        self.assertEqual(evidence.load_physical_trace_profile(out,env),profile)
+        for invalid in (None,'','0'*64):
+            changed=dict(env)
+            if invalid is None:changed.pop('BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256')
+            else:changed['BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256']=invalid
+            with self.assertRaises(ValueError):evidence.load_physical_trace_profile(out,changed)
+        path.write_bytes(raw+b' ')
+        with self.assertRaises(ValueError):evidence.load_physical_trace_profile(out,env)
+        path.unlink();path.symlink_to(root/'other-profile');(root/'other-profile').write_bytes(raw)
+        with self.assertRaises(ValueError):evidence.load_physical_trace_profile(out,env)
         cases=('valid','missing-route','empty-route','stderr','unknown','missing-path','empty-path','other-path','other-nonce','under-base','equal-base','ancestor','linked-parent','linked-marker','fifo-marker','public-dir','public-marker','wrong-marker','short-marker','missing-marker','missing-dir','relative','missing-stop','malformed-stop','long-marker','dotdot','trailing-separator','fifo-directory')
         for case in cases:
             with self.subTest(case=case):

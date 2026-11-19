@@ -292,3 +292,15 @@ Actual child scopes use the existing shared StopNonce; failure/load nonces are
 not physical identities. Trace checks remain fresh per launch because env and
 namespace can drift; no cache or new process abstraction is introduced.
 Source review and bounded pure11 RED are pending. No live/profile/world action.
+
+Pure11 RED matched7PASS/4explicit missing-callable failures/0errors0.446s,
+independently accepted. Minimal admission SOURCE WIP now adds real pinned-profile
+load and read-only private external trace validation; all actual direct child
+paths check it, with final client environment formed before any PTY acquisition
+and rechecked before Popen. Profile hash is mandatory, no old-profile fallback.
+Shared inherited helpers remain unchanged. Actual28namespace cases plus profile
+hash/refusal controls and constructor/RPC/receipt sentinels await GREEN review.
+Old rollback tests now supply real trace assets; affected Mortal38 setup builder
+supplies the same exact profile/env/marker without bypassing real admission.
+No exclusive profile creation or launcher wiring is claimed yet; those require
+the separate actual-function source/DATA gate before any world preparation.

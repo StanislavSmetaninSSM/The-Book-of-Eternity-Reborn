@@ -638,9 +638,12 @@ assert len(sys.argv) in (5,6), 'phase-root seed-manifest action-file evidence-he
 receipt_helper=Path(sys.argv[4]).resolve();assert receipt_helper.is_file()
 receipt_helper_sha=sha(receipt_helper.read_bytes())
 out=Path(sys.argv[1]).resolve();seed_path=Path(sys.argv[2]).resolve()
+trace_profile=phase_evidence.load_physical_trace_profile(out,os.environ)
 require_native_bootstrap_path_budget(out/'tmp') # Before processes, directories or operational config writes.
 seed_bytes=seed_path.read_bytes();seed=strict_settings(seed_bytes)
 restored_diagnostic=seed.get('kind')=='restored-accepted-data-diagnostic'
+trace_base=Path(seed['BasePath'] if restored_diagnostic else seed['basePath'])
+phase_evidence.require_physical_trace_admission(trace_base,out,trace_profile,os.environ)
 assert out.is_dir() and not (out/'probe-result.json').exists() and not (out/'queue').exists()
 assert os.environ.get('TERM')=='dumb'
 route_path=out/'console-route.json'
@@ -746,6 +749,8 @@ class Terminal:
     def __init__(self,name,args,captured_output=False):
         self.console=None;self.process=None;self.master=None;self.slave=None;self.initial=None
         try:
+            child_env=dict(console_routes.client_environment(env),NO_COLOR='1') if name=='client' else dict(env)
+            phase_evidence.require_physical_trace_admission(base,out,trace_profile,child_env)
             if name=='client':captured_output=False
             self.name=name;self.master,self.slave=pty.openpty();self.capture=bytearray();self.echo=bytearray();self.eof=False;self.captured_output=captured_output
             fcntl.ioctl(self.slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0));self.initial=termios.tcgetattr(self.slave)
@@ -763,7 +768,7 @@ class Terminal:
                 self.console=ClientSession(self.master,self.capture,out/'client-terminal',str(node),str(prefix),start+work_seconds,start+client_cleanup_seconds,lambda:drain_client(self))
             def own():
                 os.setsid();fcntl.ioctl(self.slave,termios.TIOCSCTTY,0);os.tcsetpgrp(self.slave,os.getpid())
-            child_env=dict(console_routes.client_environment(env),NO_COLOR='1') if name=='client' else env
+            phase_evidence.require_physical_trace_admission(base,out,trace_profile,child_env)
             self.process=subprocess.Popen(args,cwd=ship,env=child_env,stdin=self.slave,
                 stdout=subprocess.PIPE if captured_output else self.slave,
                 stderr=subprocess.STDOUT if captured_output else self.slave,preexec_fn=own)
@@ -890,6 +895,7 @@ def answer(p,marker,text,offset):
 class ShippedRpc:
     """One fixture process; each request uses a fresh shipped connector stream."""
     def __init__(self):
+        phase_evidence.require_physical_trace_admission(base,out,trace_profile,env)
         args=rpc_helper_arguments(__file__,ship,session)
         self.logs={}
         try:
@@ -1463,6 +1469,7 @@ try:
                     until(lambda:all((q/'execution.json').exists() for q in relay_queue.glob('request-*')),10,'relay consumer settled evidence')
                     result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['OriginalRunningStatus']['status']['inputBindingId'],session,accepted_row['narrative'],baseline)
                     phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
+                    phase_evidence.require_physical_trace_admission(base,out,trace_profile,env)
                     helper=subprocess.run(['dotnet',str(receipt_helper),'mortal-live-evidence',str(baseline),str(session),str(out/'actual-turn-request.json')],capture_output=True,timeout=receipt_check_budget(start+work_seconds,time.monotonic()),env=env)
                     (out/'typed-receipt.stdout').write_bytes(helper.stdout);(out/'typed-receipt.stderr').write_bytes(helper.stderr)
                     phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])

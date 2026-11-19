@@ -3,8 +3,46 @@
 Immutable inventories are passed explicitly per phase; mutable world and terminal
 proofs are freshly checked at boundaries. No cross-phase cache.
 """
-import hashlib, json, re, stat
+import hashlib, json, re, stat, sys
 from pathlib import Path
+
+def load_physical_trace_profile(out, env):
+    """Read only the launcher's independently pinned profile; no asset creation."""
+    expected=env.get('BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256')
+    if type(expected) is not str or re.fullmatch('[0-9a-f]{64}',expected) is None:
+        raise ValueError('Physical trace profile hash required')
+    path=_restored_plain_path(Path(out)/'launch-profile.json')
+    raw=path.read_bytes()
+    if sha(raw)!=expected:raise ValueError('Physical trace profile changed')
+    return strict_settings(raw)
+
+def require_physical_trace_admission(base, out, profile, env):
+    """Fresh diagnostic DATA checks, never ownership or canonical admission."""
+    if sys.platform!='linux':raise ValueError('External physical trace is Linux-qualified only')
+    if type(profile) is not dict or type(profile.get('PhysicalTrace')) is not dict:
+        raise ValueError('Physical trace profile required')
+    nonce=profile.get('StopNonce');trace=profile['PhysicalTrace']
+    if type(nonce) is not str or re.fullmatch('[0-9a-f]{32}',nonce) is None:
+        raise ValueError('Physical trace StopNonce required')
+    if set(trace)!={'Route','Directory'} or trace.get('Route')!='external':
+        raise ValueError('Physical trace external route required')
+    raw=trace.get('Directory')
+    if type(raw) is not str or not raw or not Path(raw).is_absolute() or str(Path(raw))!=raw or '..' in Path(raw).parts:
+        raise ValueError('Physical trace canonical path required')
+    base=_restored_plain_path(base,True);out=_restored_plain_path(out,True);directory=Path(raw)
+    if directory!=out/'physical-trace' or directory==base or base in directory.parents or directory in base.parents:
+        raise ValueError('Physical trace must be outside canonical base/play')
+    if (env.get('BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE')!='external'
+        or env.get('BOE_TEST_CANONICAL_LEASE_TRACE_DIR')!=raw
+        or env.get('BOE_MAIN_STOP_DIAGNOSTIC_NONCE')!=nonce):
+        raise ValueError('Physical trace environment differs from pinned profile')
+    directory=_restored_plain_path(directory,True)
+    if stat.S_IMODE(directory.stat().st_mode)!=0o700:raise ValueError('Physical trace directory must be private')
+    marker=_restored_plain_path(directory/'owner-nonce')
+    if stat.S_IMODE(marker.stat().st_mode)!=0o600 or marker.stat().st_size!=32:
+        raise ValueError('Physical trace marker must be private exact32bytes')
+    if marker.read_bytes()!=nonce.encode('ascii'):raise ValueError('Physical trace marker differs')
+    return {'Route':'external','Directory':raw,'StopNonce':nonce}
 
 def rpc_helper_closed(result):
     proof=result.get('RpcHelperClosure')

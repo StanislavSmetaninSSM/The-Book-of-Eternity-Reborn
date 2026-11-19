@@ -127,8 +127,13 @@ class MortalEvidenceTests(unittest.TestCase):
             if mutation and not closing and not continuation:
                 target=helper/mutation.removeprefix('helper/') if mutation.startswith('helper/') else session/mutation
                 target.write_bytes(b'mutated')
+            trace=out/'physical-trace';trace.mkdir(mode=0o700)
+            marker=trace/'owner-nonce';marker.write_bytes(b'a'*32);marker.chmod(0o600)
+            trace_profile={'StopNonce':'a'*32,'PhysicalTrace':{'Route':'external','Directory':str(trace)}}
+            profile_raw=json.dumps(trace_profile).encode();(out/'launch-profile.json').write_bytes(profile_raw)
+            trace_env={'TERM':'dumb','BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256':NS['sha'](profile_raw),'BOE_MAIN_STOP_DIAGNOSTIC_NONCE':'a'*32,'BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE':'external','BOE_TEST_CANONICAL_LEASE_TRACE_DIR':str(trace)}
             argv=['driver',str(out),str(seed_path),str(action),str(dll)]+([str(prior_path)] if continuation else [])
-            scope=dict(NS,sys=types.SimpleNamespace(argv=argv),os=types.SimpleNamespace(environ={'TERM':'dumb'}))
+            scope=dict(NS,sys=types.SimpleNamespace(argv=argv),os=types.SimpleNamespace(environ=trace_env))
             first=next(i for i,n in enumerate(TREE.body) if isinstance(n,ast.Assert) and 'len(sys.argv) in (5, 6)' in ast.unparse(n.test))
             last=next(i for i,n in enumerate(TREE.body[first:],first) if assign_name(n,'controlled_refusal'))
             exec(compile(ast.Module(body=TREE.body[first:last],type_ignores=[]),str(SOURCE),'exec'),scope)
