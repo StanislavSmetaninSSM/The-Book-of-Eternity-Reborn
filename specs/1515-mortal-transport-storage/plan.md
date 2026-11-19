@@ -4340,3 +4340,12 @@ A future bounded fixture correction must gracefully leave a freshly observed
 known menu and settle its operation before owner shutdown. Merely moving RPC
 before Ctrl+C is not proven safe or sufficient. No guard or cleanup source has
 changed here. Raw observations remain local and mm18 is not reused.
+
+T029 pre-build review correction: reviewer found that the real Spectre fixture's
+literal [Оружие] suffix needed markup escaping, as in production rendering. Only
+the fixture spelling is now escaped; the visible text and exact selected locked
+target are unchanged. Helper source SHA256:
+6aa7db6cefac276a795f659b0006e9d1a66fc01aa202fd8e05faf0bc1a229448.
+No renderer run had yet occurred, so this is a review-found fixture setup defect,
+not an observed runtime result. T030 separately tracks the proven local-menu
+failure cleanup ordering; it is not silently bundled into the observer fix.
