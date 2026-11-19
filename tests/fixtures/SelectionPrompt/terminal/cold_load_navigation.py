@@ -45,3 +45,22 @@ def read_cold_archive(path,expected_name,expected_sha):
         if any(config.get(k) is not False for k in ('MusicEnabled','SoundEnabled','GenerateSceneImages','ShowImagesInConsole')) or config.get('ImageProvider')!='off':raise ValueError('Exact muted archive settings absent')
     except (KeyError,json.JSONDecodeError,zipfile.BadZipFile) as e:raise ValueError('Invalid cold archive') from e
     return {'ArchiveSHA256':digest,'ArchiveName':path.name,'Metadata':metadata,'Config':config,'Members':members,'SizeBytes':len(blob)}
+
+
+def cold_load_completed(raw,cut,menu,view):
+    # The real driver's whole transition: exact prior close, sole outcome, fresh screen.
+    from fullroute_inputs import routes
+    from client_ui import player_ready
+    height=len(menu['header'].split('\n'))+len(menu['choices'])
+    close=b'\r'+b'\x1b[2K\x1b[1A'*height+b'\x1b[2K\x1b[?25h'
+    clear=b'\x1b[2J\x1b[3J\x1b[1;1H'
+    tail=raw[cut:];at=tail.find(close)
+    if at<0:return False
+    if at:
+        frames=routes.selected_frames(tail[:at],0,menu)
+        if not frames or any(row!=menu['choices'][0] for row in frames):return False
+    end=tail.find(clear,at+len(close))
+    if end<0:return False
+    try:message=tail[at+len(close):end].decode('utf-8')
+    except UnicodeError:return False
+    return clean_cold_load_message(message) and player_ready(view,raw,cut+end)

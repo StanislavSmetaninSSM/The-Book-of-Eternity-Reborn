@@ -5,10 +5,10 @@ from owned_terminal import OwnedTerminal
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent.parent))
 from fullroute_inputs import AcknowledgedTerminalView, fresh_route_key
 from client_ui import main_ready, player_ready
-from cold_load_navigation import cold_main_ready, clean_cold_load_message, read_cold_archive
+from cold_load_navigation import cold_main_ready, clean_cold_load_message, read_cold_archive, cold_load_completed
 from fullroute_inputs import routes
 from relay_phase_evidence import ORDINARY_SAVE_PATHS
-import datetime, hashlib
+import datetime, hashlib, stat
 
 from pty_probe import PtyWriter
 
@@ -16,13 +16,19 @@ def main():
     node,prefix,client,base,folder,archive_name,archive_sha=sys.argv[1:]
     session=pathlib.Path(base)/"game_session"
     archive_path=session/"saves/manual_saves"/archive_name
+    expected_dirs={'.','game_session','game_session/saves','game_session/saves/manual_saves'}
+    expected_files={'game_session/config.json','game_session/saves/manual_saves/'+archive_name}
+    found_dirs={'.'};found_files=set();base_path=pathlib.Path(base)
+    if any(p.is_symlink() for p in (base_path,*base_path.parents)):raise ValueError('Linked cold root')
+    for p in base_path.rglob('*'):
+        mode=p.lstat();name=p.relative_to(base_path).as_posix()
+        if stat.S_ISDIR(mode.st_mode):found_dirs.add(name)
+        elif stat.S_ISREG(mode.st_mode) and mode.st_nlink==1:found_files.add(name)
+        else:raise ValueError('Linked/special cold input')
+    if found_dirs!=expected_dirs or found_files!=expected_files:raise ValueError('Unexpected cold input topology')
     admitted=read_cold_archive(archive_path,archive_name,archive_sha)
     initial=json.loads((session/"config.json").read_bytes())
-    if initial.get("GmBridgeEnabled") is not False or any(initial.get(k) is not False for k in ("MusicEnabled","SoundEnabled","GenerateSceneImages","ShowImagesInConsole")):raise ValueError("Cold bootstrap must be muted and bridge-disabled")
-    if {p.name for p in pathlib.Path(base).iterdir()}!={"game_session"}:raise ValueError("Cold base contains prior runtime authority or other assets")
-    allowed={"config.json","saves/manual_saves/"+archive_name}
-    actual={str(p.relative_to(session)) for p in session.rglob("*") if p.is_file()}
-    if actual!=allowed or any(p.is_symlink() for p in session.rglob("*")):raise ValueError("Fresh cold input contains unexpected state")
+    if initial.get("GmBridgeEnabled") is not False or initial.get("GmBridgeAutoStart") is not False or any(initial.get(k) is not False for k in ("MusicEnabled","SoundEnabled","GenerateSceneImages","ShowImagesInConsole")) or initial.get('ImageProvider')!='off' or any(initial.get(k)!='' for k in ('GmCliLaunchCommand','GmBridgeShellWorkingDirectory','GmBridgePipeNameOverride')):raise ValueError("Cold bootstrap must be muted and without operational command")
     root=pathlib.Path(folder);root.mkdir(exist_ok=False)
     start=time.monotonic();deadline=start+45;cleanup_deadline=start+55;master,slave=pty.openpty();original=termios.tcgetattr(slave)
     configured=copy.deepcopy(original);configured[3]&=~(termios.ECHO|termios.ECHONL)
@@ -32,6 +38,7 @@ def main():
         termios.tcsetattr(slave,termios.TCSANOW,configured)
         if termios.tcgetattr(slave)!=configured:raise ValueError('Noecho readback')
         fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0));os.set_blocking(master,False)
+        if struct.unpack('HHHH',fcntl.ioctl(slave,termios.TIOCGWINSZ,b'\0'*8))[:2]!=(25,100):raise ValueError('Initial PTY geometry readback')
         terminal=OwnedTerminal(node,prefix,root,deadline,writer,cleanup_deadline=cleanup_deadline)
         env=os.environ.copy();env.update(TERM='xterm-256color',NO_COLOR='1')
         def own():
@@ -69,21 +76,9 @@ def main():
             frames=routes.selected_frames(bytes(captured),cut,menu)
             return bool(frames and all(row==label for row in frames) and not view.pending and view.cut==len(captured) and any(label in line for line in view.lines))
         wait(selected,'actual sole exact Save43 selected')
+        if struct.unpack('HHHH',fcntl.ioctl(slave,termios.TIOCGWINSZ,b'\0'*8))[:2]!=(25,100) or termios.tcgetattr(slave)[3]&(termios.ECHO|termios.ECHONL):raise ValueError('Load geometry/mode drift')
         load_cut=send(b'\r','exact Save43 Load',selected)
-        height=len(menu['header'].split('\n'))+len(menu['choices'])
-        close=b'\r'+b'\x1b[2K\x1b[1A'*height+b'\x1b[2K\x1b[?25h'
-        clear=b'\x1b[2J\x1b[3J\x1b[1;1H'
-        def loaded():
-            tail=bytes(captured)[load_cut:];at=tail.find(close)
-            if at<0:return False
-            if at:
-                prior_frames=routes.selected_frames(tail[:at],0,menu)
-                if not prior_frames or any(row!=label for row in prior_frames):return False
-            end=tail.find(clear,at+len(close))
-            if end<0:return False
-            try:message=tail[at+len(close):end].decode('utf-8')
-            except UnicodeError:return False
-            return clean_cold_load_message(message) and player_ready(view,bytes(captured),load_cut+end)
+        def loaded():return cold_load_completed(bytes(captured),load_cut,menu,view)
         wait(loaded,'exact clean cold Load and fresh actual player prompt')
         cut=len(captured)
         # Keep the validated player window, not an empty post-observation cut.
@@ -118,6 +113,10 @@ def main():
         for name in protected:
             path=session/name
             if path.is_symlink() or path.read_bytes()!=admitted['Members'][name]:raise ValueError('Loaded scoped bytes mismatch: '+name)
+        history='game_state/world/mortal_living_world_history.json';hp=session/history
+        if history in admitted['Members']:
+            if hp.is_symlink() or hp.read_bytes()!=admitted['Members'][history]:raise ValueError('Loaded history mismatch')
+        elif hp.exists() or hp.is_symlink():raise ValueError('Loaded absent history fabricated')
         if json.loads((session/'config.json').read_bytes())!=admitted['Config']:raise ValueError('Loaded config semantic drift; no repair attempted')
         if (pathlib.Path(base)/'.boe_runtime/gm-runs').exists():raise ValueError('Cold Load unexpectedly created main authority')
         for name in ('input/turn_request.json','ready/turn_complete.json','ready/turn_error.json','game_state/control/gm_bridge_status.json','game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json','game_state/control/pending_turn_snapshot','game_state/control/validation_repair_request.json'):

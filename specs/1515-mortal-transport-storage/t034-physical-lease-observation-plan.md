@@ -1329,3 +1329,9 @@ navigation ownership shape: no bridge/daemon, exact initial file set, actual
 seven-item Load selection, sole archive, exact success before fresh screen clear,
 player prompt, Options/main exit, and fresh archive/scoped-data/absent-runtime
 checks. Driver is WIP source review only; no new world or runtime executed.
+Driver review narrowed initial admission to exact full regular/unlinked input
+topology (no special entries or unobserved empty directories), explicit bootstrap
+provider-off/empty operational command, geometry readback and pre-Load check, and
+optional history presence/bytes. Extracted actual whole close→success→fresh-player
+predicate has one additional finite DATA method. Four-method rerun is pending
+review; no runtime or fresh-world preparation has occurred.

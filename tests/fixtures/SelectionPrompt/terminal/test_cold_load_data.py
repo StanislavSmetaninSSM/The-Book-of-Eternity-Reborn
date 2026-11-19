@@ -29,6 +29,23 @@ class ColdLoadData(unittest.TestCase):
         for bad in (good+'Требуется служебная проверка завершения операции.\r\n',good+'Продолжение остановлено.\r\n',good+'boe-main-operation x\n',good+good,'Сохранение не загружено.\n',good[:-1],good+'partial'):
             self.assertFalse(f(bad),repr(bad))
 
+    def test_actual_whole_load_transition_close_success_fresh_prompt(self):
+        from fullroute_inputs import routes
+        menu=routes.local_load_menu('Двор',43,10,'19.11.2026 22:13')
+        height=len(menu['header'].split('\n'))+len(menu['choices'])
+        close=b'\r'+b'\x1b[2K\x1b[1A'*height+b'\x1b[2K\x1b[?25h'
+        clear=b'\x1b[2J\x1b[3J\x1b[1;1H'
+        success='\r\nСохранение загружено.\r\n'.encode()
+        player='── ✦ Ваш ход ✦ ──\r\n >  \x1b[s'.encode()
+        raw=close+success+clear+player
+        def state(b):return types.SimpleNamespace(pending=False,cut=len(b),lines=['── ✦ Ваш ход ✦ ──',' >  ']+['']*23,cursor={'x':4,'y':1})
+        self.assertTrue(actual.cold_load_completed(raw,0,menu,state(raw)))
+        for bad in (raw.replace(close,close[1:],1),b'old'+raw,raw.replace(success,success+'Продолжение остановлено.\r\n'.encode()),raw.replace(clear,b'',1),raw[:-1]):
+            self.assertFalse(actual.cold_load_completed(bad,0,menu,state(bad)))
+        v=state(raw);v.cut-=1;self.assertFalse(actual.cold_load_completed(raw,0,menu,v))
+        v=state(raw);v.pending=True;self.assertFalse(actual.cold_load_completed(raw,0,menu,v))
+        self.assertFalse(actual.cold_load_completed(raw,len(raw),menu,state(raw)))
+
     def test_actual_archive_identity_crc_and_unique_members(self):
         f=getattr(actual,'read_cold_archive',None);self.assertTrue(callable(f),'missing exact selected-archive admission')
         with tempfile.TemporaryDirectory() as t:
