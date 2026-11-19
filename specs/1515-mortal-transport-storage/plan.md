@@ -4283,3 +4283,35 @@ only phase p01 to p02; all17 DATA controls pass. Independent final package revie
 grants technical GO for one normal use_default/auto-review launch, not acceptance.
 No p02 result is claimed in this readiness checkpoint. No source rebuild or known
 passing suite was repeated; immutable DATA reuse retains fresh authority checks.
+
+T016/T029 mm18 p02 failed before permission; causal diagnosis WIP, 2026-11-19.
+Base checkpoint 2a588bd5b80df1ee24c7f950bea4cd364a8b7188. The one ordinary
+p02 launch exited1 after34.737s, actions0/accepted0, no request43 and no GM
+candidate/publication. Probe SHA256:
+06d5f6bda0b03589f811e9ccae3d88c09d5f6f271b04d5d0384d57eecef38ca5.
+No denied-access proof was reached. This does not qualify the permission route.
+
+Captured-DATA replay identifies a fixture observation defect, not line wrapping:
+a complete Money frame at21.337s, one Down at21.339s, another complete Money
+frame at21.339s, then the actually moved MainHand frame at21.350s. The observer
+throws on the repeated label before waiting for the transition. All three exact
+frames match the maintained parser, include Back, and fit75/76 cells. Capture
+cannot establish when the duplicate was generated relative to the key, only the
+observed sequence. No geometry expansion or game-label change is justified.
+Independent diagnosis and a real Spectre five-row inert reproduction are next;
+no implementation fix or new live launch has occurred.
+
+Cleanup separately failed at the original shutdown receipt assertion. Durable
+main is Uncertain; shutdown is not OK, bridge EOF/exit and final daemon settlement
+are not confirmed. The driver retains type/message but no original Python stack.
+Guardian ECHILD=true, driver1/reaped2/emergency0/failures0/deadlinefalse proves
+physical reaping only, not logical Stopped. Do not reuse mm18, retry the action,
+or manually signal/clean uncertain owners. The earlier accepted p01 remains
+historical evidence, not authority to continue the now-Uncertain world. mm16
+remains untouched and UNKNOWN.
+
+Optimization: reuse immutable captured frames for cheap causal checks and the
+existing narrow Spectre renderer rather than constructing another game world.
+Live selection must remain freshly observed, not cached permission or a guessed
+row. No production behavior, budgets, dependencies or network policy changed.
+All raw remains outside Git; only this written checkpoint/task is published.
