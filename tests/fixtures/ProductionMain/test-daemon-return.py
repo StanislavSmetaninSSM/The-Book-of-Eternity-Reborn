@@ -3,6 +3,7 @@ import ast
 import copy
 import importlib.util
 import json
+import os
 from pathlib import Path
 import unittest
 spec=importlib.util.spec_from_file_location('phase',Path(__file__).with_name('relay_phase_evidence.py'))
@@ -31,6 +32,11 @@ class ReturnedObservation(unittest.TestCase):
   for field,value in [('outcome',1),('closingFailed',True),('pinId','9'*32),('identity',dict(identity,runId='9'*32))]:
    bad=copy.deepcopy(event);bad['terminalClose'][field]=value;self.assertIsNone(check(line(bad)),field)
   self.assertIsNone(check(b'')) # caller must pass only fresh bytes after its actual action cut
+  directory=Path(os.environ['BOE_TEST_DIAGNOSTIC_ROOT'])
+  actual=phase.daemon_consumer_returned((directory/'daemon-return-wire.jsonl').read_bytes(),json.loads((directory/'daemon-return-wire-expected.json').read_text()))
+  self.assertIsNotNone(actual,'Actual PS serializer wire failed independent Python predicate')
+  self.assertEqual(actual['requestSHA256'],'A'*64)
+
  def test_actual_shutdown_block_does_not_fall_through_unknown_return(self):
   source=Path(__file__).with_name('live-mortal-phase.py').read_text()
   tree=ast.parse(source)
@@ -43,4 +49,10 @@ class ReturnedObservation(unittest.TestCase):
   exec(compile(ast.fix_missing_locations(ast.Module(body=nodes,type_ignores=[])),'actual-shutdown-block','exec'),scope)
   self.assertEqual(scope['shutdown_attempts'],0)
   self.assertEqual(calls,[])
+  def admitted():scope['result']['DaemonConsumerReturned']={'fixture':'observed'}
+  scope['wait_daemon_consumer_returned']=admitted
+  exec(compile(ast.fix_missing_locations(ast.Module(body=nodes,type_ignores=[])),'actual-shutdown-block','exec'),scope)
+  self.assertEqual(scope['shutdown_attempts'],1)
+  self.assertEqual(len(calls),1) # sentinel RPC proves gating, not a real shutdown receipt
+
 if __name__=='__main__':unittest.main()

@@ -11,7 +11,7 @@ function Write-GmOperationDiagnostic {
         if(-not [guid]::TryParseExact($nonce,'N',[ref]$parsed) -or $nonce -cne $env:BOE_MAIN_STOP_DIAGNOSTIC_NONCE){return}
         $data=[ordered]@{nonce=$nonce;stage=$Stage;processId=$PID;observedAtUtc=[DateTime]::UtcNow.ToString('O');consistency='Non-atomic observations of original caller context'}
         if($null -ne $Context){
-            foreach($name in @('originalClose','terminalClose','sequence','lastAction','closed','lost','closeObserved','exitCode','diagnostic','cancellationCleanupFailures','cancellationReadCleanup')){
+            foreach($name in @('originalClose','terminalClose','sequence','lastAction','closed','lost','closeObserved','exitCode','diagnostic','cancellationCleanupFailures','cancellationReadCleanup','requestSHA256','turnIdentity','requestAdmitted','consumerReturned','daemonGuardOwnerId','helperExitCode','replyReadJoined','stderrReadJoined','publicationUncertain','handledError','errorCountBefore','errorCountAfter')){
                 if($null -ne $Context.PSObject.Properties[$name]){$data[$name]=$Context.$name}
             }
         }
@@ -280,14 +280,19 @@ function Dispose-GmOperationTransport {
     try {$Context.process.StandardInput.Dispose(); Write-GmOperationDiagnostic 'helper-stdin-closed' $null $Context}catch{}
     if (-not $Context.process.WaitForExit(4000)) { Write-GmOperationDiagnostic 'helper-before-kill' $null $Context; $Context.process.Kill(); $Context.process.WaitForExit() }
     # Join actual stdout/stderr tasks before disposing the owned helper process.
-    if($Context.pendingRead){try {[void]$Context.pendingRead.GetAwaiter().GetResult()}catch{}}
+    if($Context.pendingRead){try {
+        [void]$Context.pendingRead.GetAwaiter().GetResult()
+        $Context | Add-Member -NotePropertyName replyReadJoined -NotePropertyValue $true -Force
+    }catch{}}
     $Context | Add-Member -NotePropertyName exitCode -NotePropertyValue $Context.process.ExitCode -Force
     $Context | Add-Member -NotePropertyName diagnostic -NotePropertyValue $Context.errorRead.GetAwaiter().GetResult() -Force
+    $Context | Add-Member -NotePropertyName stderrReadJoined -NotePropertyValue $true -Force
     $Context.process.Dispose()
 }
 
 function Invoke-GmParticipatingConsumer {
-    param([string]$SessionPath,[scriptblock]$Body)
+    param([string]$SessionPath,[scriptblock]$Body,[ref]$Observation)
+    if($null -ne $Observation){$Observation.Value=$null}
     $session = [IO.Path]::GetFullPath($SessionPath).TrimEnd([IO.Path]::DirectorySeparatorChar)
     if ($global:BoeMainOperationContext) {
         if ($global:BoeMainOperationContext.session -cne $session -or $global:BoeMainOperationContext.closed -or $global:BoeMainOperationContext.lost) { throw 'Enclosing original operation is unavailable; no reconnect.' }
@@ -351,6 +356,18 @@ function Invoke-GmParticipatingConsumer {
         $failure.Exception.Data['OriginalOperationTransportLost']=$context.lost
     }
     if ($failure) { Write-GmOperationDiagnostic 'consumer-original-failure' $failure $context; throw $failure }
+    # Optional stderr observation only; never changes original result or authority.
+    if($null -ne $Observation){try {
+        if($context.closeObserved -eq $true -and $context.lost -eq $false -and
+           $context.publicationUncertain -ne $true -and $context.disposed -eq $true -and
+           $context.exitCode -eq 0 -and $context.replyReadJoined -eq $true -and $context.stderrReadJoined -eq $true -and
+           $null -ne $context.originalClose -and $null -ne $context.terminalClose -and
+           $context.terminalClose.outcome -eq 0 -and $context.terminalClose.closingFailed -eq $false){
+            $Observation.Value=[pscustomobject]@{originalClose=$context.originalClose;terminalClose=$context.terminalClose;
+                closeObserved=$true;lost=$false;publicationUncertain=$false;helperExitCode=$context.exitCode;
+                replyReadJoined=$true;stderrReadJoined=$true}
+        }
+    }catch{ }}
     return $result
 }
 

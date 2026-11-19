@@ -6007,11 +6007,25 @@ function Process-QteEffectResolutionRequestCore {
 function Process-Turn {
     param([string]$RequestPath)
     if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
-    Invoke-GmParticipatingConsumer $GameSessionPath { Process-TurnCore -RequestPath $RequestPath }
+    $capture=[pscustomobject]@{requestAdmitted=$false;requestSHA256=$null;turnIdentity=$null}
+    $before=$script:ErrorCount;$joined=$null
+    $result=Invoke-GmParticipatingConsumer $GameSessionPath { Process-TurnCore -RequestPath $RequestPath -TurnObservation $capture } -Observation ([ref]$joined)
+    try {
+        if($capture.requestAdmitted -eq $true -and $null -ne $joined -and $null -ne $script:LinuxDaemonGuard){
+            foreach($name in @('requestSHA256','turnIdentity','requestAdmitted')){$joined|Add-Member -NotePropertyName $name -NotePropertyValue $capture.$name -Force}
+            $joined|Add-Member -NotePropertyName consumerReturned -NotePropertyValue $true -Force
+            $joined|Add-Member -NotePropertyName daemonGuardOwnerId -NotePropertyValue $script:LinuxDaemonGuard.OwnerId -Force
+            $joined|Add-Member -NotePropertyName errorCountBefore -NotePropertyValue $before -Force
+            $joined|Add-Member -NotePropertyName errorCountAfter -NotePropertyValue $script:ErrorCount -Force
+            $joined|Add-Member -NotePropertyName handledError -NotePropertyValue ($script:ErrorCount -ne $before) -Force
+            Write-GmOperationDiagnostic 'daemon-turn-consumer-returned' $null $joined
+        }
+    }catch{ } # An observation cannot replace the actual consumer result.
+    return $result
 }
 
 function Process-TurnCore {
-    param([string]$RequestPath)
+    param([string]$RequestPath,$TurnObservation=$null)
 
     if ($script:IsProcessing) { return }
     $script:IsProcessing = $true
@@ -6036,6 +6050,11 @@ function Process-TurnCore {
             return
         }
 
+        if($null -ne $TurnObservation){
+            $TurnObservation.requestSHA256=$pendingSnapshot.Hash
+            $TurnObservation.turnIdentity=[pscustomobject]@{sessionId=$turnRequest.sessionId;requestId=$turnRequest.requestId;turnNumber=$turnRequest.turnNumber}
+            $TurnObservation.requestAdmitted=$true
+        }
         $script:TurnCount++
         $turnStart = Get-Date
 

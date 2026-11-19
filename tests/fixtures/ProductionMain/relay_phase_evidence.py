@@ -10,6 +10,50 @@ def rpc_helper_closed(result):
     proof=result.get('RpcHelperClosure')
     return isinstance(proof,dict) and type(proof.get('ExitCode')) is int and proof['ExitCode']==0 and proof.get('StdoutEof') is True and proof.get('StderrEof') is True and 'RpcHelperCleanupFailure' not in result
 
+def daemon_consumer_returned(raw, expected):
+    """Complete fresh diagnostic DATA only; caller supplies all independent binding."""
+    def unique(pairs):
+        value={};seen=set()
+        for key,item in pairs:
+            if key.casefold() in seen:raise ValueError('Duplicate observation field')
+            seen.add(key.casefold());value[key]=item
+        return value
+    try:
+        prefix=b'BOE_MAIN_OPERATION_PS ';events=[]
+        for line in raw.splitlines(keepends=True):
+            if not line.startswith(prefix):continue
+            if not line.endswith(b'\n'):return None
+            e=json.loads(line[len(prefix):].decode('utf-8'),object_pairs_hook=unique,
+                parse_constant=lambda _:(_ for _ in ()).throw(ValueError('Non-JSON value')))
+            if type(e) is not dict:return None
+            if e.get('stage')=='daemon-turn-consumer-returned':events.append(e)
+        if len(events)!=1:return None
+        e=events[0]
+        for k in ('nonce','processId','daemonGuardOwnerId','turnIdentity'):
+            if e.get(k)!=expected[k]:return None
+        if type(e['processId']) is not int or e['processId']<=0:return None
+        for k in ('nonce','daemonGuardOwnerId'):
+            if type(e[k]) is not str or re.fullmatch('[0-9a-f]{32}',e[k]) is None:return None
+        if type(e.get('requestSHA256')) is not str or re.fullmatch('[0-9a-fA-F]{64}',e['requestSHA256']) is None:return None
+        if e['requestSHA256'].lower()!=expected['requestSHA256'].lower():return None
+        if type(e['turnIdentity']) is not dict or set(e['turnIdentity'])!={'sessionId','requestId','turnNumber'}:return None
+        if type(e['turnIdentity']['turnNumber']) is not int:return None
+        for k in ('requestAdmitted','consumerReturned','closeObserved','replyReadJoined','stderrReadJoined'):
+            if e.get(k) is not True:return None
+        for k in ('lost','publicationUncertain','handledError'):
+            if e.get(k) is not False:return None
+        if type(e.get('helperExitCode')) is not int or e['helperExitCode']!=0:return None
+        if any(type(e.get(k)) is not int for k in ('errorCountBefore','errorCountAfter')):return None
+        if e['errorCountBefore']<0 or e['errorCountBefore']!=e['errorCountAfter']:return None
+        a=e['originalClose'];b=e['terminalClose']
+        if type(a) is not dict or a!=b or set(a)!={'identity','pinId','closeId','operationId','outcome','closingFailed'}:return None
+        if a['identity']!=expected['mainIdentity'] or type(a['outcome']) is not int or a['outcome']!=0 or a['closingFailed'] is not False:return None
+        for k in ('pinId','closeId','operationId'):
+            if type(a[k]) is not str or re.fullmatch('[0-9a-f]{32}',a[k]) is None:return None
+        return e
+    except (KeyError,TypeError,ValueError,UnicodeError):return None
+
+
 def daemon_pair_decode(evidence, prefix, settled):
     def unique(pairs):
         value={};seen=set()

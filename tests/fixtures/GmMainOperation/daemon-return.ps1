@@ -1,6 +1,7 @@
 param([string]$RepoRoot,[ValidateSet('consumer','dispose')][string]$Mode)
 $ErrorActionPreference='Stop'
 . (Join-Path $RepoRoot 'BookOfEternityClient/Launcher/gm_main_operation.ps1')
+$realDiagnostic=${function:Write-GmOperationDiagnostic}
 $script:events=[Collections.Generic.List[string]]::new();$script:observations=@()
 function Write-GmOperationDiagnostic {param($Stage,$ErrorRecord=$null,$Context=$null);$script:events.Add($Stage);if($Stage -ceq 'daemon-turn-consumer-returned'){$script:observations+=,$Context}}
 function Require($Condition,$Message){if(-not $Condition){throw $Message}}
@@ -68,7 +69,7 @@ foreach($case in @('missing','duplicate','context-refused','sampling-mismatch','
  $script:context=[pscustomobject]@{session=$GameSessionPath;closed=$false;lost=$false;disposed=$false;closeObserved=$false;publicationUncertain=($case -eq 'uncertain');uncertainCommandReply=$null;localScopeCompleted=$false;closeOutcome=0;originalClose=$close;terminalClose=$close;exitCode=$null;replyReadJoined=$false;stderrReadJoined=$false}
  if($case -eq 'nested'){$global:BoeMainOperationContext=$script:context}
  $caught=$null;$actual=$null;try{$actual=Process-Turn -RequestPath 'controlled-unused'}catch{$caught=$_}
- if($case -eq 'nested'){Require ($script:observations.Count -eq 0 -and -not $script:context.disposed) 'Nested call emitted/closed outer operation';$global:BoeMainOperationContext=$null;continue}
+ if($case -eq 'nested'){Require ($null -eq $caught -and $actual -ceq 'controlled-result') 'Nested call result/exception changed';Require ($script:observations.Count -eq 0 -and -not $script:context.disposed) 'Nested call emitted/closed outer operation';$global:BoeMainOperationContext=$null;continue}
  if($case -in @('body-refusal','close-failure','uncertain')){Require ($null -ne $caught -and $script:observations.Count -eq 0 -and $script:context.disposed) 'Failed/uncertain consumer emitted positive or skipped disposal';continue}
  Require ($null -eq $caught) 'Unexpected consumer failure'
 
@@ -86,3 +87,17 @@ foreach($case in @('missing','duplicate','context-refused','sampling-mismatch','
  Require ($proof.handledError -eq $false -and $proof.errorCountBefore -eq 0 -and $proof.errorCountAfter -eq 0) 'Handled error hidden'
 
 }
+
+# Exercise the actual best-effort serializer, not the observation collector stub.
+$writer=[IO.StringWriter]::new();$prior=[Console]::Error
+try{[Console]::SetError($writer);& $realDiagnostic 'daemon-turn-consumer-returned' $null $proof}finally{[Console]::SetError($prior)}
+$wire=$writer.ToString();Require ($wire.StartsWith('BOE_MAIN_OPERATION_PS ')) 'Actual diagnostic serializer emitted nothing'
+$decoded=($wire.Substring('BOE_MAIN_OPERATION_PS '.Length)|ConvertFrom-Json)
+Require ($decoded.processId -eq $PID -and $decoded.nonce -ceq $env:BOE_MAIN_STOP_DIAGNOSTIC_NONCE -and $decoded.requestSHA256 -ceq ('A'*64)) 'Actual diagnostic wire binding differs'
+$dir=$env:BOE_TEST_DIAGNOSTIC_ROOT
+Require (-not [string]::IsNullOrWhiteSpace($dir) -and [IO.Directory]::Exists($dir)) 'Explicit external diagnostic output required'
+$wirePath=Join-Path $dir 'daemon-return-wire.jsonl';$expectPath=Join-Path $dir 'daemon-return-wire-expected.json'
+Require (-not [IO.File]::Exists($wirePath) -and -not [IO.File]::Exists($expectPath)) 'Wire output already exists'
+$expected=[ordered]@{nonce=$env:BOE_MAIN_STOP_DIAGNOSTIC_NONCE;processId=$PID;daemonGuardOwnerId=('8'*32);requestSHA256=('a'*64);turnIdentity=[ordered]@{sessionId='session';requestId='request';turnNumber=42};mainIdentity=$identity}
+[IO.File]::WriteAllText($expectPath,($expected|ConvertTo-Json -Depth 12),[Text.UTF8Encoding]::new($false))
+[IO.File]::WriteAllText($wirePath,$wire,[Text.UTF8Encoding]::new($false))

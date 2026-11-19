@@ -727,6 +727,7 @@ config_temp=config_path.with_name('config.phase-'+uuid.uuid4().hex+'.tmp')
 with config_temp.open('xb') as target:target.write(config_next);target.flush();os.fsync(target.fileno())
 os.replace(config_temp,config_path)
 evidence=IncrementalEvidence(out);process_observer=OwnedProcessSnapshots();observed_processes=[];last_process_sample=-5.0
+daemon_return_cut=None
 start=time.monotonic(); peers=[]; journal=EvidenceJournal(evidence); original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None;active_phase_deadline=None
 offset=0 # Defined even when the first client startup observation fails.
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
@@ -856,6 +857,24 @@ def until(test,seconds,label):
     while not test():
         if time.monotonic()>deadline:raise TimeoutError(label)
         pump()
+def wait_daemon_consumer_returned():
+    if route['Route']=='storage-local-proof':return # no ordinary turn dispatched in this phase
+    request=result.get('ActualRequest')
+    if not request or daemon_return_cut is None:raise RuntimeError('Consumer return binding unavailable; no shutdown')
+    status=json.loads(bytes.fromhex(result['DaemonSettlement']['OriginalStatusRawHex']).decode('utf-8-sig'))
+    expected={'nonce':env.get('BOE_MAIN_STOP_DIAGNOSTIC_NONCE'),'processId':status['pid'],
+        'daemonGuardOwnerId':daemon_owner,'requestSHA256':result['ActualRequestSHA256'],
+        'turnIdentity':{k:request[k] for k in ('sessionId','requestId','turnNumber')},'mainIdentity':original}
+    deadline=start+client_cleanup_seconds
+    while time.monotonic()<deadline:
+        proof=phase_evidence.daemon_consumer_returned(bytes(daemon.capture[daemon_return_cut:]),expected)
+        if proof is not None:
+            result['DaemonConsumerReturned']=proof
+            return
+        if daemon.process.poll() is not None:raise RuntimeError('Daemon exited before qualified consumer return')
+        pump()
+    raise TimeoutError('Original consumer return unconfirmed; no shutdown')
+
 def fresh(p,marker,offset,seconds=12):
     def observed():
         if marker in p.text(offset):return True
@@ -1356,6 +1375,7 @@ try:
         provider_bridge_offset=len(bridge.capture)
         ledger_witness=phase_evidence.capture_terminal_ledger_witness(session)
         (out/'pre-action-terminal-ledger-witness.json').write_bytes(ledger_witness)
+        daemon_return_cut=len(daemon.capture)
         offset=client.send((action+'\r').encode(),'one genuine game action',lambda:client.console.player(0));action_cut=offset;result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
         current_request(offset)
         request_bytes=(session/'input/turn_request.json').read_bytes();request=json.loads(request_bytes);result['ActualRequest']=request;result['ActualRequestSHA256']=sha(request_bytes)
@@ -1523,6 +1543,7 @@ finally:
     if original is not None:
         try:
             if inventory_cleanup_required or result.get('ClientCleanupFailure'):raise RuntimeError('Client cleanup unconfirmed; shutdown skipped, owner UNKNOWN')
+            wait_daemon_consumer_returned()
             shutdown_attempts+=1
             stop=rpc({'command':'shutdown','rootKey':original['rootKey'],'expectedMainIdentity':original},12)
             result['ShutdownReceipt']=stop;assert stop['ok'];proof=stop['status']['terminalStop']
