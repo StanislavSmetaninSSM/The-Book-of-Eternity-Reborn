@@ -22,7 +22,15 @@ public sealed class SpectreSelectionPtyTests
     public Task ActualLongLocationLoadPipeFrameIsUnwrappedAndReturnsBack() => RunModeAsync("pipe-load");
 
     [Fact]
-    public Task ActualExact78ColumnLoadCapturesGeometryBeforeAdmission() => RunModeAsync("pipe-load-geometry");
+    public async Task ActualExact78ColumnLoadCapturesGeometryBeforeAdmission()
+    {
+        var root=Path.Combine(TestDiagnosticPaths.Root,"spectre-geometry-data",Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        await RunAsync("/usr/bin/python3",
+            [Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/SelectionPrompt/test_geometry.py")],
+            root,"data",10);
+        await RunModeAsync("pipe-load-geometry");
+    }
 
     /// <summary>Reuses the owned inert renderer process and its exact EOF/guardian cleanup for one explicit console mode.</summary>
     private static async Task RunModeAsync(string mode)

@@ -122,6 +122,22 @@ def expected_dumb_refusal(result):
                     ('EOF','TermiosRestored','Joined','CleanupDrained'))
             and result.get('CleanupFailures')==[])
 
+def inert_geometry_selected(raw, cut, menu):
+    """Reuse maintained raw grammar; only this literal inert descriptor skips size admission."""
+    import types
+    sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'ProductionMain'))
+    import mortal_console_routes as routes
+    choices=('s | Ход 43 | Хозяйственный двор у нижней лестницы | 18.11.2026 18:00 | 99999KB','↩️ Назад')
+    def descriptor(header, rows, page_size):
+        if header!='Выберите сохранение:' or tuple(rows)!=choices or page_size!=15:
+            raise ValueError('Not the exact inert geometry descriptor')
+        return {'header':header,'choices':choices,'page_size':page_size}
+    # Private function globals copy, never mutate the live module or its guard.
+    decoder=types.FunctionType(routes.selected_frames.__code__,
+                               dict(routes.selected_frames.__globals__,fixed_menu=descriptor))
+    frames=decoder(raw,cut,menu)
+    return frames[-1] if frames else None
+
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
     assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load','pipe-inventory-cleanup','pipe-load-geometry')
@@ -230,16 +246,7 @@ def main():
                 if mode=='pty' or streams[fd]=='captured':
                     captured.extend(data);screen.feed(data)
                 else:control.feed(data)
-            def geometry_frame(choice):
-                # Inert-only exact literal observation, not live menu admission.
-                # Screen already rejects unsupported controls. Never join wrapped rows.
-                tail=screen.plain[frame_cut:].replace('\r','')
-                at=tail.rfind('Выберите сохранение:\n')
-                if at<0:return False
-                a,b=load_menu['choices']
-                expected='Выберите сохранение:\n'+('> '+a+'\n  '+b if choice=='SMOKE_ALPHA' else '  '+a+'\n> '+b)
-                return tail[at:]==expected and not screen.pending and not screen.decoder.getstate()[0]
-            ready=lambda choice: geometry_frame(choice) if geometry and stage>=2 else (selected_frame(bytes(captured),raw_cut,menu) ==
+            ready=lambda choice: (inert_geometry_selected(bytes(captured),raw_cut,menu)==(first_label if choice=='SMOKE_ALPHA' else footer)) if geometry and stage>=2 else (selected_frame(bytes(captured),raw_cut,menu) ==
                 (first_label if choice=='SMOKE_ALPHA' else footer)) if fixed_render else (
                 screen.selected(choice) if mode=='pty' else screen.frame(choice,frame_cut))
             if stage==0 and ready('SMOKE_ALPHA'):

@@ -4895,3 +4895,13 @@ GO is limited to durable fixture preservation and concrete-new-seed preparation
 after the geometry gate. Exact new-seed dependency bytes and all final packets
 must be fully reviewed before each launch; live-window edits are only enumerated
 fresh timestamp bindings with authenticated request checks and mismatch refusal.
+
+T034 observer source review rejected the first literal Screen.plain comparison:
+it rejected valid Spectre padding and discarded significant erase/cursor controls.
+The next UNRUN WIP reuses raw selected_frames through a cloned function-global
+mapping and adds three inert DATA controls; it has not been accepted. Coordinator
+review flags reflective __code__/__globals__ guard substitution as inappropriate:
+prefer an explicit shared raw-decoder entrypoint behind unchanged public admission.
+No build or renderer has run; no geometry/admission behavior is qualified. Preserve
+this intermediate source for recovery, then review the narrow direct-API factor
+and existing parser regressions before any causal renderer execution.
