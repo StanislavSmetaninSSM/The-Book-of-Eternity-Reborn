@@ -647,9 +647,18 @@ remain negative controls. Original manifest/authority bytes and all test state
 must remain unchanged by validation. Existing continuity already recognizes an
 unchanged historical carrier; no production exception is implemented here.
 
-Official proposed selection mortal-ordinary-response-contract is two authored
+Official proposed selections mortal-author-debug-contract (two cases) and
+mortal-retained-carrier-contract (eight cases) separate the authored
 debug cases plus eight carrier cases across the existing unit/integration projects.
 Fresh owning builds, PlanOnly exact10, then one bounded run only after source
 review. A preparation/error is not causal RED; the unchanged-carrier failure must
 follow real snapshot/equality prerequisites. No runtime/live preparation follows
 a result automatically.
+
+The initial combined runner reached eight setup failures at BOM manifest decoding
+before validator invocation; its fail-fast ordering left the two debug cases
+unrun. This is not causal RED. The test now decodes manifest text with the same
+BOM-aware read pattern as existing fixtures while retaining exact raw bytes for
+identity assertions. Separate exact official selectors let unrun Unit2 execute
+first, then the corrected Integration8 once, without repeating a failing group
+merely to reach another descriptor. Production and failed world remain untouched.
