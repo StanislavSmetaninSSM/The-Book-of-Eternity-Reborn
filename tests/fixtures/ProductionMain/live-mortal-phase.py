@@ -738,25 +738,8 @@ if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',Co
 result.update(SeededLiveMortal=not restored_diagnostic,SeedSessionId=historical_session,BasePath=str(base),SeedManifestSha256=hashlib.sha256(seed_bytes).hexdigest(),ExpectedTurnNumber=expected_turn,SetupMarkerIsAcceptedGmTurn=False)
 if restored_diagnostic:result.update(RestoredAcceptedDataDiagnostic=True,DiagnosticSourceProbeSHA256=seed['SourceProbeSHA256'],RuntimeSource=seed['RuntimeSource'],NotT021Qualification=True)
 def terminal_fixture_admission():
-    # Explicit immutable source package only; no checkout fallback/download.
-    root=out/'terminal-fixture';pins=package_manifest.get('TerminalFixturePins')
-    if type(pins) is not dict or not pins:raise ValueError('Missing prepared terminal fixture pins')
-    expected={'SelectionPrompt/fullroute_inputs.py','ProductionMain/mortal_console_routes.py',
-        'SelectionPrompt/terminal/client_session.py','SelectionPrompt/terminal/client_ui.py',
-        'SelectionPrompt/terminal/owned_terminal.py','SelectionPrompt/terminal/pty_probe.py',
-        'SelectionPrompt/terminal/sidecar.mjs','SelectionPrompt/terminal/policy.mjs','SelectionPrompt/terminal/provenance.json'}
-    if set(pins)!=expected:raise ValueError('Unsupported terminal source package')
-    if any(p.is_symlink() for p in [root,*root.parents]):raise ValueError('Linked terminal root')
-    entries=list(root.rglob('*'))
-    if any(p.is_symlink() or not (stat.S_ISREG(p.lstat().st_mode) or stat.S_ISDIR(p.lstat().st_mode)) for p in entries):raise ValueError('Special terminal source entry')
-    actual={str(p.relative_to(root)) for p in entries if p.is_file()}
-    if actual!=expected:raise ValueError('Terminal fixture inventory mismatch')
-    for rel,digest in pins.items():
-        path=root/rel
-        if sha(path.read_bytes())!=digest:raise ValueError('Terminal source pin mismatch')
-    node=Path(package_manifest['TerminalNodePath'])
-    if not node.is_absolute() or node.is_symlink() or sha(node.read_bytes())!=package_manifest['TerminalNodeSHA256']:raise ValueError('Terminal Node mismatch')
-    return root,node,out/'terminal-deps'
+    # Shared pure preflight, before imports and again at closing; no checkout fallback.
+    return phase_evidence.terminal_package_preflight(out,package_manifest)
 
 class Terminal:
     def __init__(self,name,args,captured_output=False):

@@ -188,3 +188,37 @@ No rstrip/substring admission is added. Correction is SOURCE ONLY until review.
 Original failure outcome is retained; guardian ECHILD/driver1 with no emergency,
 sidecar abort joined/EOF (not normal close). All 32050 sources and eight owning
 outputs joined unchanged across that attempt. Main-wire and live remain UNRUN.
+
+
+### Unaffected source completion after IPC capability refusal
+
+The corrected terminal corpus and tiny CursorTop qualification passed; the first
+main-wire case stopped at the existing NamedPipe client socket constructor with
+EACCES, before application-client navigation. The neutral CLI had started; guardian
+physical cleanup and direct ScopedRetired are not Continue/Exit or RPC receipts.
+No IPC retry, alternate transport, escalation, owner launch or live experiment is
+part of this source block. Main-wire runtime acceptance remains BLOCKED.
+
+The live route AST DATA now follows predicate-bearing sends and mode-derived key
+intents rather than bypassing them. Existing 28 methods retain their route/cleanup
+responsibility. Six additional pure DATA controls extract only the actual Save
+interval function and inspect actual send/cleanup syntax; package fixtures check
+exact source/dependency membership, hashes, modes, links and extra files. All are
+UNRUN pending saved source review; no import of live module top-level.
+
+For eventual normal manual preparation, copy exactly TERMINAL_SOURCE_FILES from
+the reviewed checkout into phase/terminal-fixture and the 17 provenance-declared
+regular dependency files into phase/terminal-deps. Record TerminalFixturePins,
+TerminalFixtureModes, TerminalDependencyPins, TerminalDependencyModes,
+TerminalNodePath and TerminalNodeSHA256 in the existing relay-phase-package.json.
+The copied route module must equal ConsoleRouteModuleSHA256. Use
+terminal_package_preflight before importing adapter modules and at final evidence
+closure. This is pure verification, not a new preparation engine or command;
+no package/world has been prepared by this block. Existing immutable source/output
+joins and manual file-copy ownership/mode rules remain mandatory.
+
+The source inventory/dependency hash work is admission-local DATA with no long-lived
+cache; a final read is required to prove no package drift. OwnedTerminal independently
+rechecks its executable/dependencies immediately before spawning. This intentional
+fresh boundary is not replaced by stale package metadata. No measured performance
+claim is made for this unrun source block.

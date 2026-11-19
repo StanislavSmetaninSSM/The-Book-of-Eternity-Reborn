@@ -1,5 +1,6 @@
 """T024 pure route DATA tests, no terminal/GM/ownership fabrication."""
-import ast, pathlib, unittest
+import ast, pathlib, unittest, sys, types
+sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/"SelectionPrompt"))
 import mortal_console_routes as console_routes
 from mortal_console_routes import checked_route, storage_target, fresh_selection, require_local_unchanged, client_environment, selected_frame, item_position
 
@@ -60,16 +61,20 @@ class RouteTests(unittest.TestCase):
         node=next(n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name=='finite_select')
         class Peer:
             def __init__(self,redraw=True):self.capture=bytearray(b'Menu\n> Alpha\n  Beta\r');self.keys=[];self.redraw=redraw
-            def send(self,key,phase):
+            def send(self,key,phase,predicate,*,cleanup=False):
+                if not predicate():raise ValueError('Fresh predicate refused')
+                key=key() if callable(key) else key
+                cut=len(self.capture)
                 self.keys.append(key)
                 if key==b'\x1b[B' and self.redraw:self.capture.extend(b'Menu\n  Alpha\n> Beta\r')
+                return cut
         def until(predicate,*unused):
             if not predicate():raise TimeoutError('No fresh frame')
-        peer=Peer();ns={'client':peer,'console_routes':console_routes,'until':until}
+        peer=Peer();peer.console=types.SimpleNamespace(view=types.SimpleNamespace(arrow=lambda:b'\x1b[B'));ns={'client':peer,'console_routes':console_routes,'until':until}
         exec(compile(ast.Module(body=[node],type_ignores=[]),'actual finite selector','exec'),ns)
         ns['finite_select'](console_routes.fixed_menu('Menu',['Alpha','Beta'],20),'Beta',0,2)
         self.assertEqual(peer.keys,[b'\x1b[B',b'\r'])
-        peer=Peer(False);ns['client']=peer
+        peer=Peer(False);peer.console=types.SimpleNamespace(view=types.SimpleNamespace(arrow=lambda:b'\x1b[B'));ns['client']=peer
         with self.assertRaises(TimeoutError):ns['finite_select'](console_routes.fixed_menu('Menu',['Alpha','Beta'],20),'Beta',0,2)
         self.assertEqual(peer.keys,[b'\x1b[B'])
     def selection_sequence(self, transitions, target_index=3):
@@ -79,10 +84,14 @@ class RouteTests(unittest.TestCase):
         def frame(index):return ('\r\x1b[6A'+menu['header']+'\n'+'\n'.join(('> ' if n==index else '  ')+label for n,label in enumerate(labels))).encode()
         class Peer:
             def __init__(self):self.capture=bytearray(frame(0));self.keys=[];self.pending=[];self.turn=iter(transitions)
-            def send(self,key,phase):
+            def send(self,key,phase,predicate,*,cleanup=False):
+                if not predicate():raise ValueError('Fresh predicate refused')
+                key=key() if callable(key) else key
+                cut=len(self.capture)
                 self.keys.append(key)
                 if key==b'\x1b[B':self.pending.extend(next(self.turn,[]))
-        peer=Peer();peer.frame=frame
+                return cut
+        peer=Peer();peer.console=types.SimpleNamespace(view=types.SimpleNamespace(arrow=lambda:b'\x1b[B'));peer.frame=frame
         def until(predicate,*unused):
             for _ in range(8):
                 if predicate():return
@@ -113,9 +122,12 @@ class RouteTests(unittest.TestCase):
         peer,run=self.selection_sequence([[[1],b'\r\x1b[6Aunfinished']],target_index=1)
         # Both chunks arrive together, so no earlier complete frame can be accepted.
         original_send=peer.send
-        def send(key,phase):
-            original_send(key,phase)
+        def send(key,phase,predicate,*,cleanup=False):
+            resolved=key() if callable(key) else key
+            cut=original_send(key,phase,predicate,cleanup=cleanup)
+            key=resolved
             if key==b'\x1b[B':peer.pending=[peer.frame(1)+b'\r\x1b[6Aunfinished']
+            return cut
         peer.send=send
         with self.assertRaises(TimeoutError):run()
         self.assertEqual(peer.keys,[b'\x1b[B'])
@@ -127,11 +139,15 @@ class RouteTests(unittest.TestCase):
         def frame(n):return ('\r\x1b[6A'+menu['header']+'\n'+'\n'.join(('> ' if i==n else '  ')+s for i,s in enumerate(labels))).encode()
         class Peer:
             def __init__(self):self.capture=bytearray(frame(0));self.keys=[];self.pending=[frame(0),frame(1)];self.index=1
-            def send(self,key,phase):
+            def send(self,key,phase,predicate,*,cleanup=False):
+                if not predicate():raise ValueError('Fresh predicate refused')
+                key=key() if callable(key) else key
+                cut=len(self.capture)
                 self.keys.append(key)
                 if key==b'\x1b[B':self.index+=1;self.pending.append(frame(self.index))
                 elif key==b'\r' and prompt:self.pending.append('Ваш ход\n >  '.encode())
-        peer=Peer();ctx={'menu':menu,'cut':0,'selected':labels[0],'pending_next':labels[1],'send_confirmed':True}
+                return cut
+        peer=Peer();peer.console=types.SimpleNamespace(view=types.SimpleNamespace(arrow=lambda:b'\x1b[B'));ctx={'menu':menu,'cut':0,'selected':labels[0],'pending_next':labels[1],'send_confirmed':True}
         def until(predicate,*unused):
             for _ in range(10):
                 if predicate():return
@@ -167,7 +183,7 @@ class RouteTests(unittest.TestCase):
         self.assertEqual(peer.keys,[])
     def test_inventory_context_records_pending_before_input_uncertainty(self):
         ns,peer,_=self.inventory_cleanup_fixture();ctx=ns['inventory_context'];ctx['pending_next']=None;peer.pending=[]
-        def ambiguous_send(*unused):raise OSError('injected input uncertainty')
+        def ambiguous_send(*unused,**kwargs):raise OSError('injected input uncertainty')
         peer.send=ambiguous_send
         with self.assertRaises(OSError):ns['finite_select'](ctx['menu'],ctx['menu']['choices'][3],0,5)
         self.assertEqual(ctx['pending_next'],ctx['menu']['choices'][1]);self.assertEqual(ctx['cut'],len(peer.capture))
@@ -271,19 +287,15 @@ class RouteTests(unittest.TestCase):
             with self.subTest(text=text):self.assertFalse(console_routes.clean_save_result(text))
         tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
         fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='storage_local_route')
-        guards=[n for n in fn.body if isinstance(n,ast.If) and any(isinstance(c,ast.Call) and
-            isinstance(c.func,ast.Attribute) and c.func.attr=='clean_save_result' for c in ast.walk(n.test))]
-        self.assertEqual(len(guards),1)
-        guard=guards[0];index=fn.body.index(guard)
+        guard=next(n for n in fn.body if isinstance(n,ast.If) and ast.unparse(n.test)=='not clean')
+        index=fn.body.index(guard)
         earlier=ast.unparse(ast.Module(body=fn.body[:index],type_ignores=[]))
         later=ast.unparse(ast.Module(body=fn.body[index+1:],type_ignores=[]))
         self.assertIn('acknowledge actual Save result',earlier)
         self.assertTrue(earlier.rfind('fresh_player')>earlier.index('acknowledge actual Save result'))
+        self.assertIn('clean_save_player_interval(outcome)',earlier)
         self.assertIn('move(False)',later)
-        class Peer:
-            def text(self,cut):return success+'\n'+warning+'\nВаш ход\n >  '
-        ns={'console_routes':console_routes,'client':Peer(),'save_result_cut':1}
-        with self.assertRaises(RuntimeError):exec(compile(ast.Module(body=[guard],type_ignores=[]),'actual Save result refusal','exec'),ns)
+        with self.assertRaises(RuntimeError):exec(compile(ast.Module(body=[guard],type_ignores=[]),'actual Save result refusal','exec'),{'clean':False})
     def test_local_route_does_not_accept_story_or_queue_change(self):
         before={'StorySHA256':'a','History':{'present':False,'sha256':None},'QueuePins':{}}
         require_local_unchanged(before,dict(before))

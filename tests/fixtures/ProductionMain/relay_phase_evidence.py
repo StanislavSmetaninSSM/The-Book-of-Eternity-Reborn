@@ -3,7 +3,7 @@
 Immutable inventories are passed explicitly per phase; mutable world and terminal
 proofs are freshly checked at boundaries. No cross-phase cache.
 """
-import hashlib, json, re
+import hashlib, json, re, stat
 from pathlib import Path
 
 def rpc_helper_closed(result):
@@ -95,6 +95,43 @@ def relay_package_preflight(out,ship,driver):
     if manifest.get('EvidenceModuleSHA256')!=sha(Path(__file__).read_bytes()):raise ValueError('Prepared evidence module pin mismatch')
     if manifest.get('ConsoleRouteModuleSHA256')!=sha(Path(__file__).with_name('mortal_console_routes.py').read_bytes()):raise ValueError('Prepared console route module pin mismatch')
     return manifest,sha(raw)
+
+TERMINAL_SOURCE_FILES=frozenset({
+    'SelectionPrompt/fullroute_inputs.py','ProductionMain/mortal_console_routes.py',
+    'SelectionPrompt/terminal/client_session.py','SelectionPrompt/terminal/client_ui.py',
+    'SelectionPrompt/terminal/owned_terminal.py','SelectionPrompt/terminal/pty_probe.py',
+    'SelectionPrompt/terminal/sidecar.mjs','SelectionPrompt/terminal/policy.mjs',
+    'SelectionPrompt/terminal/provenance.json'})
+TERMINAL_NODE_SHA256='acbe4b8d9153b841ed0697cbfc4f93e767386620edb745ab9358306c0a6f31aa'
+
+def terminal_package_preflight(out,manifest):
+    """Exact fixed terminal package DATA. No import, execution, download or authority."""
+    def inventory(root):
+        if not root.is_dir() or any(p.is_symlink() for p in [root,*root.parents]):raise ValueError('Terminal root/link refused')
+        files={};modes={};pending=[root]
+        while pending:
+            for p in pending.pop().iterdir():
+                mode=p.lstat().st_mode
+                if stat.S_ISDIR(mode):pending.append(p)
+                elif stat.S_ISREG(mode):
+                    key=str(p.relative_to(root));files[key]=sha(p.read_bytes());modes[key]=stat.S_IMODE(mode)
+                else:raise ValueError('Terminal linked/special entry refused')
+        return files,modes
+    root=Path(out)/'terminal-fixture';prefix=Path(out)/'terminal-deps'
+    sources,source_modes=inventory(root)
+    if set(sources)!=TERMINAL_SOURCE_FILES or sources!=manifest.get('TerminalFixturePins') or source_modes!=manifest.get('TerminalFixtureModes'):
+        raise ValueError('Terminal source inventory/hash/mode mismatch')
+    if sources['ProductionMain/mortal_console_routes.py']!=manifest.get('ConsoleRouteModuleSHA256'):raise ValueError('Terminal and driver route module differ')
+    provenance=strict_settings((root/'SelectionPrompt/terminal/provenance.json').read_bytes())
+    if set(provenance)!={'@xterm/headless','@xterm/addon-unicode11'} or provenance['@xterm/headless']['version']!='6.0.0' or provenance['@xterm/addon-unicode11']['version']!='0.9.0':raise ValueError('Terminal exact releases mismatch')
+    expected={name:digest for package in provenance.values() for name,digest in package['files'].items()}
+    dependencies,dependency_modes=inventory(prefix)
+    if len(expected)!=17 or dependencies!=expected or dependencies!=manifest.get('TerminalDependencyPins') or dependency_modes!=manifest.get('TerminalDependencyModes'):
+        raise ValueError('Terminal dependency inventory/hash/mode mismatch')
+    node=Path(manifest['TerminalNodePath'])
+    if not node.is_absolute() or any(p.is_symlink() for p in [node,*node.parents]) or not stat.S_ISREG(node.stat().st_mode):raise ValueError('Terminal Node path refused')
+    if manifest.get('TerminalNodeSHA256')!=TERMINAL_NODE_SHA256 or sha(node.read_bytes())!=TERMINAL_NODE_SHA256:raise ValueError('Terminal Node pin mismatch')
+    return root,node,prefix
 
 def relay_published_owner_join(record,status,pipe,previous):
     identity=record.get('Identity',{})
