@@ -99,7 +99,7 @@ def summarize_observed_diagnostic_trace(directory, nonce, root, owner, client_pi
     require(len({(r['ProcessId'],r['Occurrence']) for r in markers})==len(markers))
     per_pid={}
     for row in markers:per_pid.setdefault(row['ProcessId'],[]).append(row)
-    foreground=0;helpers=0
+    foreground=0;helpers=0;other_active=0
     for pid,rows in per_pid.items():
         rows.sort(key=lambda r:r['CaptureMonotonicTimestamp']);chunks=[]
         for row in rows:
@@ -114,13 +114,17 @@ def summarize_observed_diagnostic_trace(directory, nonce, root, owner, client_pi
                 if pid==client_pid:
                     purposes={g[0]['Purpose'] for g in leases}
                     if {'SessionMutation','SessionFinalization'}<=purposes:foreground+=1
+                else:other_active+=1
             else:
                 require(stages==['active-received','canonical-current-generation-lease-acquired','helper-before-ready','helper-ready-written'])
                 require(all(pin_key(r['OriginalClose'])==key[1] for r in chunk[2:]))
+                canonical,before,ready=[r['CaptureMonotonicTimestamp'] for r in chunk[1:]]
+                require(any(g[1]['CaptureMonotonicTimestamp']<=canonical<=g[2]['CaptureMonotonicTimestamp']<=before for g in leases))
+                require(before<ready or (before==ready and chunk[2]['Occurrence']<chunk[3]['Occurrence']))
                 helpers+=1
     require(foreground>0)
     return {'PhysicalEvents':len(physical),'PhysicalTriples':len(groups),'HealthyMarkers':len(markers),
-        'HelperReadySequences':helpers,'ForegroundActiveWithMutationAndFinalization':foreground,
+        'HelperReadySequences':helpers,'OtherJoinedActiveObservations':other_active,'ForegroundActiveWithMutationAndFinalization':foreground,
         'IndependentForegroundPid':client_pid,'ObservedPhysicalPids':sorted({r['ProcessId'] for r in physical}),
         'ObservedBytes':bytecount,'Files':files,'ExhaustiveCoverage':False,
         'Limits':'Physical-only PIDs are observed DATA, not an independently owned OS inventory. Foreground tuple joins do not identify a specific Save. No timing neutrality or exhaustive observation claim.'}

@@ -518,15 +518,20 @@ class TraceFreezer(unittest.TestCase):
             for name,raw in originals.items():
                 if name=='owner-nonce' or '-marker-' in name:continue
                 row=json.loads(raw.split(b' ',1)[1]);row['ProcessId']=helper_pid;row['OriginalPin']=pin
-                row['CaptureMonotonicTimestamp']+=10000
+                row['CaptureMonotonicTimestamp']=active['CaptureMonotonicTimestamp']+10000+(row['Occurrence']-1)*100+{'physical-opened':10,'lease-granted':20,'physical-dispose-completed':40}[row['Stage']]
                 p=trace/f"{helper_pid}-{row['Occurrence']}-{row['Stage']}.json"
                 p.write_bytes(('BOE_CANONICAL_LEASE_OBSERVATION '+json.dumps(row)+'\n').encode());p.chmod(0o600)
             for n,stage in enumerate(('active-received','canonical-current-generation-lease-acquired','helper-before-ready','helper-ready-written')):
-                row=copy.deepcopy(active);row.update(ProcessId=helper_pid,Occurrence=n+1,Stage=stage,CaptureMonotonicTimestamp=active['CaptureMonotonicTimestamp']+n)
+                row=copy.deepcopy(active);row.update(ProcessId=helper_pid,Occurrence=n+1,Stage=stage,CaptureMonotonicTimestamp=active['CaptureMonotonicTimestamp']+10000+(0,30,50,60)[n])
                 row['OriginalPin']=pin if n==0 else None
                 row['OriginalClose']=None if n<2 else {**{k:pin[k] for k in ('PinId','CloseId','OperationId','Identity')},'Outcome':0,'ClosingFailed':False}
                 p=trace/f"{helper_pid}-marker-{n+1}-{stage}.json";p.write_bytes(('BOE_MAIN_OPERATION_MARKER '+json.dumps(row)+'\n').encode());p.chmod(0o600)
             self.assertEqual(call()['HelperReadySequences'],1)
+            cp=trace/f'{helper_pid}-marker-2-canonical-current-generation-lease-acquired.json';correct=cp.read_bytes()
+            early=json.loads(correct.split(b' ',1)[1]);early['CaptureMonotonicTimestamp']=active['CaptureMonotonicTimestamp']+10001
+            cp.write_bytes(('BOE_MAIN_OPERATION_MARKER '+json.dumps(early)+'\n').encode())
+            with self.assertRaises(ValueError):call()
+            cp.write_bytes(correct)
             (trace/f'{helper_pid}-marker-3-helper-before-ready.json').unlink()
             with self.assertRaises(ValueError):call()
             restore()
@@ -536,7 +541,7 @@ class TraceFreezer(unittest.TestCase):
             exec(compile(wrapper.read_text(),str(wrapper),'exec'),wrapper_ns)
             phase=pathlib.Path(td)/'phase';phase.mkdir();trace.rename(phase/'physical-trace')
             serialized_owner={**owner,'Backend':'LinuxSupervisor'}
-            inputs={'launch-profile.json':{'StopNonce':nonce},'probe-result.json':{'OriginalRunningRecord':{'Identity':serialized_owner},'BasePath':owner['RootKey'],'Success':False},'rpc-journal.json':[{'Entrypoint':'client','OriginalPid':pid}]}
+            inputs={'launch-profile.json':{'StopNonce':nonce,'PhysicalTrace':{'Route':'external','Directory':str(phase/'physical-trace')}},'probe-result.json':{'OriginalRunningRecord':{'Identity':serialized_owner},'BasePath':owner['RootKey'],'Success':False},'rpc-journal.json':[{'Entrypoint':'client','OriginalPid':pid}]}
             digests=[]
             for name,value in inputs.items():
                 raw=json.dumps(value).encode();(phase/name).write_bytes(raw);digests.append(hashlib.sha256(raw).hexdigest())
@@ -544,6 +549,9 @@ class TraceFreezer(unittest.TestCase):
             frozen=wrapper_ns['freeze'](phase,*digests,output);self.assertFalse(frozen['RouteSuccess']);self.assertEqual(frozen['HealthyMarkers'],1)
             with self.assertRaises(FileExistsError):wrapper_ns['freeze'](phase,*digests,output)
             with self.assertRaises(ValueError):wrapper_ns['freeze'](phase,'0'*64,*digests[1:],pathlib.Path(td)/'bad.json')
+            wrong=inputs['launch-profile.json'];wrong['PhysicalTrace']['Directory']=str(phase/'foreign')
+            raw=json.dumps(wrong).encode();(phase/'launch-profile.json').write_bytes(raw)
+            with self.assertRaises(ValueError):wrapper_ns['freeze'](phase,hashlib.sha256(raw).hexdigest(),*digests[1:],pathlib.Path(td)/'wrong-phase.json')
         for name,digest in pins.items():self.assertEqual(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest(),digest)
 
 if __name__=='__main__':

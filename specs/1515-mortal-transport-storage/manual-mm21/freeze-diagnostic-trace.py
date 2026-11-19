@@ -12,6 +12,8 @@ def freeze(phase, profile_sha, probe_sha, journal_sha, output):
         if hashlib.sha256(raw).hexdigest()!=digest:raise ValueError('Frozen input hash differs: '+name)
         return strict_settings(b'{"Journal":'+raw+b'}')['Journal'] if array else strict_settings(raw)
     profile=pinned('launch-profile.json',profile_sha)
+    if profile.get('PhysicalTrace')!={'Route':'external','Directory':str(phase/'physical-trace')}:
+        raise ValueError('Pinned phase external trace path differs')
     probe=pinned('probe-result.json',probe_sha)
     journal=pinned('rpc-journal.json',journal_sha,True)
     exit_raw=_restored_plain_path(phase/'launch.exit').read_text().strip()
