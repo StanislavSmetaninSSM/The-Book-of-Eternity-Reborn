@@ -144,8 +144,16 @@ def returned_save_boundary(raw, cut, menu):
     match=_SUCCESS.match(raw[cut:])
     if match is None:return None
     boundary=cut+match.end()
+    # Unlike the generic menu grammar, Save return permits NO plain prefix.
+    # Real Spectre may hide the cursor and decorate the exact first header line.
+    first=menu['header'].split('\n')[0].encode()
+    entry=rb'(?:\x1b\[\?25l)?'+_EDGE+re.escape(first)+_EDGE+rb' *\r?\n'
+    if re.match(entry,raw[boundary:]) is None:return None
     frames=routes.selected_frames(raw,boundary,menu)
     return boundary if frames else None
+
+def complete_save_observation(view, raw, cut):
+    return view.prompt('✅ Игра сохранена',cut) and save_outcome(raw[cut:])
 
 def fresh_route_key(terminal, view, drain, key, label, predicate, deadline):
     """Drain+revalidate before resolving a mode-dependent key intent exactly once."""
@@ -276,8 +284,7 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
     wait(lambda: screen.prompt('Описание (необязательно):',prompt_cut), 'Actual Save description composer')
     send(b'\r','Empty description Enter',lambda: screen.prompt('Описание (необязательно):',prompt_cut))
     save_cut=len(captured)
-    wait(lambda: screen.prompt('✅ Игра сохранена',save_cut), 'Actual Save outcome')
-    if not save_outcome(bytes(captured)[save_cut:]):raise ValueError('Noncanonical or follow-up Save outcome')
+    wait(lambda: complete_save_observation(screen,bytes(captured),save_cut), 'Complete standalone actual Save outcome')
     send(b'\r','Save acknowledgement',lambda: screen.prompt('✅ Игра сохранена',save_cut) and save_outcome(bytes(captured)[save_cut:]))
     stage('deposit');previous=None
     deposit_menu=inventory()

@@ -3,7 +3,7 @@ import unittest
 import types
 from unittest.mock import patch
 from fullroute_inputs import (OPTIONS, DESCRIPTIONS, OPTIONS_FOOTER, options_frame,
-                             ordered_transition, retained_selection, clean_save_interval, require_time, wait_observation, send_current, AcknowledgedTerminalView, options_cells, save_outcome, returned_save_boundary, fresh_route_key)
+                             ordered_transition, retained_selection, clean_save_interval, require_time, wait_observation, send_current, AcknowledgedTerminalView, options_cells, save_outcome, returned_save_boundary, fresh_route_key, complete_save_observation)
 import mortal_console_routes as routes
 
 
@@ -75,6 +75,15 @@ class FullRouteInputData(unittest.TestCase):
             self.assertFalse(view.options(cut,OPTIONS[0],False))
         raw[:]=options(OPTIONS[0])+options(OPTIONS[0],False);view.cut=len(raw)
         self.assertTrue(view.options(cut,OPTIONS[0],False))
+        # Complete OLD Save redraw arriving during final drain is before the
+        # returned physical action cut, never evidence for numeric1's new draw.
+        terminal=types.SimpleNamespace(key=lambda *args:None)
+        def drain_old():
+            raw.extend(options(OPTIONS[0],False));view.cut=len(raw)
+        resolved=fresh_route_key(terminal,view,drain_old,b'1','numeric1',lambda:view.options(0,OPTIONS[0],True),float('inf'))
+        action_cut=len(raw) # Actual run assigns cut only AFTER send returns.
+        self.assertEqual(resolved,b'1');self.assertEqual(action_cut,len(raw))
+        self.assertFalse(view.options(action_cut,OPTIONS[0],False))
         view.lines[2]='◆ '+OPTIONS[0]
         self.assertFalse(view.options(cut,OPTIONS[0],False))
         view.pending=True
@@ -106,6 +115,16 @@ class FullRouteInputData(unittest.TestCase):
     def test_save_exact_outcome_and_returned_inventory_reject_interleaving(self):
         success='✅ Игра сохранена\r\n'.encode()
         self.assertTrue(save_outcome(b'\r\n'+success))
+        # Exercise the real wait predicate at EVERY raw read split, including the
+        # formerly premature visible-text-before-CRLF boundary.
+        for split in range(len(success)+1):
+            collected=bytearray(success[:split]);pumps=[]
+            view=types.SimpleNamespace(prompt=lambda text,cut:text.encode() in collected[cut:])
+            def pump():pumps.append(True);collected.extend(success[split:])
+            observed=wait_observation(lambda:complete_save_observation(view,bytes(collected),0),pump,float('inf'),'split success')
+            self.assertTrue(observed)
+            self.assertEqual(len(pumps),0 if split==len(success) else 1)
+
         menu=routes.fixed_menu('Inventory',['chalk','Back'],20)
         inventory=b'Inventory\n> chalk\n  Back'
         self.assertEqual(returned_save_boundary(success+inventory,0,menu),len(success))
