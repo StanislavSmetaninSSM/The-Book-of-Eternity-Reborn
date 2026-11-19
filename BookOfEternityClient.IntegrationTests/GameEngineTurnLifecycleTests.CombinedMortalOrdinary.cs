@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
@@ -44,7 +45,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Empty(steward["inventory"]!.AsArray());
         var priorStory = (await _fs.ReadFileAsync(storyPath))!;
         Assert.Single(priorStory.Split('\n', StringSplitOptions.RemoveEmptyEntries));
-        var journalBefore = await ReadCombinedJsonAsync(journalPath);
+        var journalBytesBefore = (await _fs.ReadFileBytesAsync(journalPath))!;
+        var journalBefore = JsonNode.Parse(journalBytesBefore)!;
+        var scheduleBefore = JsonSerializer.Deserialize<ProgressionScheduleState>(
+            (await _fs.ReadFileAsync(ProgressionScheduleService.SchedulePath))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+        Assert.Equal(0, scheduleBefore.PendingWorldCycles);
+        Assert.Equal(0, scheduleBefore.PendingFactionCycles);
         JsonNode? expectedJournals = null;
         TurnRequest? actualRequest = null;
         setAuthor(async request =>
@@ -73,6 +79,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(43, admitted.TurnNumber);
             Assert.Equal(request.Timestamp, manifest.RequestTimestamp);
             Assert.Equal(retained[npcPath], await _fs.ReadFileBytesAsync(manifest.Files[npcPath]));
+            Assert.Equal(journalBytesBefore, await _fs.ReadFileBytesAsync(manifest.Files[journalPath]));
+            Assert.Equal(journalBytesBefore, await _fs.ReadFileBytesAsync(journalPath));
             Assert.Equal(retained[npcPath], await _fs.ReadFileBytesAsync(npcPath));
             Assert.False(_fs.FileExists(ProgressionScheduleService.ReportPath));
             var journals = journalBefore.DeepClone();
@@ -129,6 +137,16 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(await runtime.Engine.ValidateBeforeOrdinaryPlayerTurnAsync(), _journeyLogger.Describe());
         Assert.Equal(43, runtime.GameLoop.TurnNumber);
         Assert.Equal(2, calls());
+        foreach (var pair in retained) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+        var scheduleAfter = JsonSerializer.Deserialize<ProgressionScheduleState>(
+            (await _fs.ReadFileAsync(ProgressionScheduleService.SchedulePath))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
+        Assert.Equal(505, scheduleAfter.CurrentWorldTimeInMinutes);
+        Assert.Equal(scheduleBefore.LastWorldSimulationTimeInMinutes, scheduleAfter.LastWorldSimulationTimeInMinutes);
+        Assert.Equal(scheduleBefore.LastFactionSimulationTimeInMinutes, scheduleAfter.LastFactionSimulationTimeInMinutes);
+        Assert.Equal(0, scheduleAfter.PendingWorldCycles);
+        Assert.Equal(0, scheduleAfter.PendingFactionCycles);
+        var snapshotDirectory = _fs.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotDirectory);
+        Assert.True(!Directory.Exists(snapshotDirectory) || !Directory.EnumerateFileSystemEntries(snapshotDirectory).Any());
     }
 }
 #endif
