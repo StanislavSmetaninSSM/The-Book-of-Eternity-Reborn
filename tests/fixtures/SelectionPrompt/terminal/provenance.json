@@ -1,0 +1,35 @@
+{
+  "@xterm/headless": {
+    "version": "6.0.0",
+    "integrity": "sha512-5Yj1QINYCyzrZtf8OFIHi47iQtI+0qYFPHmouEfG8dHNxbZ9Tb9YGSuLcsEwj9Z+OL75GJqPyJbyoFer80a2Hw==",
+    "gitHead": "f447274f430fd22513f6adbf9862d19524471c04",
+    "archiveSHA256": "07e4970b1674e7ef6cbd57c8c17746eaadcd41aa7df5b33695fd649e6ec4d78a",
+    "files": {
+      "node_modules/@xterm/headless/lib-headless/xterm-headless.js": "17a90b650cf6b77cce2b98c4063884d43545e4ce177a54b76ccfc906f1aacaed",
+      "node_modules/@xterm/headless/package.json": "6c39530ee759998113bd8bcc306d1b725c0b1d5b0cdc04e071f6945a5f5edf1a",
+      "node_modules/@xterm/headless/lib-headless/xterm-headless.js.map": "780e782badc8189491a469c9277b783e01911882ea84417b31e71294ea927d98",
+      "node_modules/@xterm/headless/lib-headless/xterm-headless.mjs.map": "aa22417fd3552189dd764ad1f99251aeb6d3c30d9b9c578a022a2aba2c1c0827",
+      "node_modules/@xterm/headless/README.md": "9742d0d89959f62b7a120b793c429212776db7adca1f50b8080e9a557de1342b",
+      "node_modules/@xterm/headless/lib-headless/xterm-headless.mjs": "b27576b6bef6610be97e55a959319baa8a6b1a4fae629d49926971a536428c7a",
+      "node_modules/@xterm/headless/typings/xterm-headless.d.ts": "d157ac3b7ddd0c72fb522631860ebd8b12009a55c1fd8f4730c72c244f6b9640"
+    }
+  },
+  "@xterm/addon-unicode11": {
+    "version": "0.9.0",
+    "integrity": "sha512-FxDnYcyuXhNl+XSqGZL/t0U9eiNb/q3EWT5rYkQT/zuig8Gz/VagnQANKHdDWFM2lTMk9ly0EFQxxxtZUoRetw==",
+    "gitHead": "f447274f430fd22513f6adbf9862d19524471c04",
+    "archiveSHA256": "b665667792f916873fe946ba98cc98a1a742af08e163fb66e1c0809c120ca42e",
+    "files": {
+      "node_modules/@xterm/addon-unicode11/LICENSE": "e256f01188af527e4d06d21d06fbf785ae9c50d4b328bf03cbe0ba7f0aa4228f",
+      "node_modules/@xterm/addon-unicode11/lib/addon-unicode11.js": "72353b5178e1a7382716df1cfedf8ab070eea655d38995bb9f4f284fe56e2f2b",
+      "node_modules/@xterm/addon-unicode11/package.json": "5efc7bd738527737369d355f5a584d40b0cf05d1e254ad1dde4d0d2495ddf275",
+      "node_modules/@xterm/addon-unicode11/lib/addon-unicode11.js.map": "67b23c048b6d311c240961aafa51e5a2c9309cc6cb484bf17342bc5f8a87d9ba",
+      "node_modules/@xterm/addon-unicode11/lib/addon-unicode11.mjs.map": "5b74f90d94f46671f8f7862a0b0bf89f223613897364c00bbbb972237e779492",
+      "node_modules/@xterm/addon-unicode11/README.md": "c65d879decf0beae5bca3e5e2fab301acd7ded3a4692ab3aba7fd113396c067a",
+      "node_modules/@xterm/addon-unicode11/lib/addon-unicode11.mjs": "37bb2d573c615661c875398be2a3497e02bd21d7202a5d1159f6ab70a8cfc2f2",
+      "node_modules/@xterm/addon-unicode11/typings/addon-unicode11.d.ts": "d801447a1a5b66cd50d182ca008828e9e58f9f8157520ca48b1df6617f09d875",
+      "node_modules/@xterm/addon-unicode11/src/Unicode11Addon.ts": "c9c01613246a95ca50f3fd82db05c7aac7cea1c9fb5bacb05a65beeb99cbc87e",
+      "node_modules/@xterm/addon-unicode11/src/UnicodeV11.ts": "874af483a9757295d94619c7654f81580aa85f1b18d22f00a40130feac1f99db"
+    }
+  }
+}
