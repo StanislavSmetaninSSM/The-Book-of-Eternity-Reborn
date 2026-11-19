@@ -57,6 +57,11 @@ def output_inventory():
     else:raise ValueError('Linked/special owning output')
  return rows
 assert output_inventory()==b['outputPins'],'Owning output membership/hash drift'
+assert b['outputPins'].keys()==b['producerOutputPins'].keys(),'Producer/current output membership differs'
+output_changes={name for name,digest in b['outputPins'].items() if digest!=b['producerOutputPins'][name]}
+allowed_output_changes={project+'/bin/Debug/net8.0/game_master_daemon.ps1' for project in ('BookOfEternityClient','BookOfEternityGMBridge','BookOfEternityClient.TestSupport')} | {'BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll','BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb'}
+assert output_changes==allowed_output_changes,'Unreviewed current-vs-producer output delta'
+assert len(b['unitOutputsCorroboration'])==8
 for name,digest in b['outputPins'].items():checked_output(name,digest)
 for name,digest in b['unitOutputsCorroboration'].items():checked_output(name,digest)
 sys.path.insert(0,str(R/'tests/fixtures/ProductionMain'));s=importlib.util.spec_from_file_location('prep',R/'tests/fixtures/ProductionMain/prepare-mortal-live.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
@@ -139,5 +144,6 @@ assert input_path.read_bytes()==input_bytes
 assert output_inventory()==b['outputPins']
 assert source_inventory()==src
 for name,digest in b['outputPins'].items():checked_output(name,digest)
+for name,digest in b['unitOutputsCorroboration'].items():checked_output(name,digest)
 manifest={'kind':'manual-standard-preparation','prepared':True,'acceptedGmTurn':False,'elapsedSeconds':time.monotonic()-start,'inputSHA256':h(D/'preparation-inputs.json'),'seedManifestSHA256':h(D/'seed-manifest.json'),'packageSHA256':h(D/'p01/relay-phase-package.json'),'seed':seed,'inventories':{n:m.inventory(p) for n,p in {'native':D/'native','runtime':D/'package','deployed':session/'_runtime','helper':D/'receipt-helper','relay':D/'p01/relay','world':session,'terminal':D/'p01/terminal-fixture','terminalDeps':D/'p01/terminal-deps'}.items()},'exportOutcome':result,'sourceOutputUnchanged':True,'OldWorldReadOrCopied':False,'NoGameOrRelayLaunched':True}
 (D/'preparation-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');print(json.dumps({'manifest':str(D/'preparation-manifest.json'),'sha256':h(D/'preparation-manifest.json'),'counts':{n:len(v) for n,v in manifest['inventories'].items()},'seconds':manifest['elapsedSeconds']},indent=2))
