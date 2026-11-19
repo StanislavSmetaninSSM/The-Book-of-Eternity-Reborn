@@ -4940,3 +4940,8 @@ Fixed80 must observe the exact wrapped suffix before any Load key and explicitly
 qualifies only owned negative cleanup, not normal exit/termios. Unsupported probes,
 controls or geometry mismatch remain failures. Public guard and live driver remain
 unchanged; no run yet, full-route qualification remains open.
+
+
+### T034 live GM decision boundary, 2026-11-19
+
+P01 preauthored birth with fresh identity/time binding is a scripted scenario and transport check, not independent live GM judgment. P02 grant form is conditional only: the acting GM must inspect the genuine fresh request and canonical circumstances, record a separate short decision/rationale before the answer, and choose grant or deny without forcing P03 coverage. An integrity mismatch or inadequate submission reserve means hold, not fictional denial. A deny or unsubmitted answer does not qualify grant or transfer/load. No cutoff extension, source-hash rebasing, or accepted-turn claim follows from prepared forms. Updated semantic design remains SOURCE pending focused independent review; no new world or live action was started.
