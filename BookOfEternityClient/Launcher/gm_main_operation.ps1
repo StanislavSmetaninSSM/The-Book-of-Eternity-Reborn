@@ -359,7 +359,7 @@ function Invoke-GmParticipatingConsumer {
     # Optional stderr observation only; never changes original result or authority.
     if($null -ne $Observation){try {
         if($context.closeObserved -eq $true -and $context.lost -eq $false -and
-           $context.publicationUncertain -ne $true -and $context.disposed -eq $true -and
+           $context.publicationUncertain -eq $false -and $context.disposed -eq $true -and
            $context.exitCode -eq 0 -and $context.replyReadJoined -eq $true -and $context.stderrReadJoined -eq $true -and
            $null -ne $context.originalClose -and $null -ne $context.terminalClose -and
            $context.terminalClose.outcome -eq 0 -and $context.terminalClose.closingFailed -eq $false){

@@ -869,6 +869,7 @@ def wait_daemon_consumer_returned():
     while time.monotonic()<deadline:
         proof=phase_evidence.daemon_consumer_returned(bytes(daemon.capture[daemon_return_cut:]),expected)
         if proof is not None:
+            if time.monotonic()>=deadline:raise TimeoutError('Consumer return observed after original cleanup deadline')
             result['DaemonConsumerReturned']=proof
             return
         if daemon.process.poll() is not None:raise RuntimeError('Daemon exited before qualified consumer return')

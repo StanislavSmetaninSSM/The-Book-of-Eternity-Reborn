@@ -20,6 +20,7 @@ def daemon_consumer_returned(raw, expected):
         return value
     try:
         prefix=b'BOE_MAIN_OPERATION_PS ';events=[]
+        if raw and not raw.endswith(b'\n'):return None
         for line in raw.splitlines(keepends=True):
             if not line.startswith(prefix):continue
             if not line.endswith(b'\n'):return None
@@ -46,10 +47,17 @@ def daemon_consumer_returned(raw, expected):
         if any(type(e.get(k)) is not int for k in ('errorCountBefore','errorCountAfter')):return None
         if e['errorCountBefore']<0 or e['errorCountBefore']!=e['errorCountAfter']:return None
         a=e['originalClose'];b=e['terminalClose']
-        if type(a) is not dict or a!=b or set(a)!={'identity','pinId','closeId','operationId','outcome','closingFailed'}:return None
-        if a['identity']!=expected['mainIdentity'] or type(a['outcome']) is not int or a['outcome']!=0 or a['closingFailed'] is not False:return None
-        for k in ('pinId','closeId','operationId'):
-            if type(a[k]) is not str or re.fullmatch('[0-9a-f]{32}',a[k]) is None:return None
+        for close in (a,b):
+            if type(close) is not dict or set(close)!={'identity','pinId','closeId','operationId','outcome','closingFailed'}:return None
+            if type(close['outcome']) is not int or close['outcome']!=0 or close['closingFailed'] is not False:return None
+            identity=close['identity']
+            if type(identity) is not dict or set(identity)!={'rootKey','runId','generationId','epoch','backend','hostInstanceId','bootId'}:return None
+            if any(type(identity[k]) is not int for k in ('epoch','backend')):return None
+            if any(type(identity[k]) is not str for k in ('rootKey','runId','generationId','hostInstanceId','bootId')):return None
+            if identity!=expected['mainIdentity']:return None
+            for k in ('pinId','closeId','operationId'):
+                if type(close[k]) is not str or re.fullmatch('[0-9a-f]{32}',close[k]) is None:return None
+        if a!=b:return None
         return e
     except (KeyError,TypeError,ValueError,UnicodeError):return None
 
@@ -84,7 +92,12 @@ def daemon_pair_decode(evidence, prefix, settled):
     return owner
 
 def daemon_settlement_proved(evidence):
-    try:return daemon_pair_decode(evidence,'Original',False)==daemon_pair_decode(evidence,'Final',True)
+    try:
+        if daemon_pair_decode(evidence,'Original',False)!=daemon_pair_decode(evidence,'Final',True):return False
+        # Both raw status bytes were independently hash/schema/owner checked above.
+        before=json.loads(bytes.fromhex(evidence['OriginalStatusRawHex']).decode('utf-8-sig'))['errorCount']
+        after=json.loads(bytes.fromhex(evidence['FinalStatusRawHex']).decode('utf-8-sig'))['errorCount']
+        return type(before) is int and type(after) is int and before>=0 and before==after
     except (KeyError,TypeError,ValueError,UnicodeError):return False
 
 def relay_phase_cleanup_proved(value):

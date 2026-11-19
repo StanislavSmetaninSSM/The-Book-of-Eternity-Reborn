@@ -42,7 +42,7 @@ foreach($name in @('Process-Turn','Process-TurnCore')){
   $boundary=@($tr[0].Body.Statements|Where-Object{$_.Extent.Text -ceq '$script:TurnCount++'});Require ($boundary.Count -eq 1) 'Unique processing milestone missing'
   $offset=$boundary[0].Extent.StartOffset-$fn[0].Extent.StartOffset
   $length=$tr[0].Body.Extent.EndOffset-1-$boundary[0].Extent.StartOffset
-  $source=$source.Remove($offset,$length).Insert($offset,'if($script:case -eq ''body-refusal''){throw (New-GmDaemonReadFailure ''controlled body refusal'' $null)}; return ''controlled-result'''+"`n")
+  $source=$source.Remove($offset,$length).Insert($offset,'if($script:case -eq ''body-refusal''){throw (New-GmDaemonReadFailure ''controlled body refusal'' $null)}; if($script:case -eq ''ordinary-error''){throw [IO.IOException]::new(''controlled ordinary error'')}; return ''controlled-result'''+"`n")
  }
  . ([scriptblock]::Create($source))
 }
@@ -63,7 +63,7 @@ $env:BOE_MAIN_STOP_DIAGNOSTIC_NONCE='77777777777777777777777777777777';$script:B
 $guard=[pscustomobject]@{OwnerId=('8'*32)};$guard|Add-Member ScriptMethod Validate {}; $script:LinuxDaemonGuard=$guard
 $identity=[pscustomobject]@{rootKey=$root;runId=('1'*32);generationId=('2'*32);epoch=1;backend=2;hostInstanceId=('3'*32);bootId='boot'}
 $close=[pscustomobject]@{identity=$identity;pinId=('4'*32);closeId=('5'*32);operationId=('6'*32);outcome=0;closingFailed=$false}
-foreach($case in @('missing','duplicate','context-refused','sampling-mismatch','nested','body-refusal','close-failure','uncertain','success')){
+foreach($case in @('missing','duplicate','context-refused','sampling-mismatch','nested','body-refusal','close-failure','uncertain','ordinary-error','success')){
  $script:events.Clear();$script:observations=@();$global:BoeMainOperationContext=$null;$script:IsProcessing=$false;$script:ErrorCount=0;$script:readCount=0;$script:case=$case
  $script:exists=$case -ne 'missing';$script:duplicate=$case -eq 'duplicate';$script:valid=$case -notin @('context-refused','sampling-mismatch')
  $script:context=[pscustomobject]@{session=$GameSessionPath;closed=$false;lost=$false;disposed=$false;closeObserved=$false;publicationUncertain=($case -eq 'uncertain');uncertainCommandReply=$null;localScopeCompleted=$false;closeOutcome=0;originalClose=$close;terminalClose=$close;exitCode=$null;replyReadJoined=$false;stderrReadJoined=$false}
@@ -74,6 +74,11 @@ foreach($case in @('missing','duplicate','context-refused','sampling-mismatch','
  Require ($null -eq $caught) 'Unexpected consumer failure'
 
  Require ($script:context.closeObserved -and $script:context.disposed -and -not $script:IsProcessing -and $null -eq $global:BoeMainOperationContext) 'Lifecycle prerequisite failed'
+ if($case -eq 'ordinary-error'){
+  Require ($null -eq $actual -and $script:ErrorCount -eq 1 -and $script:observations.Count -eq 1) 'Ordinary handled error/result changed'
+  $handled=$script:observations[0];Require ($handled.handledError -eq $true -and $handled.errorCountBefore -eq 0 -and $handled.errorCountAfter -eq 1) 'Actual handled error not distinguished'
+  continue
+ }
  if($case -ne 'success'){Require ($script:observations.Count -eq 0) 'Stale/unadmitted path emitted positive';continue}
  Require ($actual -ceq 'controlled-result') 'Actual function result changed'
  Require (($script:events.ToArray() -join ',') -like 'open,close,joined*') 'Consumer close/join order failed'
