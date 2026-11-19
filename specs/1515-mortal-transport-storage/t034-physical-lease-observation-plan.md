@@ -1364,3 +1364,10 @@ actual probe and never reported as PASS; its future success gate must also requi
 actual guardian driver0/probe success/child0/normal closure. New cold root is held;
 no rebind/hosting/retry. Any correction requires exact frozen DATA regression and
 separate one-run admission, not replaying this root. No raw evidence published.
+Root authorized bounded test-only correction: exact frozen raw/cells regression,
+zero-or-one leading newline only, strict extra/warning refusals; wrapper outcome
+must require actual guardian/probe/normal closure. Two new test-first methods are
+UNRUN. After independent source/DATA gates, only a distinct absent-root one-shot
+cold run may be admitted; mm29 is never replayed. Closed-instance operational-only
+configuration via existing preparer/public persistence is separately authorized
+for design/diff review after normal cold exit; not UI rebinding or hosted Load.

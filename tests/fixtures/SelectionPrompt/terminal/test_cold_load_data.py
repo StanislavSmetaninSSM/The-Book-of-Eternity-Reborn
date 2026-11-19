@@ -65,4 +65,45 @@ class ColdLoadData(unittest.TestCase):
             write(True)
             with self.assertRaises(ValueError):f(p,p.name,hashlib.sha256(p.read_bytes()).hexdigest())
 
+class ColdFrozenRepair(unittest.TestCase):
+    def test_exact_frozen_cold_raw_and_cells_complete_without_leading_newline(self):
+        from fullroute_inputs import routes
+        e=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/cold-load-admission/outcome.json')
+        self.assertEqual(hashlib.sha256(e.read_bytes()).hexdigest(),'a5fc3a40a293d37ccba53667e9a6c0b1aa05e4d23b8f0eccf24a635e51e27d60')
+        pins=json.loads(e.read_bytes())['Artifacts'];root=pathlib.Path('/workspace/shared/mm29-cold-load-20261119/probe')
+        def sealed(name):
+            p=root/name;raw=p.read_bytes();self.assertEqual(hashlib.sha256(raw).hexdigest(),pins[str(p)]);return raw
+        raw=sealed('pty.raw');records=[json.loads(x) for x in sealed('terminal.protocol.jsonl').splitlines()]
+        snaps=[x['reply'] for x in records if x.get('reply',{}).get('op')=='SNAPSHOT'];last=snaps[-1]
+        v=types.SimpleNamespace(pending=False,cut=len(raw),lines=last['lines'],cursor=last['cursor'])
+        menu=routes.local_load_menu('Хозяйственный двор у нижней лестницы',43,799,'19.11.2026 22:13')
+        self.assertTrue(actual.cold_load_completed(raw,6989,menu,v),'real direct success must complete')
+        direct='Сохранение загружено.\r\n'.encode();self.assertEqual(raw.count(direct),1)
+        for prefix in (b'\r\n',):
+            b=raw.replace(direct,prefix+direct);v.cut=len(b);self.assertTrue(actual.cold_load_completed(b,6989,menu,v))
+        for prefix in (b'\r\n\r\n',b' ',b'diagnostic\r\n'):
+            b=raw.replace(direct,prefix+direct);v.cut=len(b);self.assertFalse(actual.cold_load_completed(b,6989,menu,v))
+        b=raw.replace(direct,direct+'Требуется служебная проверка завершения операции.\r\n'.encode());v.cut=len(b);self.assertFalse(actual.cold_load_completed(b,6989,menu,v))
+
+    def test_actual_wrapper_requires_guardian_driver_and_normal_probe_closure(self):
+        import ast
+        p=pathlib.Path(__file__).resolve().parents[4]/'specs/1515-mortal-transport-storage/manual-mm21/run-cold-load.py'
+        nodes=[n for n in ast.parse(p.read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='cold_run_succeeded']
+        self.assertEqual(len(nodes),1,'missing full cold outcome conjunction')
+        scope={};exec(compile(ast.Module(body=nodes,type_ignores=[]),str(p),'exec'),scope);f=scope['cold_run_succeeded']
+        guardian={'echild':True,'driverExitCode':0,'emergencySignals':0,'failures':0,'deadline':False}
+        probe={'Success':True,'Failure':None,'CleanupFailures':[],'EOF':True,'ChildRestoredConfiguredBaseline':True,'OwnerRestoredOriginal':True,'TerminalNormalClose':True,'TerminalExitCode':0,'ChildExitCode':0}
+        self.assertTrue(f(0,guardian,probe))
+        for key,val in [('driverExitCode',1),('echild',False),('deadline',True),('emergencySignals',1),('failures',1)]:
+            self.assertFalse(f(0,dict(guardian,**{key:val}),probe))
+        for key,val in [('Success',False),('Failure','timeout'),('EOF',False),('ChildRestoredConfiguredBaseline',False),('OwnerRestoredOriginal',False),('TerminalNormalClose',False),('TerminalExitCode',-15),('ChildExitCode',143),('CleanupFailures',['unknown'])]:
+            self.assertFalse(f(0,guardian,dict(probe,**{key:val})))
+        self.assertFalse(f(1,guardian,probe))
+        old=pathlib.Path('/workspace/shared/mm29-cold-load-20261119')
+        evidence=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/cold-load-admission/outcome.json').read_bytes()
+        self.assertEqual(hashlib.sha256(evidence).hexdigest(),'a5fc3a40a293d37ccba53667e9a6c0b1aa05e4d23b8f0eccf24a635e51e27d60')
+        pins=json.loads(evidence)['Artifacts']
+        for path in (old/'guardian.json',old/'probe/result.json'):self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),pins[str(path)])
+        self.assertFalse(f(0,json.loads((old/'guardian.json').read_bytes()),json.loads((old/'probe/result.json').read_bytes())))
+
 if __name__=='__main__':unittest.main()
