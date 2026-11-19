@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Tests;
 // T024: inert default Spectre, no game/service/authority construction.
 internal static class SpectreSelectionSmoke
 {
-    internal static int Run(string evidence, string plainOutput, bool inventory = false, bool load = false)
+    internal static int Run(string evidence, string plainOutput, bool inventory = false, bool load = false, bool cleanup = false)
     {
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = Encoding.UTF8; // Linux Program.cs branch.
@@ -35,6 +35,12 @@ internal static class SpectreSelectionSmoke
                     : "T024 inert selection")
                 .PageSize(load ? 15 : 20)
                 .AddChoices(load ? new[] { "s | Ход 43 | Двор совета | 18.11.2026 18:00 | 99999KB", "↩️ Назад" } : inventory ? new[] { "💰 Деньги: 500", "⚔ ⚔️ Основная рука: Древний меч", "📦 Древний меч [[Оружие]]", "📦 🔒 Кладовая материалов совета (1 пр.)", "← Назад" } : new[] { "SMOKE_ALPHA", "SMOKE_BETA" }));
+            if (cleanup)
+            {
+                if (selected != "← Назад") throw new InvalidOperationException("Cleanup did not return Back.");
+                Console.WriteLine("Ваш ход"); Console.Write(" > ");
+                if (Console.ReadLine() != "exit") throw new InvalidOperationException("Expected inert normal exit after prompt.");
+            }
             return 0;
         }
         catch (Exception error) { failure = error; return 1; }

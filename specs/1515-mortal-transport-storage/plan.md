@@ -4407,3 +4407,14 @@ non-ASCII bytes literal typo was corrected before the behavior run, not counted
 as RED. Implementation and real inert cleanup renderer remain UNRUN; no current
 owner is touched and original mm18 uncertainty is unchanged. Reuse is restricted
 to transient menu descriptor/input-progress DATA, never owner or permission.
+
+T030 implementation WIP, not runtime-qualified. Inventory-only transient context
+records the exact descriptor, frame cut, selected/pending next row and confirmed
+write outcome before input. Enter invalidates context before it can leave the
+menu. Cleanup uses exact Back and a new player prompt before normal exit; unknown
+input/menu is refused. Cheap route25/25 and frame20/20 pass. Real five-row inert
+cleanup mode is authored but UNBUILT/UNRUN. Coordinator review identified that
+unsettled-inventory failure still fell through to the outer shutdown block;
+explicit skip and a full finally-wiring oracle are required before acceptance.
+Independent review is checking those boundaries and context-cut freshness. No
+live startup, owner guard change or recovery of mm18. Source checkpoint is WIP.

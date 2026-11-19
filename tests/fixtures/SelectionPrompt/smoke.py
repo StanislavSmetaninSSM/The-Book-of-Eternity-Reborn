@@ -124,8 +124,9 @@ def expected_dumb_refusal(result):
 
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
-    assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load')
-    inventory = mode == 'pipe-inventory'
+    assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load','pipe-inventory-cleanup')
+    cleanup = mode == 'pipe-inventory-cleanup'
+    inventory = mode in ('pipe-inventory','pipe-inventory-cleanup')
     load = mode == 'pipe-load'
     fixed_render = inventory or load
     if fixed_render:
@@ -147,7 +148,7 @@ def main():
     frame_cut=0; captured=bytearray(); raw_cut=0
     start=time.monotonic();stage=0
     try:
-        args=['dotnet',helper,'spectre-load-smoke' if load else 'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
+        args=['dotnet',helper,'spectre-inventory-cleanup-smoke' if cleanup else 'spectre-load-smoke' if load else 'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
         process=subprocess.Popen(args,stdin=slave,stdout=slave if mode=='pty' else subprocess.PIPE,
                                  stderr=slave if mode=='pty' else subprocess.STDOUT,env=env,preexec_fn=own)
         result.update(OriginalPid=process.pid,Argv=args)
@@ -158,11 +159,15 @@ def main():
             # Exercise the actual driver's finite selector, not another observer.
             import ast
             source=pathlib.Path(__file__).resolve().parents[1]/'ProductionMain/live-mortal-phase.py'
-            node=next(n for n in ast.parse(source.read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='finite_select')
+            nodes=[n for n in ast.parse(source.read_text()).body if isinstance(n,ast.FunctionDef) and n.name in ('finite_select','register_inventory_cleanup','settle_inventory_cleanup')]
             import mortal_console_routes
             class Peer:
                 capture=captured
                 def send(self,key,phase):
+                    if cleanup and key==b'\r':
+                        assert selected_frame(bytes(captured),0,menu)=='← Назад'
+                        assert not captured.endswith(b'\r') and bytes(captured).rstrip(b' ').endswith(footer.encode())
+                        result['CompleteFooterWithoutCR']=True
                     assert os.write(master,key)==len(key)
                     result['Inputs'].append({'Hex':key.hex(),'Phase':phase,'CaptureCut':len(captured)})
             def wait(predicate,seconds,label):
@@ -178,14 +183,35 @@ def main():
                         raws[fd].write(data)
                         if streams[fd]=='captured':captured.extend(data);screen.feed(data)
                         else:control.feed(data)
-            namespace={'client':Peer(),'console_routes':mortal_console_routes,'until':wait}
-            exec(compile(ast.Module(body=[node],type_ignores=[]),'actual finite selector','exec'),namespace)
+            def fresh_player(peer,cut,seconds):wait(lambda:'Ваш ход'.encode() in bytes(captured[cut:]),seconds,'actual fresh player prompt')
+            namespace={'client':Peer(),'console_routes':mortal_console_routes,'until':wait,'fresh_player':fresh_player,'inventory_context':None,'inventory_cleanup_required':False,'client_prompt':False}
+            exec(compile(ast.Module(body=nodes,type_ignores=[]),'actual finite selector','exec'),namespace)
             target=menu['choices'][3]
-            namespace['finite_select'](menu,target,0,5)
-            assert [i['Hex'] for i in result['Inputs']]==['1b5b42']*3+['0d']
-            assert selected_frame(bytes(captured),0,menu)==target
-            assert not captured.endswith(b'\r') and bytes(captured).rstrip(b' ').endswith(footer.encode())
-            result['ActualFiniteSelector']=True;result['Target']=target;result['CompleteFooterWithoutCR']=True;stage=2
+            if cleanup:
+                namespace['register_inventory_cleanup'](menu,0)
+                original_wait=namespace['until'];injected=False
+                def fault_after_down(predicate,seconds,label):
+                    nonlocal injected
+                    if result['Inputs'] and not injected:
+                        injected=True;raise RuntimeError('T030 injected failure after one confirmed Down')
+                    return original_wait(predicate,seconds,label)
+                namespace['until']=fault_after_down
+                try:namespace['finite_select'](menu,target,0,5)
+                except RuntimeError as error:
+                    assert str(error)=='T030 injected failure after one confirmed Down';result['OriginalInjectedFailure']=str(error)
+                else:raise AssertionError('Expected original injected failure')
+                namespace['until']=original_wait
+                assert namespace['settle_inventory_cleanup']() and namespace['client_prompt']
+                assert [i['Hex'] for i in result['Inputs']]==['1b5b42']*4+['0d']
+                assert namespace['inventory_context'] is None
+                target='← Назад';namespace['client'].send(b'exit\r','inert normal exit after actual fresh prompt')
+            else:
+                namespace['finite_select'](menu,target,0,5)
+                assert [i['Hex'] for i in result['Inputs']]==['1b5b42']*3+['0d']
+            if not cleanup:
+                assert selected_frame(bytes(captured),0,menu)==target
+                assert not captured.endswith(b'\r') and bytes(captured).rstrip(b' ').endswith(footer.encode())
+            result['ActualFiniteSelector']=True;result['Target']=target;stage=2
         while time.monotonic()-start<12:
             for fd in select.select([f for f in streams if f not in closed],[],[],.02)[0]:
                 try:data=os.read(fd,65536)

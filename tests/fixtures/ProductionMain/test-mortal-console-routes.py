@@ -131,7 +131,7 @@ class RouteTests(unittest.TestCase):
                 self.keys.append(key)
                 if key==b'\x1b[B':self.index+=1;self.pending.append(frame(self.index))
                 elif key==b'\r' and prompt:self.pending.append('Ваш ход\n > '.encode())
-        peer=Peer();ctx={'menu':menu,'cut':0,'selected':labels[0],'pending_next':labels[1]}
+        peer=Peer();ctx={'menu':menu,'cut':0,'selected':labels[0],'pending_next':labels[1],'send_confirmed':True}
         def until(predicate,*unused):
             for _ in range(10):
                 if predicate():return
@@ -170,6 +170,29 @@ class RouteTests(unittest.TestCase):
         peer.send=ambiguous_send
         with self.assertRaises(OSError):ns['finite_select'](ctx['menu'],ctx['menu']['choices'][3],0,5)
         self.assertEqual(ctx['pending_next'],ctx['menu']['choices'][1]);self.assertEqual(ctx['cut'],len(peer.capture))
+    def test_actual_finally_inventory_cleanup_precedes_normal_exit_and_no_ctrlc(self):
+        tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
+        cleanup=next(n for n in ast.walk(tree) if isinstance(n,ast.If) and ast.unparse(n.test)=='inventory_cleanup_required and (not client_prompt)')
+        close=next(n for n in ast.walk(tree) if isinstance(n,ast.If) and ast.unparse(n.test)=='client_prompt and (not client_exit_attempted)')
+        self.assertLess(cleanup.lineno,close.lineno)
+        events=[]
+        class Peer:
+            def send(self,*unused):events.append('FORBIDDEN INPUT')
+        peer=Peer();peer.process=type('Process',(),{'poll':lambda self:None})()
+        ns={'client':peer,'inventory_cleanup_required':True,'client_prompt':False,'client_exit_attempted':False,'RuntimeError':RuntimeError}
+        def settle():events.append('settle');ns['client_prompt']=True
+        ns.update(settle_inventory_cleanup=settle,exit_client=lambda _:events.append('normal exit'))
+        block=compile(ast.Module(body=[cleanup,close],type_ignores=[]),'actual finally order','exec');exec(block,ns)
+        self.assertEqual(events,['settle','normal exit'])
+        events.clear();ns['client_prompt']=False
+        def unknown():events.append('unknown');raise RuntimeError('No exact inventory tail')
+        ns['settle_inventory_cleanup']=unknown
+        with self.assertRaises(RuntimeError):exec(block,ns)
+        self.assertEqual(events,['unknown'])
+    def test_uncertain_inventory_input_is_not_cleanup_permission(self):
+        ns,peer,_=self.inventory_cleanup_fixture();ns['inventory_context']['send_confirmed']=False
+        with self.assertRaises(RuntimeError):ns['settle_inventory_cleanup']()
+        self.assertEqual(peer.keys,[]);self.assertFalse(ns['client_prompt'])
     def test_actual_local_branch_is_separate_from_genuine_gm_send(self):
         tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
         matches=[n for n in ast.walk(tree) if isinstance(n,ast.If) and
@@ -249,6 +272,6 @@ class RouteTests(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(RouteTests)
-    if suite.countTestCases()!=23:raise SystemExit('Expected exactly twenty-three finite-route DATA methods')
+    if suite.countTestCases()!=25:raise SystemExit('Expected exactly twenty-five finite-route DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==23 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==25 and result.wasSuccessful() and not result.skipped else 1)

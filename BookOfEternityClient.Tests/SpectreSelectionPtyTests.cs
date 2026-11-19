@@ -16,6 +16,9 @@ public sealed class SpectreSelectionPtyTests
     public Task ActualFiveRowInventoryUsesFiniteSelectorAndReturnsLockedTarget() => RunModeAsync("pipe-inventory");
 
     [Fact]
+    public Task ActualInventoryFailureClosesBackAndPromptWithoutCtrlC() => RunModeAsync("pipe-inventory-cleanup");
+
+    [Fact]
     public Task ActualLongLocationLoadPipeFrameIsUnwrappedAndReturnsBack() => RunModeAsync("pipe-load");
 
     /// <summary>Reuses the owned inert renderer process and its exact EOF/guardian cleanup for one explicit console mode.</summary>

@@ -964,7 +964,11 @@ def exit_client(client):
     assert client.process.returncode==0
 def finite_select(menu,label,cut,maximum_rows,commit=True):
     # One input per observed ordered transition. A duplicate redraw is not a move.
-    selected=None;prior=None
+    global inventory_context
+    context=globals().get('inventory_context')
+    context=context if context is not None and context['menu'] is menu else None
+    if context is not None and not context['send_confirmed']:raise RuntimeError('Inventory input outcome unknown')
+    selected=None;prior=context['selected'] if context is not None and context['pending_next'] is not None else None
     for _ in range(maximum_rows):
         def transitioned():
             nonlocal selected
@@ -984,18 +988,37 @@ def finite_select(menu,label,cut,maximum_rows,commit=True):
             return moved
         # One unchanged deadline covers any number of same-selection redraws.
         until(transitioned,5,'fresh fixed menu ordered transition')
+        if context is not None:context.update(selected=selected,pending_next=None,cut=cut)
         if selected==label:
             selected_cut=cut;after=len(client.capture)
+            if commit and context is not None:inventory_context=None  # Enter may leave inventory; never infer return.
             if commit:client.send(b'\r','fixed menu exact selected row: '+label)
             return after,selected_cut
         if menu['choices'].index(selected)+1>=len(menu['choices']):raise RuntimeError('Menu cycle before exact target')
         prior=selected;cut=len(client.capture)
+        if context is not None:context.update(cut=cut,pending_next=menu['choices'][menu['choices'].index(selected)+1],send_confirmed=False)
         client.send(b'\x1b[B','fixed menu observed next row')
+        if context is not None:context['send_confirmed']=True
     raise RuntimeError('Fixed menu exceeds visible bounded rows; no pagination')
 
+def register_inventory_cleanup(menu,cut):
+    global inventory_context,inventory_cleanup_required
+    if not menu['header'].startswith('🎒 📦 Инвентарь') or menu['choices'][-1]!='← Назад':raise RuntimeError('Only exact inventory cleanup is supported')
+    inventory_cleanup_required=True
+    inventory_context={'menu':menu,'cut':cut,'selected':None,'pending_next':None,'send_confirmed':True}
+
 def settle_inventory_cleanup():
-    # T030 RED-only fail-closed seam, not wired into cleanup yet.
-    raise RuntimeError('Exact inventory cleanup unavailable')
+    global client_prompt,inventory_cleanup_required
+    context=inventory_context
+    if context is None or not context['send_confirmed']:raise RuntimeError('Inventory cleanup state unknown')
+    if context['pending_next'] is not None:
+        choices=context['menu']['choices'];index=choices.index(context['selected'])
+        if index+1>=len(choices) or choices[index+1]!=context['pending_next']:raise RuntimeError('Inventory pending transition unknown')
+    after,_=finite_select(context['menu'],'← Назад',context['cut'],20)
+    # Context was invalidated BEFORE Enter; timeout cannot replay it.
+    fresh_player(client,after,10)
+    client_prompt=True;inventory_cleanup_required=False
+    return True
 
 def local_observation():
     return {'StorySHA256':sha(story.read_bytes()),
@@ -1008,7 +1031,7 @@ def current_inventory_menu():
         strict_settings((session/'game_state/core/player_status.json').read_bytes()))
 
 def denied_storage_route():
-    global client_prompt
+    global client_prompt,inventory_cleanup_required
     current_path=session/'game_state/world/current_location.json'
     current=current_path.read_bytes()
     target=console_routes.storage_target(strict_settings(current),route['StorageId'],route['ItemId'],False)
@@ -1016,14 +1039,18 @@ def denied_storage_route():
     inventory=inventory_path.read_bytes()
     menu=console_routes.entry_menu(current_inventory_menu(),command='/storage_move')
     cut=len(client.capture);client_prompt=False
+    register_inventory_cleanup(menu,cut)
+    inventory_context['send_confirmed']=False
     client.send(b'/storage_move\r','fixed denied storage route')
+    inventory_context['send_confirmed']=True
     cut,selected_cut=finite_select(menu,target['StorageLabel'],cut,20)
     # Locked selection loops back to the same menu; it is not a denial exception.
     menu=console_routes.after_menu(current_inventory_menu(),menu)
+    register_inventory_cleanup(menu,cut)
     until(lambda:console_routes.selected_frame(bytes(client.capture),cut,menu) is not None,
           5,'fresh inventory after locked storage selection')
     after,_=finite_select(menu,'← Назад',cut,20)
-    fresh_player(client,after,10);client_prompt=True
+    fresh_player(client,after,10);client_prompt=True;inventory_cleanup_required=False
     console_routes.require_local_unchanged(before,local_observation())
     if current_path.read_bytes()!=current or inventory_path.read_bytes()!=inventory:
         raise RuntimeError('Denied storage selection changed exact canonical bytes')
@@ -1049,7 +1076,7 @@ def storage_local_route():
         console_routes.require_local_unchanged(before,local_observation())
         return current,items
     def move(retrieve):
-        global client_prompt
+        global client_prompt,inventory_cleanup_required
         current=strict_settings(location_path.read_bytes());items=strict_settings(inventory_path.read_bytes())
         expected='storage' if retrieve else 'inventory'
         if console_routes.item_position(current,items,route['StorageId'],route['ItemId'])!=expected:
@@ -1071,7 +1098,10 @@ def storage_local_route():
         if labels.count(target['ItemLabel'])!=1:raise RuntimeError('Current exact item label unavailable/ambiguous')
         picker_menu=console_routes.fixed_menu(title,labels+['← Отмена'],20)
         cut=len(client.capture);client_prompt=False
+        register_inventory_cleanup(inventory_menu,cut)
+        inventory_context['send_confirmed']=False
         client.send(b'/storage_move\r','fixed local storage move')
+        inventory_context['send_confirmed']=True
         cut,_=finite_select(inventory_menu,label,cut,20)
         action_label=(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)' if retrieve else
                       f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
@@ -1086,8 +1116,10 @@ def storage_local_route():
         if post_storage['contents']:post_actions.append(f"📤 Забрать предмет из хранилища ({len(post_storage['contents'])} внутри)")
         post_menu=console_routes.fixed_menu('📦 '+target['StorageName']+'\n  Предметов внутри: '+str(len(post_storage['contents'])),post_actions+['← Назад к инвентарю'],10)
         cut,_=finite_select(console_routes.after_menu(post_menu,picker_menu),'← Назад к инвентарю',cut,10)
-        cut,_=finite_select(console_routes.after_menu(current_inventory_menu(),post_menu),'← Назад',cut,20)
-        fresh_player(client,cut,10);client_prompt=True
+        returned_inventory=console_routes.after_menu(current_inventory_menu(),post_menu)
+        register_inventory_cleanup(returned_inventory,cut)
+        cut,_=finite_select(returned_inventory,'← Назад',cut,20)
+        fresh_player(client,cut,10);client_prompt=True;inventory_cleanup_required=False
     move(True);saved_location,saved_inventory=stage('Retrieve','inventory')
     save_name='s' # Sole fresh archive, checked before any owner starts; no canonical name changes.
     saves=session/'saves/manual_saves';old_saves=set(saves.glob('*.zip'))
@@ -1106,7 +1138,7 @@ def storage_local_route():
         if saved.namelist().count('save_metadata.json')!=1:raise RuntimeError('Save metadata ambiguous')
         metadata=strict_settings(saved.read('save_metadata.json'))
     if metadata['saveName']!=save_name or metadata['turnNumber']!=expected_turn-1:raise RuntimeError('Save metadata differs from actual local phase')
-    cut=len(client.capture);client.send(b'\r','acknowledge actual Save result');fresh_player(client,cut,10);client_prompt=True
+    cut=len(client.capture);client.send(b'\r','acknowledge actual Save result');fresh_player(client,cut,10);client_prompt=True;inventory_cleanup_required=False
     # Success is also printed for Committed+NeedsFollowUp. Inspect through the
     # returned prompt so a later warning cannot be missed or silently replayed.
     result['LocalSaveResult']={'Text':client.text(save_result_cut),
@@ -1179,6 +1211,7 @@ if route['Route']!='birth':
             route['StorageId'],route['ItemId'],expected_turn-1)
     if route['Route']=='storage-local-proof' and any(p for directory in ('manual_saves','autosaves','checkpoint_saves') for p in (session/'saves'/directory).glob('*.zip')):
         raise RuntimeError('Finite local proof requires no pre-existing Save choices')
+inventory_context=None;inventory_cleanup_required=False
 client=bridge=daemon=None;client_wait=False;client_prompt=False
 ledger_witness=ledger_binding=None
 try:
@@ -1358,7 +1391,7 @@ finally:
                 if rejected:
                     result['RejectedRestoredForCleanup']=True
                     client_wait=False;client_prompt=True
-            if client_wait or (not result.get('RejectedRestoredForCleanup') and current_client_failure(client.text(offset))):
+            if not inventory_cleanup_required and (client_wait or (not result.get('RejectedRestoredForCleanup') and current_client_failure(client.text(offset)))):
                 offset=client_failure_offset if client_failure_offset is not None else offset
                 pause_acknowledged=False;cancel_sent=False
                 def settled():
@@ -1401,8 +1434,10 @@ finally:
                     settlement.observe(time.monotonic(),len(client.capture));pump(.1)
                 client_wait=False
                 client_prompt=current_player_prompt_at(client.text(offset))>=0
+            if inventory_cleanup_required and not client_prompt:settle_inventory_cleanup()
             if client_prompt and not client_exit_attempted:exit_client(client)
             elif client.process.poll() is None:
+                if inventory_cleanup_required:raise RuntimeError('Inventory cleanup unconfirmed; no forced input')
                 client.send(b'\x03','failure: stop original client foreground');until(lambda:client.process.poll() is not None,6,'client foreground stop')
         except Exception as ex:result['ClientCleanupFailure']=type(ex).__name__+': '+str(ex)
         finally:active_phase_deadline=None

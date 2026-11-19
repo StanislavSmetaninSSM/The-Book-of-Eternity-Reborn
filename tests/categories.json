@@ -76,7 +76,7 @@
       "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualFiveRowInventoryUsesFiniteSelectorAndReturnsLockedTarget", "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualLongLocationLoadPipeFrameIsUnwrappedAndReturnsBack"]}]
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualFiveRowInventoryUsesFiniteSelectorAndReturnsLockedTarget", "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualInventoryFailureClosesBackAndPromptWithoutCtrlC", "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualLongLocationLoadPipeFrameIsUnwrappedAndReturnsBack"]}]
     },
     {
       "id": "mortal-explorer-participation-data",
