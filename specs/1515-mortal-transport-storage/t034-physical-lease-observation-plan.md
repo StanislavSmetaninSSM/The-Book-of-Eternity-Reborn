@@ -839,3 +839,26 @@ candidate exists. mm26 is technically prepared, not live-qualified; separate
 fresh semantic baseline and explicit one-launch admission still precede scripted
 P01. Ordinary43 and its Save remain later independent stages, with no inventory
 prologue and no predetermined GM outcome. Old failed worlds remain untouched.
+
+### mm26 scripted P01 accepted as a clean predecessor
+
+Independent fixture_premises review accepted outcome f3cf22ee: all 10,153
+artifact hashes, 108 final canonical pins/config, runtime483/helper249 and
+current32,071 sources/723 bins/eight owning outputs joined exactly, with only
+the declared preceding checkpoint-doc delta. The genuine request42 received
+one independently reviewed nine-CAS/five-UTC scripted response, execution0,
+typed NotRequired480→500, and exactly one story42 after setup41. Storage remains
+locked, chalk retained, cart parked and empty, steward historical UpdateNPCs42.
+
+The exact post-consumer marker/Completed close preceded the sole shutdown;
+same original owner reached Stopped/OwnedScopeEmpty, daemon errors0→0, all
+terminals exited0 with EOF/restores, sidecar normal CLOSE/join/EOF and guardian
+clean. Elapsed207.23 s. Captured external trace has9,306 valid events/3,102
+ordered complete context-consistent triples across54 PIDs; no physical prefix
+in PTY raw. This is observed evidence, not exhaustive coverage or timing-neutral
+instrumentation. No attribution of historical failed-world holders follows.
+
+Next is a separately bound ordinary-save43 phase, without inventory prologue
+or target IDs. The GM decides from its fresh actual request; no grant or defer
+is preselected. Accepted43 and ordinary Save are not yet proven; transfer/Load
+and historical mm19 denial remain separate. All failed worlds stay untouched.
