@@ -4255,3 +4255,31 @@ This timestamp relationship is evidence, not a claim that the historical error
 is fixed or that the entire run was error-free. Determine its continuation impact
 before p02. No game/relay source changed and no fixed budgets were increased.
 T016 remains open for the actual denied/authorized and move/save/load journey.
+
+T016 p01 independent acceptance and p02 readiness, 2026-11-19.
+Independent outcome review confirmed the exact GM candidate/snapshot/response/
+execution bytes, accepted story42 after the unchanged setup prefix, canonical
+identities/receipts/resource initialization, restricted access and no player item
+movement. It confirmed the original shutdown wire ACK/durable identity, relay/
+terminal/RPC/daemon closure and guardian proof. The ~3.96ms post-ACK status-write
+refusal remains a real uncorrected daemon anomaly; temporal agreement alone does
+not prove its inner cause. The actual continuation contract accepts the settled
+original daemon pair, so it is a valid closed predecessor without deleting or
+ignoring that evidence. This is not a statement that the run was error-free.
+
+The separately reviewed p02 preparation ran once with exit0, no game execution.
+It preserved all601 play and201 p01 files exactly, including hashes/modes; p02 has
+13 preparation files. Runtime483/helper249/relay8/native4 and driver modules are
+unchanged. Package is byte-identical to p01. New nonces/private environment and
+original budgets/opt-outs remain. Manifest SHA256:
+a5f30721dc933fb27b622172d9757406516219d35da6aab8e375b99367943d8c;
+launch SHA256 0f3a61e3dbe39f707977a5300b635c7f6050fd424418b4eed2a04865f3930620.
+Route permission-with-denial targets the accepted restricted storage and chalk;
+expected turn43 asks for permission without taking/moving anything. The maintained
+driver must first prove the actual locked selection returns without mutation,
+then deliver the real permission action. A new original owner/epoch and daemon
+are required, not resurrection of p01. The one-shot submission adaptation changes
+only phase p01 to p02; all17 DATA controls pass. Independent final package review
+grants technical GO for one normal use_default/auto-review launch, not acceptance.
+No p02 result is claimed in this readiness checkpoint. No source rebuild or known
+passing suite was repeated; immutable DATA reuse retains fresh authority checks.
