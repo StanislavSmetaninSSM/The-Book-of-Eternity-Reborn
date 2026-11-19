@@ -969,7 +969,7 @@
     },
     {
       "id": "mortal-terminal-wait-contention",
-      "responsibility": "#1515 T017 diagnostic ordinary terminal wait: real canonical-lock exhaustion, release/retry and post-open integrity distinction without GM writes.",
+      "responsibility": "#1515/#1589 ordinary terminal wait and physical-only diagnostic routing: real canonical-lock exhaustion, release/retry, post-open integrity, explicit stderr or owned private external sink, default/refusal silence and unchanged failure channel. No GM writes.",
       "excludes": "Does not identify the original mm5 exception, qualify remote-owner admission, fix wait backpressure, or run a live GM journey. Linux-only physical lock observation.",
       "changeHints": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",

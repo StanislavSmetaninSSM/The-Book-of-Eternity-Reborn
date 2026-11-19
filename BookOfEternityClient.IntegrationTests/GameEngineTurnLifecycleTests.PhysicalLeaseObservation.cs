@@ -80,10 +80,14 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private void VerifyPhysicalObservationWire()
     {
+        var previousRoute = Environment.GetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE");
+        var previousPath = Environment.GetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_DIR");
         var previous = Environment.GetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE");
         var nonce = Guid.NewGuid().ToString("N");
         try
         {
+            Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE", "stderr");
+            Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_DIR", null);
             Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", nonce);
             var identity = new GmSessionRunIdentity(_rootPath, Guid.NewGuid().ToString("N"),
                 Guid.NewGuid().ToString("N"), 1, GmSessionRunBackend.LinuxSupervisor,
@@ -121,7 +125,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", Guid.NewGuid().ToString("N"));
             Assert.Null(MainOperationFailureDiagnostic.CapturePhysical(context, "physical-dispose-completed", 1));
         }
-        finally { Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", previous); }
+        finally
+        {
+            Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", previous);
+            Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE", previousRoute);
+            Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_DIR", previousPath);
+        }
     }
 
     private sealed class PhysicalDiagnosticThrowingWriter : TextWriter
