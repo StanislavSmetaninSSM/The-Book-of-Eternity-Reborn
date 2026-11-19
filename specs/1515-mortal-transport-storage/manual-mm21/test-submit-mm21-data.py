@@ -194,11 +194,11 @@ class PhysicalTraceProfile(unittest.TestCase):
      with self.assertRaises((ValueError,FileExistsError)):fn(base,phase,nonce)
      self.assertEqual((trace/'owner-nonce').read_bytes(),b'a'*32)
     elif case=='partial':
-     original=pathlib.Path.open;failure=OSError('injected marker write refusal')
+     original=os.open;failure=OSError('injected marker create refusal')
      def open_file(path,*a,**kw):
-      if path==trace/'owner-nonce':raise failure
+      if pathlib.Path(path)==trace/'owner-nonce':raise failure
       return original(path,*a,**kw)
-     with patch.object(pathlib.Path,'open',open_file):
+     with patch.object(os,'open',open_file):
       with self.assertRaises(OSError) as caught:fn(base,phase,nonce)
      self.assertIs(caught.exception,failure);self.assertTrue(trace.is_dir());self.assertFalse((trace/'owner-nonce').exists())
      with self.assertRaises((ValueError,FileExistsError)):fn(base,phase,nonce)
