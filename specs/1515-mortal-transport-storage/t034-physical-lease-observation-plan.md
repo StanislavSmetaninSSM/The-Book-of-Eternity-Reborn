@@ -222,3 +222,25 @@ diagnostic root, same100x25/samePTY and45/55/60 limits. Current compiled source
 and eight outputs equal the32.76s owning build; four explicit noncompiler
 deltas are smoke external wiring, chooser, its DATA and this plan. No rebuild
 or local35/remote3 rerun is warranted by these Python/doc-only changes.
+
+### Corrected external same-PTY inert gate accepted
+
+Independent geometry review accepted outcome943983bc…a524d and213artifact hashes:
+exact PlanOnly1/actual1PASS14.8962632s, inner20DATA PASS, driver3.2226348s.
+Current32065source/8outputs equal before=after with exactly the four declared
+noncompiler deltas versus the32.76s owning build; Node/17dependencies exact.
+Raw51876bytes equals94orderedWRITEs in189command/reply pairs, with94snapshots
+and normalCLOSE. Two real upstream CPR5;1 replies and51routekeys remain distinct.
+All168private external events/56complete triples match actualforegroundPID303,
+currentnonce/exact isolatedroot/nullpin; no physical prefix occurs in raw or
+any snapshot. Five actual stage receipts pass, including retrieve/deposit,
+Save s/emptydescription/turn43, and Load archive focus→Back without commit.
+
+Child0/EOF/configuredbaseline restore and separate owner-original restore are
+proved; fixture removed, sidecar normalCLOSE/join/EOF/empty stderr and guardian
+ECHILD0/noemergency/failure/deadline. The earlier failed outcome remains separate.
+Trace validation9.68ms is NOT isolated sink-write overhead; synchronous IO may
+perturb timing and observed intervals are not exhaustive. This closes the
+bounded external-routing inert UI gate, not hosted Load, live GM, historical
+mm23 holder attribution or new package/world admission. Next is read-only exact
+current-production package preparation review; no old world/package mutation.
