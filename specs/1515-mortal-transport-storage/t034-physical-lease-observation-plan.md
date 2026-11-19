@@ -1014,3 +1014,13 @@ P01 launcher c8cdca08/profile629ce308 keeps original600/660/680/720/750 limits.
 Independent semantic baseline agrees with unchanged scripted P01 template.
 Only a separately authenticated genuine42 response may be published once;
 ordinary43 decision and accepted-turn Save remain separate, unqualified stages.
+
+mm27 scripted P01 independently accepted as closed predecessor (cb9d2e1d):
+all9812 artifact hashes/current108 world+config/runtime483/helper249 and source/
+723+8 exact with declared saved doc delta. One genuine42 response39451a7a,
+execution0/story41→42/typed NotRequired480→500; closed storage/chalk and parked
+empty cart materialized. Exact post-consumer original close precedes sole
+shutdown, same owner Stopped/OwnedScopeEmpty, daemon0→0, terminal/RPC/sidecar
+normal EOF/restores and guardian clean. Captured8964events/2988orderedtriples/
+54PIDs/4399231bytes, no client trace prefix; not exhaustive. Next separate
+ordinary-save43 asks permission without inventory prologue or presumed grant.
