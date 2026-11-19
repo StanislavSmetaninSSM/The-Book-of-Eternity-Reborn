@@ -1,3 +1,26 @@
+# Current bounded multi-destination use (source WIP, unexecuted)
+
+The historical mm21 filenames identify the maintained scripts, not a reusable world.
+`prepare-mm21.sh <canonical-input-manifest> <absent-destination>` now binds both
+arguments to `MM_REVIEWED_INPUT_SHA256` and the manifest's exact `destination`.
+Retained MM21_REVIEWED_CHECKPOINT/DRIVER_SHA256 names are legacy variable labels;
+they must carry the new reviewed checkpoint/current driver, never an old approval.
+The generated launcher contains the explicit new destination. Submission requires
+`--root <that exact root>` and still independently joins original owner/queue/origin.
+No old accepted runtime is edited. No automatic fallback publication.
+
+Current input additions: producerOutputPins (old immutable published owning inputs),
+owningBuildSourcePins (accepted current build), allowedNonCompilerSourceChanges
+(exact reviewed PS/Python/doc deltas), current complete outputPins and8 Unit outputs,
+and contentOverlays: exactly six existing PS memberships (two paths in3 packages)
+plus Support DLL/PDB. Each overlay binds project/path, oldSHA256, source/sourceKind,
+current sha256 and final private mode. Final complete inventories must equal old
+sets with exactly these replacements. Node/deps/native/EventLog guards are unchanged.
+External snapshot rows/raw results remain external and cannot be recreated from
+this README as authority. Latest accepted build25.72s source snapshot is
+`mortal-t034/daemon-return-red-corrected/built.json`; current source-only results and
+native compatibility are independently accepted. Verify all artifacts anew.
+
 # Scoped manual mm21 source recovery
 
 These four operational scripts plus one pure DATA test are exact authored source copies of the reviewed external manual

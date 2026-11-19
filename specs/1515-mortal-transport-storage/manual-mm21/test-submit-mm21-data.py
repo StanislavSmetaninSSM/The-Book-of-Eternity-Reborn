@@ -45,8 +45,8 @@ class MainPath(unittest.TestCase):
   path.chmod(0o400);self.expected['LaunchOriginSHA256']=g.sha(path.read_bytes())
  def call(self,worker=None):
   from unittest.mock import patch
-  self.e.write_text(json.dumps(self.expected));argv=['gate','--request-dir',str(self.q),'--candidate',str(self.c),'--candidate-sha',g.sha(self.packet),'--expectations',str(self.e),'--expectations-sha',g.sha(self.e.read_bytes())]
-  with patch.object(g,'ROOT',self.root),patch.object(g.sys,'argv',argv),patch.object(g.subprocess,'run',side_effect=worker) as run:
+  self.e.write_text(json.dumps(self.expected));argv=['gate','--root',str(self.root),'--request-dir',str(self.q),'--candidate',str(self.c),'--candidate-sha',g.sha(self.packet),'--expectations',str(self.e),'--expectations-sha',g.sha(self.e.read_bytes())]
+  with patch.object(g.sys,'argv',argv),patch.object(g.subprocess,'run',side_effect=worker) as run:
    try:result=g.main()
    finally:self.calls=run.call_count
   return result

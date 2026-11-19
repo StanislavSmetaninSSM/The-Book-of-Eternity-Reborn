@@ -1,5 +1,10 @@
-import pathlib,json,hashlib,uuid,os
-D=pathlib.Path('/workspace/shared/mm21-20261119');P=D/'p01';R=pathlib.Path('/workspace/shared/mortal-isolated-20261119');h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();inv=lambda root:{str(p.relative_to(root)):h(p) for p in root.rglob('*') if p.is_file()};before=inv(D/'play');os.umask(0o077)
+import pathlib,json,hashlib,uuid,os,sys,re
+if len(sys.argv)!=2:raise ValueError('Exact reviewed destination required')
+D=pathlib.Path(sys.argv[1])
+if not D.is_absolute() or D!=D.resolve() or any(x.is_symlink() for x in [D,*D.parents]) or D.parent!=pathlib.Path('/workspace/shared') or re.fullmatch(r'mm[0-9]{2}-[0-9]{8}',D.name) is None:raise ValueError('Invalid prepared destination')
+prepared=json.loads((D/'preparation-inputs.json').read_text())
+assert prepared['destination']==str(D) and prepared['owningBuildManifestSHA256']==os.environ['MM_REVIEWED_INPUT_SHA256']
+P=D/'p01';R=pathlib.Path('/workspace/shared/mortal-isolated-20261119');h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();inv=lambda root:{str(p.relative_to(root)):h(p) for p in root.rglob('*') if p.is_file()};before=inv(D/'play');os.umask(0o077)
 a='Выхожу из покоев, ищу представителя совета и прошу проводить меня к его хозяйственному двору, показать припаркованную грузовую повозку и закрытую кладовую с разметочным мелом, объяснить владельца и порядок выдачи. Ничего не беру и не перемещаю'
 assert not(P/'action.txt').exists();(P/'action.txt').write_bytes(a.encode());(P/'console-route.json').write_text('{"Route":"birth"}\n')
 for n in ['config','data','state','cache','tmp','home']:(P/'launch-env'/n).mkdir(parents=True,mode=0o700)
@@ -9,7 +14,7 @@ profile={'Route':'birth','ExpectedTurn':42,'PreviousResult':None,'SeedSHA256':h(
 script='''#!/bin/bash
 set -euo pipefail
 umask 077
-ROOT=/workspace/shared/mm21-20261119
+ROOT=PREPARED_DESTINATION
 P="$ROOT/p01"
 for marker in launch.log launch-origin.json guardian.json probe-result.json queue; do
  test ! -e "$P/$marker" && test ! -L "$P/$marker" || exit 71
@@ -61,7 +66,7 @@ except Exception: code=g if 1<=g<=255 else 98
 raise SystemExit(code)
 ENDPY
 exit $?
-'''.replace('=FAILURE_NONCE','= '+failure).replace('=STOP_NONCE','= '+stop).replace('= ','=')
+'''.replace('PREPARED_DESTINATION',str(D)).replace('=FAILURE_NONCE','= '+failure).replace('=STOP_NONCE','= '+stop).replace('= ','=')
 (D/'launch-p01.sh').write_text(script);(D/'launch-p01.sh').chmod(0o700)
 assert inv(D/'play')==before
 j={'Kind':'inert-launch-profile','NoExecution':True,'WorldBefore':before,'WorldAfterExact':True,'SourcePins':{str(p.relative_to(R)):h(p) for p in [R/'tests/fixtures/ProductionMain/live-mortal-phase.py',R/'tests/fixtures/ProductionMain/relay_phase_evidence.py',R/'tests/fixtures/ProductionMain/mortal_console_routes.py']},'ProfileSHA256':h(P/'launch-profile.json'),'LaunchSHA256':h(D/'launch-p01.sh'),'ActionSHA256':h(P/'action.txt'),'PhaseInventory':inv(P)}
