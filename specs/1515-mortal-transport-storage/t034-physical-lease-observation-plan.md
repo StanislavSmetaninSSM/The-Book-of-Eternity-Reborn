@@ -1130,3 +1130,17 @@ launch. No old world was touched, no Save parser/timeout/fence changed, and mm27
 remains a nonpredecessor despite its previously committed archive. Current
 producer must be refreshed from genuinely current owning outputs before new
 preparation; recorded Unit copies are not assumed current after this build.
+
+
+### Next finite block: actual mixed freezer integration, test-first
+One affected DATA method uses the exact immutable accepted hosted mixed trace,
+copied only into temporary private directories for malformed/foreign/orphan/
+missing-stage controls. It first fails missing actual summarizer; downstream
+controls are not yet executed. Physical-only emitter IDs remain observed-only,
+not an OS ownership inventory. Critical marker PIDs must join complete physical
+pin groups, with foreground PID independently bound from launch journal. Record
+foreground Active+mutation/finalization, not attribution of a specific Save
+without an independent operation interval. A narrow actual freezer entrypoint
+will bind settled phase profile/probe/journal bytes and invoke the same helper
+for every event file, preserving separate physical triplets and marker counts.
+No old frozen outcome or world is modified. No runtime or new package yet.

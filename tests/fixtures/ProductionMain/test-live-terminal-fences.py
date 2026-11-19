@@ -469,9 +469,53 @@ class MixedTrace(unittest.TestCase):
         row=copy.deepcopy(marker);row['OriginalPin']['State']=0
         with self.assertRaises(ValueError):call('marker',row)
 
+class TraceFreezer(unittest.TestCase):
+    def test_actual_mixed_freezer_closes_all_observed_rows_without_claiming_os_inventory(self):
+        summarize=getattr(evidence,'summarize_observed_diagnostic_trace',None)
+        self.assertTrue(callable(summarize),'actual mixed trace freezer missing')
+        accepted=pathlib.Path('/tmp/ms-877d479fb542')
+        pins_path=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/mm27-marker-source/accepted-mixed-pins.json')
+        pins=json.loads(pins_path.read_text())
+        for name,digest in pins.items():self.assertEqual(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest(),digest)
+        result=json.loads((accepted/'result.json').read_text());owner=result['OriginalIdentity']
+        nonce=(accepted/'external-trace/owner-nonce').read_text();pid=531
+        with tempfile.TemporaryDirectory() as td:
+            trace=pathlib.Path(td)/'trace';trace.mkdir(mode=0o700)
+            originals={p.name:p.read_bytes() for p in (accepted/'external-trace').iterdir()}
+            def restore():
+                for p in trace.iterdir():p.unlink()
+                for name,raw in originals.items():
+                    p=trace/name;p.write_bytes(raw);p.chmod(0o600)
+            def call():return summarize(trace,nonce,owner['RootKey'],owner,pid)
+            restore();summary=call()
+            self.assertEqual(summary['PhysicalEvents'],9);self.assertEqual(summary['PhysicalTriples'],3)
+            self.assertEqual(summary['HealthyMarkers'],1);self.assertEqual(summary['ForegroundActiveWithMutationAndFinalization'],1)
+            self.assertFalse(summary['ExhaustiveCoverage']);self.assertEqual(summary['IndependentForegroundPid'],pid)
+            marker=next(name for name in originals if '-marker-' in name)
+            physical=next(name for name in originals if name.endswith('-lease-granted.json'))
+            for mode in ('unknown-file','missing-stage','duplicate-occurrence-stage','public-file','foreign-marker-pin','orphan-ready'):
+                restore()
+                with self.subTest(mode=mode):
+                    if mode=='unknown-file':(trace/'unexpected').write_bytes(b'not a diagnostic')
+                    elif mode=='missing-stage':(trace/physical).unlink()
+                    elif mode=='duplicate-occurrence-stage':(trace/('copy-'+physical)).write_bytes(originals[physical])
+                    elif mode=='public-file':(trace/physical).chmod(0o644)
+                    else:
+                        row=json.loads(originals[marker].split(b' ',1)[1])
+                        if mode=='foreign-marker-pin':row['OriginalPin']['PinId']='0'*32
+                        else:
+                            pin=row['OriginalPin'];row['OriginalPin']=None
+                            row['OriginalClose']={k:pin[k] for k in ('PinId','CloseId','OperationId','Identity')}
+                            row['OriginalClose'].update(Outcome=0,ClosingFailed=False);row['Stage']='helper-ready-written'
+                        (trace/marker).unlink();name=f"{pid}-marker-{row['Occurrence']}-{row['Stage']}.json"
+                        (trace/name).write_bytes(('BOE_MAIN_OPERATION_MARKER '+json.dumps(row)+'\n').encode());(trace/name).chmod(0o600)
+                    with self.assertRaises(ValueError):call()
+            restore();self.assertEqual(call(),summary)
+        for name,digest in pins.items():self.assertEqual(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest(),digest)
+
 if __name__=='__main__':
-    selected=MixedTrace if sys.argv[1:]==['mixed-trace'] else OrdinarySave if sys.argv[1:]==['ordinary-save'] else Fences
-    expected=1 if selected is MixedTrace else 8 if selected is OrdinarySave else 11
+    selected=TraceFreezer if sys.argv[1:]==['trace-freezer'] else MixedTrace if sys.argv[1:]==['mixed-trace'] else OrdinarySave if sys.argv[1:]==['ordinary-save'] else Fences
+    expected=1 if selected in (MixedTrace,TraceFreezer) else 8 if selected is OrdinarySave else 11
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(selected);assert suite.countTestCases()==expected
     result=unittest.TextTestRunner(verbosity=2).run(suite)
     raise SystemExit(0 if result.wasSuccessful() and result.testsRun==expected and not result.skipped else 1)
