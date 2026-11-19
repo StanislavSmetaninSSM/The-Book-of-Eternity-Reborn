@@ -790,12 +790,23 @@ class Terminal:
                             self.process.kill();self.process.wait(timeout=1)
                 collect('owned child settlement',stop_child)
                 if captured_output and self.process.stdout is not None:collect('owned output close',self.process.stdout.close)
-            if self.console is not None:collect('sidecar abort',self.console.abort)
+            abort_proof=None
+            if self.console is not None:
+                def abort_sidecar():
+                    nonlocal abort_proof
+                    abort_proof=self.console.abort()
+                    if (not isinstance(abort_proof,dict) or abort_proof.get('Joined') is not True
+                        or abort_proof.get('EOF') is not True or abort_proof.get('Errors')!=[]):
+                        raise RuntimeError('Sidecar abort did not prove joined/drained error-free closure')
+                collect('sidecar abort',abort_sidecar)
             if self.slave is not None and self.initial is not None:
                 collect('original termios restore',lambda:termios.tcsetattr(self.slave,termios.TCSANOW,self.initial))
             for label,fd in (('slave',self.slave),('master',self.master)):
                 if fd is not None:collect(label+' close',lambda fd=fd:os.close(fd))
             if self in peers:peers.remove(self)
+            detail={'Name':name,'PrimaryFailure':type(primary).__name__+': '+str(primary),
+                    'SidecarAbort':abort_proof,'CleanupFailures':failures,'NormalExit':False}
+            result.setdefault('TerminalInitializationFailures',[]).append(detail)
             if failures:primary.add_note('Terminal initialization cleanup failures: '+'; '.join(failures))
             raise
     def send(self,data,phase,predicate=None,*,cleanup=False):

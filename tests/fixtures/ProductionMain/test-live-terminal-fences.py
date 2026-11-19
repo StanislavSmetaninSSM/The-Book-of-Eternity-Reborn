@@ -29,11 +29,11 @@ class Fences(unittest.TestCase):
     def test_actual_constructor_rolls_back_each_owned_acquisition(self):
         terminal=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='Terminal')
         init=next(n for n in terminal.body if isinstance(n,ast.FunctionDef) and n.name=='__init__')
-        for stage in ('ioctl','baseline','preflight','sidecar','popen','evidence','journal'):
+        for stage in ('ioctl','baseline','preflight','sidecar','popen','evidence','journal','abort-proof'):
             events=[];primary=ValueError('injected '+stage);peers=[]
             def step(name,value=None):
                 events.append(name)
-                if stage==name:raise primary
+                if stage==name or (stage=='abort-proof' and name=='journal'):raise primary
                 return value
             attrs=[0,0,0,3,0,0,[]]
             child=types.SimpleNamespace(pid=123,stdout=None,poll=lambda:None,
@@ -41,6 +41,7 @@ class Fences(unittest.TestCase):
             def abort():
                 events.append('abort')
                 if stage=='journal':raise RuntimeError('injected cleanup failure')
+                return {'Joined':stage!='abort-proof','EOF':True,'Errors':['unjoined'] if stage=='abort-proof' else []}
             console=types.SimpleNamespace(abort=abort)
             fakeos=types.SimpleNamespace(set_blocking=lambda *a:None,close=lambda fd:events.append(('close',fd)))
             class Path:
@@ -58,14 +59,20 @@ class Fences(unittest.TestCase):
                 subprocess=types.SimpleNamespace(Popen=lambda *a,**kw:step('popen',child),TimeoutExpired=TimeoutError),
                 evidence=types.SimpleNamespace(raw=lambda *a:step('evidence')),observed_processes=[],
                 process_observer=types.SimpleNamespace(register=lambda pid:pid),peers=peers,
-                journal=types.SimpleNamespace(append=lambda *a:step('journal')),elapsed=lambda:0)
+                journal=types.SimpleNamespace(append=lambda *a:step('journal')),elapsed=lambda:0,result={})
             module=types.ModuleType('client_session');module.ClientSession=lambda *a:step('sidecar',console)
             node=ast.ClassDef(name='Terminal',bases=[],keywords=[],body=[init],decorator_list=[])
             with patch.dict(sys.modules,{'client_session':module}):
                 exec(compile(ast.fix_missing_locations(ast.Module(body=[node],type_ignores=[])),'<actual-init>','exec'),ns)
                 with self.assertRaises(ValueError) as caught:ns['Terminal']('client',['never executed'])
             self.assertIs(caught.exception,primary)
-            if stage=='journal':self.assertIn('injected cleanup failure',' '.join(primary.__notes__))
+            detail=ns['result']['TerminalInitializationFailures'][0]
+            self.assertEqual(detail['PrimaryFailure'],str(type(primary).__name__)+': '+str(primary))
+            self.assertFalse(detail['NormalExit'])
+            if stage=='journal':self.assertIn('injected cleanup failure',' '.join(detail['CleanupFailures']))
+            if stage=='abort-proof':
+                self.assertFalse(detail['SidecarAbort']['Joined']);self.assertTrue(detail['CleanupFailures'])
+            if stage in ('popen','evidence'):self.assertEqual(detail['SidecarAbort'],{'Joined':True,'EOF':True,'Errors':[]})
             self.assertIn(('close',10),events);self.assertIn(('close',11),events);self.assertEqual(peers,[])
             if stage in ('popen','evidence','journal'):self.assertIn('abort',events)
             if stage in ('evidence','journal'):
