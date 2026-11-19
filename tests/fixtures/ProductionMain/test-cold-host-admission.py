@@ -44,10 +44,10 @@ class ColdHostAdmission(unittest.TestCase):
     def test_cold_host_requires_no_new_owner_adoption_or_old_temp_alias(self):
         validate=getattr(actual,'require_cold_loaded_owner',None)
         self.assertTrue(callable(validate),'missing fresh cold-host owner witness')
-        expected={'RootKey':'/tmp/new-play','GenerationId':'new-generation','ForbiddenRunIds':['old-save-owner','failed-p03-owner']}
-        identity={'RootKey':'/tmp/new-play','GenerationId':'new-generation','RunId':'new-original','Epoch':1,'Backend':'LinuxSupervisor'}
+        expected={'RootKey':'/tmp/new-play','GenerationId':'a'*32,'ForbiddenRunIds':['b'*32,'c'*32]}
+        identity={'RootKey':'/tmp/new-play','GenerationId':'a'*32,'RunId':'d'*32,'Epoch':1,'Backend':'LinuxSupervisor','HostInstanceId':'f'*32,'BootId':'8a076780-7e68-4951-a54b-998e6554afca'}
         validate(identity,expected)
-        for changes in ({'RootKey':'/tmp/old-play'},{'GenerationId':'old-generation'},{'RunId':'old-save-owner'},{'RunId':'failed-p03-owner'},{'Epoch':True},{'Epoch':0}):
+        for changes in ({'RootKey':'/tmp/old-play'},{'GenerationId':'e'*32},{'RunId':'b'*32},{'RunId':'c'*32},{'Epoch':True},{'Epoch':0}):
             with self.assertRaises(ValueError):validate(dict(identity,**changes),expected)
 
 if __name__=='__main__':unittest.main()

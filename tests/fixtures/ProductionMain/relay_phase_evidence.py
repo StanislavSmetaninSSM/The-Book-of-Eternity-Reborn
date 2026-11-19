@@ -944,3 +944,99 @@ def ordinary_save_proved(result):
         story_sha=sha(bytes.fromhex(before['Files'][before['StoryPath']]))
         return story_sha==p['StorySHA256']==result['StoryAfterSHA256']
     except (KeyError,TypeError,ValueError):return False
+
+# Cold Load is accepted DATA plus closure, never a retained original owner.
+def require_cold_loaded_namespace(base):
+    base=_restored_plain_path(Path(base),True);session=_restored_plain_path(base/'game_session',True)
+    for path in (base/'.boe_runtime/gm-runs/main.json',session/'game_state/control/gm_bridge_status.json',
+        session/'game_state/control/pending_turn_snapshot.json',session/'game_state/control/pending_turn_snapshot.authority.json',
+        session/'game_state/control/pending_turn_snapshot',session/'game_state/control/validation_repair_request.json',
+        session/'input/turn_request.json',session/'ready/turn_complete.json',session/'ready/turn_error.json'):
+        if path.exists() or path.is_symlink():raise ValueError('Cold host has active/pending state: '+str(path))
+
+def cold_loaded_tree(root):
+    root=_restored_plain_path(Path(root),True);files={};directories={'.':stat.S_IMODE(root.stat().st_mode)}
+    for path in root.rglob('*'):
+        mode=path.lstat();name=path.relative_to(root).as_posix()
+        if stat.S_ISDIR(mode.st_mode):directories[name]=stat.S_IMODE(mode.st_mode)
+        elif stat.S_ISREG(mode.st_mode) and mode.st_nlink==1:files[name]={'sha256':sha(path.read_bytes()),'mode':stat.S_IMODE(mode.st_mode)}
+        else:raise ValueError('Linked/special cold host entry')
+    return {'Files':files,'Directories':directories}
+
+def require_cold_loaded_owner(identity,expected):
+    keys={'RootKey','GenerationId','RunId','Epoch','Backend','HostInstanceId','BootId'}
+    if type(identity) is not dict or set(identity)!=keys:raise ValueError('Incomplete fresh owner identity')
+    if (identity['RootKey']!=expected['RootKey'] or identity['GenerationId']!=expected['GenerationId']
+        or identity['RunId'] in expected['ForbiddenRunIds'] or type(identity['Epoch']) is not int or identity['Epoch']<1
+        or identity['Backend']!='LinuxSupervisor'):raise ValueError('Cold host owner differs')
+    for key in ('RunId','GenerationId','HostInstanceId'):
+        if type(identity[key]) is not str or re.fullmatch('[0-9a-f]{32}',identity[key]) is None:raise ValueError('Malformed owner identifier')
+    if type(identity['BootId']) is not str or re.fullmatch('[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}',identity['BootId']) is None:
+        raise ValueError('Malformed owner boot identity')
+
+def require_cold_loaded_host(descriptor,out,*,previous,route,current_max):
+    """Authenticate closed cold/rebind evidence and current DATA. Does not acquire
+    authority, prepare packages, copy state, start a process or update settings.
+    The caller separately verifies actual runtime/helper/terminal packages.
+    """
+    if (descriptor.get('Kind')!='cold-loaded-save43-fresh-host' or previous is not None or route!='ordinary-save'
+        or type(current_max) is not int or current_max!=43 or descriptor.get('ExpectedCurrentTurn')!=43 or descriptor.get('ExpectedTurn')!=44):
+        raise ValueError('Not the closed cold Save43 fresh-host route')
+    base=_restored_plain_path(Path(descriptor['BasePath']),True);root=base.parent;out=_restored_plain_path(Path(out),True)
+    if base!=root/'play' or out!=root/'recovered-live' or str(out)!=descriptor['PhasePath']:
+        raise ValueError('Cold phase/root differs')
+    temp=Path(descriptor['TemporaryRoot'])
+    if temp!=root/'rt' or temp!=temp.resolve() or Path(descriptor['RuntimeRoot'])!=root/'host-runtime':raise ValueError('Cold private paths differ')
+    require_native_bootstrap_path_budget(temp)
+    require_cold_loaded_namespace(base);session=base/'game_session';config=session/'config.json'
+    def pinned(value):
+        raw=_restored_plain_path(Path(value['Path'])).read_bytes()
+        if sha(raw)!=value['SHA256']:raise ValueError('Cold evidence pin differs')
+        return raw
+    cold=strict_settings(pinned(descriptor['ColdOutcome']));rebound=strict_settings(pinned(descriptor['RebindOutcome']))
+    old_config=pinned(descriptor['OriginalConfig'])
+    if cold.get('OriginalWrapperExit')!=0 or cold.get('ProbeSuccess') is not True or rebound.get('WrapperExit')!=0:
+        raise ValueError('Cold/rebind operation not successful')
+    if rebound.get('ColdOutcomeSHA256')!=descriptor['ColdOutcome']['SHA256']:raise ValueError('Rebind not bound to this cold Load')
+    for path,digest in cold['Artifacts'].items():
+        raw=old_config if path==str(config) else _restored_plain_path(Path(path)).read_bytes()
+        if sha(raw)!=digest:raise ValueError('Cold artifact changed: '+path)
+    for path,digest in rebound['Artifacts'].items():
+        if sha(_restored_plain_path(Path(path)).read_bytes())!=digest:raise ValueError('Rebind artifact changed: '+path)
+    # Reuse the actual cold route's strict driver/child/sidecar closure predicate.
+    import importlib.util
+    source=Path(__file__).resolve().parents[3]/'specs/1515-mortal-transport-storage/manual-mm21/run-cold-load.py'
+    spec=importlib.util.spec_from_file_location('cold_host_closure',source);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    guardian=strict_settings((root/'guardian.json').read_bytes());probe=strict_settings((root/'probe/result.json').read_bytes())
+    if not module.cold_run_succeeded(int((root/'exit.txt').read_text()),guardian,probe):raise ValueError('Cold closure not proven')
+    if cold_loaded_tree(base)!=descriptor['PlayRows'] or cold_loaded_tree(root/'runtime')!=descriptor['ColdRuntimeRows']:
+        raise ValueError('Cold retained inventory changed')
+    relay=cold_loaded_tree(out/'relay');expected=descriptor['RelayRows']
+    if relay['Files']!={name.removeprefix('relay/'):value for name,value in expected['Files'].items()} or relay['Directories']!={'.':0o700}:
+        raise ValueError('Rebound relay changed')
+    queue=_restored_plain_path(out/'queue',True)
+    if any(queue.iterdir()) or stat.S_IMODE(queue.stat().st_mode)!=0o700:raise ValueError('Cold queue not private and empty')
+    story=session/'stories/mortal_life_2.jsonl';entries=[strict_settings(line) for line in story.read_text(encoding='utf-8-sig').splitlines() if line.strip()]
+    if [row.get('turn') for row in entries]!=[41,42,43]:raise ValueError('Cold accepted story differs')
+    all_turns=[row['turn'] for p in (session/'stories').glob('*.jsonl') for row in map(strict_settings,p.read_text(encoding='utf-8-sig').splitlines()) if row]
+    if max(all_turns)!=43:raise ValueError('Cold current maximum differs')
+    chat=strict_settings((session/'game_state/history/chat_log.json').read_bytes())
+    if chat.get('sessionId')!=descriptor['SessionId']:raise ValueError('Cold session differs')
+    proof=strict_settings((root/'probe/loaded-proof.json').read_bytes())
+    name=descriptor['ArchiveName']
+    if Path(name).name!=name or proof['ArchiveName']!=name or proof['ArchiveSHA256']!=descriptor['ArchiveSHA256']:raise ValueError('Cold archive differs')
+    archive=_restored_plain_path(session/'saves/manual_saves'/name).read_bytes()
+    if sha(archive)!=descriptor['ArchiveSHA256']:raise ValueError('Cold archive digest differs')
+    files={p:_restored_plain_path(session/p).read_bytes().hex() for p in (*ORDINARY_SAVE_PATHS,'stories/mortal_life_2.jsonl')}
+    history=session/'game_state/world/mortal_living_world_history.json'
+    files['game_state/world/mortal_living_world_history.json']=history.read_bytes().hex() if history.exists() else None
+    verify_ordinary_save_archive(archive,{'Turn':43,'Files':files},43)
+    if {p:sha(bytes.fromhex(v)) for p,v in files.items() if v is not None}!=proof['ScopedSHA256']:raise ValueError('Cold scoped proof differs')
+    config_bytes=config.read_bytes();settings=strict_settings(config_bytes)
+    quote=lambda value:"'"+str(value).replace("'","''")+"'"
+    command="& '/usr/bin/python3' "+quote(out/'relay/relay_cli.py')+' --session '+quote(session)+' --queue '+quote(queue)+' --model dots-finish-relay'
+    if settings.get('GmCliLaunchCommand')!=command or settings.get('GmBridgeShellWorkingDirectory')!=str(session):raise ValueError('Cold operational command differs')
+    if re.fullmatch('og-[0-9a-f]{12}',settings.get('GmBridgePipeNameOverride','')) is None:raise ValueError('Cold pipe differs')
+    generation=strict_settings((base/'.boe_runtime/session-generation/current.json').read_bytes())['GenerationId']
+    return {'ExpectedTurn':44,'SessionId':descriptor['SessionId'],'BasePath':str(base),'RuntimeRoot':descriptor['RuntimeRoot'],
+        'TemporaryRoot':str(temp),'ConfigBytes':config_bytes,'Command':command,'Pipe':settings['GmBridgePipeNameOverride'],'GenerationId':generation}

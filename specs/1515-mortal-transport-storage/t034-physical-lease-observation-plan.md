@@ -1437,3 +1437,9 @@ Initial three tests are UNRUN: exact opt-in current closed evidence admission,
 temporary pending namespace negatives and fresh-owner identity predicate. Future
 live also requires novel author-packet full-engine dry format proof; no GM decision,
 finished inspection, vote or grant is predetermined by that dry sample.
+Cold-host admission RED independently accepted e0e3ed17: exact three missing
+callables, no errors, current32082+8 unchanged. Bounded evidence helpers now require
+actual cold/rebind artifact chains and full retained file/mode/dir membership,
+scoped archive/history and no pending/main state; owner predicate uses exact real
+identity shape. Pure source review pending. These helpers are not yet wired to the
+live driver or a generated profile; no package preparation or hosted start performed.
