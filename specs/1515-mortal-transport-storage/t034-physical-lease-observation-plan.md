@@ -572,3 +572,22 @@ acceptance was part of preparation. Private trace contains only its matching non
 marker. Original limits remain 600/660/680/720/750. Scripted P01 is a separately
 authorized next operation; genuine ordinary43 decision and Save remain later and
 unqualified. Failed mm24 and all prior uncertain worlds are untouched.
+
+### mm25 scripted P01 accepted, separate ordinary continuation pending
+
+Independent complete review accepted P01 turn42: one exact authenticated request,
+nine reviewed CAS writes/five timestamp bindings, one publication/execution and
+one accepted story append/materialization. Original operation exited0 in213.682s.
+All10,045 artifact hashes, current source with only the declared preparation-doc
+delta,723 managed/eight owning outputs, actual packages and108 final canonical
+pins joined. The unique request/nonce/original-owner consumer-return marker was
+observed before the sole shutdown; daemon errors remained0→0, exact ACK/Stopped/
+OwnedScopeEmpty and normal terminal/RPC/guardian closure were verified.
+
+All9,198 captured physical events form3,066 complete observed triples across54PIDs,
+with3,102 actual held-pin events; no captured malformed/partial/unmatched rows.
+This is observed evidence, not exhaustive holder coverage or timing neutrality.
+P01 is scripted transport/materialization, not an independent GM grant or Save.
+The clean predecessor may now supply a separately reviewed ordinary-save P02
+profile: ordinary player permission request, no inventory prologue/IDs, fresh GM
+choice only after actual43, then scoped Save proof. No43/Save has run yet.
