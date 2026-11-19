@@ -331,13 +331,44 @@ public sealed class AcceptedTurnReasoningOrdinaryTests(ITestOutputHelper output)
         {"NPCsInScene":[{"NPCId":"npc_steward_t034_visit42","npcName":"Распорядитель двора совета",
         "currentLocationId":"loc_test_yard"}],"UpdateNPCs":[]}
         """);
-        await _fixture.Files.WriteFileAtomicAsync("game_state/npcs/npc_journals.json", """
+        const string journalsPath = "game_state/npcs/npc_journals.json";
+        await _fixture.Files.WriteFileAtomicAsync(journalsPath, """
         {"NPCJournals":[{"npcId":"npc_steward_t034_visit42","npcName":"Распорядитель двора совета",
-        "lastJournalNote":"Просьба записана; выдача отложена до решения совета.","journalEntries":[]}]}
+        "lastJournalNote":"Я объяснил порядок выдачи.","journalEntries":[{"entryId":"prior42",
+        "description":"Я показал двор, но ничего не выдавал."}]}]}
         """);
-        await _fixture.Files.WriteFileAtomicAsync("input/turn_request.json", """
-        {"playerAction":"Попросить распорядителя разрешить взять мел; ничего не брать."}
-        """);
+        var prepared = await new LiveTurnPreparationService(_fixture.Files).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "mm25-authored-debug-test", RequestId = "mm25-debug-" + Guid.NewGuid().ToString("N"),
+            TurnNumber = 43, CurrentRealm = "Mortal World", Timestamp = "2026-11-19T18:36:24.3939811Z",
+            PlayerAction = "Попросить распорядителя разрешить взять мел; ничего не брать.",
+            PreGeneratedDices1d20 = new[] { 10, 2, 14 }
+        });
+        var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+            File.ReadAllText(_fixture.Physical(prepared.ManifestPath)), LiveTurnPreparationService.ManifestJsonOptions)!;
+        Assert.Equal(prepared.RequestId, manifest.RequestId);
+        Assert.Equal(File.ReadAllBytes(_fixture.Physical(journalsPath)),
+            File.ReadAllBytes(_fixture.Physical(manifest.Files[journalsPath])));
+        var lookupMethod = typeof(ValidationService).GetMethod("LoadValidatedPendingTurnSnapshotLookupAsync",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        Assert.NotNull(lookupMethod);
+        var lookupTask = (Task)lookupMethod.Invoke(_fixture.Validator,
+            new object?[] { null, null, "output/narrative_response.json", true })!;
+        await lookupTask;
+        var lookup = lookupTask.GetType().GetProperty("Result")!.GetValue(lookupTask)!;
+        Assert.Equal("Usable", lookup.GetType().GetProperty("Status")!.GetValue(lookup)!.ToString());
+        var journal = JsonNode.Parse(await _fixture.Files.ReadFileAsync(journalsPath))!.AsObject();
+        var actor = journal["NPCJournals"]![0]!.AsObject();
+        actor["lastJournalNote"] = "Записал просьбу и передам дозорным; кладовую не открывал.";
+        actor["journalEntries"]!.AsArray().Add(new JsonObject
+        {
+            ["entryId"] = "steward_chalk_request_deferred_t034_visit43",
+            ["timestamp"] = "2026-11-19T18:36:24.3939811Z",
+            ["event"] = "Просьба отложена до решения совета",
+            ["description"] = "Я отметил просьбу и передам её дозорным; до их решения кладовая закрыта.",
+            ["emotionalImpact"] = "деловая осторожность", ["relationshipChange"] = "0"
+        });
+        await _fixture.Files.WriteFileAtomicAsync(journalsPath, journal.ToJsonString());
         var source = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.Tests", "TestData",
             "mm25-authored-debug-" + variant + ".json");
         _fixture.WriteDebugRaw(File.ReadAllBytes(source));
