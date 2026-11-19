@@ -106,8 +106,8 @@ internal static class MainOperationFailureDiagnostic
 
     private static bool PrivatePhysicalPath(string path)
     {
-        // No platform privacy guess. External routing is currently Unix-qualified only.
-        if (OperatingSystem.IsWindows()) return false;
+        // No platform privacy guess. External routing is currently Linux-qualified only (special-entry classifier).
+        if (!OperatingSystem.IsLinux()) return false;
         const UnixFileMode others = UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.GroupExecute |
             UnixFileMode.OtherRead | UnixFileMode.OtherWrite | UnixFileMode.OtherExecute;
         return (File.GetUnixFileMode(path) & others) == 0;
@@ -124,6 +124,7 @@ internal static class MainOperationFailureDiagnostic
                 context.Nonce != ReadNonce() || PhysicalRoute(context.Route, context.Directory) != "external") return;
             var directory = context.Directory!;
             var root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(context.Root));
+            if (root == Path.GetPathRoot(root)) return; // No path is external to the filesystem root.
             var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             if (directory.Equals(root, comparison) || directory.StartsWith(root + Path.DirectorySeparatorChar, comparison) ||
                 root.StartsWith(directory + Path.DirectorySeparatorChar, comparison)) return;
@@ -145,7 +146,7 @@ internal static class MainOperationFailureDiagnostic
             // No payload-derived path components: PID/occurrence and previously closed stage set only.
             var path = scope.ValidateFile(Path.Combine(directory,
                 $"{observation.ProcessId}-{observation.Occurrence}-{observation.Stage}.json"));
-            if (OperatingSystem.IsWindows()) return;
+            if (!OperatingSystem.IsLinux()) return;
             using var stream = new FileStream(path, new FileStreamOptions
             {
                 Mode = FileMode.CreateNew, Access = FileAccess.Write, Share = FileShare.Read,

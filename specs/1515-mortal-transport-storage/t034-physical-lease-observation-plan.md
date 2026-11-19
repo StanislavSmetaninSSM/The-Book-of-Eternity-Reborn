@@ -116,8 +116,8 @@ review joined18artifacts,32065source and8outputs. No native/UI/world run.
 Implementation WIP now adds a closed raw route/path parser, immutable captured
 route/path and fresh drift checks, private external marker validation and one
 CreateNew event per PID/occurrence/stage. Existing Mark/Report are unchanged.
-External privacy currently requires Unix modes; Windows external routing refuses
-rather than invent an ACL guarantee. Explicit controlled stderr remains portable
+External routing currently requires Linux special-entry classification and Unix
+private modes; other platforms refuse rather than invent an ACL/special-file guarantee. Explicit controlled stderr remains portable
 DEBUG behavior. Scope retains only ordinary namespace DATA, no handles/authority.
 
 The same routing theory now has26rows, with fresh marker/nonce changes, actual

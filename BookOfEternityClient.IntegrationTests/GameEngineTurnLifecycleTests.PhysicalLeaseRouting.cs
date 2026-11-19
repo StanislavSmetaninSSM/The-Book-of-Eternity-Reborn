@@ -175,6 +175,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             Environment.SetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalDirectoryVariable, path);
             Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", nonce);
             Console.SetError(stderr);
+            var filesystemRoot = MainOperationFailureDiagnostic.BeginPhysicalLease(nonce, "/", "SessionMutation", null);
+            Assert.NotNull(filesystemRoot);
+            MainOperationFailureDiagnostic.ReportPhysical(filesystemRoot, "physical-opened", 1);
+            Assert.Equal(new[] { marker }, Directory.GetFiles(path));
+            Assert.Empty(ReadPhysicalLeaseEvents(stderr.ToString()));
             var context = MainOperationFailureDiagnostic.BeginPhysicalLease(nonce, _rootPath, "SessionMutation", null);
             Assert.NotNull(context);
             MainOperationFailureDiagnostic.ReportPhysical(context, "physical-opened", 1);
