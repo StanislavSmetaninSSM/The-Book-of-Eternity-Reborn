@@ -1,6 +1,6 @@
 """T034 inert descriptor controls using the maintained raw-frame grammar."""
 import unittest
-from smoke import inert_geometry_selected, inert_initial_pty_cut, inert_wrapped_load
+from smoke import inert_geometry_selected, inert_initial_pty_cut, inert_wrapped_load, noecho_baseline, require_noecho
 ROWS=('s | Ход 43 | Хозяйственный двор у нижней лестницы | 18.11.2026 18:00 | 99999KB','↩️ Назад')
 MENU={'header':'Выберите сохранение:','choices':ROWS,'page_size':15}
 HEADER='Выберите сохранение:\n'
@@ -34,8 +34,25 @@ class GeometryTests(unittest.TestCase):
             self.assertFalse(inert_wrapped_load(good+tail,0,menu))
         self.assertFalse(inert_wrapped_load(good.replace(b'99999KB',b'other'),0,menu))
 
+    def test_noecho_preserves_original_and_all_other_attributes(self):
+        import termios,copy
+        original=[1,2,3,termios.ECHO|termios.ECHONL|termios.ICANON,4,5,[b'x',b'y',7]]
+        saved=copy.deepcopy(original);configured=noecho_baseline(original)
+        self.assertEqual(original,saved)
+        self.assertEqual(configured[:3]+configured[4:],original[:3]+original[4:])
+        self.assertEqual(configured[3],original[3]&~(termios.ECHO|termios.ECHONL))
+        configured[6][0]=b'z';self.assertEqual(original,saved)
+    def test_reenabled_echo_refuses_without_mutation(self):
+        import termios,copy
+        good=[1,2,3,termios.ICANON,4,5,[b'x']]
+        require_noecho(good)
+        for flag in (termios.ECHO,termios.ECHONL,termios.ECHO|termios.ECHONL):
+            bad=copy.deepcopy(good);bad[3]|=flag;saved=copy.deepcopy(bad)
+            with self.assertRaisesRegex(ValueError,'input refused'):require_noecho(bad)
+            self.assertEqual(bad,saved)
+
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(GeometryTests)
-    assert suite.countTestCases()==5
+    assert suite.countTestCases()==7
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.wasSuccessful() and result.testsRun==5 and not result.skipped else 1)
+    raise SystemExit(0 if result.wasSuccessful() and result.testsRun==7 and not result.skipped else 1)

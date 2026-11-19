@@ -153,6 +153,22 @@ def inert_wrapped_load(raw, cut, menu):
           r'99999KB *'+nl+r'  '+re.escape(back)+r' *')
     return re.fullmatch(prefix+body+r'(?:'+re.escape('\r\x1b[4A')+body+r')*',text) is not None
 
+def noecho_baseline(attributes):
+    """Owned pre-spawn configuration only; preserve every non-echo attribute."""
+    import copy
+    configured=copy.deepcopy(attributes)
+    configured[3] &= ~(termios.ECHO|termios.ECHONL)
+    return configured
+
+def require_noecho(attributes):
+    if attributes[3] & (termios.ECHO|termios.ECHONL):
+        raise ValueError('Owned terminal echo re-enabled; input refused')
+
+def termios_data(attributes):
+    return [v if not isinstance(v,list) else
+            [({'Hex':x.hex()} if isinstance(x,bytes) else x) for x in v]
+            for v in attributes]
+
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
     assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load','pipe-inventory-cleanup','pipe-load-geometry','pty-load-100','pty-load-80')
@@ -178,6 +194,8 @@ def main():
     master,slave=pty.openpty()
     fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,80 if wrong_width else 100,0,0))
     initial=termios.tcgetattr(slave)
+    owned_noecho=same_pty and geometry
+    configured=noecho_baseline(initial) if owned_noecho else initial
     def own():
         os.setsid();fcntl.ioctl(slave,termios.TIOCSCTTY,0);os.tcsetpgrp(slave,os.getpid())
     env=os.environ.copy();env['TERM']='dumb' if mode=='pipe-dumb' else 'xterm-256color'
@@ -186,7 +204,20 @@ def main():
     process=None;screen=Screen();control=Screen(screen.keyboard);closed=set();streams={};raws={}
     frame_cut=0; captured=bytearray(); raw_cut=0
     start=time.monotonic();stage=0
+    def write_input(key):
+        if owned_noecho:
+            observed=termios.tcgetattr(master)
+            result.setdefault('BeforeInputTermios',[]).append(termios_data(observed))
+            require_noecho(observed) # snapshot only; raw grammar still rejects racing echo
+        assert os.write(master,key)==len(key)
     try:
+        if owned_noecho:
+            result['OriginalTermios']=termios_data(initial)
+            result['ConfiguredTermios']=termios_data(configured)
+            termios.tcsetattr(slave,termios.TCSANOW,configured)
+            readback=termios.tcgetattr(slave)
+            result['ConfiguredReadback']=termios_data(readback)
+            assert readback==configured
         args=['dotnet',helper,'spectre-inventory-cleanup-smoke' if cleanup else 'spectre-load-geometry-smoke' if geometry else 'spectre-load-smoke' if load else 'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
         process=subprocess.Popen(args,stdin=slave,stdout=slave if same_pty else subprocess.PIPE,
                                  stderr=slave if same_pty else subprocess.STDOUT,env=env,preexec_fn=own)
@@ -207,7 +238,7 @@ def main():
                         assert selected_frame(bytes(captured),0,menu)=='← Назад'
                         assert not captured.endswith(b'\r') and bytes(captured).rstrip(b' ').endswith(footer.encode())
                         result['CompleteFooterWithoutCR']=True
-                    assert os.write(master,key)==len(key)
+                    write_input(key)
                     result['Inputs'].append({'Hex':key.hex(),'Phase':phase,'CaptureCut':len(captured)})
             def wait(predicate,seconds,label):
                 deadline=min(start+12,time.monotonic()+seconds)
@@ -294,7 +325,7 @@ def main():
                 arrow=screen.down()
                 result['KeyboardAtDown']=dict(screen.keyboard)
                 assert not control.pending and not control.invalid
-                assert os.write(master,arrow)==len(arrow)
+                write_input(arrow)
                 result['Inputs'].append({'Key':'Down','Hex':arrow.hex()})
                 frame_cut=len(screen.plain);raw_cut=len(captured);stage=1
             elif stage==1 and ready('SMOKE_BETA'):
@@ -307,7 +338,7 @@ def main():
                     previous=menu;raw_cut=len(captured)
                     menu=entry_menu(after_menu(load_menu,previous),load_clear=True)
                     first_label,footer=menu['choices']
-                assert os.write(master,b'\r')==1
+                write_input(b'\r')
                 result['Inputs'].append('Enter');stage=2
             elif load and stage==2 and ready('SMOKE_ALPHA'):
                 actual=bytes(captured[raw_cut:])
@@ -318,13 +349,13 @@ def main():
                 result['TransitionRawHex']=actual.hex()
                 raw_cut=len(captured);frame_cut=len(screen.plain)
                 arrow=screen.down()
-                assert os.write(master,arrow)==len(arrow)
+                write_input(arrow)
                 result['Inputs'].append({'Key':'Down','Hex':arrow.hex()});stage=3
             elif load and stage==3 and ready('SMOKE_BETA'):
                 actual=bytes(captured[raw_cut:])
                 assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith(footer.encode())
                 result['LoadMovedCompleteFooterWithoutCR']=True
-                assert os.write(master,b'\r')==1
+                write_input(b'\r')
                 result['Inputs'].append('Enter');stage=4
             if process.poll() is not None and slave>=0:
                 os.close(slave);slave=-1
@@ -335,7 +366,8 @@ def main():
             raise RuntimeError('Expected inert wrong-width refusal; owned cleanup required')
         if not result['EOF']:raise TimeoutError('Actual selection/exit/EOF not observed within 12s')
         result['ExitCode']=process.wait(timeout=1)
-        result['TermiosRestored']=termios.tcgetattr(master)==initial
+        result['ChildRestoredConfiguredBaseline']=termios.tcgetattr(master)==configured
+        result['TermiosRestored']=result['ChildRestoredConfiguredBaseline']
         receipt=json.loads((root/'choice.json').read_text())
         result['Choice']=receipt
         assert result['TermiosRestored'] and not receipt['InputRedirected']
@@ -373,6 +405,16 @@ def main():
                         else:closed.add(fd)
                 result['CleanupDrained']=len(closed)==len(streams)
                 if not result['CleanupDrained']:result['CleanupFailures'].append('Owned stream drain incomplete')
+            except BaseException as error:result['CleanupFailures'].append(str(error))
+        if owned_noecho:
+            try:
+                if process is not None and result.get('Joined') is not True:
+                    raise RuntimeError('Cannot restore original terminal before child joined')
+                termios.tcsetattr(master,termios.TCSANOW,initial)
+                restored=termios.tcgetattr(master)
+                result['OwnerRestoredOriginal']=restored==initial
+                result['OriginalRestoreReadback']=termios_data(restored)
+                if restored!=initial:raise RuntimeError('Owned original termios restoration mismatch')
             except BaseException as error:result['CleanupFailures'].append(str(error))
         for raw in raws.values():raw.close()
         for fd in (slave,master):
