@@ -549,3 +549,11 @@ The mm19 denial remains separate evidence, not a combined scenario. P01 remains
 scripted; a genuine ordinary43 response requires a fresh independent GM decision
 and rationale after the actual request. No semantic template was changed to force
 a grant; grant/denial and actual Save must be reported separately and honestly.
+
+Independent affected CurrentProducer pure1 GREEN accepted: one method passed in
+0.005 s without errors/skips; both exact added fixture paths, declared-digest
+refusals and existing source/output/overlay/tool/mode controls executed. Full
+32,067 sources/eight outputs were unchanged. This admits the finite thirteen-path
+noncompiler contract only. Assemble and independently review fresh mm25 source,
+current producer, modes/tools/native/terminal input joins before one setup-only
+seed41 export and inert P01 profile. No new world or live action has run yet.
