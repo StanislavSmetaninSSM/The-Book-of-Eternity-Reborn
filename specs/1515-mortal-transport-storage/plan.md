@@ -4631,3 +4631,22 @@ are diagnostic observations, not yet qualified as the live refusal's exact cause
 independent source/outcome review is next. No game action, repair, replay,
 original-world write or new live owner occurred. No gameplay fix is justified
 until content-only versus relocation/authority effects are distinguished.
+
+T031 independently verified diagnostic/source conclusion: all three refusals arise
+from strict mutation validation without a pre-turn original, not relocated-root
+or signature rejection. The current map contains the allocated location, but its
+validator's known-location set comes only from completed publication or signed
+original. Retained steward inventory=[] in UpdateNPCs is treated as a resend when
+original is Missing. Historical Mira's old scene location is exempt only with a
+usable original or read-only-inspection purpose. Production pre-send invokes the
+same strict path before BeginHotOrdinaryOriginal. This strongly explains p02;
+it is not recovery of the original uncaptured Debug issue list.
+
+Track T032 before correction. Minimal causal regression extends the existing real
+combined publication positive path: accepted42, original retired/pending absent,
+then next pre-send validation over exact retained map/vehicle/NPC state. Keep old
+five selectors unchanged; new single category owns the new regression. Do not
+remove historical entities, forge a snapshot or loosen mutation validation.
+Design must explicitly separate idle canonical checking from authored mutation,
+preserving raw-response, unusable-original and active-turn boundaries. No live
+retry before bounded RED/GREEN/review; this automatic proof is not live acceptance.
