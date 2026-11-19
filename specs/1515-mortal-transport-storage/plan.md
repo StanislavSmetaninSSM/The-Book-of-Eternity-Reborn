@@ -4010,3 +4010,33 @@ because its prerequisite was unmet. No new GM packet, relay or game was launched
 The TestSupport/MSBuild cause is UNKNOWN: lack of explicit serial MSBuild is only
 a hypothesis, not a demonstrated fix. Next is bounded tool-only diagnosis in a
 separate output directory, preserving the failed invocation and current guards.
+
+T028 publication cause and bounded serial control, 2026-11-19. The original
+isolated MSBuild failure artifact at the failed stage's timestamp identifies
+`SocketException(13)` constructing the out-of-process node NamedPipeServerStream.
+Its retained SHA256 is
+`cf584398f84287fdaa0219d1262418d6a61a2b3d0f1dcc44b20c1878b1b33601`.
+Disabling node reuse does not prohibit starting those nodes. One separate
+TestSupport diagnostic publish added only `-m:1` for scheduling plus verbose/binlog
+capture, used a new tool-only output and the same guardian. It completed in
+1.521 seconds (MSBuild 1.26 seconds), zero warnings/errors, driver exit0, ECHILD,
+one reaped and zero emergency signals/failures/deadline. No socket policy changed.
+The diagnostic records Node1 and no out-of-process failure artifacts.
+
+The actual successful publish also exposed an unsupported assumption in the
+helper projection: 248 expected files versus 249 published, zero missing or
+changed. The sole additional file is
+`runtimes/win/lib/net8.0/System.Diagnostics.EventLog.Messages.dll`, exactly matching
+restored official `system.diagnostics.eventlog/8.0.0` and the SDK's selected source,
+SHA256 `68f73ab17fb7f4aff3d35ef6db0e9d5b0fa0151111cb3d03992e23bc29d6c40a`.
+No generic allowance was added. T028 whole-preparation remains unqualified; its
+bounded DATA/process PASS does not override these actual integration findings.
+All original source/output and failed mm15 inventories stayed unchanged.
+Raw remains external under `mortal-t028/serial-publish`.
+
+Priority returns to the authorized live #1515 journey: use the already supported
+manual preparation in a fresh mm16 directory, with explicit complete producer
+joins including that exact NuGet publish-only asset, observable seed-export
+completion and independent prelaunch review. Do not resume mm15 or replay unknown
+mm14. This is not acceptance of the automatic helper or a new build-support
+project. No game, relay, GM response or seed export occurred in the serial control.
