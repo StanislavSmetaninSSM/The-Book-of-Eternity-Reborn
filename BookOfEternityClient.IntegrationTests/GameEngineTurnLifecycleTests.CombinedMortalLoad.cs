@@ -37,6 +37,17 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(string.IsNullOrWhiteSpace(oldGeneration));
         Assert.False(SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath, out _));
 
+        // Use the same local-settings bootstrap as the console fixture, before archiving the old generation.
+        Assert.Equal(oldGeneration, await runtime.StateManager.BootstrapLocalStorageAsync());
+        byte[] savedConfig;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            Assert.Equal(oldGeneration, _fs.ReadExistingSessionGeneration(lease));
+            savedConfig = (await runtime.StateManager.ReadLocalSettingsAsync(lease)).Bytes;
+        }
+        Assert.NotEmpty(savedConfig);
+        Assert.False(SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath, out _));
+
         var saved = await runtime.SaveLoad.CreateSaveAsync("combined-mortal-clean", "Accepted canonical birth", turnNumber: 42);
         Assert.Equal(SaveCreationDisposition.Committed, saved.Disposition);
         Assert.False(saved.NeedsFollowUp, saved.Failure?.ToString());
@@ -53,6 +64,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                 await stream.CopyToAsync(memory);
                 Assert.Equal(pair.Value, memory.ToArray());
                 Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+            }
+            var configEntry = Assert.Single(archive.Entries, item => item.FullName == "config.json");
+            await using (var stream = configEntry.Open())
+            {
+                using var memory = new MemoryStream();
+                await stream.CopyToAsync(memory);
+                Assert.Equal(savedConfig, memory.ToArray());
             }
             Assert.DoesNotContain(archive.Entries, entry => absent.Contains(entry.FullName) ||
                 entry.FullName.StartsWith(LiveTurnPreparationService.PendingTurnSnapshotDirectory + "/", StringComparison.Ordinal));
@@ -76,6 +94,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(42, runtime.GameLoop.TurnNumber);
                 foreach (var pair in retained) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
                 foreach (var path in absent) Assert.False(_fs.FileExists(path), path);
+                Assert.Equal(savedConfig, await _fs.ReadFileBytesAsync("config.json"));
                 continued = await runtime.Engine.PrepareLoadedConsoleContinuationAsync(committed);
                 // A refused continuation intentionally clears the game loop. Preserve the committed DATA decision instead.
                 Assert.Equal(committed.Disposition, continued.Disposition);
