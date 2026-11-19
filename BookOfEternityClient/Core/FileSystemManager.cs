@@ -1,3 +1,4 @@
+using MainOperationFailureDiagnostic = BookOfEternityClient.Services.GmRuntime.MainOperationFailureDiagnostic;
 using NarrativeWriteObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeWriteObservation;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging;
