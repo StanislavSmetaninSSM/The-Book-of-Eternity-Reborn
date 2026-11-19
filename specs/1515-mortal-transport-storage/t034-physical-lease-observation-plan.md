@@ -862,3 +862,39 @@ Next is a separately bound ordinary-save43 phase, without inventory prologue
 or target IDs. The GM decides from its fresh actual request; no grant or defer
 is preselected. Accepted43 and ordinary Save are not yet proven; transfer/Load
 and historical mm19 denial remain separate. All failed worlds stay untouched.
+
+### mm26 ordinary43 accepted; manual Save failed before publication
+
+The fresh independent GM decided before authoring to defer chalk issuance under
+current council-consent facts. The one reviewed five-write response preserved
+access/items/core, appended only the steward journal and advanced500→505. Its
+complete corrected debug schema was independently compared to the validated
+fixture. Genuine43 was accepted with typed no-due evidence and a new story;
+this is neither a grant nor a transfer. The consumer-return marker is captured
+at20:09:56.6206292Z. No second response or repair was submitted.
+
+Independent fixture_premises review verified failed outcome e254848d and all
+12,434 artifact hashes. The real Options→Save→name s→empty description path
+reached the application. After description cut629957, a current nonce/PID
+failure marker starts629970: CoordinatedStatePublicationUncertainException
+wraps IOException `Main run metadata or original owner admission is unavailable`.
+The fixture's later clean-Save timeout is downstream, not an unrecognized
+successful Save frame. No manual ZIP or success ACK exists; autosave42/43 are
+not substitutes for the requested manual Save.
+
+Source places the failure at initial ordinary canonical lease acquisition in
+SaveLoadService.Creation.cs255, before held-lease archive preparation/publication.
+Options calls this service directly; the canonical frame is nonparticipating
+(FS4730), and MainRunFence178 refuses a non-Stopped main without retained original
+access. Turn autosave uses the same Save service but runs under an admitted
+turn context. No early-owner-release or physical-lock-holder attribution follows.
+
+Original exec29705 exited1 after289.253s. Shutdown0, durable epoch2 Running with
+no StopEvidence, foreground closure unproved; sidecar abort-15/join/EOF and
+ECHILD guardian/reaped7 mean physical containment only. Captured trace11,522
+rows has3,840 complete triples plus one open/grant without observed disposal,
+60 PIDs, no malformed rows or physical prefix in client raw. This is not an
+exhaustive observation claim. mm26 is now UNKNOWN/nonpredecessor; do not retry,
+repair, continue or reuse its world. Accepted ordinary GM43 is proven separately;
+manual Save and the combined scenario are FAILED. No production fix or new run
+is implied by this checkpoint.
