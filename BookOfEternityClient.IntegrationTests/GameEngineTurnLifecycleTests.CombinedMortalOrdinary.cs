@@ -103,7 +103,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             var reasoning = debug["gm_thoughts_markdown"]!.GetValue<string>()
                 .Replace("Распорядитель двора совета", stewardName, StringComparison.Ordinal)
                 .Replace("npc_steward_t034_visit42", stewardId, StringComparison.Ordinal)
-                .Replace("loc_42ab98676d6f4e258e2250db02f656e4", locationId, StringComparison.Ordinal);
+                .Replace("loc_42ab98676d6f4e258e2250db02f656e4", locationId, StringComparison.Ordinal)
+                .Replace("Хозяйственный двор у нижней лестницы", steward["currentLocationName"]!.GetValue<string>(), StringComparison.Ordinal);
             await WriteMortalLivingWorldJourneyOutputAsync(request,
                 "Распорядитель записывает просьбу и обещает передать её совету. Кладовая остаётся закрытой; мел не выдан.",
                 [journalPath, MortalLivingWorldSource.WorldTimePath], reasoning, omitNoDueProgressionReport: true);
