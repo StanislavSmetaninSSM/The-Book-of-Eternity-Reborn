@@ -60,8 +60,11 @@ public sealed class SpectreSelectionPtyTests
             "-OutputDirectory",package,"-IncludeHostGuardian"], root, "build", 50);
         var helper = Path.Combine(AppContext.BaseDirectory,"BookOfEternityClient.TestSupport.dll");
         Assert.True(File.Exists(helper));
+        // This existing fixture-only selector changes the budget range, not authority.
+        // The inert full route uses 45s work / 55s guardian / 60s observer, with no GM or live turn.
+        string[] guardianBudgetSelector = mode == "pty-fullroute" ? ["--live-turn"] : [];
         await RunAsync(Path.Combine(package,"host-guardian"),
-            [Path.Combine(root,"guardian.json"),mode == "pty-fullroute" ? "55000" : "20000","/usr/bin/python3",
+            [.. guardianBudgetSelector, Path.Combine(root,"guardian.json"),mode == "pty-fullroute" ? "55000" : "20000","/usr/bin/python3",
              Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/SelectionPrompt/smoke.py"),
              Path.Combine(root,"peer"),helper,mode], root, "guardian", mode == "pty-fullroute" ? 60 : 25);
         using var guardian = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(root,"guardian.json")));

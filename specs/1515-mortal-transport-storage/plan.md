@@ -5037,3 +5037,9 @@ coalescing/reversal, Options missing/reordered/stale/partial/control tails, spli
 Save warning and expired wait/write; the one official fullroute Fact owns these
 nine before its renderer. No tests or build were run while correcting source.
 Disabled AudioService is now explicitly async-disposed by its fixture owner.
+
+### T034 full-route preparation checkpoints (no game qualification)
+- Authored Options DATA literal omitted the production blank line: 8 PASS / 1 FAIL setup mismatch; corrected literal and missing-blank-line negative produced 9 PASS. No renderer ran in that attempt.
+- Fresh owning Unit build succeeded in 91.99s with 92 warnings and 0 errors. PlanOnly then rejected the new category's string `related` entry; corrected only to the catalog's `{id, when}` schema. Exact compiler-source and eight-output joins justified reusing that build, not a new compile.
+- Corrected catalog PlanOnly selected exactly one Fact. Its one official attempt failed before Python/UI: ordinary host-guardian rejected 55000ms above its 30000ms cap with exit64, before fork/report. No menu, key, geometry or game outcome was observed. Original process streams and owned-tree cleanup completed; all 32030 source and eight output pins remained unchanged during that attempt.
+- Source-only correction selects the existing fixture budget range `--live-turn` only for the inert full route, preserving planned 45s work / 55s guardian / 60s observer. This is not a provider, live-turn or authority claim; native limits and other modes remain unchanged. Corrected wrapper remains UNRUN pending save/review and a fresh owning build.
