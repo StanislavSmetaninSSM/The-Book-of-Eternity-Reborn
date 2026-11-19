@@ -182,11 +182,12 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(1, observedOpened);
             }
         }
-        var observations = ReadPhysicalLeaseEvents(physicalOutput.ToString()[physicalStart..], nonce);
+        var observations = ReadPhysicalLeaseEvents(physicalOutput.ToString()[physicalStart..]);
         _directGachaOutput?.WriteLine(physicalOutput.ToString());
         Assert.NotEmpty(observations); // Initial RED: actual physical intervals are not emitted yet.
         Assert.All(observations, row =>
         {
+            Assert.Equal(nonce, row.GetProperty("Nonce").GetString());
             Assert.Equal(Environment.ProcessId, row.GetProperty("ProcessId").GetInt32());
             Assert.Equal(files.BasePath, row.GetProperty("Root").GetString());
             Assert.Equal("SessionMutation", row.GetProperty("Purpose").GetString());
@@ -207,6 +208,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(close.GetProperty("CaptureMonotonicTimestamp").GetInt64() >= openedRow.GetProperty("CaptureMonotonicTimestamp").GetInt64());
         }
         Assert.Equal(mode == "post-open-integrity" ? 0 : mode == "released" ? 2 : 1, grants.Length);
+        foreach (var grant in grants)
+        {
+            var id = grant.GetProperty("Occurrence").GetInt64();
+            var openedRow = Assert.Single(openedRows.Where(x => x.GetProperty("Occurrence").GetInt64() == id));
+            var close = Assert.Single(closes.Where(x => x.GetProperty("Occurrence").GetInt64() == id));
+            Assert.True(openedRow.GetProperty("CaptureMonotonicTimestamp").GetInt64() <= grant.GetProperty("CaptureMonotonicTimestamp").GetInt64());
+            Assert.True(grant.GetProperty("CaptureMonotonicTimestamp").GetInt64() <= close.GetProperty("CaptureMonotonicTimestamp").GetInt64());
+        }
         if (mode == "exhausted")
         {
             var exhausted = Assert.Single(observations.Where(x => PhysicalStage(x) == "contention-exhausted"));
@@ -221,8 +230,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     private static string? PhysicalStage(JsonElement row) => row.GetProperty("Stage").GetString();
-    private static JsonElement[] ReadPhysicalLeaseEvents(string text, string nonce) => text.Split('\n')
+    private static JsonElement[] ReadPhysicalLeaseEvents(string text) => text.Split('\n')
         .Where(line => line.StartsWith("BOE_CANONICAL_LEASE_OBSERVATION ", StringComparison.Ordinal))
-        .Select(line => JsonDocument.Parse(line["BOE_CANONICAL_LEASE_OBSERVATION ".Length..]).RootElement.Clone())
-        .Where(row => row.GetProperty("Nonce").GetString() == nonce).ToArray();
+        .Select(line => JsonDocument.Parse(line["BOE_CANONICAL_LEASE_OBSERVATION ".Length..]).RootElement.Clone()).ToArray();
 }

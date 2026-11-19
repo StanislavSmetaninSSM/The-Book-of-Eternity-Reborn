@@ -48,7 +48,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         Assert.Null(failure);
         await using (var fresh = await files.AcquireCanonicalWriteLeaseAsync()) Assert.True(fresh.IsActive);
-        var rows = ReadPhysicalLeaseEvents(captured.ToString(), nonce);
+        var rows = ReadPhysicalLeaseEvents(captured.ToString());
         if (mode is "missing-nonce" or "malformed-nonce")
         {
             Assert.DoesNotContain("BOE_CANONICAL_LEASE_OBSERVATION ", captured.ToString());
@@ -60,6 +60,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             return;
         }
         Assert.Equal(mode == "changed-nonce" ? 2 : 3, rows.Length);
+        Assert.All(rows, row => Assert.Equal(nonce, row.GetProperty("Nonce").GetString()));
+        if (mode == "changed-nonce") Assert.DoesNotContain(rows, row => PhysicalStage(row) == "physical-dispose-completed");
         Assert.Equal("physical-opened", PhysicalStage(rows[0]));
         Assert.Equal("lease-granted", PhysicalStage(rows[1]));
         if (mode == "repeated-dispose") Assert.Equal("physical-dispose-completed", PhysicalStage(rows[2]));
