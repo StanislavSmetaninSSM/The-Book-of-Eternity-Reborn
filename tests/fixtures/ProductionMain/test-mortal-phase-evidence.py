@@ -5,7 +5,7 @@ import relay_phase_evidence as phase_evidence
 import mortal_console_routes as console_routes
 SOURCE=Path(__file__).with_name('live-mortal-phase.py')
 TREE=ast.parse(SOURCE.read_text())
-NS=dict(phase_evidence=phase_evidence,console_routes=console_routes,__file__=str(SOURCE),Path=Path,json=json,hashlib=hashlib,re=re,os=os,sys=sys)
+NS=dict(require_native_bootstrap_path_budget=phase_evidence.require_native_bootstrap_path_budget,phase_evidence=phase_evidence,console_routes=console_routes,__file__=str(SOURCE),Path=Path,json=json,hashlib=hashlib,re=re,os=os,sys=sys)
 exec(compile(ast.Module(body=[n for n in TREE.body if isinstance(n,ast.FunctionDef)],type_ignores=[]),str(SOURCE),'exec'),NS)
 # Test-only reuse of the existing positive lifecycle DATA builder, no runtime AST imports.
 GENERAL=Path(__file__).with_name('test-relay-phase-contract.py')
