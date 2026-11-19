@@ -109,6 +109,7 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
     game = root / 'isolated-data' / 'game_session'
     cut = initial_cut
     previous = None
+    previous_selected = None
     retained = None
 
     def wait(predicate, label):
@@ -133,10 +134,10 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
                                      data('game_state/world/current_location.json'), {})
 
     def choose(menu, target, *, enter=True, up=False):
-        nonlocal cut, previous, retained
+        nonlocal cut, previous, previous_selected, retained
         if target not in menu['choices']:
             raise ValueError('Exact target absent')
-        observed_menu = routes.after_menu(menu, previous) if previous else menu
+        observed_menu = routes.after_menu(menu, previous, previous_selected) if previous else menu
         if retained is not None:
             if retained['menu'] != menu:
                 raise ValueError('Retained selection belongs to another menu')
@@ -170,6 +171,7 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
             cut = len(captured)
             send(b'\r', 'Enter exact ' + target)
             previous = menu
+            previous_selected = target
         else:
             retained = {'raw': bytes(captured), 'menu': menu, 'selected': selected}
             previous = None

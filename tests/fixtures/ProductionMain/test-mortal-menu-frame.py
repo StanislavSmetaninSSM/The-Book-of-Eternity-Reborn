@@ -139,6 +139,29 @@ class MenuFrameTests(unittest.TestCase):
         self.assertIsNone(selected_frame(close+frame(),0,MENU))
         self.assertIsNone(selected_frame(frame()+close,0,next_menu))
         self.assertIsNone(selected_frame(close.replace(b'1A',b'2A',1)+frame(),0,next_menu))
+        # Late selected picker redraws may arrive after Enter but before close.
+        for choices in (['Chalk','Cancel'],['Sword','Chalk','Cancel']):
+            prior=fixed_menu('Picker',choices,20);target='Chalk';height=1+len(choices)
+            def draw(selected):
+                return ('Picker\r\n    \r\n'+'\r\n'.join(
+                    ('> ' if x==selected else '  ')+x+'   ' for x in choices)).encode()
+            redraw=b'\r\x1b['+str(height).encode()+b'A'
+            close=b'\r'+b'\x1b[2K\x1b[1A'*height+b'\x1b[2K\x1b[?25h'
+            successor=frame();context=after_menu(MENU,prior,target)
+            late=redraw+draw(target)+redraw+draw(target)
+            tail=close+b'Success\r\n'+successor+b'\r\x1b[4A'+successor
+            with self.subTest(prior_height=height):
+                self.assertEqual(selected_frames(late+tail,0,context),['💰 Деньги: 500']*2)
+                self.assertEqual(selected_frames(tail,0,context),['💰 Деньги: 500']*2)
+                self.assertIsNone(selected_frames(late+tail,0,after_menu(MENU,prior)))
+                for bad in (redraw+draw('Cancel')+tail,redraw+draw(target)[:-8]+tail,
+                            late.replace(b'Picker',b'Other',1)+tail,
+                            late+b'\x1b[2J'+tail,
+                            late+tail.replace(b'1A',b'2A',1),
+                            late+tail+b'\r\x1b[4A'+successor[:15]):
+                    self.assertIsNone(selected_frames(bad,0,context))
+                invalid=dict(context,previous_menu=dict(prior,profile='unknown'))
+                self.assertIsNone(selected_frames(late+tail,0,invalid))
     def test_source_load_clear_heading_and_unknown_erase_refuse(self):
         load=entry_menu(local_load_menu('Court',43,1),load_clear=True)
         body=('Выберите сохранение:\n\n> '+load['choices'][0]+'  \n  ↩️ Назад  ').encode()

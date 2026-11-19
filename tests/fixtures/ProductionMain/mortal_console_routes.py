@@ -169,9 +169,14 @@ def preflight_local_route(inventory, location, player_status, storage_id, item_i
     local_load_menu(location['name'],turn,99999)
 
 
-def after_menu(menu, previous):
-    """Admits only the exact closing erase count of the prior source-bound prompt."""
-    return dict(menu,previous_height=len(previous['header'].split('\n'))+len(previous['choices']))
+def after_menu(menu, previous, selected=None):
+    """Record a source-bound close, optionally with the exact committed selection."""
+    value=dict(menu,previous_height=len(previous['header'].split('\n'))+len(previous['choices']))
+    if selected is not None:
+        prior=fixed_menu(previous['header'],list(previous['choices']),previous['page_size'],previous.get('profile'))
+        if selected not in prior['choices']:raise ValueError('Unknown committed predecessor selection')
+        value.update(previous_menu=prior,previous_selected=selected)
+    return value
 
 def entry_menu(menu, command=None, load_clear=False):
     """Known console-entry preamble, never cursor controls within a menu frame."""
@@ -188,6 +193,24 @@ def selected_frames(raw, cut, menu):
     try:
         checked=fixed_menu(menu['header'],list(menu['choices']),menu['page_size'],menu.get('profile'))
     except (ValueError,KeyError,TypeError,UnicodeError):return None
+    if 'previous_menu' in menu or 'previous_selected' in menu:
+        try:
+            prior=menu['previous_menu']
+            prior=fixed_menu(prior['header'],list(prior['choices']),prior['page_size'],prior.get('profile'))
+            target=menu['previous_selected']
+            height=len(prior['header'].split('\n'))+len(prior['choices'])
+            if target not in prior['choices'] or menu.get('previous_height')!=height:return None
+            close=b'\r'+b'\x1b[2K\x1b[1A'*height+b'\x1b[2K\x1b[?25h'
+            tail=raw[cut:]
+            at=tail.find(close)
+            if at<0:return None
+            if at:
+                frames=selected_frames(tail[:at],0,prior)
+                if not frames or any(value!=target for value in frames):return None
+            # Only complete, exact selected predecessor frames were consumed.
+            # Retain the actual close and every successor byte for normal decoding.
+            cut+=at
+        except (ValueError,KeyError,TypeError,UnicodeError):return None
     return decode_menu_frames(raw,cut,checked,menu)
 
 def decode_menu_frames(raw, cut, checked, menu):
