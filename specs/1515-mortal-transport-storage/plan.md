@@ -4418,3 +4418,17 @@ unsettled-inventory failure still fell through to the outer shutdown block;
 explicit skip and a full finally-wiring oracle are required before acceptance.
 Independent review is checking those boundaries and context-cut freshness. No
 live startup, owner guard change or recovery of mm18. Source checkpoint is WIP.
+
+T030 pre-build review corrections, 2026-11-19. Independent review identified
+three concrete gaps: ready-context cut retained a previously validated old->new
+frame sequence but forgot its prior row; inert prompt proof substituted a heading
+for the production full player prompt; failed client settlement fell through to
+original shutdown. New causal controls reproduced two assertion failures and one
+behavior error before correction. Corrected DATA28/28 PASS0.589s, frame20/20
+PASS0.014s. Context retains its exact tail prior for fresh revalidation; real
+commit=False->cleanup is covered. Inert helper emits the production prompt and
+uses the actual current_player_prompt_at/marker, with heading-only refusal.
+Original-owner shutdown now refuses before attempt/RPC while inventory cleanup
+is unresolved; the actual AST block proves zero attempts/RPC/logicalfalse and
+preserves the initial failure. These are source/cheap checks only. Corrected
+real cleanup fixture remains UNBUILT/UNRUN pending independent source re-review.

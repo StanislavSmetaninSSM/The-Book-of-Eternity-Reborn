@@ -38,7 +38,7 @@ internal static class SpectreSelectionSmoke
             if (cleanup)
             {
                 if (selected != "← Назад") throw new InvalidOperationException("Cleanup did not return Back.");
-                Console.WriteLine("Ваш ход"); Console.Write(" > ");
+                Console.WriteLine("Ваш ход"); Console.Write(" >  ");
                 if (Console.ReadLine() != "exit") throw new InvalidOperationException("Expected inert normal exit after prompt.");
             }
             return 0;

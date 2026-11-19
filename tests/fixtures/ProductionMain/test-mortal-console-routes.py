@@ -121,7 +121,7 @@ class RouteTests(unittest.TestCase):
         self.assertEqual(peer.keys,[b'\x1b[B'])
     def inventory_cleanup_fixture(self, prompt=True):
         source=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
-        nodes=[n for n in source.body if isinstance(n,ast.FunctionDef) and n.name in ('finite_select','settle_inventory_cleanup')]
+        nodes=[n for n in source.body if isinstance(n,ast.FunctionDef) and n.name in ('finite_select','settle_inventory_cleanup','current_player_prompt_at')]
         labels=['💰 Деньги: 500','⚔ ⚔️ Основная рука: Древний меч','📦 Древний меч [Оружие]','📦 🔒 Кладовая материалов совета (1 пр.)','← Назад']
         menu=console_routes.fixed_menu('🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)',labels,20)
         def frame(n):return ('\r\x1b[6A'+menu['header']+'\n'+'\n'.join(('> ' if i==n else '  ')+s for i,s in enumerate(labels))).encode()
@@ -130,16 +130,17 @@ class RouteTests(unittest.TestCase):
             def send(self,key,phase):
                 self.keys.append(key)
                 if key==b'\x1b[B':self.index+=1;self.pending.append(frame(self.index))
-                elif key==b'\r' and prompt:self.pending.append('Ваш ход\n > '.encode())
+                elif key==b'\r' and prompt:self.pending.append('Ваш ход\n >  '.encode())
         peer=Peer();ctx={'menu':menu,'cut':0,'selected':labels[0],'pending_next':labels[1],'send_confirmed':True}
         def until(predicate,*unused):
             for _ in range(10):
                 if predicate():return
                 if peer.pending:peer.capture.extend(peer.pending.pop(0))
             raise TimeoutError('Fixed cleanup deadline')
-        def fresh_player(client,cut,*unused):until(lambda:'Ваш ход'.encode() in bytes(client.capture[cut:]),0,'prompt')
+        def fresh_player(client,cut,*unused):until(lambda:ns['current_player_prompt_at'](bytes(client.capture[cut:]).decode())>=0,0,'prompt')
         ns={'client':peer,'console_routes':console_routes,'until':until,'fresh_player':fresh_player,'inventory_context':ctx,'client_prompt':False,'result':{'Failure':'original injected failure'}}
-        exec(compile(ast.Module(body=nodes,type_ignores=[]),'actual inventory cleanup','exec'),ns)
+        constant=next(n for n in source.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='PLAYER_PROMPT_MARKER' for t in n.targets))
+        exec(compile(ast.Module(body=[constant]+nodes,type_ignores=[]),'actual inventory cleanup','exec'),ns)
         return ns,peer,frame
     def test_cleanup_finishes_pending_duplicate_then_back_without_ctrlc(self):
         ns,peer,_=self.inventory_cleanup_fixture();self.assertTrue(ns['settle_inventory_cleanup']())
@@ -193,6 +194,26 @@ class RouteTests(unittest.TestCase):
         ns,peer,_=self.inventory_cleanup_fixture();ns['inventory_context']['send_confirmed']=False
         with self.assertRaises(RuntimeError):ns['settle_inventory_cleanup']()
         self.assertEqual(peer.keys,[]);self.assertFalse(ns['client_prompt'])
+    def test_ready_inventory_context_from_actual_commit_false_can_cleanup(self):
+        ns,peer,_=self.inventory_cleanup_fixture();ctx=ns['inventory_context']
+        ns['finite_select'](ctx['menu'],ctx['menu']['choices'][1],ctx['cut'],5,commit=False)
+        self.assertIsNone(ctx['pending_next']);self.assertEqual(peer.keys,[])
+        self.assertTrue(ns['settle_inventory_cleanup']());self.assertEqual(peer.keys,[b'\x1b[B']*3+[b'\r'])
+    def test_unconfirmed_inventory_finally_never_sends_shutdown_rpc(self):
+        tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
+        node=next(n for n in ast.walk(tree) if isinstance(n,ast.If) and any(isinstance(c,ast.Call) and isinstance(c.func,ast.Name) and c.func.id=='rpc' and c.args and isinstance(c.args[0],ast.Dict) and 'shutdown' in ast.unparse(c.args[0]) for c in ast.walk(n)) and n.lineno>1300)
+        # Select the direct original-owner shutdown block, not its outer finally.
+        calls=[]
+        def rpc(*args):calls.append(args);raise RuntimeError('must not call')
+        ns={'original':{'rootKey':'data','runId':'data'},'inventory_cleanup_required':True,'result':{'LogicalLifecycleVerified':False,'Failure':'original'},'shutdown_attempts':0,'rpc':rpc,'bridge':object()}
+        exec(compile(ast.Module(body=[node],type_ignores=[]),'actual shutdown guard','exec'),ns)
+        self.assertEqual(calls,[]);self.assertEqual(ns['shutdown_attempts'],0);self.assertFalse(ns['result']['LogicalLifecycleVerified']);self.assertEqual(ns['result']['Failure'],'original')
+    def test_renderer_cleanup_requires_actual_prompt_marker_not_heading(self):
+        tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text());fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='current_player_prompt_at');constant=next(n for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='PLAYER_PROMPT_MARKER' for t in n.targets))
+        ns={};exec(compile(ast.Module(body=[constant,fn],type_ignores=[]),'actual prompt','exec'),ns)
+        self.assertEqual(ns['current_player_prompt_at']('Ваш ход\n > '),-1);self.assertEqual(ns['current_player_prompt_at']('Ваш ход\n'),-1);self.assertGreaterEqual(ns['current_player_prompt_at']('Ваш ход\n >  '),0)
+        smoke=pathlib.Path(__file__).resolve().parents[1]/'SelectionPrompt/smoke.py'
+        self.assertIn("namespace['current_player_prompt_at']",smoke.read_text())
     def test_actual_local_branch_is_separate_from_genuine_gm_send(self):
         tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
         matches=[n for n in ast.walk(tree) if isinstance(n,ast.If) and
@@ -272,6 +293,6 @@ class RouteTests(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(RouteTests)
-    if suite.countTestCases()!=25:raise SystemExit('Expected exactly twenty-five finite-route DATA methods')
+    if suite.countTestCases()!=28:raise SystemExit('Expected exactly twenty-eight finite-route DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==25 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==28 and result.wasSuccessful() and not result.skipped else 1)

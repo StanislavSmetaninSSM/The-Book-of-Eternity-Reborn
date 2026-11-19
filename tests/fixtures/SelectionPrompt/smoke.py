@@ -159,7 +159,7 @@ def main():
             # Exercise the actual driver's finite selector, not another observer.
             import ast
             source=pathlib.Path(__file__).resolve().parents[1]/'ProductionMain/live-mortal-phase.py'
-            nodes=[n for n in ast.parse(source.read_text()).body if isinstance(n,ast.FunctionDef) and n.name in ('finite_select','register_inventory_cleanup','settle_inventory_cleanup')]
+            nodes=[n for n in ast.parse(source.read_text()).body if isinstance(n,ast.FunctionDef) and n.name in ('finite_select','register_inventory_cleanup','settle_inventory_cleanup','current_player_prompt_at')]
             import mortal_console_routes
             class Peer:
                 capture=captured
@@ -183,9 +183,10 @@ def main():
                         raws[fd].write(data)
                         if streams[fd]=='captured':captured.extend(data);screen.feed(data)
                         else:control.feed(data)
-            def fresh_player(peer,cut,seconds):wait(lambda:'Ваш ход'.encode() in bytes(captured[cut:]),seconds,'actual fresh player prompt')
+            def fresh_player(peer,cut,seconds):wait(lambda:namespace['current_player_prompt_at'](re.sub(r'\x1b\[[0-9;? ]*[A-Za-z~]','',bytes(captured[cut:]).decode('utf-8')))>=0,seconds,'actual fresh player prompt')
             namespace={'client':Peer(),'console_routes':mortal_console_routes,'until':wait,'fresh_player':fresh_player,'inventory_context':None,'inventory_cleanup_required':False,'client_prompt':False}
-            exec(compile(ast.Module(body=nodes,type_ignores=[]),'actual finite selector','exec'),namespace)
+            constant=next(n for n in ast.parse(source.read_text()).body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='PLAYER_PROMPT_MARKER' for t in n.targets))
+            exec(compile(ast.Module(body=[constant]+nodes,type_ignores=[]),'actual finite selector','exec'),namespace)
             target=menu['choices'][3]
             if cleanup:
                 namespace['register_inventory_cleanup'](menu,0)

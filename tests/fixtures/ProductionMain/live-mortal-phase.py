@@ -968,7 +968,7 @@ def finite_select(menu,label,cut,maximum_rows,commit=True):
     context=globals().get('inventory_context')
     context=context if context is not None and context['menu'] is menu else None
     if context is not None and not context['send_confirmed']:raise RuntimeError('Inventory input outcome unknown')
-    selected=None;prior=context['selected'] if context is not None and context['pending_next'] is not None else None
+    selected=None;prior=(context['selected'] if context['pending_next'] is not None else context.get('tail_prior')) if context is not None else None
     for _ in range(maximum_rows):
         def transitioned():
             nonlocal selected
@@ -988,7 +988,7 @@ def finite_select(menu,label,cut,maximum_rows,commit=True):
             return moved
         # One unchanged deadline covers any number of same-selection redraws.
         until(transitioned,5,'fresh fixed menu ordered transition')
-        if context is not None:context.update(selected=selected,pending_next=None,cut=cut)
+        if context is not None:context.update(selected=selected,pending_next=None,cut=cut,tail_prior=prior)
         if selected==label:
             selected_cut=cut;after=len(client.capture)
             if commit and context is not None:inventory_context=None  # Enter may leave inventory; never infer return.
@@ -1443,6 +1443,7 @@ finally:
         finally:active_phase_deadline=None
     if original is not None:
         try:
+            if inventory_cleanup_required:raise RuntimeError('Inventory cleanup unconfirmed; shutdown skipped, owner UNKNOWN')
             shutdown_attempts+=1
             stop=rpc({'command':'shutdown','rootKey':original['rootKey'],'expectedMainIdentity':original},12)
             result['ShutdownReceipt']=stop;assert stop['ok'];proof=stop['status']['terminalStop']
