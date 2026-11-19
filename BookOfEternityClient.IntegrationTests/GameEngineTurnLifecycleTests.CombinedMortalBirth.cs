@@ -29,7 +29,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         => RunCombinedMortalBirthAsync(false, null, validateRetiredState: true);
 
     /// <summary>Runs the same full ordinary candidate, optionally correcting only journal/output DATA after publication.</summary>
-    private async Task RunCombinedMortalBirthAsync(bool unresolvedEffect, string? repairMode, bool validateRetiredState = false)
+    private async Task RunCombinedMortalBirthAsync(bool unresolvedEffect, string? repairMode, bool validateRetiredState = false, bool validateLoadedContinuation = false)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string currentPath = "game_state/world/current_location.json";
@@ -482,6 +482,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(admitted, "Retired accepted canonical state refused the ordinary pre-send consumer: " +
                 _journeyLogger.Describe() + "; evidence: " + artifact);
         }
+        if (validateLoadedContinuation)
+            await AssertCombinedBirthLoadedContinuationAsync(runtime, artifact, () => calls);
     }
 
     /// <summary>Tees the existing diagnostic stream without replacing the production emitter or limiting captured evidence.</summary>

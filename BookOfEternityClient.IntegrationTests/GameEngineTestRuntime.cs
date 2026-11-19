@@ -39,4 +39,7 @@ internal sealed record GameEngineTestRuntime(
 {
     /// <summary>The same explorer supplied to <see cref="Engine"/>.</summary>
     internal ExplorerMode Explorer { get; init; } = null!;
+
+    /// <summary>The same save/load service supplied to the engine.</summary>
+    internal SaveLoadService SaveLoad { get; init; } = null!;
 }

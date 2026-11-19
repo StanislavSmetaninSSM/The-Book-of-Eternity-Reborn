@@ -11124,7 +11124,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             inputSource);
         engine.ConfigureSessionFinalizationHooksForTesting(finalizationHooks);
         return new GameEngineTestRuntime(engine, stateManager, gameLoop, audioService, validator, qteSceneService, finalizationHooks)
-        { Explorer = explorer };
+        { Explorer = explorer, SaveLoad = saveLoad };
     }
 
     private void ArmCanonicalWriteFailure(string relativePath, int matchingWrite = 1)

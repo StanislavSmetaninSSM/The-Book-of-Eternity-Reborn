@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-combined-save-load-continuation",
+      "responsibility": "#1515 T033 genuine combined accepted birth, clean actual Save archive, quiescent committed Load/new generation and actual console continuation.",
+      "excludes": "No hosted main restart/daemon continuity, live gameplay, second GM action or old combined leaf reruns.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CombinedMortalLoad.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CombinedMortalBirth_CleanSaveLoadPreservesCommittedContinuation"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-ordinary-pre-send-data",
       "responsibility": "#1515 T032 explicit Mortal ordinary pre-send read purpose: initialized idle, active/orphan refusal, closing DATA and marker drift, generation loss, reentrancy and raw-response isolation; existing physical owner close controls.",
       "excludes": "No live game, second GM action, browser/Load purpose grant or original authority fabrication.",

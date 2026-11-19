@@ -4740,3 +4740,9 @@ Logger no longer has the three former errors; canonical-failure is null. T032 is
 complete only for ordinary Mortal pre-send. T016 live journey and T033 committed
 Load continuation remain open; no claim for another GM action, Save/Load or full
 #1515 closure. Original mm19 p02 remains a failed phase, not a continuation base.
+
+
+### T033 source-only RED checkpoint
+One new combined leaf reuses the genuine accepted42 birth and existing runtime SaveLoadService. Existing engine Load/rebind and continuation methods change visibility only (private to internal), bodies unchanged. The real Save must commit without follow-up; its exact returned archive must retain map/index/current location/NPC/cart/story bytes and exclude pending controls. Old generation leases/bindings close before acquiring real quiescent main admission. The typed Load/rebind must first prove commitment, exact archive, distinct established durable generation, restored turn42 and canonical bytes. Actual continuation then runs on that exact result; it may clear the game loop on refusal, so only committed decision/generation/source and selected canonical bytes are asserted afterward. Logger and typed results are retained in finally; the sole desired RED is expected unblocked continuation after admission closure.
+
+No second validator, GM action, browser/afterlife/manual refresh change or hosted bridge Stop/Finish/restart claim. Old combined selectors remain unchanged. Preparation is one reused birth plus one actual Save/Load; measured cost pending. This is unbuilt/unrun source WIP, awaiting save and independent source review before official single-category RED. T033 and T016 remain open.

@@ -3316,7 +3316,7 @@ public partial class GameEngine
     /// <summary>Preserves the load decision while rebinding only its established generation.</summary>
     /// <param name="saveFilePath">The selected archive, independent of save-list summary metadata.</param>
     /// <returns>The typed decision; blocked continuation is retained for this process until restart.</returns>
-    private async Task<LoadReplacementResult> LoadSelectedSaveAndRebindRuntimeAsync(string saveFilePath)
+    internal async Task<LoadReplacementResult> LoadSelectedSaveAndRebindRuntimeAsync(string saveFilePath)
     {
         if (_blockedLoadContinuation is { } blocked) return blocked;
         LoadReplacementResult result;
@@ -3366,7 +3366,7 @@ public partial class GameEngine
     /// <summary>Completes required console refresh without erasing an already confirmed replacement.</summary>
     /// <param name="result">The established typed result after runtime rebind.</param>
     /// <returns>The same decision with additional blocked follow-up if required refresh fails.</returns>
-    private async Task<LoadReplacementResult> PrepareLoadedConsoleContinuationAsync(LoadReplacementResult result)
+    internal async Task<LoadReplacementResult> PrepareLoadedConsoleContinuationAsync(LoadReplacementResult result)
     {
         if (result.Disposition != LoadReplacementDisposition.Committed || result.ContinuationBlocked) return result;
         try
