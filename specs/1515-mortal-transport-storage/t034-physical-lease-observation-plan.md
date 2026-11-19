@@ -1403,3 +1403,10 @@ existing strict config helpers and atomic writer. Two temporary DATA methods are
 UNRUN; frozen admitted config evidence is pinned to the accepted cold artifact,
 not a new authority or copied canonical game state. Actual mutation remains behind
 source/DATA plus exact settings-diff and closed-instance input gate.
+Closed-rebind helpers independently GREEN 3d198014: exact2 pure PASS, temporary
+files only, current32080+8 unchanged. Causal RED74133531 remains preserved. Actual
+closed settings admission is next: full accepted cold artifacts, exact114-file
+play/modes/directories and runtime, exact ZIP43, reviewed constant three-field
+patch, eight current relay files and empty exclusive queue. No engine/bridge or
+model call; no authority adoption. Full non-config play and ZIP/history must stay
+identical. Cold milestone remains separate from any later hosted operation.
