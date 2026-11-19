@@ -2,6 +2,37 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-ordinary-response-contract",
+      "responsibility": "#1515 exact authored debug contract and retained historical NPC carrier under actual original snapshot, test-only.",
+      "excludes": "No live game, repair publication, new world, production fix, grant, transfer or Save qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+        "BookOfEternityClient.IntegrationTests/ActorMaterializationValidationTests.RetainedCarrier.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AcceptedTurnReasoningOrdinaryTests.Mm25AuthoredDebug_UsesActualReasoningContract"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ActorMaterializationValidationTests.Mm25HistoricalCarrier_RealOriginalDistinguishesRetainedStateFromCommand"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-daemon-return-observation-data",
       "responsibility": "#1589/#1515 source-scoped actual consumer/transport disposal post-return observation, no acceptance authority.",
       "excludes": "No native owner, IPC, game world or live shutdown qualification.",

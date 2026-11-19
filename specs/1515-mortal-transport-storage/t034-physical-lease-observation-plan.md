@@ -628,3 +628,28 @@ separate true-snapshot unchanged historical-carrier response regression with
 changed-inventory/fresh-resend negative controls. Reuse existing validators and
 fixtures; source review before execution and causal RED before any production
 proposal. No new live world or retry is authorized by this checkpoint.
+
+### Frozen test-only response-contract block (UNRUN)
+
+Existing reasoning fixture tests the exact authored failed/fixed debug objects
+against ValidateAcceptedTurnReasoningAsync, not a parallel markdown parser. The
+failed object must yield the exact twelve known reasoning/scope codes; corrected
+labels preserve the independent defer choice. Minimal authored actor/journal/action
+premises are isolated, and validation must leave fixture bytes unchanged.
+
+Existing actor-materialization fixture uses the actual LiveTurnPreparationService
+to seal a turn43 original. Selected full-state ActorMaterialization validation
+should admit an exact unchanged same-section historical UpdateNPCs carrier. The
+explicit ValidateResponse API with the same complete actor remains a negative:
+a raw command is not retained canonical state. Inventory count/add/remove (array
+retained), unrelated full-row mutation, missing snapshot and tampered snapshot
+remain negative controls. Original manifest/authority bytes and all test state
+must remain unchanged by validation. Existing continuity already recognizes an
+unchanged historical carrier; no production exception is implemented here.
+
+Official proposed selection mortal-ordinary-response-contract is two authored
+debug cases plus eight carrier cases across the existing unit/integration projects.
+Fresh owning builds, PlanOnly exact10, then one bounded run only after source
+review. A preparation/error is not causal RED; the unchanged-carrier failure must
+follow real snapshot/equality prerequisites. No runtime/live preparation follows
+a result automatically.

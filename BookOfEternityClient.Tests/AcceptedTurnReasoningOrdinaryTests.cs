@@ -320,6 +320,40 @@ public sealed class AcceptedTurnReasoningOrdinaryTests(ITestOutputHelper output)
         Assert.Equal("{", File.ReadAllText(_fixture.Physical(OrdinaryReasoningFixture.DebugPath)));
     }
 
+    // Authored response DATA only, never a captured world/request or a repair of mm25.
+    [Theory]
+    [InlineData("failed")]
+    [InlineData("fixed")]
+    public async Task Mm25AuthoredDebug_UsesActualReasoningContract(string variant)
+    {
+        await _fixture.SeedValidAsync();
+        await _fixture.Files.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {"NPCsInScene":[{"NPCId":"npc_steward_t034_visit42","npcName":"Распорядитель двора совета",
+        "currentLocationId":"loc_test_yard"}],"UpdateNPCs":[]}
+        """);
+        await _fixture.Files.WriteFileAtomicAsync("game_state/npcs/npc_journals.json", """
+        {"NPCJournals":[{"npcId":"npc_steward_t034_visit42","npcName":"Распорядитель двора совета",
+        "lastJournalNote":"Просьба записана; выдача отложена до решения совета.","journalEntries":[]}]}
+        """);
+        await _fixture.Files.WriteFileAtomicAsync("input/turn_request.json", """
+        {"playerAction":"Попросить распорядителя разрешить взять мел; ничего не брать."}
+        """);
+        var source = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.Tests", "TestData",
+            "mm25-authored-debug-" + variant + ".json");
+        _fixture.WriteDebugRaw(File.ReadAllBytes(source));
+        _fixture.CaptureSeed();
+        var issues = await _fixture.Validator.ValidateAcceptedTurnReasoningAsync();
+        _fixture.AssertSeedBytesUnchanged();
+        var codes = issues.Where(x => x.Severity == IssueSeverity.Error).Select(x => x.Code).Order().ToArray();
+        var expected = new[] { "actor_brain_missing_chosen_strategy", "actor_brain_missing_profile_inputs",
+            "actor_brain_missing_rejected_alternatives", "actor_brain_missing_state_changes",
+            "actor_brain_missing_strategy_options", "actor_brain_missing_strategy_tradeoffs",
+            "missing_actor_block", "missing_actor_current_location", "missing_out_of_scope_actors_field",
+            "missing_scope_out_of_scope_reason", "missing_scope_relevance_reason",
+            "mortal_relevant_actor_missing_persistence" };
+        Assert.Equal(variant == "failed" ? expected.Order().ToArray() : Array.Empty<string>(), codes);
+    }
+
     private static Task<string?> ReadOriginalDebugAsync(ValidationService validator) =>
         validator.ReadAcceptedTurnReasoningOriginalDebugAsync();
 
