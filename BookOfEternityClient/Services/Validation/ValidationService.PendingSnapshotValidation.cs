@@ -75,7 +75,7 @@ public partial class ValidationService
     private async Task<List<ValidationIssue>> RunPendingSnapshotValidationCoreAsync(
         Func<Task<List<ValidationIssue>>> validate, Func<FileSystemManager.PendingSnapshotValidationReadScope> beginRead,
         WorldValidationInvocation? existingAdmission = null, CompletedLocationComparison? completedLocation = null,
-        bool ordinaryPreSend = false, bool ordinaryCanonical = false)
+        bool ordinaryPreSend = false, bool ordinaryCanonical = false, string? loadedGeneration = null)
     {
         ArgumentNullException.ThrowIfNull(validate);
         _pendingSnapshotInvocation.Value?.RequireCurrent();
@@ -105,17 +105,28 @@ public partial class ValidationService
         try
         {
             // The synchronous issuer installs ambient ownership in this flow before OpenAsync yields.
+            if (loadedGeneration is not null) _fs.RequireLoadedCanonicalAdmission(loadedGeneration);
             invocation.Physical = beginRead();
             await invocation.Physical.OpenAsync();
             invocation.Evidence = CapturePendingSnapshotEvidence(invocation.Physical);
             invocation.Active = true;
             OrdinaryCanonicalRead? idleRead = null;
-            if (ordinaryPreSend)
+            if (ordinaryPreSend || loadedGeneration is not null)
             {
                 if (invocation.Evidence.CreateLookup().Status != ValidatedPendingTurnSnapshotStatus.Missing)
                     throw new InvalidDataException("Ordinary pre-send requires a missing original.");
                 idleRead = CaptureOrdinaryCanonicalRead(invocation.Physical, ordinaryCanonical);
-                if (ordinaryCanonical) admitted.OrdinaryCanonical = idleRead;
+                if (ordinaryCanonical)
+                {
+                    if (loadedGeneration is null) admitted.OrdinaryCanonical = idleRead;
+                    else admitted.LoadedCanonical = idleRead;
+                }
+                if (loadedGeneration is not null)
+                {
+                    _fs.RequireLoadedCanonicalAdmission(loadedGeneration);
+                    if (_fs.ReadExistingSessionGeneration(invocation.Physical.Lease!) != loadedGeneration)
+                        throw new InvalidDataException("Loaded canonical generation changed.");
+                }
             }
             invocation.RequireCurrent();
             if (completedLocation is not null)
@@ -129,6 +140,12 @@ public partial class ValidationService
                 idleRead.RequireSame(CaptureOrdinaryCanonicalRead(invocation.Physical, ordinaryCanonical, interpret: false));
             invocation.RequireCurrent();
             invocation.Evidence.RequireSame(CapturePendingSnapshotEvidence(invocation.Physical));
+            if (loadedGeneration is not null)
+            {
+                _fs.RequireLoadedCanonicalAdmission(loadedGeneration);
+                if (_fs.ReadExistingSessionGeneration(invocation.Physical.Lease!) != loadedGeneration)
+                    throw new InvalidDataException("Loaded canonical generation changed while validating.");
+            }
             if (completedLocation is not null)
                 await completedLocation.RequireCurrentAsync(_fs, invocation.Physical.Lease!);
             invocation.RequireCurrent();
@@ -140,6 +157,7 @@ public partial class ValidationService
             invocation.Active = false;
             admitted.LocationIds = null;
             admitted.OrdinaryCanonical = null;
+            admitted.LoadedCanonical = null;
             try { if (invocation.Physical != null) await invocation.Physical.DisposeAsync(); }
             catch (Exception close)
             {
@@ -157,6 +175,7 @@ public partial class ValidationService
         }
         if (primary != null) ExceptionDispatchInfo.Capture(primary).Throw();
         invocation.Physical!.RequireOwnerAfterClose();
+        if (loadedGeneration is not null) _fs.RequireLoadedCanonicalAdmission(loadedGeneration);
         LogValidationErrors(issues!);
         return issues!;
     }

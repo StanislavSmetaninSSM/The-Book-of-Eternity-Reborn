@@ -4783,3 +4783,12 @@ Load result DTO is not authority. Invalid/blocked/follow-up results, wrong owner
 generation, pending original/markers, drift/reentry and raw/default/Browser/nonMortal
 must retain their refusals or existing semantics. Failed continuation still retains
 committed replacement with blocked follow-up, never blind replay or false rollback.
+
+T033 independent corrected causal RED accepted. Early LoadedCanonical SOURCE WIP
+is preserved before controls: separate invocation entrypoints, existing pending
+read lifetime, fresh generation and actual quiescent owner checks, initial guard
+before settings/UI and repeated guard before health. No acquisition/participation
+wrapper or publication-proof reuse. Only clean committed Mortal continuation opts
+in; other result/default semantics stay separate. Stable integration regression
+remains unchanged. This early block is UNBUILT/UNRUN, negative controls and complete
+source review are pending. No live retry, main merge or issue closure.

@@ -280,7 +280,7 @@ public partial class GameEngine
         ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
             guardianMusingsForRepair = null,
         ValidationService.CompletedLocationComparison? completedLocation = null,
-        bool ordinaryPreSend = false)
+        bool ordinaryPreSend = false, string? loadedCanonicalGeneration = null)
     {
         using var stateTiming = _fs.MeasureOperation("PlayerTurn.ValidateCurrentState.Total");
         var repairAttempt = 0;
@@ -296,6 +296,8 @@ public partial class GameEngine
         while (true)
         {
             if (ordinaryPreSend) await _validator.RequireOrdinaryPreSendIdleAsync();
+            if (loadedCanonicalGeneration is not null)
+                await _validator.RequireLoadedCanonicalIdleAsync(loadedCanonicalGeneration);
             using (_fs.MeasureOperation("PlayerTurn.ValidateCurrentState.SystemHealth"))
                 await EnsureClientOwnedSystemFilesHealthyAsync();
             // Install in this flow after the fresh read-only lease has closed.
@@ -313,7 +315,9 @@ public partial class GameEngine
                 using var rawStateTiming = _fs.MeasureOperation("PlayerTurn.ValidateCurrentState.GameState");
                 try
                 {
-                    issues = ordinaryPreSend
+                    issues = loadedCanonicalGeneration is not null
+                        ? await _validator.ValidateLoadedCanonicalGameStateAsync(loadedCanonicalGeneration)
+                        : ordinaryPreSend
                         ? await _validator.ValidateOrdinaryPreSendGameStateAsync()
                         : completedLocation is not null && !_fs.HasBrowserOriginalOperation
                         ? await _validator.ValidateCompletedLocationStateAsync(completedLocation, GameStateValidationSelection.All)

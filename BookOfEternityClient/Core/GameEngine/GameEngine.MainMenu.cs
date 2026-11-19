@@ -3373,11 +3373,16 @@ public partial class GameEngine
         {
             await SessionOperationContext.RunBoundAsync(_fs, result.EstablishedGeneration!, async () =>
             {
+                var loadedCanonical = !result.NeedsFollowUp &&
+                    RealmSemantics.IsMortalRealm(_stateManager.CurrentState.CurrentRealm);
+                if (loadedCanonical)
+                    await _validator.RequireLoadedCanonicalIdleAsync(result.EstablishedGeneration!);
                 if (!await WriteGameSettingsForGm())
                     throw new InvalidOperationException("Loaded settings require follow-up.");
                 await NormalizeRuntimeUiArtifactsAsync();
                 _lastResponse = await BuildGameResponseFromFiles();
-                if (!await ValidateCurrentGameStateOrShowErrorsAsync("загрузки сохранения"))
+                if (!await ValidateCurrentGameStateOrShowErrorsAsync("загрузки сохранения",
+                    loadedCanonicalGeneration: loadedCanonical ? result.EstablishedGeneration : null))
                     throw new InvalidOperationException("Loaded state requires follow-up.");
             });
         }

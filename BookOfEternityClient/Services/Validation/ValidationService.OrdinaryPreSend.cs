@@ -52,11 +52,12 @@ public partial class ValidationService
     private OrdinaryCanonicalRead? CurrentOrdinaryCanonicalRead()
     {
         var invocation = _worldValidationInvocation.Value;
-        if (invocation?.OrdinaryCanonical is null) return null;
+        var canonical = invocation?.OrdinaryCanonical ?? invocation?.LoadedCanonical;
+        if (canonical is null) return null;
         if (invocation.Closed || !ReferenceEquals(_worldReservation, invocation))
             throw new InvalidOperationException("Ordinary canonical validation is no longer reserved.");
         _pendingSnapshotInvocation.Value!.RequireCurrent();
-        return invocation.OrdinaryCanonical;
+        return canonical;
     }
 
     private HashSet<string>? ReadOrdinaryCanonicalLocationIds()

@@ -38,6 +38,7 @@ public partial class ValidationService
         internal bool Closed;
         internal HashSet<string>? LocationIds;
         internal OrdinaryCanonicalRead? OrdinaryCanonical;
+        internal OrdinaryCanonicalRead? LoadedCanonical;
     }
 
     /// <summary>

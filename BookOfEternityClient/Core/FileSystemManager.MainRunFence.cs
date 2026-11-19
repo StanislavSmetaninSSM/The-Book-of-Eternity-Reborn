@@ -16,6 +16,21 @@ public partial class FileSystemManager
         for(var p=MainAdmissions.Value;p!=null;p=p.Parent)
             if(!p.Closed && p.RootIdentity==CanonicalRootAuthorityIdentity)throw new InvalidOperationException("Load IPC cannot borrow a filesystem admission.");
     }
+    /// <summary>Checks the retained local quiescent Load admission without acquiring or adopting an owner.</summary>
+    internal void RequireLoadedCanonicalAdmission(string generation)
+    {
+        if (string.IsNullOrWhiteSpace(generation) || HasBrowserOriginalOperation ||
+            !SessionOperationContext.TryGetExpectedGeneration(BasePath, out var bound) || bound != generation)
+            throw new InvalidOperationException("Loaded canonical validation requires its exact bound generation.");
+        for (var entry = MainAdmissions.Value; entry is not null; entry = entry.Parent)
+        {
+            if (entry.Closed || entry.RootIdentity != CanonicalRootAuthorityIdentity)
+                throw new InvalidOperationException("Loaded canonical admission is closed or belongs to another root.");
+            entry.RequireLocalQuiescentAccess();
+            if (entry.QuiescentRequested) return;
+        }
+        throw new InvalidOperationException("Loaded canonical validation has no retained quiescent Load admission.");
+    }
     internal MainAdmission BeginMainAdmission()=>BeginMainAdmission(false);
     internal MainAdmission BeginParticipatingMainAdmission()=>BeginMainAdmission(true);
     /// <summary>
@@ -51,6 +66,13 @@ public partial class FileSystemManager
         private readonly GmSessionRunCoordinator.Access? _requested;
         private MainAccess? _access, _worldReservedAccess;
         private bool _closed,_ownsRemote;
+        internal bool QuiescentRequested { get; private set; }
+        internal void RequireLocalQuiescentAccess()
+        {
+            if (_closed || _access is null || _access.Remote is not null || _access.Original?.Pin is not null ||
+                Closing || BoundClosing || MetadataOnly) throw GmSessionRunPersistence.Invalid();
+            Validate(null);
+        }
         private GmMainOperationClient? _retainedRemote;
         private GmSessionRunCoordinator.Access? _retainedOriginal;
         private readonly bool _participating;
@@ -110,6 +132,7 @@ public partial class FileSystemManager
         internal async Task AcquireAsync(CancellationToken token=default,bool closing=false,bool quiescentOnly=false, GmWorkerCanonicalPurpose? workerPurpose=null)
         {
             _workerPurpose=workerPurpose;
+            QuiescentRequested = quiescentOnly;
             // Finalization borrows an actual original closing frame. The purpose
             // value alone cannot bypass admission or acquire recovery authority.
             if(closing && !BoundClosing)throw GmSessionRunPersistence.Invalid();
