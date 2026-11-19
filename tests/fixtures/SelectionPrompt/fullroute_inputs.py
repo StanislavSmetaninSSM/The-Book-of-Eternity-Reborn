@@ -78,12 +78,20 @@ def retained_selection(raw, proof):
     if len(frames)==len(before):
         tail=raw[len(proof['raw']):]
         old=ack['cursor'];new=view.cursor
-        if tail!=b' '*len(tail) or len(view.lines)!=25 or view.lines!=ack['lines']:return None
+        if tail!=b' '*len(tail) or len(view.lines)!=25 or len(ack['lines'])!=25:return None
         if any(type(v) is not int for v in (old.get('x'),old.get('y'),new.get('x'),new.get('y'))):return None
         if not (0<=old['x']<new['x']<100 and 0<=old['y']==new['y']<25 and new['x']-old['x']==len(tail)):return None
         footer=('> ' if proof['selected']==proof['menu']['choices'][-1] else '  ')+proof['menu']['choices'][-1]
-        line=view.lines[new['y']]
-        if not line.startswith(footer) or any(c!=' ' for c in line[len(footer):]):return None
+        line=view.lines[new['y']];old_line=ack['lines'][old['y']]
+        if any(view.lines[y]!=ack['lines'][y] for y in range(25) if y!=new['y']):return None
+        if any(not row.startswith(footer) or any(c!=' ' for c in row[len(footer):]) for row in (old_line,line)):return None
+        if line!=old_line:
+            # Only this source footer has the closed one-cell-per-character
+            # contract. Missing cells may become explicit written U+0020 inside
+            # the proven cursor span; no other row/character is normalized.
+            if proof['menu']['choices'][-1]!='← Назад':return None
+            if not old['x']<=len(old_line)<new['x']:return None
+            if line!=old_line+' '*(new['x']-len(old_line)):return None
     return proof['selected']
 
 def options_frame(raw, cut, selected, *, initial):

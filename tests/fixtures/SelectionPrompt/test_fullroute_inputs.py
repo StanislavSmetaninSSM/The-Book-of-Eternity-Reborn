@@ -46,6 +46,26 @@ class FullRouteInputData(unittest.TestCase):
                 self.assertEqual(routes.selected_frames(raw,17001,proof['menu']),proof['frames'])
                 self.assertEqual(retained_selection(raw,proof),proof['selected'])
 
+    def test_first_frame_written_footer_padding_completion(self):
+        for split in range(66):
+            with self.subTest(split=split):
+                raw,captured,view,proof=padding_case(split)
+                short='  ← Назад'+' '*split
+                proof['ack']['lines'][-1]=short;view.lines[-1]=short
+                captured[:]=raw;view.cut=len(raw);view.seq=59;view.cursor={'x':75,'y':24}
+                view.lines[-1]='  ← Назад'+' '*66
+                self.assertEqual(retained_selection(raw,proof),proof['selected'])
+        for defect in ('short-before-cursor','extra-after-cursor','changed-prefix','other-row'):
+            with self.subTest(defect=defect):
+                raw,captured,view,proof=padding_case()
+                proof['ack']['lines'][-1]='  ← Назад'+' '*17
+                captured[:]=raw;view.cut=len(raw);view.seq=59;view.cursor={'x':75,'y':24}
+                if defect=='short-before-cursor':proof['ack']['lines'][-1]=proof['ack']['lines'][-1][:-1]
+                if defect=='extra-after-cursor':view.lines[-1]+=' '
+                if defect=='changed-prefix':view.lines[-1]='X'+view.lines[-1][1:]
+                if defect=='other-row':view.lines[0]=' '
+                self.assertIsNone(retained_selection(raw,proof))
+
     def test_actual_client_final_drain_padding_sends_one_current_down(self):
         import sys,pathlib
         sys.path.insert(0,str(pathlib.Path(__file__).with_name('terminal')))
@@ -246,7 +266,7 @@ class FullRouteInputData(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(FullRouteInputData)
-    assert suite.countTestCases() == 16
+    assert suite.countTestCases() == 17
     result = unittest.TextTestRunner(verbosity=2).run(suite)
-    assert result.testsRun == 16 and not result.skipped
+    assert result.testsRun == 17 and not result.skipped
     raise SystemExit(0 if result.wasSuccessful() else 1)
