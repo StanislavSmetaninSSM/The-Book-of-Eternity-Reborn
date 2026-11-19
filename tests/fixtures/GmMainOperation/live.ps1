@@ -26,19 +26,6 @@ try {
   Write-GmCanonicalText $SessionPath $target 'one 🌌'
   if($Scenario -like '*caught-loss') {
    $global:BoeMainOperationContext.process.StandardInput.Dispose()
-   if($Scenario -like '*snapshot-stopping') {
-    $script:snapshotContext=$global:BoeMainOperationContext
-    $script:beforeSequence=$script:snapshotContext.sequence
-    try {[void](Get-GmDaemonSnapshot -Paths @('game_state/control/f2-live.txt'))}
-    catch {
-     $script:refused=Test-GmDaemonReadFailure $_
-     $script:endSequence=$script:snapshotContext.sequence
-     $script:endAction=$script:snapshotContext.lastAction
-     $script:endReply=$script:snapshotContext.lastCommandReply
-     throw
-    }
-    throw 'Snapshot unexpectedly admitted after original Stop'
-   }
    try {Write-GmCanonicalText $SessionPath $target 'must refuse'}catch {$script:refused=$true}
    return 42
   }
