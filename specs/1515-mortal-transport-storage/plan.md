@@ -4388,3 +4388,11 @@ inputs remained unchanged from the fresh RED build, so reuse did not skip a
 required rebuild. No game, main owner, world or live permission is qualified by
 these inert tests. T030 local-menu failure cleanup remains open before next live
 preparation. Evidence remains outside Git under mortal-t029/green.
+
+T029 independent final outcome accepted. Reviewer read exact TRX/inner logs/raw
+and verified Money->Money->MainHand->Sword->LockedStorage, three Down plus Enter,
+normal EOF/termios/returned target and both guardian/wrapper closures. Reviewed
+source pins and compiled outputs remain exact; only this checkpoint changed.
+T029 is complete within the inert observer scope. T030 and the real T016 journey
+are still open. Next bounded work is the proven local-menu failure-cleanup ordering,
+not replay or repair of mm18 and not relaxation of active operation pins.
