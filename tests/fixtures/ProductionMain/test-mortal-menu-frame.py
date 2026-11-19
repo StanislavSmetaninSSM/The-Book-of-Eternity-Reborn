@@ -1,6 +1,6 @@
 """T027 authored captured-pipe DATA, not retained live bytes or terminal authority."""
 import unittest
-from mortal_console_routes import selected_frame, fixed_menu, inventory_menu, local_load_menu, preflight_local_route, after_menu, entry_menu
+from mortal_console_routes import selected_frames, selected_frame, fixed_menu, inventory_menu, local_load_menu, preflight_local_route, after_menu, entry_menu
 
 TITLE = '🎒 📦 Инвентарь'
 HEADER = TITLE + '  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)'
@@ -58,6 +58,28 @@ class MenuFrameTests(unittest.TestCase):
             self.assertEqual(selected_frame(raw,0,menu),choices[1])
             self.assertIsNone(selected_frame(b'incidental '+raw,0,menu))
             self.assertIsNone(selected_frame(raw.replace(header.encode(),(header+' extra').encode()),0,menu))
+        # T034: actual storage-panel shape, including padded multiline header,
+        # exact previous close and duplicate redraw. Only LF/CRLF separators qualify.
+        header='📦 Запертая кладовая разметочных материалов\n  Предметов внутри: 1'
+        choices=['📥 Положить предмет в хранилище (1 в инвентаре)',
+                 '📤 Забрать предмет из хранилища (1 внутри)','← Назад к инвентарю']
+        panel=fixed_menu(header,choices,10)
+        previous=fixed_menu('Inventory',['Money','Hand','Sword','Storage','Back'],20)
+        transition=after_menu(panel,previous)
+        close=b'\r'+b'\x1b[2K\x1b[1A'*6+b'\x1b[2K\x1b[?25h'
+        for nl in ('\n','\r\n'):
+            body=(nl.join([header.split('\n')[0]+' '*7,
+                           header.split('\n')[1]+' '*29,' '*50,
+                           '> '+choices[0]+' ', '  '+choices[1]+' '*6,
+                           '  '+choices[2]+' '*29])).encode()
+            raw=close+b'\x1b[?25l'+body+b'\r\x1b[5A'+body
+            with self.subTest(separator=repr(nl)):
+                self.assertEqual(selected_frames(raw,0,transition),[choices[0],choices[0]])
+                for bad in (raw.replace(nl.encode(),b'\r',1),
+                            raw.replace(nl.encode(),b'\r\r\n',1),
+                            raw.replace(b'1A',b'2A',1),raw+b'\x1b[2K',
+                            raw+b'\r\x1b[5A'+body[:20]):
+                    self.assertIsNone(selected_frames(bad,0,transition))
     def test_all_byte_prefixes_before_complete_footer_refuse(self):
         raw=frame();end=raw.index('← Назад'.encode())+len('← Назад'.encode())
         for cut in range(end):

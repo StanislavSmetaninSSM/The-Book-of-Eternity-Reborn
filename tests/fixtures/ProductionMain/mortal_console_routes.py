@@ -210,7 +210,7 @@ def decode_menu_frames(raw, cut, checked, menu):
     parts=text.split(redraw)
     def one(part, first):
         # Only the first new header can follow a prior prompt close or known entry echo.
-        header='\n'.join(re.escape(line)+r' *' for line in header_lines)
+        header=r'\r?\n'.join(re.escape(line)+r' *' for line in header_lines)
         starts=list(re.finditer(r'(?:^|\n|(?<=\x1b\[\?25h))\r?(?:\x1b\[\?25l)?'+header+r'\r?\n',part))
         if not starts:return None
         prefix=part[:starts[-1].start()]
