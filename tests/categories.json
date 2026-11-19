@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "mortal-state-diagnostic-data",
-      "responsibility": "#1515 T031 strict relocated diagnostic manifest admission: existing destination, traversal, source hash, link refusal and exact DATA-only copy. No validator or game execution.",
+      "responsibility": "#1515 T031 strict relocated diagnostic manifest admission: existing destination, traversal, source hash, link refusal, owned-root report boundaries and exact DATA-only copy. No validator or game execution.",
       "excludes": "No live root, seed export, owner adoption or diagnostic cause qualification.",
       "changeHints": [
         "BookOfEternityClient.TestSupport/MortalStateDiagnostic.cs",

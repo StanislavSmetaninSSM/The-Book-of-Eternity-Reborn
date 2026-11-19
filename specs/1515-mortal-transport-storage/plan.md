@@ -4562,3 +4562,14 @@ health/normalizer/GameEngine/export, owner/runtime/queue transfer or old-world
 mutation. Independent source review is next before fresh build or a single DATA
 probe. The copy is diagnostic input, not validated authority or a claimed replay
 of the live post-health validation instant. No speculative gameplay correction.
+
+T031 review corrections before build: canonical ProbePath equality now precedes
+reading; manifest/probe are parsed and hashed from their single read. RunAsync
+checks manifest links before reading. Only an exclusively created diagnostic
+root may be inventoried after failure; a rejected existing/linked/overlapping
+destination is not traversed. Original failure and separate collection failures
+are retained; manifest hash is not obtained by a late reread. Result/destination
+alias is refused upfront. Four new source-authored controls bring the cheap
+category to nine cases, including actual RunAsync refusal behavior. These are
+UNBUILT/UNRUN; no measured causal RED is claimed for source-review corrections.
+Independent re-review precedes fresh build/category and separate diagnostic gate.

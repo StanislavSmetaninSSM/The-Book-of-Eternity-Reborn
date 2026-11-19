@@ -33,15 +33,23 @@ internal static class MortalStateDiagnostic
     /// <summary>Checks every source and destination before copying; source probe pins define the exact DATA set.</summary>
     internal static Manifest Prepare(string manifestPath, string destination)
     {
-        NoLinks(manifestPath); NoLinks(destination);
+        NoLinks(manifestPath);
+        var bytes=File.ReadAllBytes(manifestPath);
+        var manifest=JsonSerializer.Deserialize<Manifest>(bytes) ?? throw new InvalidDataException("Missing manifest");
+        return Prepare(manifest,destination,()=>{});
+    }
+    private static Manifest Prepare(Manifest m,string destination,Action rootCreated)
+    {
+        NoLinks(destination);
         if (File.Exists(destination) || Directory.Exists(destination)) throw new InvalidDataException("Diagnostic destination must not exist");
-        var m = JsonSerializer.Deserialize<Manifest>(File.ReadAllBytes(manifestPath)) ?? throw new InvalidDataException("Missing manifest");
         var source = Path.GetFullPath(m.SourceRoot); var dest = Path.GetFullPath(destination);
         if (source != m.SourceRoot || dest != destination || Under(dest,source) || Under(source,dest) || dest == source)
             throw new InvalidDataException("Aliased or overlapping roots");
+        if(Path.GetFullPath(m.ProbePath)!=m.ProbePath || !Under(m.ProbePath,source)) throw new InvalidDataException("Noncanonical source probe path");
         NoLinks(source); NoLinks(m.ProbePath);
-        if (!Under(m.ProbePath,source) || Hash(m.ProbePath) != m.ProbeSHA256) throw new InvalidDataException("Source probe mismatch");
-        using var probe = JsonDocument.Parse(File.ReadAllBytes(m.ProbePath));
+        var probeBytes=File.ReadAllBytes(m.ProbePath);
+        if (Convert.ToHexString(SHA256.HashData(probeBytes)).ToLowerInvariant() != m.ProbeSHA256) throw new InvalidDataException("Source probe mismatch");
+        using var probe = JsonDocument.Parse(probeBytes);
         if (!probe.RootElement.GetProperty("Success").GetBoolean() || probe.RootElement.GetProperty("AcceptedGameTurns").GetInt32()!=1)
             throw new InvalidDataException("Not accepted source DATA");
         var expected=probe.RootElement.GetProperty("FinalWorldPins").EnumerateObject().ToDictionary(p=>p.Name,p=>p.Value.GetString()!,StringComparer.Ordinal);
@@ -62,6 +70,7 @@ internal static class MortalStateDiagnostic
         // Exclusive reservation prevents another diagnostic from sharing this destination.
         using var reservation=new FileStream(dest+".reservation",FileMode.CreateNew,FileAccess.Write,FileShare.None);
         Directory.CreateDirectory(dest);
+        rootCreated();
         foreach(var e in m.Files)
         {
             var target=Member(Path.Combine(dest,"game_session"),e.Path); Directory.CreateDirectory(Path.GetDirectoryName(target)!);
@@ -77,14 +86,19 @@ internal static class MortalStateDiagnostic
     internal static async Task<int> RunAsync(string manifestPath,string destination,string resultPath)
     {
         NoLinks(resultPath);
-        if(File.Exists(resultPath)||Directory.Exists(resultPath)||Under(Path.GetFullPath(resultPath),Path.GetFullPath(destination))) throw new InvalidDataException("Result must be new and outside DATA root");
-        var declared=JsonSerializer.Deserialize<Manifest>(File.ReadAllBytes(manifestPath)) ?? throw new InvalidDataException("Missing manifest");
-        if (Under(Path.GetFullPath(resultPath),Path.GetFullPath(declared.SourceRoot))) throw new InvalidDataException("Result overlaps original source");
-        object? issues=null; string? failure=null; Manifest? manifest=null;
+        var dest=Path.GetFullPath(destination);var resultFull=Path.GetFullPath(resultPath);
+        if(File.Exists(resultPath)||Directory.Exists(resultPath)||resultFull==dest||Under(resultFull,dest)) throw new InvalidDataException("Result must be new and outside DATA root");
+        NoLinks(manifestPath);
+        var manifestBytes=File.ReadAllBytes(manifestPath);
+        var manifestHash=Convert.ToHexString(SHA256.HashData(manifestBytes)).ToLowerInvariant();
+        var declared=JsonSerializer.Deserialize<Manifest>(manifestBytes) ?? throw new InvalidDataException("Missing manifest");
+        var source=Path.GetFullPath(declared.SourceRoot);
+        if (resultFull==source||Under(resultFull,source)) throw new InvalidDataException("Result overlaps original source");
+        object? issues=null; string? failure=null;var collectionFailures=new List<string>();bool ownedRoot=false;bool? sourceUnchanged=null;
         Dictionary<string,string>? before=null,afterConstructor=null,after=null;
         try
         {
-            manifest=Prepare(manifestPath,destination); before=Inventory(destination);
+            Prepare(declared,destination,()=>ownedRoot=true); before=Inventory(destination);
             var fs=new FileSystemManager(destination,NullLogger<FileSystemManager>.Instance);
             afterConstructor=Inventory(destination);
             var validator=new ValidationService(fs,NullLogger<ValidationService>.Instance);
@@ -92,10 +106,17 @@ internal static class MortalStateDiagnostic
             issues=found.Select(x=>new {x.Code,x.FilePath,x.Severity,x.Category,x.Message,x.Actor,x.Section,x.Expected,x.Actual,x.RepairHint}).ToArray();
         }
         catch(Exception ex) { failure=ex.ToString(); }
-        finally { after=Inventory(destination); }
-        var sourceUnchanged=manifest?.Files.All(e=>File.Exists(e.Source)&&Hash(e.Source)==e.SHA256);
-        var result=new { Kind="strict-relocated-state-diagnostic",PublicationAuthority=false,LiveCauseQualified=false,ManifestSHA256=Hash(manifestPath),Issues=issues,Exception=failure,Before=before,AfterConstructor=afterConstructor,AfterValidation=after,SourceUnchanged=sourceUnchanged };
+        finally
+        {
+            if(ownedRoot)
+            {
+                try { after=Inventory(destination); } catch(Exception ex) { collectionFailures.Add("Owned inventory: "+ex); }
+                try { sourceUnchanged=declared.Files.All(e=>File.Exists(e.Source)&&Hash(e.Source)==e.SHA256); }
+                catch(Exception ex) { collectionFailures.Add("Source recheck: "+ex); }
+            }
+        }
+        var result=new { Kind="strict-relocated-state-diagnostic",PublicationAuthority=false,LiveCauseQualified=false,ManifestSHA256=manifestHash,Issues=issues,Exception=failure,CollectionFailures=collectionFailures,OwnedRoot=ownedRoot,Before=before,AfterConstructor=afterConstructor,AfterValidation=after,SourceUnchanged=sourceUnchanged };
         await using(var output=new FileStream(resultPath,FileMode.CreateNew,FileAccess.Write,FileShare.None)) await JsonSerializer.SerializeAsync(output,result,new JsonSerializerOptions {WriteIndented=true});
-        return failure is null && sourceUnchanged==true ? 0 : 1;
+        return failure is null && collectionFailures.Count==0 && sourceUnchanged==true ? 0 : 1;
     }
 }
