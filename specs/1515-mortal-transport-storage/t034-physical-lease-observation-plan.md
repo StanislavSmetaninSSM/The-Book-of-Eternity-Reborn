@@ -1293,3 +1293,25 @@ only recovery candidate; any later fresh owned run must use supported actual Loa
 not copying canonical files or reviving this owner. No new live recovery authorized
 by this checkpoint. Future author preflight must check the exact literal-pronoun
 predicate and all response fields, not only debug heading structure.
+
+### Cold Save43 recovery: bounded source-only design/test-first
+Independent design70fad1cf accepts only exact immutable Save43 cold Load in a fresh
+NoActiveSession root, without bridge/daemon or old canonical copy. Active Load is
+excluded: the archive imports an old absolute operational command/cwd. Exact
+archive media is disabled; fresh bootstrap ordinary config must also mute audio.
+No pending/ready/input/runtime-owner entries are imported; passive daemon DATA
+exists and is not an active receipt. No generic archive/network safety claim.
+
+Use existing ordinary console/PTY ownership, a distinct seven-choice cold-menu
+predicate, existing Spectre sole-save parser, fresh player prompt, Options exit,
+then actual main-menu exit. The hosted Load diagnostic deliberately excludes cold
+NoActiveSession; no fabricated receipt. Require exact success interval without
+warning, archive name+SHA and actual loaded scoped bytes, normal exit and no new
+runtime/dispatch. Existing inert45/55/60 bounds, not a renewed GM/runtime budget.
+Three initial DATA methods are authored and UNRUN: cold-grid freshness/refusals,
+exact clean Load message, and exact selected archive digest/CRC/member identity.
+No production, archive, world or package changed. Subsequent settings rebind and
+hosted ownership remain separate, unqualified work; this is not hosted A→B.
+Optimization: sealed archive bytes/metadata reused only within one read operation;
+opening/closing digest and mutable namespace checks stay fresh. Tiny screen
+predicates need no cache; no speedup claimed.
