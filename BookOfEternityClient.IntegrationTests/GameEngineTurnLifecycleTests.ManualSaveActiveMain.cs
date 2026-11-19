@@ -89,7 +89,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
                 var runtime = CreateGameEngineRuntime(files,
                     new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4)));
-                using var audio = runtime.AudioService;
+                await using var audio = runtime.AudioService;
                 runtime.GameLoop.SetSession("manual-save-active", 43);
                 var direct = await runtime.SaveLoad.CreateSaveAsync("unadmitted", "must refuse", turnNumber: 43);
                 Assert.Equal(SaveCreationDisposition.Uncertain, direct.Disposition);

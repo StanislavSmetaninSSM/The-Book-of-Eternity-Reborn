@@ -938,3 +938,9 @@ The child freezes the menu exception and completes original normal cleanup
 before the outer positive assertion, so expected RED is not a killed owner.
 Production Options/SaveLoad/MainFence remain byte-unchanged. All new source is
 UNBUILT/UNRUN pending independent source/command review.
+
+Initial manual-Save regression build stopped before discovery/run: CS8418 at
+the new fixture AudioService lifetime (IAsyncDisposable requires await using).
+Reported56.65s/165 warnings/one error; no native child/test, not causal RED.
+The exact test-only lifetime correction is WIP; production remains unchanged.
+Failed evidence is retained separately, with no blind runtime retry.
