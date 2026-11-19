@@ -1,11 +1,38 @@
 import pathlib,json,hashlib,shutil,os,sys,importlib.util,time,subprocess
 os.environ.update(POWERSHELL_TELEMETRY_OPTOUT='1',POWERSHELL_UPDATECHECK='Off',DOTNET_CLI_TELEMETRY_OPTOUT='1')
 R=pathlib.Path('/workspace/shared/mortal-isolated-20261119');D=pathlib.Path('/workspace/shared/mm21-20261119');E=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/mm21-preparation');serial=E;h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
-sys.path.insert(0,str(R/'tests/fixtures/ProductionMain'));s=importlib.util.spec_from_file_location('prep',R/'tests/fixtures/ProductionMain/prepare-mortal-live.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
 b=json.loads((E/'mm21-input-pins.json').read_text());producer=pathlib.Path(b['immutableProducerRoot']);old=producer/'package'
-assert not os.path.lexists(D);assert h(R/'tests/fixtures/ProductionMain/live-mortal-phase.py')==os.environ['MM21_REVIEWED_DRIVER_SHA256']
-assert all(h(R/n)==v for n,v in b['outputPins'].items());src={n:h(R/n) for n in b['sourcePins']};assert src==b['sourcePins']
-assert all(h(R/n)==v for n,v in b['unitOutputsCorroboration'].items())
+assert not os.path.lexists(D)
+# Enumerate the same owning-build source universe BEFORE importing checkout code.
+def source_inventory():
+ import stat
+ excluded={'.git','bin','obj','TestResults','node_modules','__pycache__'}
+ if any(p.is_symlink() for p in [R,*R.parents]):raise ValueError('Linked checkout root')
+ rows={};pending=[R]
+ while pending:
+  for path in pending.pop().iterdir():
+   if path.name in excluded:continue
+   mode=path.lstat().st_mode
+   if stat.S_ISDIR(mode):pending.append(path)
+   elif stat.S_ISREG(mode):rows[path.relative_to(R).as_posix()]=h(path)
+   else:raise ValueError('Linked/special source refused: '+str(path))
+ return rows
+for name in b['sourcePins']:
+ member=pathlib.PurePosixPath(name)
+ assert name and not member.is_absolute() and str(member)==name and '..' not in member.parts and '\\' not in name
+src=source_inventory();assert src==b['sourcePins'],'Source membership/hash drift'
+assert src['tests/fixtures/ProductionMain/live-mortal-phase.py']==os.environ['MM21_REVIEWED_DRIVER_SHA256']
+def checked_output(name,digest):
+ member=pathlib.PurePosixPath(name)
+ assert name and not member.is_absolute() and str(member)==name and '..' not in member.parts and '\\' not in name
+ path=R
+ for part in member.parts:
+  path=path/part
+  assert not path.is_symlink(),'Linked output'
+ assert path.is_file() and h(path)==digest
+for name,digest in b['outputPins'].items():checked_output(name,digest)
+for name,digest in b['unitOutputsCorroboration'].items():checked_output(name,digest)
+sys.path.insert(0,str(R/'tests/fixtures/ProductionMain'));s=importlib.util.spec_from_file_location('prep',R/'tests/fixtures/ProductionMain/prepare-mortal-live.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
 for tool in ('dotnet','pwsh','cc','readelf','git'):assert shutil.which(tool),tool
 assert pathlib.Path('/usr/bin/python3').is_file() and pathlib.Path(os.environ['DOTNET_ROOT'],'dotnet').is_file()
 native_all=m.native_join(R,old,b['nativeBuiltSourceCommit']);native=[row for row in native_all if row['path'] in b['nativeRows']]
@@ -50,6 +77,7 @@ m.private_tree(D);driver=R/'tests/fixtures/ProductionMain/live-mortal-phase.py';
 assert not(D/'play/.boe_runtime/gm-runs').exists() and not(D/'p01/queue').exists()
 for n in ('input','output','ready'):assert not any((session/n).iterdir()) if (session/n).exists() else True
 for n in ('pending_turn_snapshot','pending_turn_snapshot.json','pending_turn_snapshot.authority.json','gm_bridge_status.json','validation_repair_request.json'):assert not(session/'game_state/control'/n).exists()
-assert all(h(R/n)==v for n,v in src.items());assert all(h(R/n)==v for n,v in b['outputPins'].items())
+assert source_inventory()==src
+for name,digest in b['outputPins'].items():checked_output(name,digest)
 manifest={'kind':'manual-standard-preparation','prepared':True,'acceptedGmTurn':False,'elapsedSeconds':time.monotonic()-start,'inputSHA256':h(D/'preparation-inputs.json'),'seedManifestSHA256':h(D/'seed-manifest.json'),'packageSHA256':h(D/'p01/relay-phase-package.json'),'seed':seed,'inventories':{n:m.inventory(p) for n,p in {'native':D/'native','runtime':D/'package','deployed':session/'_runtime','helper':D/'receipt-helper','relay':D/'p01/relay','world':session,'terminal':D/'p01/terminal-fixture','terminalDeps':D/'p01/terminal-deps'}.items()},'exportOutcome':result,'sourceOutputUnchanged':True,'OldWorldReadOrCopied':False,'NoGameOrRelayLaunched':True}
 (D/'preparation-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');print(json.dumps({'manifest':str(D/'preparation-manifest.json'),'sha256':h(D/'preparation-manifest.json'),'counts':{n:len(v) for n,v in manifest['inventories'].items()},'seconds':manifest['elapsedSeconds']},indent=2))

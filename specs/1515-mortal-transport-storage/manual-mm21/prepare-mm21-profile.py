@@ -7,11 +7,13 @@ failure=uuid.uuid4().hex;stop=uuid.uuid4().hex
 profile={'Route':'birth','ExpectedTurn':42,'PreviousResult':None,'SeedSHA256':h(D/'seed-manifest.json'),'FailureNonce':failure,'StopNonce':stop,'Budgets':{'provider':600,'work':660,'clientCleanup':680,'driver':720,'guardian':750},'Driver':str(R/'tests/fixtures/ProductionMain/live-mortal-phase.py'),'ReceiptHelper':str(D/'receipt-helper/BookOfEternityClient.TestSupport.dll'),'ActionSHA256':h(P/'action.txt'),'RuntimeCount':len(inv(D/'play/game_session/_runtime')),'HelperCount':len(inv(D/'receipt-helper')),'PrivateDirectoriesCreated':'p01/launch-env/*; driver creates own p01/config,data,state,cache,tmp exactly once','OperationalConfigWritten':False}
 (P/'launch-profile.json').write_text(json.dumps(profile,indent=2,ensure_ascii=False)+'\n')
 script='''#!/bin/bash
-set -uo pipefail
+set -euo pipefail
 umask 077
 ROOT=/workspace/shared/mm21-20261119
 P="$ROOT/p01"
-test ! -e "$P/launch.log" && test ! -e "$P/guardian.json" && test ! -e "$P/probe-result.json" && test ! -e "$P/queue" || exit 71
+for marker in launch.log launch-origin.json guardian.json probe-result.json queue; do
+ test ! -e "$P/$marker" && test ! -L "$P/$marker" || exit 71
+done
 exec > "$P/launch.log" 2>&1
 export POWERSHELL_TELEMETRY_OPTOUT=1
 export POWERSHELL_UPDATECHECK=Off
@@ -28,13 +30,22 @@ export BOE_MAIN_STOP_DIAGNOSTIC_NONCE=STOP_NONCE
 export BOE_TEST_DIAGNOSTIC_ROOT="$P"
 export NPM_CONFIG_USERCONFIG="$P/empty-user.npmrc" NPM_CONFIG_GLOBALCONFIG="$P/empty-global.npmrc" NPM_CONFIG_CACHE="$P/launch-env/cache/npm" NPM_CONFIG_IGNORE_SCRIPTS=true
 unset BOE_TEST_LOAD_OBSERVATION_NONCE
+/usr/bin/python3 - "$P" <<'ORIGIN'
+import datetime,json,os,pathlib,sys,time
+p=pathlib.Path(sys.argv[1])/'launch-origin.json'
+record={'OriginalDriverStartedAtUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'MonotonicSeconds':time.monotonic(),'BootId':pathlib.Path('/proc/sys/kernel/random/boot_id').read_text().strip()}
+with p.open('x') as f:json.dump(record,f);f.flush();os.fsync(f.fileno())
+p.chmod(0o400)
+ORIGIN
 date -u --iso-8601=ns
 cat /proc/sys/kernel/random/boot_id
 printf 'original_shell_pid=%s\\n' "$$"
 cat /proc/$$/stat
 cd /workspace/shared/mortal-isolated-20261119
+set +e
 "$ROOT/native/host-guardian" --relay-turn "$P/guardian.json" 750000 /usr/bin/python3 tests/fixtures/ProductionMain/live-mortal-phase.py "$P" "$ROOT/seed-manifest.json" "$P/action.txt" "$ROOT/receipt-helper/BookOfEternityClient.TestSupport.dll"
 guardian_exit=$?
+set -e
 printf '%s\\n' "$guardian_exit" > "$P/guardian-process.exit"
 /usr/bin/python3 - "$P" "$guardian_exit" <<'ENDPY'
 import json,pathlib,sys

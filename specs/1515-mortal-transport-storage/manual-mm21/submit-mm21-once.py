@@ -1,5 +1,5 @@
 """One reviewed packet, original queue only; never authors, retries or renews authority."""
-import argparse,datetime,hashlib,json,os,pathlib,subprocess,sys,importlib.util
+import argparse,datetime,hashlib,json,os,pathlib,subprocess,sys,importlib.util,time
 ROOT=pathlib.Path('/workspace/shared/mm21-20261119')
 def sha(raw):return hashlib.sha256(raw).hexdigest()
 def member(root,name):
@@ -34,6 +34,12 @@ def main():
     raw=args.expectations.read_bytes()
     if sha(raw)!=args.expectations_sha:raise ValueError('Expected original identity record drift')
     expected=json.loads(raw);packet=args.candidate.read_bytes()
+    origin_path=member(phase,'launch-origin.json');origin_bytes=origin_path.read_bytes()
+    if sha(origin_bytes)!=expected['LaunchOriginSHA256']:raise ValueError('Original launch origin hash mismatch')
+    origin=json.loads(origin_bytes)
+    if origin['OriginalDriverStartedAtUtc']!=expected['OriginalDriverStartedAtUtc'] or origin['BootId']!=pathlib.Path('/proc/sys/kernel/random/boot_id').read_text().strip():raise ValueError('Original launch clock/boot mismatch')
+    if origin_path.stat().st_mode & 0o222:raise ValueError('Launch origin is not immutable')
+
     # The caller freezes these actual original identities at request discovery;
     # no main/status discovery here may substitute another owner.
     package=json.loads((phase/'relay-phase-package.json').read_text())
@@ -50,7 +56,7 @@ def main():
     if any((phase/n).exists() for n in ['probe-result.json','launch.exit','submission-attempt.json']):raise ValueError('Completed or already attempted')
     if any((q/n).exists() for n in ['response.json','reply.json','started.json','execution.json']):raise ValueError('Already answered/executing')
     validate_packet(session,packet,args.candidate_sha)
-    req=json.loads(current.game_request);now=datetime.datetime.now(datetime.timezone.utc);stamp=datetime.datetime.fromisoformat(req['timestamp'].replace('Z','+00:00'));driver_stamp=datetime.datetime.fromisoformat(expected['OriginalDriverStartedAtUtc'].replace('Z','+00:00'));remaining=min(600-(now-stamp).total_seconds(),660-(now-driver_stamp).total_seconds())
+    req=json.loads(current.game_request);now=datetime.datetime.now(datetime.timezone.utc);stamp=datetime.datetime.fromisoformat(req['timestamp'].replace('Z','+00:00'));driver_stamp=datetime.datetime.fromisoformat(expected['OriginalDriverStartedAtUtc'].replace('Z','+00:00'));remaining=min(600-(now-stamp).total_seconds(),660-(now-driver_stamp).total_seconds(),660-(time.monotonic()-origin['MonotonicSeconds']))
     if driver_stamp>stamp or stamp>now or not 60<=remaining<=600:raise ValueError('Less than 60s conservative provider reserve')
     # Exclusive attempt marker precedes the ONLY worker invocation. Any uncertainty
     # leaves it in place; a second call refuses, including failed/partial answer.

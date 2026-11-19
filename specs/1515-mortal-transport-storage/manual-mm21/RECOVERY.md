@@ -1,6 +1,6 @@
 # Scoped manual mm21 source recovery
 
-These four files are exact authored source copies of the reviewed external manual
+These four operational scripts plus one pure DATA test are exact authored source copies of the reviewed external manual
 workflow, not a second harness and not permission to execute. Recover from the
 parent-verified Git commit, compare source hashes, and restore them byte-for-byte
 to `/workspace/shared/relay-alternative/mortal-t034/mm21-preparation/`.
@@ -46,3 +46,8 @@ turn a draft into a packet or use prior generated IDs/request witnesses.
 After restoring source and fresh input pins, independently review source/preparation
 again. Destination `/workspace/shared/mm21-20261119` must be absent including links;
 all scripts remain one-shot. No automatic execution after recovery.
+
+Launch origin is exclusively source-emitted before original guardian launch;
+expectations must bind its SHA256 and exact UTC, boot and immutable original
+monotonic cutoff. Submission never recreates/refreshes it. The authored pure test
+uses temporary DATA and an inert worker substitute; it does not launch a game.
