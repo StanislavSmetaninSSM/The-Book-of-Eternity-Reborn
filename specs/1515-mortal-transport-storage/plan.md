@@ -4095,3 +4095,40 @@ clean based on elapsed time, an old request or a disappeared execution handle.
 Further work requires a permitted observation/control path or an explicit decision
 on the stated risk, not a workaround. T016 remains open; no live acceptance claim
 is added by the successful prior preparation or the locally authored candidate.
+
+T016 network-risk source review and fresh-profile plan (WIP), 2026-11-19.
+Remote base e69d299d3eb93109bb99a81803fec735a3e818b2 was verified. mm16 remains
+UNKNOWN and untouched: no polling, result inspection, publication, replay or
+signals. Its previously captured GM candidate received independent content-only
+PASS for all nine writes; that does not establish live freshness or acceptance.
+
+Independent source review confirms the driver selects the local relay CLI rather
+than a model CLI. Linux NativeLineage rejects worker dispatch; the relay's model
+field is a correlation label, and relay_worker is a local packet interface.
+OpenCodeProviderCalls=0 is a recorded field, not a measured network counter.
+The launched tree includes Python, native guardian/supervisor, managed Client/
+Bridge/receipt helper and several PowerShell processes. It requires local PTY,
+file queues, pipes/FIFO and the native Unix-domain bootstrap socket.
+
+The earlier environment explicitly disabled .NET CLI telemetry, but did not
+explicitly configure PowerShell telemetry or update notification. Microsoft
+supports POWERSHELL_TELEMETRY_OPTOUT=1 and POWERSHELL_UPDATECHECK=Off before the
+first PowerShell process; child processes inherit these settings. This is a
+plausible omitted safeguard, not proof of the past reviewer's reported contact.
+Reference: https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_environment_variables?view=powershell-7.6
+The fresh bounded profile must additionally set ImageProvider=off, retaining
+GenerateSceneImages=false and the existing local relay/owner/cleanup controls.
+These are application settings, not an enforceable no-network sandbox. The
+current tool exposes use_default/require_escalated, not a network-off override;
+no escalation or alternative transport is proposed to bypass the prior refusal.
+OpenAI documents environment.network.access=disabled for separately configured
+hosted sandboxes, but no such controllable configuration is exposed here.
+
+Next: prepare a separately reviewed clean launch plan from unchanged producer
+artifacts, never from mm16, then use the normal approval mechanism only if the
+specific new operation is permissible. No fresh launch is claimed by this note.
+Do not repeat a denied operation through another tool. T028 is not expanded.
+Optimization: reuse verified immutable published DATA, with fresh manifest and
+copy joins; never reuse live world/authority. This read-only review adds no
+runtime speedup claim. The independent requirements matrix is still pending;
+T016 denied/authorized inventory and reload remain unproved.
