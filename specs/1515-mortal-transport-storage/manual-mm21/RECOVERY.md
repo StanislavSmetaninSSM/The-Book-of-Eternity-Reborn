@@ -32,7 +32,7 @@ Do not restore any game world, owner, queue, packet, live expectation or PID.
 The external `mm21-input-pins.json` is deliberately NOT committed: it is a fresh
 machine/input snapshot, not portable authority. Recreate it only after establishing
 an available accepted owning build and immutable package sources. Required fields
-are consumed explicitly by manual-mm21.py. Current checkpoint references:
+are consumed explicitly by manual-mm21.py. Historical producer references (not the current25.72s owning build):
 
 - Repo: `/workspace/shared/mortal-isolated-20261119`.
 - Owning build snapshot: `mortal-t034/declared-endpoint-data-first/built.json`,
@@ -67,7 +67,7 @@ transport/scenario binding, P02 independent live GM grant-or-deny decision. Do n
 turn a draft into a packet or use prior generated IDs/request witnesses.
 
 After restoring source and fresh input pins, independently review source/preparation
-again. Destination `/workspace/shared/mm21-20261119` must be absent including links;
+again. The actual reviewed new destination must be absent including links; occupied mm21 is never eligible;
 all scripts remain one-shot. No automatic execution after recovery.
 
 Launch origin is exclusively source-emitted before original guardian launch;
