@@ -92,7 +92,7 @@ class FullRouteInputData(unittest.TestCase):
                 terminal=types.SimpleNamespace(key=lambda key,label:keys.append(key))
                 def send(key,label,predicate):
                     fresh_route_key(terminal,view,drain,key,label,predicate,10**12)
-                    cuts.append(len(captured));pending.append(successor);return len(captured)
+                    cuts.append(len(captured));pending.append(successor) # Actual smoke route_send returns None.
                 def pump():
                     if not pending:raise ValueError('No further authored output; stale successor boundary')
                     captured.extend(pending.pop());view.cut=len(captured);view.seq+=2
@@ -115,7 +115,7 @@ class FullRouteInputData(unittest.TestCase):
         terminal=types.SimpleNamespace(key=lambda key,label:keys.append(key))
         def send(key,label,predicate):
             fresh_route_key(terminal,view,drain,key,label,predicate,10**12)
-            cuts.append(len(captured));pending.append(frame(4));return len(captured)
+            cuts.append(len(captured));pending.append(frame(4)) # Actual smoke route_send returns None.
         def pump():
             if not pending:raise ValueError('No further authored output; stale arrow boundary')
             raw,lines=pending.pop();captured.extend(raw);view.cut=len(captured);view.seq+=2
