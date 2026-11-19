@@ -4978,3 +4978,10 @@ or input authority. The existing100 case now targets GREEN after normal exit;
 80 negative is unchanged. Actual live topology/fullroute remain unqualified,
 including application-mode SS3 handling versus current live hardcoded CSI.
 No fullroute code factoring, game or world operation is part of this checkpoint.
+
+
+### T034 bounded Load78 renderer GREEN, independently accepted
+
+Outcome30b0d3cb1a46d504f94a43b54fd90449aa5dc8fb61bd61014dd7922ea6fbaa7f verifies11 DATA and20 existing parser methods PASS; fresh owning Unit build9.611s/26warnings/zeroerrors; officialPlanOnly exactly2 and execution2/2PASS13.6711028s with complete cleanup. At100x25 allstandardstreams are the samePTY: exact78-column Load uses the public closed-profile parser, returnsBack, child exits0/EOF and restores configuredbaseline before separateowneroriginalrestore. Width80 proves exactwrapping/noLoadkeys with explicitlynegativecleanup, notnormalexit. BothguardiansECHILD/noemergency/failure/deadline;32026source and8outputpins unchanged. Independentreview read rawframes/results/guardians/pins.
+
+The initial profile preparation attempt had9DATA PASS/2importsetupERROR before anybuild/renderer; testmodule path initialization was corrected at9c4d8a6e. That failedattempt remains separate, notadmissionRED and nothidden. Current result qualifies only boundedLoadrenderer/profile, not the fullstorage/options/save/loadroute, livePIPEharness, GMdecision or gameacceptance. Those gates remainopen.
