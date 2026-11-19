@@ -7,7 +7,7 @@ import mortal_console_routes as routes
 
 
 def options(selected, initial=True):
-    text = '\x1b[2J\x1b[3J\x1b[1;1H── ⚙️ Игровое меню ──\r\n\r\nEsc — назад\r\n' if initial else '\x1b[5;1H'
+    text = '\x1b[2J\x1b[3J\x1b[1;1H── ⚙️ Игровое меню ──\r\n\r\nEsc — назад\r\n\r\n' if initial else '\x1b[5;1H'
     for label, description in zip(OPTIONS, DESCRIPTIONS):
         text += '    ' + ('➤ ' if selected == label else '◆ ') + label + '  \r\n'
         if description:
@@ -39,6 +39,8 @@ class FullRouteInputData(unittest.TestCase):
 
     def test_options_refuses_missing_reordered_title_description_footer(self):
         original = options(OPTIONS[0])
+        # RenderGenericMenuStaticFrame emits WriteLine after the Esc MarkupLine.
+        self.assertFalse(options_frame(original.replace(b'\r\n\r\n    ', b'\r\n    ', 1), 0, OPTIONS[0], initial=True))
         for text in ('⚙️ Игровое меню', 'Esc — назад', DESCRIPTIONS[0], OPTIONS_FOOTER):
             self.assertFalse(options_frame(original.replace(text.encode(), b''), 0, OPTIONS[0], initial=True))
         changed = original.replace(OPTIONS[1].encode(), b'TEMP').replace(OPTIONS[2].encode(), OPTIONS[1].encode()).replace(b'TEMP', OPTIONS[2].encode())
