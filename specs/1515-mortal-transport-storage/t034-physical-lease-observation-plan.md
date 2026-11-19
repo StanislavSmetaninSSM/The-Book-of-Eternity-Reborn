@@ -1111,3 +1111,22 @@ actually invokes this strict classifier on every event file, separately counts
 both families and retains unchanged physical triple proofs. It must not ignore
 unrecognised files. Historical frozen evidence is not rewritten. Identity DATA
 uses exact JSON types, not Python numeric/boolean coercion.
+
+### Healthy external marker routing bounded GREEN accepted
+Independent outcome `2d0f4ac8` verifies all 70 artifacts. Exact mixed DATA1 and
+official marker6 plus existing physical35 pass, no skips/timeouts/duplicates,
+owned cleanup complete. Owning Integration build: 117.01 s, 190 warnings,
+0 errors; source 32,073 and recorded outputs unchanged after run. Actual hosted
+menu suffix is exact success plus LF, with no marker in merged output. Its one
+external Active marker (PID531) joins the exact original and all nine physical
+rows (three ordered complete triples). The real mixed classifier independently
+validated every observed file. Real turn43 archive CRC and exact normal original
+Stopped/OwnedScopeEmpty plus guardian ECHILD/0 verified. Failure stderr and legacy
+unset/explicit stderr controls pass. No exhaustive event/timing-neutral claim.
+
+This closes only the bounded routing regression. It is not actual live/PTy
+qualification; actual live freezer wiring is still mandatory before any next
+launch. No old world was touched, no Save parser/timeout/fence changed, and mm27
+remains a nonpredecessor despite its previously committed archive. Current
+producer must be refreshed from genuinely current owning outputs before new
+preparation; recorded Unit copies are not assumed current after this build.
