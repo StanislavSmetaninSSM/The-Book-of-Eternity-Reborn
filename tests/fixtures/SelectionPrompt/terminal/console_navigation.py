@@ -12,7 +12,7 @@ def main():
     node,prefix,client,base,folder=sys.argv[1:];root=pathlib.Path(folder);root.mkdir(exist_ok=False)
     start=time.monotonic();deadline=start+8;master,slave=pty.openpty();original=termios.tcgetattr(slave)
     configured=copy.deepcopy(original);configured[3]&=~(termios.ECHO|termios.ECHONL)
-    terminal=None;child=None;failure=None;cleanup=[];eof=False;child_restored=False;owner_restored=False
+    terminal=None;child=None;failure=None;cleanup=[];eof=False;child_restored=False;owner_restored=False;foreground=None
     writer=PtyWriter(master,master,deadline);raw=open(root/'pty.raw','xb');captured=bytearray();stages=[]
     try:
         termios.tcsetattr(slave,termios.TCSANOW,configured)
@@ -20,7 +20,11 @@ def main():
         fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0));os.set_blocking(master,False)
         terminal=OwnedTerminal(node,prefix,root,deadline,writer)
         env=os.environ.copy();env.update(TERM='xterm-256color',NO_COLOR='1')
-        child=subprocess.Popen(['dotnet',client,base,'--plain-output'],stdin=slave,stdout=slave,stderr=slave,env=env)
+        def own():
+            os.setsid();fcntl.ioctl(slave,termios.TIOCSCTTY,0);os.tcsetpgrp(slave,os.getpid())
+        child=subprocess.Popen(['dotnet',client,base,'--plain-output'],stdin=slave,stdout=slave,stderr=slave,env=env,preexec_fn=own)
+        foreground={'Pid':child.pid,'SessionId':os.getsid(child.pid),'ProcessGroupId':os.getpgid(child.pid),'TtyForegroundGroup':os.tcgetpgrp(master)}
+        if any(value!=child.pid for value in foreground.values()):raise ValueError('Original foreground controlling PTY identity mismatch')
         view=AcknowledgedTerminalView(terminal,captured)
         def pump():
             if time.monotonic()>=deadline:raise TimeoutError('Original eight-second navigation deadline')
@@ -76,15 +80,17 @@ def main():
                 except BaseException as error:cleanup.append(repr(error))
             except BaseException as error:cleanup.append(repr(error))
         if terminal is not None and not terminal.closed:
-            proof=terminal.abort()
-            if not proof['Joined'] or not proof['EOF'] or proof['Errors']:cleanup.append(proof)
+            try:
+                proof=terminal.abort()
+                if not proof['Joined'] or not proof['EOF'] or proof['Errors']:cleanup.append(proof)
+            except BaseException as error:cleanup.append('Terminal abort: '+repr(error))
         try:
             # PTY master retains termios access after slave close; this is owner restoration only.
             termios.tcsetattr(master,termios.TCSANOW,original);owner_restored=termios.tcgetattr(master)==original
         except BaseException as error:cleanup.append(repr(error))
         if slave is not None:os.close(slave)
         os.close(master);raw.close()
-        result={'Success':failure is None and not cleanup and owner_restored,'Failure':failure,'CleanupFailures':cleanup,'EOF':eof,'ChildRestoredConfiguredBaseline':child_restored,'OwnerRestoredOriginal':owner_restored,'TerminalNormalClose':terminal is not None and terminal.closed,'TerminalExitCode':None if terminal is None or terminal.process is None else terminal.process.returncode,'ChildExitCode':None if child is None else child.returncode,'Inputs':writer.audit,'Stages':stages,'NoScriptedInput':True,'ProviderCalls':0,'OriginalTermios':repr(original),'ConfiguredTermios':repr(configured),'ElapsedSeconds':time.monotonic()-start}
+        result={'Success':failure is None and not cleanup and owner_restored,'Failure':failure,'CleanupFailures':cleanup,'EOF':eof,'ChildRestoredConfiguredBaseline':child_restored,'OwnerRestoredOriginal':owner_restored,'TerminalNormalClose':terminal is not None and terminal.closed,'TerminalExitCode':None if terminal is None or terminal.process is None else terminal.process.returncode,'ChildExitCode':None if child is None else child.returncode,'ForegroundIdentity':foreground,'Inputs':writer.audit,'Stages':stages,'NoScriptedInput':True,'ProviderCalls':0,'OriginalTermios':repr(original),'ConfiguredTermios':repr(configured),'ElapsedSeconds':time.monotonic()-start}
         (root/'result.json').write_text(json.dumps(result,indent=2)+'\n')
     if not result['Success']:raise RuntimeError(result)
 if __name__=='__main__':main()

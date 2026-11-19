@@ -122,6 +122,9 @@ class MenuFrameTests(unittest.TestCase):
         preflight_local_route(inv,loc,{'money':0},'s','target',43)
         loc['name']='Хозяйственный двор у кладовой совета'
         with self.assertRaises(ValueError):preflight_local_route(inv,loc,{'money':0},'s','target',43)
+        from mortal_console_routes import OWNED_PTY_LOAD_PROFILE
+        preflight_local_route(inv,loc,{'money':0},'s','target',43,profile=OWNED_PTY_LOAD_PROFILE)
+        with self.assertRaises(ValueError):preflight_local_route(inv,loc,{'money':0},'s','target',43,profile='unknown')
         loc['name']='Двор совета'
         self.assertEqual(len(inv['items']),1);self.assertEqual(len(loc['locationStorages'][0]['contents']),1)
         loc['locationStorages'][0]['contents'][0]['name']='← Отмена extra'

@@ -47,6 +47,27 @@ class Controls(unittest.TestCase):
         self.assertTrue(t.failed)
         with self.assertRaises(ValueError):t.key(b'x','late',cleanup=True)
         self.assertEqual(t.deadline,0)
+    def test_client_wrapper_preserves_explicit_cleanup_intent(self):
+        from client_session import ClientSession
+        for ordinary in (True,False):
+            t=self.transport({});sent=[];t.writer=lambda *args:sent.append(args)
+            session=ClientSession.__new__(ClientSession)
+            session.terminal=t;session.writer=types.SimpleNamespace(deadline=t.deadline)
+            session.capture=bytearray();session.drain=lambda:None
+            session.view=types.SimpleNamespace(pending=False,cut=0)
+            session.enter_cleanup()
+            self.assertEqual(session.writer.deadline,t.cleanup_deadline)
+            if ordinary:
+                with self.assertRaises(ValueError):session.send(b'x','gameplay',lambda:True)
+                self.assertEqual(sent,[]);self.assertTrue(t.failed)
+            else:
+                session.send(b'x','observed cleanup',lambda:True,cleanup=True)
+                self.assertEqual(len(sent),1)
+                with self.assertRaises(ValueError):session.enter_cleanup()
+        t=self.transport({});t.cleanup_deadline=0
+        session.terminal=t
+        with self.assertRaises(TimeoutError):session.enter_cleanup()
+        with self.assertRaises((ValueError,TimeoutError)):session.send(b'x','expired',lambda:True,cleanup=True)
     def test_bad_sequence_poison_snapshot_and_no_key(self):
         for reply in [{'op':'SNAPSHOT','seq':2},{'op':'SNAPSHOT','seq':True},[],{'op':'SNAPSHOT','seq':1,'cursor':{'x':False,'y':0},'lines':['']*25}]:
             with self.subTest(reply=reply):
@@ -103,7 +124,7 @@ class Controls(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(Controls)
-    assert suite.countTestCases()==9
+    assert suite.countTestCases()==10
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    summary={'Suite':'terminal-transport','Expected':9,'Executed':result.testsRun,'Failures':len(result.failures),'Errors':len(result.errors),'Skipped':len(result.skipped),'Success':result.wasSuccessful() and result.testsRun==9 and not result.skipped}
+    summary={'Suite':'terminal-transport','Expected':10,'Executed':result.testsRun,'Failures':len(result.failures),'Errors':len(result.errors),'Skipped':len(result.skipped),'Success':result.wasSuccessful() and result.testsRun==10 and not result.skipped}
     print(json.dumps(summary));raise SystemExit(0 if summary['Success'] else 1)

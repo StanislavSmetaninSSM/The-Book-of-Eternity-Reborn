@@ -144,7 +144,7 @@ def inventory_menu(inventory, location, player_status):
         weight='  (⚖ '+str(inventory['totalWeight'])+'/'+str(inventory.get('maxWeight','?'))+' кг'+(' — ПЕРЕГРУЗКА!' if inventory.get('isOverloaded') is True else '')+')'
     return fixed_menu('🎒 📦 Инвентарь'+weight+'  (выберите для просмотра / управления)',rows+['← Назад'],20)
 
-def preflight_local_route(inventory, location, player_status, storage_id, item_id, turn):
+def preflight_local_route(inventory, location, player_status, storage_id, item_id, turn, *, profile=None):
     """Checks both finite move menus and the worst supported Load label before owners start.
 
     These copies predict only visible choice membership. Fresh real bytes remain
@@ -166,7 +166,7 @@ def preflight_local_route(inventory, location, player_status, storage_id, item_i
         fixed_menu(title,labels+['← Отмена'],20)
         item=next(i for i in source if i['itemId']==item_id);source.remove(item)
         (inv['items'] if retrieve else storage['contents']).append(item)
-    local_load_menu(location['name'],turn,99999)
+    local_load_menu(location['name'],turn,99999,profile=profile)
 
 
 def after_menu(menu, previous, selected=None):

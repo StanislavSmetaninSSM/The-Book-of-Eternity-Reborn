@@ -7,7 +7,7 @@ turn. Later phases preserve the same canonical world and require complete prior
 logical/physical-owner cleanup evidence; no replay or scripted GM output.
 """
 import datetime, io, zipfile, copy
-import errno, fcntl, hashlib, json, os, pty, re, select, shutil, struct, subprocess, sys, termios, time, uuid
+import errno, fcntl, stat, hashlib, json, os, pty, re, select, shutil, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
 import relay_phase_evidence as phase_evidence
 import mortal_console_routes as console_routes
@@ -741,11 +741,19 @@ def terminal_fixture_admission():
     # Explicit immutable source package only; no checkout fallback/download.
     root=out/'terminal-fixture';pins=package_manifest.get('TerminalFixturePins')
     if type(pins) is not dict or not pins:raise ValueError('Missing prepared terminal fixture pins')
-    actual={str(p.relative_to(root)) for p in root.rglob('*') if p.is_file()}
-    if actual!=set(pins):raise ValueError('Terminal fixture inventory mismatch')
+    expected={'SelectionPrompt/fullroute_inputs.py','ProductionMain/mortal_console_routes.py',
+        'SelectionPrompt/terminal/client_session.py','SelectionPrompt/terminal/client_ui.py',
+        'SelectionPrompt/terminal/owned_terminal.py','SelectionPrompt/terminal/pty_probe.py',
+        'SelectionPrompt/terminal/sidecar.mjs','SelectionPrompt/terminal/policy.mjs','SelectionPrompt/terminal/provenance.json'}
+    if set(pins)!=expected:raise ValueError('Unsupported terminal source package')
+    if any(p.is_symlink() for p in [root,*root.parents]):raise ValueError('Linked terminal root')
+    entries=list(root.rglob('*'))
+    if any(p.is_symlink() or not (stat.S_ISREG(p.lstat().st_mode) or stat.S_ISDIR(p.lstat().st_mode)) for p in entries):raise ValueError('Special terminal source entry')
+    actual={str(p.relative_to(root)) for p in entries if p.is_file()}
+    if actual!=expected:raise ValueError('Terminal fixture inventory mismatch')
     for rel,digest in pins.items():
         path=root/rel
-        if path.is_symlink() or any(p.is_symlink() for p in path.parents) or sha(path.read_bytes())!=digest:raise ValueError('Terminal source pin/link mismatch')
+        if sha(path.read_bytes())!=digest:raise ValueError('Terminal source pin mismatch')
     node=Path(package_manifest['TerminalNodePath'])
     if not node.is_absolute() or node.is_symlink() or sha(node.read_bytes())!=package_manifest['TerminalNodeSHA256']:raise ValueError('Terminal Node mismatch')
     return root,node,out/'terminal-deps'
@@ -770,10 +778,14 @@ class Terminal:
             self.console=ClientSession(self.master,self.capture,out/'client-terminal',str(node),str(prefix),start+work_seconds,start+client_cleanup_seconds,lambda:drain_client(self))
         def own():
             os.setsid();fcntl.ioctl(self.slave,termios.TIOCSCTTY,0);os.tcsetpgrp(self.slave,os.getpid())
-        child_env=console_routes.client_environment(env) if name=='client' else env
-        self.process=subprocess.Popen(args,cwd=ship,env=child_env,stdin=self.slave,
-            stdout=subprocess.PIPE if captured_output else self.slave,
-            stderr=subprocess.STDOUT if captured_output else self.slave,preexec_fn=own)
+        child_env=dict(console_routes.client_environment(env),NO_COLOR='1') if name=='client' else env
+        try:
+            self.process=subprocess.Popen(args,cwd=ship,env=child_env,stdin=self.slave,
+                stdout=subprocess.PIPE if captured_output else self.slave,
+                stderr=subprocess.STDOUT if captured_output else self.slave,preexec_fn=own)
+        except BaseException:
+            if self.console is not None:self.console.abort()
+            os.close(self.slave);os.close(self.master);raise
         evidence.raw(name,b'')
         if captured_output:evidence.raw(name+'-echo',b'')
         observed_processes.append((name,self.process,process_observer.register(self.process.pid)))
@@ -782,12 +794,12 @@ class Terminal:
         self.closed_streams=set()
         peers.append(self);journal.append({'At':elapsed(),'Entrypoint':name,'Argv':args,'OriginalPid':self.process.pid,
             'OutputMode':'captured-pipe' if captured_output else 'original-pty','StdinMode':'original-controlling-pty'})
-    def send(self,data,phase,predicate=None):
+    def send(self,data,phase,predicate=None,*,cleanup=False):
         assert elapsed()<(total_seconds if cleaning else work_seconds) and self.process.poll() is None
         assert active_phase_deadline is None or time.monotonic()<active_phase_deadline
         if self.console is not None:
             if predicate is None:raise RuntimeError('Client write lacks exact current predicate')
-            cut=self.console.send(data,phase,predicate)
+            cut=self.console.send(data,phase,predicate,cleanup=cleanup)
             journal.append({'At':elapsed(),'Terminal':self.name,'Phase':phase,'ActionCut':cut,'TerminalSeq':self.console.view.seq,'Kind':'route-key'})
             return cut
         journal.append({'At':elapsed(),'Terminal':self.name,'Phase':phase,'Input':data.decode('utf-8')})
@@ -989,24 +1001,44 @@ def fresh_main(client,offset):
     until(lambda:client.console.main(offset,0),8,'fresh complete main menu')
 def fresh_player(client,offset,seconds=12):
     until(lambda:client.console.player(offset),seconds,'fresh cooperative player prompt')
-def options_choice(number,label):
-    cut=client.send(b'/options\r','current player: Options',lambda:client.console.player(0))
+def current_client_load_profile():
+    if client is None or client.console is None or client.process.poll() is not None:
+        raise RuntimeError('Current foreground client unavailable')
+    size=struct.unpack('HHHH',fcntl.ioctl(client.master,termios.TIOCGWINSZ,b'\0'*8))[:2]
+    if size!=(25,100) or termios.tcgetattr(client.master)[3]&(termios.ECHO|termios.ECHONL):
+        raise RuntimeError('Current owned PTY Load geometry/noecho mismatch')
+    slave=os.fstat(client.slave)
+    for fd in (0,1,2):
+        actual=os.stat('/proc/'+str(client.process.pid)+'/fd/'+str(fd))
+        if not stat.S_ISCHR(actual.st_mode) or (actual.st_dev,actual.st_ino,actual.st_rdev)!=(slave.st_dev,slave.st_ino,slave.st_rdev):
+            raise RuntimeError('Client stdio no longer joined to original owned PTY')
+    if os.tcgetpgrp(client.master)!=client.process.pid or os.getsid(client.process.pid)!=client.process.pid:
+        raise RuntimeError('Current original foreground owner mismatch')
+    return console_routes.OWNED_PTY_LOAD_PROFILE
+
+def clean_save_player_interval(raw):
+    from fullroute_inputs import save_outcome
+    first_clear=raw.find(b'\x1b[2J')
+    return first_clear>=0 and save_outcome(raw[:first_clear])
+
+def options_choice(number,label,*,cleanup=False):
+    cut=client.send(b'/options\r','current player: Options',lambda:client.console.player(0),cleanup=cleanup)
     until(lambda:client.console.view.options(cut,'💾 Сохранить',True),8,'actual complete Options')
-    prior=cut;cut=client.send(str(number).encode(),'Options numeric selection',lambda:client.console.view.options(prior,'💾 Сохранить',True))
+    prior=cut;cut=client.send(str(number).encode(),'Options numeric selection',lambda:client.console.view.options(prior,'💾 Сохранить',True),cleanup=cleanup)
     until(lambda:client.console.view.options(cut,label,False),8,'actual selected Options row')
     prior=cut
-    return client.send(b'\r','Options Enter',lambda:client.console.view.options(prior,label,False))
+    return client.send(b'\r','Options Enter',lambda:client.console.view.options(prior,label,False),cleanup=cleanup)
 def exit_client(client):
     global client_exit_attempted
     assert not client_exit_attempted,'Do not replay ambiguous UI close'
     client_exit_attempted=True
-    cut=options_choice(4,'🏠 Выйти в главное меню');fresh_main(client,cut)
-    prior=cut;cut=client.send(b'8','main select Exit',lambda:client.console.main(prior,0))
+    cut=options_choice(4,'🏠 Выйти в главное меню',cleanup=True);fresh_main(client,cut)
+    prior=cut;cut=client.send(b'8','main select Exit',lambda:client.console.main(prior,0),cleanup=True)
     until(lambda:client.console.main(cut,7),8,'actual selected main Exit')
-    prior=cut;client.send(b'\r','main Exit Enter',lambda:client.console.main(prior,7))
+    prior=cut;client.send(b'\r','main Exit Enter',lambda:client.console.main(prior,7),cleanup=True)
     until(lambda:client.process.poll() is not None,8,'client normal exit');assert client.process.returncode==0
 
-def finite_select(menu,label,cut,maximum_rows,commit=True):
+def finite_select(menu,label,cut,maximum_rows,commit=True,*,cleanup=False):
     # One input per observed ordered transition. A duplicate redraw is not a move.
     global inventory_context
     context=globals().get('inventory_context')
@@ -1039,14 +1071,14 @@ def finite_select(menu,label,cut,maximum_rows,commit=True):
             if commit:
                 from fullroute_inputs import retained_selection
                 proof={'raw':bytes(client.capture),'menu':menu,'selected':selected}
-                after=client.send(b'\r','fixed menu exact selected row: '+label,lambda:retained_selection(bytes(client.capture),proof)==selected)
+                after=client.send(b'\r','fixed menu exact selected row: '+label,lambda:retained_selection(bytes(client.capture),proof)==selected,cleanup=cleanup)
             return after,selected_cut
         if menu['choices'].index(selected)+1>=len(menu['choices']):raise RuntimeError('Menu cycle before exact target')
         prior=selected;cut=len(client.capture)
         if context is not None:context.update(cut=cut,pending_next=menu['choices'][menu['choices'].index(selected)+1],send_confirmed=False)
         from fullroute_inputs import retained_selection
         proof={'raw':bytes(client.capture),'menu':menu,'selected':selected}
-        cut=client.send(lambda:client.console.view.arrow(),'fixed menu observed next row',lambda:retained_selection(bytes(client.capture),proof)==selected)
+        cut=client.send(lambda:client.console.view.arrow(),'fixed menu observed next row',lambda:retained_selection(bytes(client.capture),proof)==selected,cleanup=cleanup)
         if context is not None:context['send_confirmed']=True
     raise RuntimeError('Fixed menu exceeds visible bounded rows; no pagination')
 
@@ -1063,7 +1095,7 @@ def settle_inventory_cleanup():
     if context['pending_next'] is not None:
         choices=context['menu']['choices'];index=choices.index(context['selected'])
         if index+1>=len(choices) or choices[index+1]!=context['pending_next']:raise RuntimeError('Inventory pending transition unknown')
-    after,_=finite_select(context['menu'],'← Назад',context['cut'],20)
+    after,_=finite_select(context['menu'],'← Назад',context['cut'],20,cleanup=True)
     # Context was invalidated BEFORE Enter; timeout cannot replay it.
     fresh_player(client,after,10)
     client_prompt=True;inventory_cleanup_required=False
@@ -1094,7 +1126,7 @@ def denied_storage_route():
     inventory_context['send_confirmed']=True
     cut,selected_cut=finite_select(menu,target['StorageLabel'],cut,20)
     # Locked selection loops back to the same menu; it is not a denial exception.
-    menu=console_routes.after_menu(current_inventory_menu(),menu)
+    menu=console_routes.after_menu(current_inventory_menu(),menu,target['StorageLabel'])
     register_inventory_cleanup(menu,cut)
     until(lambda:console_routes.selected_frame(bytes(client.capture),cut,menu) is not None,
           5,'fresh inventory after locked storage selection')
@@ -1154,8 +1186,8 @@ def storage_local_route():
         cut,_=finite_select(inventory_menu,label,cut,20)
         action_label=(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)' if retrieve else
                       f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
-        cut,_=finite_select(console_routes.after_menu(action_menu,inventory_menu),action_label,cut,10)
-        cut,_=finite_select(console_routes.after_menu(picker_menu,action_menu),target['ItemLabel'],cut,20)
+        cut,_=finite_select(console_routes.after_menu(action_menu,inventory_menu,label),action_label,cut,10)
+        cut,_=finite_select(console_routes.after_menu(picker_menu,action_menu,action_label),target['ItemLabel'],cut,20)
         until(lambda:'✅ ' in client.text(cut),10,'actual local move result')
         if '❌' in client.text(cut):raise RuntimeError('Actual local move refused')
         post_location=strict_settings(location_path.read_bytes());post_items=strict_settings(inventory_path.read_bytes())
@@ -1164,20 +1196,21 @@ def storage_local_route():
         if post_items['items']:post_actions.append(f"📥 Положить предмет в хранилище ({len(post_items['items'])} в инвентаре)")
         if post_storage['contents']:post_actions.append(f"📤 Забрать предмет из хранилища ({len(post_storage['contents'])} внутри)")
         post_menu=console_routes.fixed_menu('📦 '+target['StorageName']+'\n  Предметов внутри: '+str(len(post_storage['contents'])),post_actions+['← Назад к инвентарю'],10)
-        cut,_=finite_select(console_routes.after_menu(post_menu,picker_menu),'← Назад к инвентарю',cut,10)
-        returned_inventory=console_routes.after_menu(current_inventory_menu(),post_menu)
+        cut,_=finite_select(console_routes.after_menu(post_menu,picker_menu,target['ItemLabel']),'← Назад к инвентарю',cut,10)
+        returned_inventory=console_routes.after_menu(current_inventory_menu(),post_menu,'← Назад к инвентарю')
         register_inventory_cleanup(returned_inventory,cut)
         cut,_=finite_select(returned_inventory,'← Назад',cut,20)
         fresh_player(client,cut,10);client_prompt=True;inventory_cleanup_required=False
     move(True);saved_location,saved_inventory=stage('Retrieve','inventory')
     save_name='s' # Sole fresh archive, checked before any owner starts; no canonical name changes.
     saves=session/'saves/manual_saves';old_saves=set(saves.glob('*.zip'))
-    cut=len(client.capture);client_prompt=False;client.send(b'/options\r','fixed local Save menu')
-    fresh(client,'Игровое меню',cut);cut=len(client.capture);client.send(b'1\r','observed Save choice')
-    fresh(client,'Название сохранения:',cut);cut=len(client.capture);client.send((save_name+'\r').encode(),'fresh unique Save name')
-    fresh(client,'Описание (необязательно):',cut);cut=len(client.capture);save_result_cut=cut
-    client.send(b'\r','empty optional Save description')
-    fresh(client,'✅ Игра сохранена',cut)
+    from fullroute_inputs import complete_save_observation,save_outcome
+    client_prompt=False;cut=options_choice(1,'💾 Сохранить')
+    until(lambda:client.console.view.prompt('Название сохранения:',cut),8,'actual Save name prompt')
+    prior=cut;cut=client.send((save_name+'\r').encode(),'fresh unique Save name',lambda:client.console.view.prompt('Название сохранения:',prior))
+    until(lambda:client.console.view.prompt('Описание (необязательно):',cut),8,'actual Save description prompt')
+    prior=cut;save_result_cut=client.send(b'\r','empty optional Save description',lambda:client.console.view.prompt('Описание (необязательно):',prior))
+    until(lambda:complete_save_observation(client.console.view,bytes(client.capture),save_result_cut),10,'complete exact clean Save outcome')
     new_saves=set(saves.glob('*.zip'))-old_saves
     if len(new_saves)!=1:raise RuntimeError('Actual Save did not produce one distinct archive')
     archive=new_saves.pop()
@@ -1187,13 +1220,14 @@ def storage_local_route():
         if saved.namelist().count('save_metadata.json')!=1:raise RuntimeError('Save metadata ambiguous')
         metadata=strict_settings(saved.read('save_metadata.json'))
     if metadata['saveName']!=save_name or metadata['turnNumber']!=expected_turn-1:raise RuntimeError('Save metadata differs from actual local phase')
-    cut=len(client.capture);client.send(b'\r','acknowledge actual Save result');fresh_player(client,cut,10);client_prompt=True;inventory_cleanup_required=False
-    # Success is also printed for Committed+NeedsFollowUp. Inspect through the
-    # returned prompt so a later warning cannot be missed or silently replayed.
-    result['LocalSaveResult']={'Text':client.text(save_result_cut),
-        'NeedsFollowUpObserved':'Требуется служебная проверка хранилища сохранений.' in client.text(save_result_cut)}
-    if not console_routes.clean_save_result(client.text(save_result_cut)):
-        raise RuntimeError('Original Save did not return a clean result; no retry or subsequent local move')
+    cut=client.send(b'\r','acknowledge actual Save result',lambda:complete_save_observation(client.console.view,bytes(client.capture),save_result_cut))
+    fresh_player(client,cut,10);client_prompt=True;inventory_cleanup_required=False
+    # GameInterface.RenderGameScreen begins with Clear. Preserve the entire outcome
+    # through that first actual clear, rather than trusting warning-erased cells.
+    outcome=bytes(client.capture[save_result_cut:])
+    clean=clean_save_player_interval(outcome)
+    result['LocalSaveResult']={'RawHex':outcome.hex(),'CleanOutcomeBeforeFirstPlayerClear':clean}
+    if not clean:raise RuntimeError('Save return outcome unknown/warning; no subsequent move or replay')
     save_location,save_inventory=stage('Save','inventory')
     if (save_location,save_inventory)!=(saved_location,saved_inventory):raise RuntimeError('Save changed local item bytes')
     move(False);stage('Deposit','storage')
@@ -1213,17 +1247,18 @@ def storage_local_route():
     if all_save_files!=[archive]:raise RuntimeError('Finite Load fixture requires the one exact observed archive; unsupported additional saves')
     timestamp=datetime.datetime.fromisoformat(metadata['timestamp'].replace('Z','+00:00')).strftime('%d.%m.%Y %H:%M')
     load_label=f"{save_name} | Ход {metadata['turnNumber']} | {metadata['currentLocation']} | {timestamp} | {len(archive_bytes)//1024}KB"
-    load_menu=console_routes.local_load_menu(metadata['currentLocation'],metadata['turnNumber'],len(archive_bytes)//1024,timestamp)
+    load_menu=console_routes.local_load_menu(metadata['currentLocation'],metadata['turnNumber'],len(archive_bytes)//1024,timestamp,profile=current_client_load_profile())
     if load_menu['choices'][0]!=load_label:raise RuntimeError('Actual Load metadata label differs from preflight contract')
-    cut=len(client.capture);client_prompt=False;client.send(b'/options\r','fixed local Load menu')
-    fresh(client,'Игровое меню',cut);cut=len(client.capture);client.send(b'2\r','observed Load choice')
+    client_prompt=False;cut=options_choice(2,'📂 Загрузить')
     # Select the exact archive row without activating it yet; its receipt SourceKey must match.
     load_cut=finite_select(console_routes.entry_menu(load_menu,load_clear=True),load_label,cut,15,commit=False)[0]
     if archive.read_bytes()!=archive_bytes:raise RuntimeError('Original Save archive changed before Load')
     continuity['LoadActionUtc']=datetime.datetime.now(datetime.timezone.utc).isoformat()
     result['LoadActionCut']=load_cut
     original=None;original_record=None # An unconfirmed replacement is not permission to stop A or adopt status B.
-    client.send(b'\r','one actual Load of original unique archive')
+    from fullroute_inputs import retained_selection
+    load_proof={'raw':bytes(client.capture),'menu':console_routes.entry_menu(load_menu,load_clear=True),'selected':load_label}
+    client.send(b'\r','one actual Load of original unique archive',lambda:current_client_load_profile()==load_menu['profile'] and retained_selection(bytes(client.capture),load_proof)==load_label)
     until(lambda:b'boe-load-session-completed' in bytes(client.capture[load_cut:]),30,'actual completed Load observation')
     fresh_player(client,load_cut,15);client_prompt=True
     installed=read_json(record_path)
@@ -1257,7 +1292,7 @@ if route['Route']!='birth':
         # Worst supported size-display width, NOT a claim about future compression/diagnostic growth.
         console_routes.preflight_local_route(strict_settings((session/'game_state/inventory/items.json').read_bytes()),
             pre_location,strict_settings((session/'game_state/core/player_status.json').read_bytes()),
-            route['StorageId'],route['ItemId'],expected_turn-1)
+            route['StorageId'],route['ItemId'],expected_turn-1,profile=console_routes.OWNED_PTY_LOAD_PROFILE)
     if route['Route']=='storage-local-proof' and any(p for directory in ('manual_saves','autosaves','checkpoint_saves') for p in (session/'saves'/directory).glob('*.zip')):
         raise RuntimeError('Finite local proof requires no pre-existing Save choices')
 inventory_context=None;inventory_cleanup_required=False
@@ -1417,6 +1452,9 @@ except Exception as ex:
     result['Failure']=type(ex).__name__+': '+str(ex)
 finally:
     cleaning=True
+    if client is not None and client.console is not None:
+        try:client.console.enter_cleanup()
+        except Exception as ex:result['ClientCleanupFailure']='Terminal phase handoff: '+str(ex)
     # Settle participating client wait before original owner stop; never replay its action.
     relay_closed=True
     if relay_mode:
@@ -1440,59 +1478,36 @@ finally:
                 if rejected:
                     result['RejectedRestoredForCleanup']=True
                     client_wait=False;client_prompt=True
-            if not inventory_cleanup_required and (client_wait or (not result.get('RejectedRestoredForCleanup') and current_client_failure(client.text(offset)))):
-                offset=client_failure_offset if client_failure_offset is not None else offset
-                pause_acknowledged=False;cancel_sent=False
-                def settled():
-                    # An actually rendered client error pause is distinct from
-                    # a GM trust/access/update gate. Acknowledge at most once.
-                    text=client.text(offset)
-                    fresh_screen='Продолжить' in text or current_player_prompt_at(text)>=0
-                    pause_at=text.rfind('Нажмите любую клавишу для продолжения...')
-                    screen_at=max(text.rfind('Продолжить'),current_player_prompt_at(text))
-                    if pause_at>=screen_at and pause_at>=0:
-                        # A stale player prompt cannot settle a newer error pause.
-                        return False
-                    if pause_at>=0 and screen_at>pause_at and fresh_screen:
-                        # Coalesced output already advanced beyond the pause. An
-                        # Enter now would target the new player prompt, not the pause.
-                        result['ClientSettlement']='error-pause already left; rollback not established'
-                        return True
-                    cancelled='Изменения отменены, прежнее состояние восстановлено.' in text
-                    pending_absent=not any((session/p).exists() for p in ['input/turn_request.json',
-                        'game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json',
-                        'game_state/control/pending_turn_snapshot'])
-                    if fresh_screen and cancel_sent and cancelled and pending_absent:
-                        result['ClientSettlement']='actual cancellation and fresh screen with request absent'
-                        return True
-                    return fresh_screen and pause_acknowledged
-                settlement=PhaseWait(time.monotonic(),active_phase_deadline)
-                while not settled():
-                    text=client.text(offset)
-                    if 'Нажмите любую клавишу для продолжения...' in text:
-                        if pause_acknowledged:raise RuntimeError('Client repeated error pause during original cleanup')
-                        result['ObservedClientErrorPause']=True
-                        error_path=session/'error_log.txt'
-                        result['OriginalClientErrorLogAvailable']=error_path.exists()
-                        if error_path.exists():(out/'original-client-error.txt').write_bytes(error_path.read_bytes())
-                        offset=len(client.capture);client.send(b'\r','observed client error pause: acknowledge once');pause_acknowledged=True
-                        result['ClientSettlement']='error-pause-acknowledged; rollback not established'
-                    elif not pause_acknowledged and not cancel_sent and not current_client_failure(text) and current_player_prompt_at(text)<0 and 'Мастер игры размышляет...' in text:
-                        offset=len(client.capture);client.send(b'\x1b','observed current wait: cancel once');cancel_sent=True
-                    if client.process.poll() is not None:raise RuntimeError('Client exited before fresh cleanup screen')
-                    settlement.observe(time.monotonic(),len(client.capture));pump(.1)
-                client_wait=False
-                client_prompt=current_player_prompt_at(client.text(offset))>=0
+            # Unqualified error-pause/provider-wait shapes are not input authority.
+            # In particular, never replay Escape/Enter or force Ctrl+C on uncertain UI.
+            if not inventory_cleanup_required and not client.console.player(0):
+                raise RuntimeError('Client cleanup state UNKNOWN; no blind input or owner shutdown')
+            client_prompt=client.console.player(0)
             if inventory_cleanup_required and not client_prompt:settle_inventory_cleanup()
             if client_prompt and not client_exit_attempted:exit_client(client)
             elif client.process.poll() is None:
                 if inventory_cleanup_required:raise RuntimeError('Inventory cleanup unconfirmed; no forced input')
-                client.send(b'\x03','failure: stop original client foreground');until(lambda:client.process.poll() is not None,6,'client foreground stop')
+                raise RuntimeError('Client did not reach qualified exit; original owner UNKNOWN')
         except Exception as ex:result['ClientCleanupFailure']=type(ex).__name__+': '+str(ex)
         finally:active_phase_deadline=None
+    if client is not None and client.console is not None and not result.get('ClientCleanupFailure'):
+        try:
+            if client.process.poll()!=0:raise RuntimeError('Original client normal exit not proved')
+            child_restored=termios.tcgetattr(client.master)==client.configured
+            if not child_restored:raise RuntimeError('Client did not restore configured noecho baseline')
+            if client.slave>=0:os.close(client.slave);client.slave=-1
+            until(lambda:client.eof,5,'original client output EOF')
+            client.console.close()
+            termios.tcsetattr(client.master,termios.TCSANOW,client.initial)
+            owner_restored=termios.tcgetattr(client.master)==client.initial
+            if not owner_restored:raise RuntimeError('Owner original termios restore unproved')
+            result['ClientTerminalClosure']={'ChildRestoredConfiguredBaseline':child_restored,
+                'OwnerRestoredOriginal':owner_restored,'TerminalNormalClose':client.console.terminal.closed,
+                'EOF':client.eof,'ExitCode':client.process.returncode}
+        except Exception as ex:result['ClientCleanupFailure']='Terminal closure: '+str(ex)
     if original is not None:
         try:
-            if inventory_cleanup_required:raise RuntimeError('Inventory cleanup unconfirmed; shutdown skipped, owner UNKNOWN')
+            if inventory_cleanup_required or result.get('ClientCleanupFailure'):raise RuntimeError('Client cleanup unconfirmed; shutdown skipped, owner UNKNOWN')
             shutdown_attempts+=1
             stop=rpc({'command':'shutdown','rootKey':original['rootKey'],'expectedMainIdentity':original},12)
             result['ShutdownReceipt']=stop;assert stop['ok'];proof=stop['status']['terminalStop']
@@ -1517,6 +1532,8 @@ finally:
         if p.process.poll() is not None and p.slave>=0:os.close(p.slave);p.slave=-1
     try:until(lambda:all(p.eof for p in peers),8,'actual foreground EOF')
     except Exception as ex:result['IoCleanupFailure']=type(ex).__name__+': '+str(ex)
+    if client is not None and client.console is not None and not client.console.terminal.closed:
+        result['ClientTerminalAbort']=client.console.abort()
     result['Terminals']={}
     for p in peers:
         try:restored=termios.tcgetattr(p.master)==p.initial
@@ -1533,6 +1550,7 @@ finally:
     journal.append({'At':elapsed(),'FinalDaemonEvidence':dict(daemon_evidence)})
     if not daemon_settlement_proved(daemon_evidence):result['DaemonSettlementFailure']='Original daemon terminal settlement unconfirmed'
     try:
+        terminal_fixture_admission()
         closing_package,_=phase_evidence.relay_package_preflight(out,ship,__file__)
         if closing_package!=package_manifest:raise ValueError('Phase package manifest changed')
         if (route_path.read_bytes() if route_path.exists() else None)!=route_bytes:
