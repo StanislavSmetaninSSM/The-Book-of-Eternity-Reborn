@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-daemon-return-observation-data",
+      "responsibility": "#1589/#1515 source-scoped actual consumer/transport disposal post-return observation, no acceptance authority.",
+      "excludes": "No native owner, IPC, game world or live shutdown qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "tests/fixtures/GmMainOperation/daemon-return.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualDaemonReturnObservation_RequiresCompletedConsumer"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-daemon-stop-finally-regression",
       "responsibility": "#1589/#1515 actual retained helper snapshot end refusal after durable Stop, exact Failed close; source-derived ordinary/QTE catch-finally primary preservation and unconditional local reset.",
       "excludes": "No live world, GM turn, Stop/Running guard changes, new transport or orderly-harness witness qualification.",
