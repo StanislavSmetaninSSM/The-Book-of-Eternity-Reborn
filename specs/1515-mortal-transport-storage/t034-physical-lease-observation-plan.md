@@ -994,3 +994,14 @@ The original compile-only failure and later3PASS/2oracleFAIL remain separate.
 Only Options caller participation changed; SaveLoad/MainFence remain unchanged.
 This qualifies the isolated hosted/manual boundary, NOT new producer, live GM
 plus Save, Load/transfer or reuse of mm26. No additional runtime is implied.
+
+mm27 current producer independently accepted (aa5930c5/published685ad072):
+one Unit owning refresh31.42s/45warnings/zero errors joined current Main/Bridge/
+Support copies, leaving723 producer rows and accepted Integration8 unchanged.
+Three standard guarded no-build/no-restore publishes completed in about1.119s
+apiece, original guardian ECHILD/driver0/both EOF/no emergency/failure/deadline.
+All747 artifact hashes and complete239/244/249 byte+mode inventories join
+current bins plus native2/EventLog1 extras, zero overlays; source32072/tools6/
+assets14/Unit8 close unchanged. This accepts producer bytes only. Next stage
+is one separately reviewed fresh mm27 setup41 export/profile, then separately
+admitted scripted42 and ordinary43. No failed mm26 bytes are reused.
