@@ -304,3 +304,15 @@ Old rollback tests now supply real trace assets; affected Mortal38 setup builder
 supplies the same exact profile/env/marker without bypassing real admission.
 No exclusive profile creation or launcher wiring is claimed yet; those require
 the separate actual-function source/DATA gate before any world preparation.
+
+Independent t022 accepted pure admission GREEN:11/11 in0.529s and affected
+Mortal38/38 in1.049s, all source/output/artifact joins exact. This proves admission
+DATA only, not profile construction or launch. Next test-first source extends
+existing submit/profile DATA26→28 with two actual-source methods: exclusive
+trace-function namespace and generated launcher assignment (P01/P02). No complete
+profile script is executed. Expected initial failures are missing creation API
+and absent physical-route/profile-hash exports; downstream creation controls
+remain unexecuted until implemented. Newly owned prepared phase is supplied by
+existing fresh-root preparation; trace/profile/launcher must not already exist.
+Failed partial trace remains retained and blocks re-entry, no delete/chmod repair.
+The whole phase/root absence admission remains with the existing preparer.

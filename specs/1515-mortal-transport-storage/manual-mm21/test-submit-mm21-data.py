@@ -165,5 +165,60 @@ class ProfileBinding(unittest.TestCase):
    (source/'samebytes').unlink();os.mkfifo(source/'fifo')
    with self.assertRaises(ValueError):scope['regular_tree'](source)
 
+class PhysicalTraceProfile(unittest.TestCase):
+ def actual(self):
+  import ast,os,re,stat,uuid,shutil,sys,hashlib
+  path=pathlib.Path(__file__).with_name('prepare-mm21-profile.py');tree=ast.parse(path.read_text())
+  ns=dict(pathlib=pathlib,json=json,hashlib=hashlib,os=os,re=re,stat=stat,uuid=uuid,shutil=shutil,sys=sys)
+  functions=[n for n in tree.body if isinstance(n,ast.FunctionDef)]
+  exec(compile(ast.Module(body=functions,type_ignores=[]),'<actual-profile-functions>','exec'),ns)
+  return tree,ns
+ def test_exclusive_actual_trace_assets_no_repair(self):
+  import os,stat
+  from unittest.mock import patch
+  tree,ns=self.actual();fn=ns.get('create_physical_trace_assets')
+  self.assertTrue(callable(fn),'Missing exclusive trace creation; downstream controls UNEXECUTED')
+  for case in ('valid','existing','dangling','partial','overlap','bad-nonce','linked-parent'):
+   with self.subTest(case=case),tempfile.TemporaryDirectory() as tmp:
+    root=pathlib.Path(tmp).resolve();base=root/'play';base.mkdir();phase=root/'p01';phase.mkdir();trace=phase/'physical-trace';nonce='a'*32
+    if case=='existing':trace.mkdir(mode=0o700);(trace/'retained').write_bytes(b'keep')
+    if case=='dangling':trace.symlink_to(root/'missing')
+    if case=='overlap':phase=base/'p01';phase.mkdir();trace=phase/'physical-trace'
+    if case=='bad-nonce':nonce='bad'
+    if case=='linked-parent':
+     link=root/'linked';link.symlink_to(phase,target_is_directory=True);phase=link;trace=phase/'physical-trace'
+    if case=='valid':
+     value=fn(base,phase,nonce);self.assertEqual(value,{'Route':'external','Directory':str(trace)})
+     self.assertEqual((trace/'owner-nonce').read_bytes(),b'a'*32)
+     self.assertEqual(stat.S_IMODE(trace.stat().st_mode),0o700);self.assertEqual(stat.S_IMODE((trace/'owner-nonce').stat().st_mode),0o600)
+     with self.assertRaises((ValueError,FileExistsError)):fn(base,phase,nonce)
+     self.assertEqual((trace/'owner-nonce').read_bytes(),b'a'*32)
+    elif case=='partial':
+     original=pathlib.Path.open;failure=OSError('injected marker write refusal')
+     def open_file(path,*a,**kw):
+      if path==trace/'owner-nonce':raise failure
+      return original(path,*a,**kw)
+     with patch.object(pathlib.Path,'open',open_file):
+      with self.assertRaises(OSError) as caught:fn(base,phase,nonce)
+     self.assertIs(caught.exception,failure);self.assertTrue(trace.is_dir());self.assertFalse((trace/'owner-nonce').exists())
+     with self.assertRaises((ValueError,FileExistsError)):fn(base,phase,nonce)
+     self.assertTrue(trace.is_dir())
+    else:
+     with self.assertRaises((ValueError,FileExistsError)):fn(base,phase,nonce)
+     if case=='existing':self.assertEqual((trace/'retained').read_bytes(),b'keep')
+     elif case=='dangling':self.assertTrue(trace.is_symlink())
+     else:self.assertFalse(os.path.lexists(trace))
+ def test_actual_generated_launcher_binds_exact_trace_profile(self):
+  import ast,hashlib
+  tree,ns=self.actual();nodes=[n for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='script' for t in n.targets)]
+  self.assertEqual(len(nodes),1)
+  for phase in ('p01','p02'):
+   profile_bytes=b'{"authored":"already frozen profile"}';digest=hashlib.sha256(profile_bytes).hexdigest()
+   ns.update(D=pathlib.Path('/workspace/shared/mm99-20261119'),phase=phase,previous_path=None if phase=='p01' else pathlib.Path('/original/p01/probe-result.json'),failure='b'*32,stop='a'*32,profile_sha=digest)
+   exec(compile(ast.Module(body=nodes,type_ignores=[]),'<actual-generated-launcher>','exec'),ns);script=ns['script']
+   expected=['export BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE=external','export BOE_TEST_CANONICAL_LEASE_TRACE_DIR="$P/physical-trace"','export BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256='+digest,'export BOE_MAIN_STOP_DIAGNOSTIC_NONCE='+'a'*32]
+   for line in expected:self.assertIn(line,script);self.assertLess(script.index(line),script.index('"$ROOT/native/host-guardian"'))
+   self.assertIn('750000',script);self.assertIn('set -euo pipefail',script)
+
 if __name__=='__main__':unittest.main(verbosity=2)
 
