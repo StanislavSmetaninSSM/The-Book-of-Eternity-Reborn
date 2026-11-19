@@ -36,7 +36,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.NotNull(bytes);
             retained.Add(path, bytes);
         }
-        var core = JsonNode.Parse(retained[npcPath])!;
+        var core = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(retained[npcPath]))!;
         var steward = Assert.Single(core["UpdateNPCs"]!.AsArray());
         var stewardId = steward!["NPCId"]!.GetValue<string>();
         var stewardName = steward["name"]!.GetValue<string>();
@@ -46,7 +46,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var priorStory = (await _fs.ReadFileAsync(storyPath))!;
         Assert.Single(priorStory.Split('\n', StringSplitOptions.RemoveEmptyEntries));
         var journalBytesBefore = (await _fs.ReadFileBytesAsync(journalPath))!;
-        var journalBefore = JsonNode.Parse(journalBytesBefore)!;
+        var journalBefore = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(journalBytesBefore))!;
         var scheduleBefore = JsonSerializer.Deserialize<ProgressionScheduleState>(
             (await _fs.ReadFileAsync(ProgressionScheduleService.SchedulePath))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
         Assert.Equal(0, scheduleBefore.PendingWorldCycles);
