@@ -508,3 +508,22 @@ follows the extracted helper and still proves it precedes deposit. No parser,
 finite_select, production, deadline value or world changed. GREEN is UNRUN pending
 independent source review. Mutable live/queue/archive checks remain fresh; small
 per-Save DATA is reused, prior archives retain hashes rather than duplicate bytes.
+
+### Ordinary Save pure GREEN accepted (not live qualification)
+
+Independent review accepted the exact selected fourteen pure methods: eight new
+ordinary-save cases, three existing clean-outcome cases, the shared local Save
+interval guard, original final consumer-wait guard, and continuation binding.
+All 14 passed in 0.166 s, no errors/skips; 32,067 sources and eight owning outputs
+were unchanged before/after and matched reviewed source pins. The previously
+blocked archive/closing/UI/deadline matrices executed. No C# build, native run,
+new world, real GM decision, actual Save, transfer or Load was performed here.
+
+This closes the bounded source/test block only. Next is a separately reviewed
+fresh preparation using current fixture/profile bytes and unchanged accepted
+compiled producer, then fresh scripted P01 and ordinary genuine request43 as
+separate live phases. GM must decide from the actual prompt/current facts; no
+preauthored grant. Failed mm24 is not revived. Original budgets, per-phase trace,
+accepted predecessor and one-shot publication gates remain mandatory. The finite
+archive scope deliberately excludes recomposed resource authority and does not
+claim whole-state equivalence or a combined grant→transfer→Load PASS.
