@@ -349,14 +349,6 @@ public sealed class AcceptedTurnReasoningOrdinaryTests(ITestOutputHelper output)
         Assert.Equal(prepared.RequestId, manifest.RequestId);
         Assert.Equal(File.ReadAllBytes(_fixture.Physical(journalsPath)),
             File.ReadAllBytes(_fixture.Physical(manifest.Files[journalsPath])));
-        var lookupMethod = typeof(ValidationService).GetMethod("LoadValidatedPendingTurnSnapshotLookupAsync",
-            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
-        Assert.NotNull(lookupMethod);
-        var lookupTask = (Task)lookupMethod.Invoke(_fixture.Validator,
-            new object?[] { null, null, "output/narrative_response.json", true })!;
-        await lookupTask;
-        var lookup = lookupTask.GetType().GetProperty("Result")!.GetValue(lookupTask)!;
-        Assert.Equal("Usable", lookup.GetType().GetProperty("Status")!.GetValue(lookup)!.ToString());
         var journal = JsonNode.Parse(await _fixture.Files.ReadFileAsync(journalsPath))!.AsObject();
         var actor = journal["NPCJournals"]![0]!.AsObject();
         actor["lastJournalNote"] = "Записал просьбу и передам дозорным; кладовую не открывал.";
@@ -372,9 +364,18 @@ public sealed class AcceptedTurnReasoningOrdinaryTests(ITestOutputHelper output)
         var source = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.Tests", "TestData",
             "mm25-authored-debug-" + variant + ".json");
         _fixture.WriteDebugRaw(File.ReadAllBytes(source));
+        var contextMethod = typeof(ValidationService).GetMethod("ResolveGuardianValidatedSnapshotContextAsync",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        Assert.NotNull(contextMethod);
+        var contextTask = (Task)contextMethod.Invoke(_fixture.Validator, null)!;
+        await contextTask;
+        var context = contextTask.GetType().GetProperty("Result")!.GetValue(contextTask)!;
+        Assert.Equal("Usable", context.GetType().GetProperty("SnapshotStatus")!.GetValue(context)!.ToString());
+        Assert.Equal("Mortal World", context.GetType().GetProperty("PreTurnRealm")!.GetValue(context));
         _fixture.CaptureSeed();
         var issues = await _fixture.Validator.ValidateAcceptedTurnReasoningAsync();
         _fixture.AssertSeedBytesUnchanged();
+        Assert.All(issues, issue => Assert.Equal(IssueSeverity.Error, issue.Severity));
         var codes = issues.Where(x => x.Severity == IssueSeverity.Error).Select(x => x.Code).Order().ToArray();
         var expected = new[] { "actor_brain_missing_chosen_strategy", "actor_brain_missing_profile_inputs",
             "actor_brain_missing_rejected_alternatives", "actor_brain_missing_state_changes",
