@@ -306,6 +306,8 @@ public partial class FileSystemManager
             _parentAuthority = parentAuthority;
         }
 
+        internal MainOperationFailureDiagnostic.PhysicalLeaseContext? PhysicalObservation { get; set; }
+        internal int PhysicalAttempt { get; set; }
         internal MainAdmission? MainAdmission {get;set;}
         internal FileSystemManager Owner { get; }
         internal bool IsActive =>
@@ -321,7 +323,10 @@ public partial class FileSystemManager
             try
             {
                 if (stream != null)
+                {
                     await stream.DisposeAsync();
+                    MainOperationFailureDiagnostic.ReportPhysical(PhysicalObservation, "physical-dispose-completed", PhysicalAttempt);
+                }
             }
             finally
             {
@@ -4782,6 +4787,9 @@ public partial class FileSystemManager
             ?? throw new InvalidDataException(
                 "Canonical write lock has no parent directory.");
         EnsureRuntimeDirectoryExistsAndIsSafe(lockParentPath);
+        var observationNonce = MainOperationFailureDiagnostic.ReadNonce();
+        var physicalObservation = observationNonce == null ? null : MainOperationFailureDiagnostic.BeginPhysicalLease(
+            observationNonce, BasePath, purpose.ToString(), MainAdmissions.Value?.ObservedPhysicalPin);
         for (var attempt = 0; attempt < CanonicalWriteLockRetryCount; attempt++)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -4799,6 +4807,7 @@ public partial class FileSystemManager
                     FileShare.None,
                     bufferSize: 1,
                     FileOptions.Asynchronous);
+                MainOperationFailureDiagnostic.ReportPhysical(physicalObservation, "physical-opened", attempt + 1);
             }
             catch (IOException) when (attempt < CanonicalWriteLockRetryCount - 1)
             {
@@ -4813,6 +4822,7 @@ public partial class FileSystemManager
             }
             catch (IOException failure) when (IsSupportedConstructorSharingFailure(failure))
             {
+                MainOperationFailureDiagnostic.ReportPhysical(physicalObservation, "contention-exhausted", attempt + 1);
                 parentAuthority.Dispose();
                 throw new CanonicalLockContention(this, acquisitionOccurrence, failure);
             }
@@ -4835,6 +4845,7 @@ public partial class FileSystemManager
             catch
             {
                 await stream.DisposeAsync();
+                MainOperationFailureDiagnostic.ReportPhysical(physicalObservation, "physical-dispose-completed", attempt + 1);
                 parentAuthority.Dispose();
                 throw;
             }
@@ -4843,7 +4854,8 @@ public partial class FileSystemManager
                 this,
                 stream,
                 parentAuthority,
-                purpose) { WorkerPurpose = workerPurpose, MainAdmission=MainAdmissions.Value };
+                purpose) { WorkerPurpose = workerPurpose, MainAdmission=MainAdmissions.Value,
+                    PhysicalObservation=physicalObservation, PhysicalAttempt=attempt+1 };
 #if DEBUG
             if (_browserAdmissionDiagnostic != null) writeLease.BrowserDiagnosticId = _browserAdmissionDiagnostic.LeaseOpened();
 #endif
@@ -4852,7 +4864,7 @@ public partial class FileSystemManager
                 if(purpose==CanonicalWritePurpose.MainMetadata) {
                     if(workerPurpose!=null)throw GmSessionRunPersistence.Invalid();
                     if(writeLease.MainAdmission?.MetadataOnly!=true)throw GmSessionRunPersistence.Invalid();
-                    writeLease.MainAdmission.Validate(writeLease);return writeLease;
+                    writeLease.MainAdmission.Validate(writeLease);MainOperationFailureDiagnostic.ReportPhysical(physicalObservation, "lease-granted", attempt + 1);return writeLease;
                 }
                 workerPurpose?.ValidateRoot(this);
                 var workerContext = CanonicalRootAuthorityIdentity.WorkerContext;
@@ -4865,7 +4877,7 @@ public partial class FileSystemManager
                 if(purpose==CanonicalWritePurpose.SessionFinalization) {
                     // Closing verifies the current generation without replaying
                     // publication recovery or granting mutation authority.
-                    writeLease.MainAdmission!.Validate(writeLease);return writeLease;
+                    writeLease.MainAdmission!.Validate(writeLease);MainOperationFailureDiagnostic.ReportPhysical(physicalObservation, "lease-granted", attempt + 1);return writeLease;
                 }
                 EnsureMainBeforeRecovery(writeLease, "acquired-lock-before-recovery");
                 // An explicitly bound reader is fenced before any recovery or
@@ -4932,7 +4944,7 @@ public partial class FileSystemManager
                 AdmitConsoleRollbackEvidence(writeLease);
                 if (purpose == CanonicalWritePurpose.SessionMutation)
                     EnsureBoundSessionOperationCanWrite(writeLease);
-                return writeLease;
+                MainOperationFailureDiagnostic.ReportPhysical(physicalObservation, "lease-granted", attempt + 1);return writeLease;
             }
             catch (CoordinatedStatePublicationUncertainException failure)
             {

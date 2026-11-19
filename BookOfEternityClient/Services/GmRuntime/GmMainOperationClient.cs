@@ -17,6 +17,8 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
     private int _lost,_closing,_locallyClosed;
     internal bool Closing=>Volatile.Read(ref _closing)!=0;
     internal GmSessionRunIdentity Identity=>_grant.Identity!;
+    // Immutable original handshake DATA only; no connection or metadata read.
+    internal MainOperationReply ObservedOriginalGrant=>_grant;
     internal MainOperationClose? TerminalClose {get;private set;}
     internal bool CloseObserved=>_closedReply.Task.IsCompletedSuccessfully;
     private GmMainOperationClient(Stream pipe,MainOperationReader reader,MainOperationReply grant,string? nonce){_pipe=pipe;_reader=reader;_grant=grant;_diagnosticNonce=nonce;}

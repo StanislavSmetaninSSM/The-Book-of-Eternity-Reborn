@@ -93,6 +93,14 @@ public partial class FileSystemManager
         internal MainOperationClose? TerminalClose=>_retainedRemote?.TerminalClose;
         internal bool CloseObserved=>_retainedRemote?.CloseObserved==true;
         internal MainOperationClose? DescribeClose(MainOperationOutcome outcome,bool closingFailed)=>_retainedRemote?.DescribeClose(outcome,closingFailed);
+        internal MainOperationReply? ObservedPhysicalPin
+        {
+            get
+            {
+                try { return _access?.Remote?.ObservedOriginalGrant ?? _access?.Original?.Pin?.Reply; }
+                catch { return null; } // Observability absence cannot change admission.
+            }
+        }
         internal string Root=>_files.BasePath;
         internal CanonicalRootIdentity RootIdentity=>_files.CanonicalRootAuthorityIdentity;
         internal bool Closed=>_closed;
