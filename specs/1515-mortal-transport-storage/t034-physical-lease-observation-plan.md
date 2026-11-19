@@ -1156,3 +1156,15 @@ ready; foreground PID comes from unique actual client launch journal. Other PIDs
 remain observed-only, and non-helper Active-only rows are labelled as such.
 This ordinary-participation freezer does not require scripted P01 to emit a
 foreground marker. No new runtime, no old outcome rewrite, no exhaustive claims.
+
+### mm28 current producer accepted, no world yet
+One necessary Unit owning refresh completed 29.59 s (45 warnings, 0 errors),
+restoring current Main/Bridge/Support copies while exact accepted Integration8
+and producer723 byte/mode rows stayed unchanged. Independent owning `5799817a`.
+Three standard no-build/no-restore guarded publishes then completed normally,
+zero overlays; independent producer `5f7f8f78` / published `60a491be` verifies all
+746 artifacts and exact239/244/249 full rows/modes. Current32,074 sources,723bins,
+assets14/tools6/Unit8 close exactly. No tests repeated, no old world touched.
+Next clean mm28 preparation remains separately pinned and gated; live semantic
+and current-authority checks still required. Ordinary outcome must call the
+actual strict mixed freezer; scripted P01 trace has its own scoped review.
