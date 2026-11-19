@@ -858,7 +858,10 @@ def until(test,seconds,label):
         if time.monotonic()>deadline:raise TimeoutError(label)
         pump()
 def wait_daemon_consumer_returned():
-    if route['Route']=='storage-local-proof':return # no ordinary turn dispatched in this phase
+    if route['Route']=='storage-local-proof':
+        if 'ActualRequest' in result or type(result.get('GenuineActionsSent')) is not int or result['GenuineActionsSent']!=0:
+            raise RuntimeError('Unexpected turn in no-turn route; shutdown unqualified')
+        return # no ordinary request/action actually observed
     request=result.get('ActualRequest')
     if not request or daemon_return_cut is None:raise RuntimeError('Consumer return binding unavailable; no shutdown')
     status=json.loads(bytes.fromhex(result['DaemonSettlement']['OriginalStatusRawHex']).decode('utf-8-sig'))

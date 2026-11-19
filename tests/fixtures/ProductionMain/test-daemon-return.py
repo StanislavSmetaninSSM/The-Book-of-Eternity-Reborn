@@ -83,7 +83,11 @@ class ReturnedObservation(unittest.TestCase):
   with self.assertRaises(TimeoutError):wait_scope['wait_daemon_consumer_returned']()
   self.assertNotIn('DaemonConsumerReturned',state)
   wait_scope['route']={'Route':'storage-local-proof'}
-  wait_scope['wait_daemon_consumer_returned']() # no fictional turn required; no predicate/pump
+  with self.assertRaises(RuntimeError):wait_scope['wait_daemon_consumer_returned']() # unexpected current request
+  wait_scope['result']={'GenuineActionsSent':0}
+  wait_scope['wait_daemon_consumer_returned']() # genuine no-turn state, no predicate/pump
+  wait_scope['result']={'GenuineActionsSent':1}
+  with self.assertRaises(RuntimeError):wait_scope['wait_daemon_consumer_returned']()
 
 
 if __name__=='__main__':unittest.main()
