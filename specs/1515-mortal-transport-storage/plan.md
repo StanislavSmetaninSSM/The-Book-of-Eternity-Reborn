@@ -4690,3 +4690,11 @@ not reviewed as a complete implementation. Remaining: closing dependency drift,
 owner/reentrancy/raw-strict controls and parse retained NPC DATA once per scoped
 invocation rather than per actor. New controls have no category owner yet; add it
 before build/execution. Stable genuine consumer regression is unchanged.
+
+
+### T032 purpose implementation WIP (unbuilt/unrun)
+Explicit ordinary console Mortal pre-send now retains typed participation and vetoes missing-generation bootstrap under the existing admitted lease. Non-Mortal, browser, Load/manual/default strict paths keep their old route. Two short existing pending-snapshot read invocations surround health without retaining a lease across health/UI: pre-health Missing plus all active markers and orphan-directory absence; then fresh All with invocation-only canonical DATA interpretation and closing exact map/index/NPC/soul bytes and marker/directory checks. Physical closing and owner-after-close failures propagate, never become permissive fallback. The new DATA purpose is separate from completed publication membership. Retired-original state remains a regression witness, not first-turn eligibility.
+
+Captured canonical NPC rows are parsed once per invocation and reused only inside that physical read lifetime; closing compares fresh bytes without parsing again. No global cache or authority transfer. New authored controls and selected existing owner/primary-failure/generation-veto controls are source-only, awaiting independent review and fresh official owning build. The stable combined consumer test is unchanged. No test outcome or performance speedup is claimed yet.
+
+Separate final gates remain: prose-only usable vehicle/private storage without canonical entity (historical RED 3e7f62a) and the independent Mortal audit. T032 or a later live grant/transfer/Load journey does not automatically close either criterion.

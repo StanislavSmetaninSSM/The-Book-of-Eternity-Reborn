@@ -2,6 +2,34 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-ordinary-pre-send-data",
+      "responsibility": "#1515 T032 explicit Mortal ordinary pre-send read purpose: initialized idle, active/orphan refusal, closing DATA and marker drift, generation loss, reentrancy and raw-response isolation; existing physical owner close controls.",
+      "excludes": "No live game, second GM action, browser/Load purpose grant or original authority fabrication.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/OrdinaryPreSendValidationTests.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.OrdinaryPreSend.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.OrdinaryPreSendValidationTests.*",
+            "BookOfEternityClient.Tests.PendingSnapshotValidationScopeTests.Scope_OuterOriginalAdmissionCannotClose",
+            "BookOfEternityClient.Tests.PendingSnapshotValidationScopeTests.Scope_FinalReadAndCloseFailurePreservePrimary",
+            "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ThrowingVetoPreservesGenerationAndClosesAdmission"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-retired-birth-pre-send",
       "responsibility": "#1515 T032 genuine combined publication and retired original followed by the actual ordinary pre-send consumer, preserving canonical carriers and complete logged issues.",
       "excludes": "No second GM action, live world, strict API relaxation or repeat of the old five combined selections.",

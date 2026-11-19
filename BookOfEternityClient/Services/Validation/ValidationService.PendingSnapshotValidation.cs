@@ -126,7 +126,7 @@ public partial class ValidationService
             issues = await validate();
             await CompareCompletedTreatmentItemsAsync(invocation, issues);
             if (idleRead is not null)
-                idleRead.RequireSame(CaptureOrdinaryCanonicalRead(invocation.Physical, ordinaryCanonical));
+                idleRead.RequireSame(CaptureOrdinaryCanonicalRead(invocation.Physical, ordinaryCanonical, interpret: false));
             invocation.RequireCurrent();
             invocation.Evidence.RequireSame(CapturePendingSnapshotEvidence(invocation.Physical));
             if (completedLocation is not null)

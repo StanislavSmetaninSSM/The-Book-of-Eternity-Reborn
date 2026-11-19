@@ -30,7 +30,7 @@ public partial class ValidationService
             ordinaryCanonical: true);
 
     private OrdinaryCanonicalRead CaptureOrdinaryCanonicalRead(
-        FileSystemManager.PendingSnapshotValidationReadScope physical, bool includeCanonical)
+        FileSystemManager.PendingSnapshotValidationReadScope physical, bool includeCanonical, bool interpret = true)
     {
         physical.RequireCurrent();
         var bytes = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
@@ -46,7 +46,7 @@ public partial class ValidationService
             foreach (var path in OrdinaryCanonicalDependencies)
                 bytes.Add(path, _fs.ReadFileBytesSync(physical.Lease!, path));
         physical.RequireCurrent();
-        return new(bytes, includeCanonical);
+        return new(bytes, includeCanonical, interpret);
     }
 
     private OrdinaryCanonicalRead? CurrentOrdinaryCanonicalRead()
@@ -71,15 +71,26 @@ public partial class ValidationService
         private readonly Dictionary<string, byte[]?> _bytes;
         private readonly HashSet<string> _locations = new(StringComparer.Ordinal);
         private readonly bool _canonical;
-        internal OrdinaryCanonicalRead(Dictionary<string, byte[]?> bytes, bool canonical)
+        private readonly Dictionary<(string Section, string Id), string> _actors = new();
+        internal OrdinaryCanonicalRead(Dictionary<string, byte[]?> bytes, bool canonical, bool interpret)
         {
             _bytes = bytes;
             _canonical = canonical;
-            if (!canonical) return;
+            if (!canonical || !interpret) return;
             var soul = bytes["game_state/meta/soul_state.json"]
                 ?? throw new InvalidDataException("Ordinary canonical validation requires soul state.");
             if (!RealmSemantics.IsMortalRealm(CanonicalStateNormalizer.TryReadStrictCurrentRealm(DecodePendingSnapshotText(soul))))
                 throw new InvalidDataException("Ordinary canonical validation is Mortal-only.");
+            if (bytes["game_state/npcs/npc_core.json"] is { } npc)
+            {
+                using var actors = JsonDocument.Parse(DecodePendingSnapshotText(npc));
+                foreach (var section in new[] { "NPCsInScene", "UpdateNPCs" })
+                    if (actors.RootElement.TryGetProperty(section, out var rows) && rows.ValueKind == JsonValueKind.Array)
+                        foreach (var actor in rows.EnumerateArray())
+                            if (TryReadCanonicalCurrentMortalActorId(actor, out var id) &&
+                                !ActorMaterializationContract.ValidateHistoricalMortalNpc(actor, section).Any(i => i.Severity == IssueSeverity.Error))
+                                _actors.TryAdd((section, id), actor.GetRawText());
+            }
             if (bytes[MortalLocationMaterializationContract.WorldMapPath] is not { } map) return;
             using var document = JsonDocument.Parse(DecodePendingSnapshotText(map));
             if (!HasExactCanonicalWorldMapRoot(document.RootElement, out var locations)) return;
@@ -89,12 +100,11 @@ public partial class ValidationService
         internal HashSet<string> CopyLocationIds() => new(_locations, StringComparer.Ordinal);
         internal bool ContainsActor(JsonElement actor, string section)
         {
-            if (!_canonical || !TryReadCanonicalCurrentMortalActorId(actor, out _) ||
-                ActorMaterializationContract.ValidateHistoricalMortalNpc(actor, section).Any(i => i.Severity == IssueSeverity.Error) ||
-                _bytes["game_state/npcs/npc_core.json"] is not { } npc) return false;
-            using var document = JsonDocument.Parse(DecodePendingSnapshotText(npc));
-            return document.RootElement.TryGetProperty(section, out var rows) && rows.ValueKind == JsonValueKind.Array &&
-                rows.EnumerateArray().Any(row => JsonValuesSemanticallyEqual(row.GetRawText(), actor.GetRawText()));
+            if (!_canonical || !TryReadCanonicalCurrentMortalActorId(actor, out var id) ||
+                !_actors.TryGetValue((section, id), out var original)) return false;
+            var current = actor.GetRawText();
+            return string.Equals(original, current, StringComparison.Ordinal) ||
+                JsonValuesSemanticallyEqual(original, current);
         }
         internal void RequireSame(OrdinaryCanonicalRead fresh)
         {
