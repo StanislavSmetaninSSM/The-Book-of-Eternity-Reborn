@@ -178,7 +178,7 @@ internal static partial class MainRunCrashScenarioDriver
         }
     }
     // Test utility invokes the actual host, never wraps/replaces its session/owner.
-    private sealed class FixtureHost
+    internal sealed class FixtureHost
     {
         private readonly Type _type;
         private readonly object _host;

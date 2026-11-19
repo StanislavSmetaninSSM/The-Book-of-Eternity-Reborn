@@ -364,8 +364,14 @@
         "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MortalLivingWorldJourney.cs"
       ],
       "related": [
-        { "id": "mortal-author-debug-contract", "when": "Authored reasoning schema changes" },
-        { "id": "mortal-retained-carrier-contract", "when": "Historical carrier interpretation changes" }
+        {
+          "id": "mortal-author-debug-contract",
+          "when": "Authored reasoning schema changes"
+        },
+        {
+          "id": "mortal-retained-carrier-contract",
+          "when": "Historical carrier interpretation changes"
+        }
       ],
       "requirements": {
         "frontendBuild": false,
@@ -59392,6 +59398,40 @@
           "tests": [
             "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualDefaultPromptUsesOwnedClientConsole",
             "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ScreenProjectionRefusesUnsupportedOrIncompleteTerminalState"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "manual-save-active-main",
+      "responsibility": "#1515 actual ordinary console Save under genuine active native hosted main with no ambient grant; direct unadmitted API refusal and original cleanup.",
+      "excludes": "No live GM/world, no Load/transfer, no weakening of global Save/main fences.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ManualSaveActiveMain.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-engine-save-presentation",
+          "when": "Manual Save result presentation/continuation changes"
+        },
+        {
+          "id": "gm-main-review-closing-linux",
+          "when": "Original participation/closing interpretation changes"
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ManualSave_ActiveHostedMainWithoutAmbientGrantPublishesAndCloses"
           ]
         }
       ]

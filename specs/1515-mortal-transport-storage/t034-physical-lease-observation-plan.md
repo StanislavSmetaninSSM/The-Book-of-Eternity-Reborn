@@ -929,3 +929,12 @@ service DATA only. No new cache, registry, worker or repeated discovery; owner,
 generation, acquisition and closing checks stay fresh and cannot be cached.
 No performance improvement is claimed; native setup/test elapsed is measured
 separately. Test/source preparation remains UNRUN pending design/source gates.
+
+Test-first WIP: one `manual-save-active-main` Integration case now authors the
+actual neutral-host/menu boundary and direct default-admission refusal. It uses
+the existing host wrapper with only test accessibility changed, the existing
+guarded child dispatcher, typed shared runtime/turn43 and exact Running bytes.
+The child freezes the menu exception and completes original normal cleanup
+before the outer positive assertion, so expected RED is not a killed owner.
+Production Options/SaveLoad/MainFence remain byte-unchanged. All new source is
+UNBUILT/UNRUN pending independent source/command review.
