@@ -1423,3 +1423,17 @@ record or bridge status; original config evidence retained outside play. Source3
 plus eight owning outputs stayed exact. This is closed fixture configuration, NOT
 UI rebinding, hosted start, authority recovery or hosted A→B Load. Future hosting
 requires separate current package/command/owner admission; no old unknown world used.
+
+### Fresh hosted owner after cold Load: test-first fixture admission
+Design e9948f08 independently approved, fixture source only. Existing driver cannot
+honestly admit restored43 as setup41 or a hosted predecessor; add explicit closed
+cold-loaded-save43-fresh-host evidence, expected44, previous=None, ordinary-save.
+Read-only accepted cold+rebind/ZIP/current DATA join, genuine new root/generation
+owner and daemon required; archived passive status is not authority. Keep existing
+client/bridge/daemon/consumer-return/Save/shutdown code. No data import, old owner
+copy, production change or false hosted A→B. Existing socket guard requires shorter
+fresh root/rt, not recovered-live/tmp; exact driver/child environment must agree.
+Initial three tests are UNRUN: exact opt-in current closed evidence admission,
+temporary pending namespace negatives and fresh-owner identity predicate. Future
+live also requires novel author-packet full-engine dry format proof; no GM decision,
+finished inspection, vote or grant is predetermined by that dry sample.
