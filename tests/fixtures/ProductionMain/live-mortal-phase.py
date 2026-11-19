@@ -1269,11 +1269,11 @@ def storage_local_route():
     load_cut=finite_select(console_routes.entry_menu(load_menu,load_clear=True),load_label,cut,15,commit=False)[0]
     if archive.read_bytes()!=archive_bytes:raise RuntimeError('Original Save archive changed before Load')
     continuity['LoadActionUtc']=datetime.datetime.now(datetime.timezone.utc).isoformat()
-    result['LoadActionCut']=load_cut
     original=None;original_record=None # An unconfirmed replacement is not permission to stop A or adopt status B.
     from fullroute_inputs import retained_selection
     load_proof={'raw':bytes(client.capture),'menu':console_routes.entry_menu(load_menu,load_clear=True),'selected':load_label}
-    client.send(b'\r','one actual Load of original unique archive',lambda:current_client_load_profile()==load_menu['profile'] and retained_selection(bytes(client.capture),load_proof)==load_label)
+    load_cut=client.send(b'\r','one actual Load of original unique archive',lambda:current_client_load_profile()==load_menu['profile'] and retained_selection(bytes(client.capture),load_proof)==load_label)
+    result['LoadActionCut']=load_cut
     until(lambda:b'boe-load-session-completed' in bytes(client.capture[load_cut:]),30,'actual completed Load observation')
     fresh_player(client,load_cut,15);client_prompt=True
     installed=read_json(record_path)

@@ -206,6 +206,21 @@ class RouteTests(unittest.TestCase):
             namespace={'client':FreshPeer(),'inventory_context':context,'cut':1}
             exec(compile(ast.Module(body=[call,update],type_ignores=[]),'actual storage command cut','exec'),namespace)
             self.assertEqual(namespace['cut'],len(capture));self.assertEqual(context['cut'],len(capture));self.assertTrue(context['send_confirmed'])
+        load=next(n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name=='storage_local_route')
+        call=next(n for n in load.body if isinstance(n,ast.Assign) and isinstance(n.value,ast.Call) and len(n.value.args)>1 and isinstance(n.value.args[1],ast.Constant) and n.value.args[1].value=='one actual Load of original unique archive')
+        update=load.body[load.body.index(call)+1]
+        capture=bytearray(b'old');result={}
+        class LoadPeer:
+            def send(self,*args):
+                if scope['original'] is not None or scope['original_record'] is not None:raise AssertionError('Old owner remains adopted')
+                capture.extend(b'late old selection drained');return len(capture)
+        scope={'client':LoadPeer(),'original':None,'original_record':None,'result':result}
+        exec(compile(ast.Module(body=[call,update],type_ignores=[]),'actual Load action cut','exec'),scope)
+        self.assertEqual(scope['load_cut'],len(capture));self.assertEqual(result['LoadActionCut'],len(capture))
+        def uncertain(*args):raise OSError('uncertain Load write')
+        scope['client'].send=uncertain;scope['result']={}
+        with self.assertRaises(OSError):exec(compile(ast.Module(body=[call,update],type_ignores=[]),'actual Load uncertainty','exec'),scope)
+        self.assertEqual(scope['result'],{});self.assertIsNone(scope['original'])
     def test_actual_finally_inventory_cleanup_precedes_normal_exit_and_no_ctrlc(self):
         tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
         cleanup=next(n for n in ast.walk(tree) if isinstance(n,ast.If) and ast.unparse(n.test)=='inventory_cleanup_required and (not client_prompt)')

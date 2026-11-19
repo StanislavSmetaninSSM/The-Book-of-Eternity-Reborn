@@ -244,3 +244,20 @@ seven acquisition boundaries and cleanup-error preservation without real process
 No caching applies to one-shot acquisition/rollback; current package checks remain
 fresh. Main-wire runtime remains blocked, endpoint fidelity is only a separate
 SOURCE/DATA proposal, and live transport remains unqualified.
+
+## Final caller source closure for new mm21 (SOURCE only)
+
+Inert main-wire outcome94b37f56 was independently accepted: actual main/player/
+Options/Exit, original16closed receipts and exact owner shutdown/clean terminal.
+This is not live GM or Load commit. Constructor DATA7 passed0.566s and storage
+post-drain AST28 passed0.712s. Final source review found only Load Enter cut:
+now capture Terminal.send returned post-drain cut and record LoadActionCut only
+after confirmed write, keeping original/record=None before attempt. Actual AST
+subcase injects pre-write drained bytes and uncertain write; source remains UNRUN
+until saved/reviewed. No geometry/owner framework or runtime guard changes.
+
+mm21 preparation scripts are external SOURCE drafts. Immutable published239/244/
+249 packages join723producer+8Unitoutputs from current39.66s build, with explicit
+native/EventLog joins; no failed world copied. Expected costs0build/0publish and
+one fresh seed export only after independent preparation GO. Actual full source/
+mode/dependency inventories remain freshness gates, not cached authority.
