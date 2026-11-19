@@ -347,3 +347,11 @@ metadata/outcome/helper-publish evidence hashes are checked before and after.
 Full destination package equality still includes private-mode normalization only.
 Pure1 adds props/arbitraryPython/resource refusal controls; SOURCE/GREEN pending.
 No world preparation or producer mutation has occurred.
+
+Independent CurrentProducer GREEN accepted:one selected method PASS0.006s,
+positive+all11negative subcases, no skips; all32067source/8outputs and six evidence
+hashes exact. No closed28/native repetition. Next is only read-only final mm24
+input/readiness assembly using accepted fresh producer239/244/249, current
+admission/profile sources, zero overlays and separate native provenance. Actual
+setup-only export/profile creation requires independent integrated source/input
+gate; launch and response publication remain later explicit gates.
