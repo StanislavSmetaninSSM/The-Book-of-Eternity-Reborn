@@ -221,6 +221,11 @@ internal static partial class MainOperationScenarioDriver
                 if(mode.EndsWith("reply-loss",StringComparison.Ordinal))type.GetField("BeforeMainCloseReply",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,(Func<MainOperationClose,Task>)(_=>throw new IOException("Controlled helper close reply loss.")));
                 var start=new System.Diagnostics.ProcessStartInfo("pwsh"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true,RedirectStandardInput=true};
                 foreach(var arg in new[]{"-NoProfile","-NonInteractive","-File",Path.Combine(repo,"tests/fixtures/GmMainOperation/live.ps1"),"-RepoRoot",repo,"-SessionPath",launch.Scratch,"-Scenario",mode})start.ArgumentList.Add(arg);
+                if(declaredSnapshot) {
+                    var physicalNonce=Guid.NewGuid().ToString("N");
+                    start.Environment[GmSessionRunCoordinator.StopDiagnosticNonceVariable]=physicalNonce;
+                    result["PhysicalObservationNonce"]=physicalNonce;
+                }
                 using var child=System.Diagnostics.Process.Start(start)!;var errors=child.StandardError.ReadToEndAsync();Task? stopping=null;string output;
                 try {
                     if(mode.EndsWith("stopping",StringComparison.Ordinal)) {
@@ -234,6 +239,7 @@ internal static partial class MainOperationScenarioDriver
                 } finally {if(!child.HasExited){child.Kill();await child.WaitForExitAsync();}}
                 if(child.ExitCode!=0)throw new InvalidOperationException("Actual controlled helper failed: "+await errors);
                 if(stopping!=null)await stopping.WaitAsync(TimeSpan.FromSeconds(3));result["HelperOutput"]=output;
+                if(declaredSnapshot) result["HelperStderr"]=await errors;
                 if(mode.EndsWith("caught-loss",StringComparison.Ordinal)) {
                     for(var i=0;i<200 && !owner.IsUncertain;i++)await Task.Delay(5);
                     if(!owner.IsUncertain || !owner.RetainsAuthority)throw new InvalidOperationException("Pre-receipt loss did not retain original Unresolved owner.");
