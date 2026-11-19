@@ -4915,3 +4915,20 @@ global replacement. All live consumers remain on the admitted wrapper. Existing
 single causal renderer after independent source review. Reuse is per decode call,
 with no new cache, validator injection or configurable production width; no game,
 world change or full-route qualification is claimed.
+
+T034 actual geometry diagnosis: 20 maintained parser methods and three inert
+controls passed; fresh Unit build 41.036s (70 warnings, zero errors), official
+single renderer failed in 23.440s. The original PTY readback is 25x100 but redirected
+stdout makes actual Console and Spectre report 24x80. Captured Load78 genuinely
+wraps the `99999KB` suffix to another row. Inventory Back was observed and entered;
+no Load selection key was sent. This is a supported-shape refusal/timeout, NOT the
+intended post-EOF guard76 RED. The owned child was killed/joined/drained by existing
+inert cleanup; guardian ECHILD=true, driverExit=1, no emergency/deadline/failures and
+official cleanup complete. Normal child exit and termios restoration were not
+proved. All 32026 source and eight output hashes remained unchanged. External
+outcome SHA 3f6204299842df6a8fe707de9d12009cbfb5557581c048add98b085a2c962e17.
+Next proposal is existing same-PTY stdin/stdout/stderr at fixed100, measured through
+Console/Spectre and ioctl, with wrong-width80 refusal control. This is not yet
+implemented or qualified; full exact route and live profile remain gated. No game,
+world mutation or retry occurred; mm20 stays failed/non-predecessor with daemon
+error1 retained separately.
