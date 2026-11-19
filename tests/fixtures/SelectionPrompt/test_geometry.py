@@ -1,5 +1,7 @@
 """T034 inert descriptor controls using the maintained raw-frame grammar."""
 import unittest
+import pathlib, sys
+sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'ProductionMain'))
 from smoke import inert_geometry_selected, inert_initial_pty_cut, inert_wrapped_load, noecho_baseline, require_noecho, measured_load_profile
 ROWS=('s | Ход 43 | Хозяйственный двор у нижней лестницы | 18.11.2026 18:00 | 99999KB','↩️ Назад')
 MENU={'header':'Выберите сохранение:','choices':ROWS,'page_size':15}
