@@ -1343,3 +1343,24 @@ exact ZIP, all source/tools/terminal deps and quarantined play before/after; cop
 only runtime, ZIP and muted bootstrap config to absent mm29-cold destination.
 No seed/game files copied, no bridge/daemon, no new hosted claim. Its exact source,
 input/env/argv and private output admission await independent runtime gate.
+
+### Cold Load actual commit; observer/normal-exit FAILED
+Independent outcomea5fc3a40a293d37ccba53667e9a6c0b1aa05e4d23b8f0eccf24a635e51e27d60
+verifies367 frozen files. Original40186 selected exact manual Save43 name/SHA and
+actual ordinary main-menu Load committed:13 scoped state files+story exactly
+match ZIP, config semantically matches, history absent, no owner/bridge endpoint/
+dispatch/pending request. Old quarantined mm28 play820 stayed byte/mode identical.
+This proves cold restoration only, not hosted A→B or successful complete route.
+
+Actual raw11581 equals acknowledged emulator WRITEs. Atcut6989 the exact Spectre
+close is followed directly by `Сохранение загружено.\r\n`, then clear7066 and real
+fresh43 player prompt atcursor(4,24). Authored helper wrongly required a leading
+newline; source did not emit one. Independent in-memory framing comparison makes
+that exact whole transition pass, without ignoring warnings or diagnostics.
+No production Load defect identified. No later key was sent: observer timed out
+45.045s, abnormal child143/sidecar-15; sidecar joined/EOF and guardian ECHILD driver1
+prove containment, not normal exit. Wrapper guardian exit0 was inspected against
+actual probe and never reported as PASS; its future success gate must also require
+actual guardian driver0/probe success/child0/normal closure. New cold root is held;
+no rebind/hosting/retry. Any correction requires exact frozen DATA regression and
+separate one-run admission, not replaying this root. No raw evidence published.
