@@ -1,5 +1,19 @@
 # Main-wire declared endpoint fidelity (SOURCE proposal; no execution)
 
+## Current verification status (Stage A complete, Stage B UNRUN)
+
+Fresh owning Unit/TestSupport build succeeded: 39.66s, 70 warnings, 0 errors.
+Official PlanOnly selected exactly five DATA cases (6.4687917s); official execution
+passed 5/5, no failures/skips, 9.5580504s total (84ms test duration), owned-tree
+cleanup complete. All 32,053 source records match before/built/after; eight owning
+DLL/PDB output pins match built/after and all five reviewed source pins match.
+External outcome SHA256: 00e4319beda646619b2a3bbfc6c9223d7fea5d308e0110e8917fde7bd3b263e8.
+Independent outcome review is pending. Stage B actual main-wire remains UNRUN;
+no connector, socket/FIFO or native owner was exercised by these pure DATA cases.
+The SOURCE-only/UNRUN paragraphs below describe their earlier checkpoint, not
+this completed Stage A. No compiler source changed for this status update.
+
+
 ## Facts
 
 The failed run's retained gm_bridge_status.json SHA
