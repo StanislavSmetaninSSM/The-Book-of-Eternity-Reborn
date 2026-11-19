@@ -264,3 +264,10 @@ No game/world/export is included. Live external route inheritance is a separate
 read-only source mapping now: every relevant process must use an admitted owned
 marker matching its actual nonce; default-disabled silence is not coverage proof.
 No already accepted local/native/UI test is repeated for package-only preparation.
+
+Producer admission review corrections: compare full published hash+mode rows to
+current bin+three extra asset rows, without chmod/repair, and reassert the
+original reviewed input-manifest hash at every closing check. Still UNRUN.
+Live trace design uses actual canonical base/play, not merely game_session;
+pinned profile values must match launch environment/marker, and failed partial
+assets remain retained/refused rather than repaired or reused.

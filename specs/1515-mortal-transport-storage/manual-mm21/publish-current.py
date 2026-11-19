@@ -23,10 +23,11 @@ def tree(root,source=False):
     return result
 
 def main():
-    manifest=safe(P(sys.argv[1]));assert h(manifest)==os.environ['MM_REVIEWED_PUBLISH_INPUT_SHA256']
+    manifest=safe(P(sys.argv[1]));input_hash=os.environ['MM_REVIEWED_PUBLISH_INPUT_SHA256'];assert h(manifest)==input_hash
     b=json.loads(manifest.read_text());r=safe(P(b['repo']));out=safe(P(b['destination']))
     assert not os.path.lexists(out) and out.parent.is_dir()
     def inputs():
+        assert h(manifest)==input_hash
         assert tree(r,True)==b['sourceRows']
         for name,rows in b['bins'].items():assert tree(r/name/'bin/Debug/net8.0')==rows
         for f,row in b['assets'].items():
@@ -48,11 +49,11 @@ def main():
         argv=[b['tools']['dotnet']['path'],'publish',str(r/name/(name+'.csproj')),'--no-build','--no-restore','-m:1','-c','Debug','-o',str(destination),'-p:BoeNativePackageDirectory='+str(native),'-p:BoeRequireNativePackage=true']
         result=prep.run_owned(argv,r,out/'logs','publish-'+name,guardian,50)
         assert result['exitCode']==0 and result['settled'] and result['stdoutEof'] and result['stderrEof'],result
-        actual=tree(destination);expected={k:v['sha256'] for k,v in rows.items()}
-        for rel,source in b['publishExtras'].items():assert rel not in expected;expected[rel]=b['assets'][source]['sha256']
-        assert {k:v['sha256'] for k,v in actual.items()}==expected
+        actual=tree(destination);expected=dict(rows)
+        for rel,source in b['publishExtras'].items():assert rel not in expected;expected[rel]=b['assets'][source]
+        assert actual==expected
         results[name]={'process':result,'files':actual}
         inputs() # Publish must not rebuild/alter any admitted source/bin/asset.
-    (out/'published.json').write_text(json.dumps({'sourceCommit':b['sourceCommit'],'inputSHA256':h(manifest),'zeroOverlays':True,'packages':results},indent=2)+'\n')
+    (out/'published.json').write_text(json.dumps({'sourceCommit':b['sourceCommit'],'inputSHA256':input_hash,'zeroOverlays':True,'packages':results},indent=2)+'\n')
 
 if __name__=='__main__':main()
