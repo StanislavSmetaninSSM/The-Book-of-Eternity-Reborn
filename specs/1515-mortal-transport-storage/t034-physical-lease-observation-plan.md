@@ -1104,3 +1104,10 @@ classification rejects unknown/foreign/partial rows, with physical occurrence
 triples still a separate required proof. SelectionPrompt stays strict physical-
 only because its local isolated route does not open a hosted main operation.
 No current GREEN or new package/live claim; exact source review precedes tests.
+
+The new mixed artifact parser is currently test-wired only, not a live freezer
+caller. Every subsequent live preparation is blocked until its outcome freezer
+actually invokes this strict classifier on every event file, separately counts
+both families and retains unchanged physical triple proofs. It must not ignore
+unrecognised files. Historical frozen evidence is not rewritten. Identity DATA
+uses exact JSON types, not Python numeric/boolean coercion.

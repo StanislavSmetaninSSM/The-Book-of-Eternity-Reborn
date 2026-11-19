@@ -463,6 +463,9 @@ class MixedTrace(unittest.TestCase):
             with self.assertRaises(ValueError):call(kind,base,data=duplicate)
             row=copy.deepcopy(base);row['OriginalPin']['Identity']['RunId']='0'*32
             with self.assertRaises(ValueError):call(kind,row)
+        for key,value in (('Backend',2.0),('Epoch',True)):
+            row=copy.deepcopy(marker);row['OriginalPin']['Identity'][key]=value
+            with self.assertRaises(ValueError):call('marker',row)
         row=copy.deepcopy(marker);row['OriginalPin']['State']=0
         with self.assertRaises(ValueError):call('marker',row)
 

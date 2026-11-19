@@ -35,7 +35,12 @@ def parse_observed_diagnostic_trace_row(filename, raw, nonce, root, pids, owner)
     stamp=row['CapturedAtUtc' if kind=='physical' else 'ObservedAtUtc']
     require(type(stamp) is str and re.fullmatch(r'\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,7})?(?:Z|\+00:00)',stamp) is not None)
     def tuple_fields(value):
-        require(type(value) is dict and value.get('Identity')==owner)
+        require(type(value) is dict)
+        identity=value.get('Identity')
+        require(type(identity) is dict and set(identity)=={'RootKey','RunId','GenerationId','Epoch','Backend','HostInstanceId','BootId'})
+        require(type(identity['Epoch']) is int and identity['Epoch']>0 and type(identity['Backend']) is int)
+        require(all(type(identity[key]) is str for key in ('RootKey','RunId','GenerationId','HostInstanceId','BootId')))
+        require(identity==owner)
         for key in ('PinId','CloseId','OperationId'):
             require(type(value.get(key)) is str and re.fullmatch('[0-9a-f]{32}',value[key]) is not None)
     pin=row['OriginalPin']
