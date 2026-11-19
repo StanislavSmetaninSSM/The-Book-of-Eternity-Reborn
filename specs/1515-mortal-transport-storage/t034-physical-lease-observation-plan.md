@@ -944,3 +944,13 @@ the new fixture AudioService lifetime (IAsyncDisposable requires await using).
 Reported56.65s/165 warnings/one error; no native child/test, not causal RED.
 The exact test-only lifetime correction is WIP; production remains unchanged.
 Failed evidence is retained separately, with no blind runtime retry.
+
+Corrected manual-Save causal RED independently accepted (9e65b17e): owning
+build 59.95s, 139 warnings/zero errors; official exact one menu test fails only
+at the positive Save assertion. Actual active original, direct unadmitted Save
+refusal, protected bytes and normal original Stopped/OwnedScopeEmpty cleanup
+all pass. The real menu reaches MainFence178 via CreateSave255/Options1221,
+creates no archive, and retains the admission failure. All 44 evidence hashes
+and built/closing pins join. This is distinct from the earlier compile-only
+failure. Next correction is only post-input Options Save participation, with
+established outcome and replacement precedence retained; no failed world reuse.
