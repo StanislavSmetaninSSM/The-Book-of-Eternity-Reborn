@@ -4446,3 +4446,14 @@ retirement and the required live Mortal journey remain separate. No mm18 retry o
 historical uncertainty reclassification. Raw retained outside Git in
 mortal-t030/green-official. Source/output final joins and independent outcome
 review are being checked before fresh-world preparation.
+
+T030 independently accepted within the stated fixture boundary. Reviewer joined
+TRX, inner28/23/20 results, injected-error retention, exact real input/prompt and
+all renderer/guardian/wrapper settlements. Before/build/after32014 source and
+eight outputs match, including reviewed corrected pins. The unknown-state guard
+and source-specific inventory return are qualified; genuine game participation
+settlement is still a future live result, not inferred from the inert child.
+No further passing suites are needed. Next: current TestSupport-only serial
+publish into an empty destination, immutable runtime/helper provenance recheck,
+then one entirely fresh seed/world and original relay launch with independent
+prelaunch review. Do not copy accepted state or revive any mm18/mm16 owner.
