@@ -36,7 +36,7 @@ class ClosedRebindData(unittest.TestCase):
             phase=root/'recovered-live';gate(root,phase,guardian,probe)
             for badg,badp in [(dict(guardian,driverExitCode=1),probe),(guardian,dict(probe,EOF=False))]:
                 with self.assertRaises(ValueError):gate(root,phase,badg,badp)
-            for rel in ['.boe_runtime/gm-runs/main.json','game_session/game_state/control/gm_bridge_status.json','game_session/input/turn_request.json']:
+            for rel in ['.boe_runtime/gm-runs/main.json','game_session/game_state/control/gm_bridge_status.json','game_session/input/turn_request.json','game_session/game_state/control/pending_turn_snapshot.json','game_session/game_state/control/pending_turn_snapshot.authority.json','game_session/game_state/control/validation_repair_request.json']:
                 x=root/'play'/rel;x.parent.mkdir(parents=True,exist_ok=True);x.write_text('{}')
                 with self.assertRaises(ValueError):gate(root,phase,guardian,probe)
                 x.unlink()
