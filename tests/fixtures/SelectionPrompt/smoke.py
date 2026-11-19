@@ -133,6 +133,26 @@ def inert_geometry_selected(raw, cut, menu):
     frames=routes.decode_menu_frames(raw,cut,descriptor,menu)
     return frames[-1] if frames else None
 
+def inert_initial_pty_cut(raw, keyboard):
+    """Only the observed startup keyboard-mode pair, at byte zero."""
+    prefix=b'\x1b[?1h\x1b='
+    if not raw.startswith(prefix) or keyboard!={'cursor':True,'keypad':True}:return None
+    return len(prefix)
+
+def inert_wrapped_load(raw, cut, menu):
+    """Exact negative raw artifact, not a render decoder or input authorization."""
+    try:text=raw[cut:].decode('utf-8')
+    except UnicodeError:return False
+    row,back=menu['choices']
+    if not row.endswith('99999KB') or menu.get('previous_height')!=3 or menu.get('load_clear') is not True:return False
+    nl=r'\r?\n'
+    close='\r'+('\x1b[2K\x1b[1A'*3)+'\x1b[2K\x1b[?25h'
+    clear='\x1b[2J\x1b[3J\x1b[1;1H'
+    prefix=re.escape(close+clear)+r'[^\x1b\r\n]*📂 Загрузка игры[^\x1b\r\n]*'+nl+nl+re.escape('\x1b[?25l')
+    body=(r'Выберите сохранение: *'+nl+r'(?: *'+nl+r')*> '+re.escape(row[:-7])+r' *'+nl+
+          r'99999KB *'+nl+r'  '+re.escape(back)+r' *')
+    return re.fullmatch(prefix+body+r'(?:'+re.escape('\r\x1b[4A')+body+r')*',text) is not None
+
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
     assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load','pipe-inventory-cleanup','pipe-load-geometry','pty-load-100','pty-load-80')
@@ -243,31 +263,29 @@ def main():
                 if same_pty or streams[fd]=='captured':
                     captured.extend(data);screen.feed(data)
                 else:control.feed(data)
-            if geometry and (root/'geometry.json').exists():
-                measured=json.loads((root/'geometry.json').read_text())
-                result['ActualGeometry']=measured
-                if same_pty:
-                    expected_width=80 if wrong_width else 100
-                    assert measured['ConsoleWidth']==measured['SpectreWidth']==result['PtySizeReadback'][1]==expected_width
-                    assert not measured['InputRedirected'] and not measured['OutputRedirected']
-            if wrong_width and stage==2:
-                # Exact observed 80-column wrapping from the prior renderer, not
-                # absence of a valid frame or a timeout classified as success.
-                tail=screen.plain[frame_cut:].replace('\r\n','\n')
-                pattern=(r'Выберите сохранение: *\n(?: *\n)*> '+
-                         re.escape(load_menu['choices'][0][:-7])+r' *\n99999KB *\n  '+
-                         re.escape(load_menu['choices'][1])+r' *')
-                at=tail.rfind('Выберите сохранение:')
-                if at>=0 and re.fullmatch(pattern,tail[at:]) and not screen.pending and not screen.decoder.getstate()[0]:
-                    assert result['Inputs']==[{'Key':'Down','Hex':result['Inputs'][0]['Hex']},'Enter']
-                    result['ExpectedWrappedRefusal']=True
-                    result['WrappedRawHex']=bytes(captured[raw_cut:]).hex()
-                    result['NormalExitQualified']=False
-                    break
+            if same_pty and geometry and stage==0:
+                initial_cut=inert_initial_pty_cut(bytes(captured),screen.keyboard)
+                if initial_cut is None:continue
+                raw_cut=initial_cut
+            if wrong_width and stage==2 and inert_wrapped_load(bytes(captured),raw_cut,menu):
+                assert len(result['Inputs'])==2 and result['Inputs'][1]=='Enter'
+                result['ExpectedWrappedRefusal']=True
+                result['WrappedRawHex']=bytes(captured[raw_cut:]).hex()
+                result['NormalExitQualified']=False
+                break
             ready=lambda choice: (inert_geometry_selected(bytes(captured),raw_cut,menu)==(first_label if choice=='SMOKE_ALPHA' else footer)) if geometry and stage>=2 else (selected_frame(bytes(captured),raw_cut,menu) ==
                 (first_label if choice=='SMOKE_ALPHA' else footer)) if fixed_render else (
                 screen.selected(choice) if same_pty else screen.frame(choice,frame_cut))
             if stage==0 and ready('SMOKE_ALPHA'):
+                if geometry:
+                    # The completed initial prompt follows the synchronous geometry
+                    # write, so no partially-written file can be observed here.
+                    measured=json.loads((root/'geometry.json').read_text())
+                    result['ActualGeometry']=measured
+                    if same_pty:
+                        expected_width=80 if wrong_width else 100
+                        assert measured['ConsoleWidth']==measured['SpectreWidth']==result['PtySizeReadback'][1]==expected_width
+                        assert not measured['InputRedirected'] and not measured['OutputRedirected']
                 if fixed_render:
                     actual=bytes(captured[raw_cut:])
                     assert not actual.endswith(b'\r') and actual.rstrip(b' ').endswith(footer.encode())

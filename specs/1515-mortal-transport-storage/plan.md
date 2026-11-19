@@ -4945,3 +4945,10 @@ unchanged; no run yet, full-route qualification remains open.
 ### T034 live GM decision boundary, 2026-11-19
 
 P01 preauthored birth with fresh identity/time binding is a scripted scenario and transport check, not independent live GM judgment. P02 grant form is conditional only: the acting GM must inspect the genuine fresh request and canonical circumstances, record a separate short decision/rationale before the answer, and choose grant or deny without forcing P03 coverage. An integrity mismatch or inadequate submission reserve means hold, not fictional denial. A deny or unsubmitted answer does not qualify grant or transfer/load. No cutoff extension, source-hash rebasing, or accepted-turn claim follows from prepared forms. Updated semantic design remains SOURCE pending focused independent review; no new world or live action was started.
+
+
+### T034 same-PTY SOURCE review correction
+
+Independent SOURCE review of 0e493e47 refused execution for three inert fixture defects: known startup keyboard-mode prefix rejected by the strict initial raw matcher, geometry JSON read before synchronous writer completion, and lossy plain-text wrong-width qualification that could hide trailing erase. The corrected inert-only source consumes only the exact byte-zero startup pair with matching observed keyboard mode, reads immutable geometry after a complete initial prompt, and uses anchored raw wrapped-frame grammar with partial/control-tail negatives. Production parsing, 76-column admission and live PIPE transport stay unchanged. Five DATA methods are authored, not yet run; renderer and full route remain UNRUN pending re-review.
+
+Separately, independent review accepted the saved P01 scripted/P02 genuine-live-decision clarification at 28611550 for preparation only. It did not qualify a binder, live judgment, publication or acceptance.
