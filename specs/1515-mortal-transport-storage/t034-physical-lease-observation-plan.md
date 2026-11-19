@@ -727,3 +727,42 @@ asserted inventory contract. This is neither full-state nor live acceptance.
 No world was changed, no failed world reused, no package published, and no
 further game run is authorized by this result. Existing operation DATA and
 comparison are reused; no new read/cache or measured speedup is claimed.
+
+### Next bounded block: coherent offline ordinary response, then fresh mm26
+
+SOURCE DESIGN ONLY; no producer/world/phase has been started. The exact proposed
+new destination /workspace/shared/mm26-20261119 is absent, including links.
+Historical mm25 and other failed worlds remain untouched and nonpredecessors.
+
+The accepted debug2 and carrier8 qualify the strict authored reasoning schema
+and one inventory predicate, not a complete response. Close that gap through one
+new case in the existing GameEngineTurnLifecycleTests combined Mortal birth
+fixture: retain its genuine accepted42 setup and dispatch one ordinary43 through
+actual ProcessPlayerTurn. Extend its existing callback by stage; do not clone the
+validator list, reseal authored snapshot authority, add a transport or use a
+failed world. The second request must carry a fresh usable original, current
+session/turn/schedule and unchanged historical steward. A deterministic offline
+defer response changes only journal, five elapsed minutes and normal outputs;
+its schema follows the corrected authored debug. It is test DATA, not the next
+live GM's decision. Require accepted43, appended story, no repair, retired
+request/original/ready markers, exact preserved NPC/access/item state and typed
+idle/pre-send completion. This exercises the real normalization, progression and
+accepted-turn validation pipeline. It does not qualify console Save, transfer,
+Load or live transport. Reuse existing cleanup/runtime/seed and independent
+per-test state; no new harness, cache, production or controller change.
+
+After independent source review, run only the new official bounded lifecycle
+selector with fresh owning Integration build and exact PlanOnly count. Existing
+passed debug/carrier groups need not repeat unless their premises change.
+After independently accepted dry evidence, freeze actual current source/build
+and full three bin inventories. Reuse the existing three guarded standard
+no-build/no-restore publisher, zero overlays, six tool hashes, native/EventLog
+provenance and closing hash/mode equality. The old producer is not presumed
+current after C# changes. No publish before its exact input admission review.
+Then the existing guarded seed41 export/exclusive P01 trace/profile preparation
+may create only the reviewed absent mm26. Actual package/cleanup and semantic
+prelaunch gates precede scripted P01. Accepted P01 must settle before a separate
+ordinary-save43 profile/request and fresh independent GM decision. Original
+600/660/680/720/750 budgets and one-shot reserve remain unchanged. A justified
+defer counts only if the ordinary turn is accepted and its normal Save succeeds;
+it is not a grant or a combined transfer/Load result.
