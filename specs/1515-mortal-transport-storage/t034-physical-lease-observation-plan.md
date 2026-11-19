@@ -1335,3 +1335,11 @@ provider-off/empty operational command, geometry readback and pre-Load check, an
 optional history presence/bytes. Extracted actual whole close→success→fresh-player
 predicate has one additional finite DATA method. Four-method rerun is pending
 review; no runtime or fresh-world preparation has occurred.
+Cold whole-transition DATA4 independently accepted edaee91e:4 PASS/0.017s and
+source32077/outputs8 unchanged. Prior9e014f1d is setup-only missing Python import,
+not a runtime failure; fixed only test path to match actual driver. Runtime/prep
+remains UNRUN. Proposed one-shot `run-cold-load.py` binds immutable producer239,
+exact ZIP, all source/tools/terminal deps and quarantined play before/after; copies
+only runtime, ZIP and muted bootstrap config to absent mm29-cold destination.
+No seed/game files copied, no bridge/daemon, no new hosted claim. Its exact source,
+input/env/argv and private output admission await independent runtime gate.

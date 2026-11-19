@@ -121,7 +121,7 @@ def main():
         if (pathlib.Path(base)/'.boe_runtime/gm-runs').exists():raise ValueError('Cold Load unexpectedly created main authority')
         for name in ('input/turn_request.json','ready/turn_complete.json','ready/turn_error.json','game_state/control/gm_bridge_status.json','game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json','game_state/control/pending_turn_snapshot','game_state/control/validation_repair_request.json'):
             if (session/name).exists() or (session/name).is_symlink():raise ValueError('Unexpected active cold runtime artifact: '+name)
-        (root/'loaded-proof.json').write_text(json.dumps({'ArchiveName':archive_name,'ArchiveSHA256':archive_sha,'ScopedPaths':protected,'ScopedSHA256':{n:hashlib.sha256((session/n).read_bytes()).hexdigest() for n in protected},'HostedReplacementClaimed':False,'ColdNoActiveSourceBoundary':True},indent=2)+'\n')
+        (root/'loaded-proof.json').write_text(json.dumps({'ArchiveName':archive_name,'ArchiveSHA256':archive_sha,'ScopedPaths':protected,'ScopedSHA256':{n:hashlib.sha256((session/n).read_bytes()).hexdigest() for n in protected},'History':{'Present':history in admitted['Members'],'SHA256':hashlib.sha256(admitted['Members'][history]).hexdigest() if history in admitted['Members'] else None},'HostedReplacementClaimed':False,'ColdNoActiveSourceBoundary':True},indent=2)+'\n')
         if not child_restored or not eof:raise ValueError('Child baseline/EOF not proved')
     except BaseException as error:failure=repr(error)
     finally:
