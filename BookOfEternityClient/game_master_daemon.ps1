@@ -5886,6 +5886,7 @@ function Process-QteEffectResolutionRequestCore {
 
     if ($script:IsProcessing) { return }
     $script:IsProcessing = $true
+    $primaryReadFailure = $null
 
     try {
         Start-Sleep -Milliseconds 150
@@ -5982,13 +5983,24 @@ function Process-QteEffectResolutionRequestCore {
         Write-Log "  QTE effect receipt wait reached the configured timeout; dedicated authority remains pending." -Level "WARN" -Color Yellow
     }
     catch {
-        Assert-GmNotDaemonReadFailure $_
+        if (Test-GmDaemonReadFailure $_) {
+            $primaryReadFailure = $_
+            throw
+        }
         $script:ErrorCount++
         Write-Log "  QTE effect receipt dispatch error: $_" -Level "ERROR" -Color Red
     }
     finally {
-        Write-DaemonStatus -Status "running" -Reason "qte_effect_resolution_processing_finished"
-        $script:IsProcessing = $false
+        try {
+            Write-DaemonStatus -Status "running" -Reason "qte_effect_resolution_processing_finished"
+        }
+        catch {
+            if ($null -eq $primaryReadFailure) { throw }
+            $primaryReadFailure.Exception.Data['DaemonFinalStatusFailure'] = $_
+        }
+        finally {
+            $script:IsProcessing = $false
+        }
     }
 }
 
@@ -6003,6 +6015,7 @@ function Process-TurnCore {
 
     if ($script:IsProcessing) { return }
     $script:IsProcessing = $true
+    $primaryReadFailure = $null
 
     try {
         Start-Sleep -Milliseconds 300
@@ -6324,7 +6337,10 @@ function Process-TurnCore {
                 Write-Log "  Terminal error ($([math]::Round($duration, 1))s): $errorMessage" -Level "TURN" -Color Yellow
             }
             catch {
-        Assert-GmNotDaemonReadFailure $_
+        if (Test-GmDaemonReadFailure $_) {
+            $primaryReadFailure = $_
+            throw
+        }
                 Write-Log "  Terminal error ($([math]::Round($duration, 1))s): unreadable turn_error.json" -Level "TURN" -Color Yellow
             }
             if ([string]::IsNullOrWhiteSpace($missingHarnessTool)) {
@@ -6352,8 +6368,16 @@ function Process-TurnCore {
         Write-Log "  Error: $_" -Level "ERROR" -Color Red
     }
     finally {
-        Write-DaemonStatus -Status "running" -Reason "turn_processing_finished"
-        $script:IsProcessing = $false
+        try {
+            Write-DaemonStatus -Status "running" -Reason "turn_processing_finished"
+        }
+        catch {
+            if ($null -eq $primaryReadFailure) { throw }
+            $primaryReadFailure.Exception.Data['DaemonFinalStatusFailure'] = $_
+        }
+        finally {
+            $script:IsProcessing = $false
+        }
     }
 }
 

@@ -22,15 +22,16 @@ function Contains-ExactException($Actual,$Expected) {
 }
 function Write-Log {param($Message,$Level,$Color)}
 function Invoke-ControlledBody {if($script:bodyFailure){throw $script:bodyFailure}}
-function Write-DaemonStatus {param($Status,$Reason);$script:statusCalls++;if($script:statusFailure){throw $script:statusFailure}}
+function Write-DaemonStatus {param($Status,$Reason);$script:statusCalls++;$script:observedStatus=$Status;$script:observedReason=$Reason;if($script:statusFailure){throw $script:statusFailure}}
 $failures=@();$reports=@()
 foreach($body in @('success','read-refusal','ordinary')) {foreach($status in @('success','failure')) {
- $script:IsProcessing=$false;$script:ErrorCount=0;$script:statusCalls=0
+ $script:IsProcessing=$false;$script:ErrorCount=0;$script:statusCalls=0;$script:observedStatus=$null;$script:observedReason=$null
  $script:bodyFailure=if($body -eq 'read-refusal'){New-GmDaemonReadFailure 'controlled primary snapshot refusal' $null}elseif($body -eq 'ordinary'){[IO.IOException]::new('controlled ordinary body failure')}else{$null}
  $script:statusFailure=if($status -eq 'failure'){[IO.IOException]::new('controlled secondary status failure')}else{$null}
  $caught=$null;try{& $FunctionName -RequestPath 'controlled-unused'}catch{$caught=$_}
  $expectedPrimary=$body -eq 'read-refusal'
  $checks=[ordered]@{reset=(-not $script:IsProcessing);statusOnce=($script:statusCalls -eq 1);ordinaryBehavior=($script:ErrorCount -eq $(if($body -eq 'ordinary'){1}else{0}));primary=($expectedPrimary -eq [bool](Test-GmDaemonReadFailure $caught));surface=([bool]$caught -eq ($expectedPrimary -or $status -eq 'failure'))}
+ $checks.statusReason=($script:observedStatus -ceq 'running' -and $script:observedReason -ceq $(if($FunctionName -ceq 'Process-TurnCore'){'turn_processing_finished'}else{'qte_effect_resolution_processing_finished'}))
  if($expectedPrimary){$checks.primaryIdentity=Contains-ExactException $caught $script:bodyFailure}
  if(-not $expectedPrimary -and $status -eq 'failure'){$checks.statusIdentity=Contains-ExactException $caught $script:statusFailure}
  if($expectedPrimary -and $status -eq 'failure'){
