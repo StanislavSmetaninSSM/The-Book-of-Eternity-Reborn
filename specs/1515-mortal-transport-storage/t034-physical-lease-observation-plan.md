@@ -786,3 +786,19 @@ related entries because they were strings rather than required id/when objects.
 No fixture/turn ran, and this is setup-only, not a causal RED. Correct only those
 two catalog entries; reuse the exact successful build after closed source/output
 joins, then independently reviewed PlanOnly1/run1 in a fresh evidence directory.
+
+### Coherent offline ordinary43 pipeline: accepted dry result
+
+Independent fixture_premises review accepted the one actual engine case:
+PlanOnly1/run1 PASS, 17.949 s test / 28.173 s official runner, no skips/errors,
+timeout or duplicate test IDs, owned cleanup complete. All 90 external artifact
+hashes and current six source pins joined; built/after 32,071 source membership,
+eight Unit and eight Integration outputs are exact. The existing fixture accepted
+birth42, then an ordinary43 deterministic defer with real signed core/journal
+original, no due report, exact preserved inventory/access/history carrier,
+clock505, one new story row and retired markers/directory/typed idle/pre-send.
+No unexpected engine diagnostics were logged. This is complete bounded in-process
+response-path evidence, not live GM, console Save, transfer or Load evidence.
+The earlier catalog-only setup failure remains separate; no C# rebuild/repeat
+was needed after that correction. Next is the separate exact current producer
+input admission, then clean preparation; no package/world has yet been created.
