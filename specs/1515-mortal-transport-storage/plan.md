@@ -4573,3 +4573,23 @@ alias is refused upfront. Four new source-authored controls bring the cheap
 category to nine cases, including actual RunAsync refusal behavior. These are
 UNBUILT/UNRUN; no measured causal RED is claimed for source-review corrections.
 Independent re-review precedes fresh build/category and separate diagnostic gate.
+
+T031 corrected admission cheap verification: fresh Unit build exited0 in36.83s,
+70 warnings/0 errors. Official mortal-state-diagnostic-data PlanOnly selected
+nine cases; execution9/9 PASS,0 skips/duplicates/timeouts, runner9.829728s and
+owned cleanup complete. All32,016 source pins before/build/after and eight built
+output pins joined. Independent source re-review accepted the three corrections;
+outcome review is separate. Collection-failure fault injection remains unrun.
+No real diagnostic or live operation executed.
+
+Real-input admission then found a concrete config provenance mismatch: accepted
+p01 FinalConfigSHA256 ecfcbf6d73652d3aef49101da50dbed65afdaf3e73d29555fc88063d9aa00795
+is not current p02 config b0d26a40049ce817b3bbd8ced529dffc3277c5e8c0575a2fde916dda46853beb.
+The latter exactly joins failed p02 FinalConfigSHA256. The driver deliberately
+rewrites three operational settings at phase startup; p01 config bytes were not
+retained. Do not reconstruct them. The106 canonical DATA rows still join accepted
+p01 exactly. Independent recommendation: separate authenticated failed-phase
+config witness from accepted canonical DATA, retaining mixed provenance and no
+acceptance claim for p02. Add cheap positive/hash/probe-join controls before the
+real diagnostic. Current nine-case result proves the prior admission contract,
+not this as-yet-unimplemented correction or the original live refusal's cause.
