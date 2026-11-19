@@ -255,9 +255,9 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
             if not 0 <= next_index < len(menu['choices']):
                 raise ValueError('Unexpected navigation cycle')
             expected = menu['choices'][next_index]
-            boundary = len(captured)
             proof=selection_proof(bytes(captured),window_cut,window_menu,selected,screen)
             send(lambda: screen.arrow(up), 'Up' if up else 'Down', lambda: retained_selection(bytes(captured),proof)==selected)
+            boundary = len(captured)
             def transition():
                 fresh = routes.selected_frames(bytes(captured), boundary, menu)
                 return ordered_transition(fresh, selected, expected)
@@ -268,9 +268,9 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
             visited.add(selected)
             cut = boundary;window_cut=boundary;window_menu=menu
         if enter:
-            cut = len(captured)
             proof=selection_proof(bytes(captured),window_cut,window_menu,selected,screen)
             send(b'\r', 'Enter exact ' + target, lambda: retained_selection(bytes(captured),proof)==selected)
+            cut = len(captured)
             previous = menu
             previous_selected = target
         else:

@@ -193,3 +193,22 @@ before one Down, and uncertain Enter preserving original exception without
 publishing a new cut/previous. Planned initial RED is three new method failures
 with original17 unchanged; actual results remain UNRUN until source review.
 No raw terminal capture is committed and no source guard is relaxed.
+
+### Inert action-cut causal RED accepted; narrow correction SOURCE WIP
+
+Independent t022 review accepted pure20:17passing methods/3failed methods,
+68failure entries and0errors in0.458s (Enter66 padding continuations, arrow
+stale boundary, uncertain Enter premature state). All32065source/8output pins
+were unchanged. Immutable failed-raw DATA separately confirms cut11617 refuses
+while actual input cut11666 yields the two complete successor panels; no process
+or emulator was launched. The source-derived localcut remains distinguished
+from the directly recorded inputcut.
+
+Correction moves only BOTH inert choose boundary samples to after successful
+synchronous send. Actual callback still returns None; no API/parser/live-client
+change. A thrown uncertain send cannot publish cut/previous state. Existing
+final-drain predicate and original deadlines remain unchanged. Two trivial
+len(captured) reads require fresh mutable state, not a cache; no extra parsing or
+preparation is introduced. Source review and pure20 GREEN are pending; the
+external samePTY fullroute remains FAILED/unqualified until a separately gated
+single inert run. No new package/world or mm22/mm23 replay is admitted.
