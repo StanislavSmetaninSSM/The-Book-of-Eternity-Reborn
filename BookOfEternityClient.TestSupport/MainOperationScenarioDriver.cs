@@ -34,6 +34,16 @@ internal static partial class MainOperationScenarioDriver
                 if(File.Exists(Path.Combine(launch.Scratch,"game_state/control/gm_bridge_status.json")))throw new InvalidOperationException("Canonical status published before original admission.");
                 result["Success"]=true;return 0;
             }
+            var declaredSnapshot = mode=="terminal-main-operation-helper-snapshot-stopping";
+            var generationPath=Path.Combine(root,".boe_runtime/session-generation/current.json");
+            var recordPath=Path.Combine(root,".boe_runtime/gm-runs/main.json");
+            string? preparedGeneration=null;
+            if(declaredSnapshot) {
+                var preparedFiles=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);
+                await using(var lease=await preparedFiles.AcquireCanonicalWriteLeaseAsync())
+                    preparedFiles.GetOrCreateSessionGeneration(lease);
+                preparedGeneration=File.ReadAllText(generationPath);
+            }
             if(mode=="terminal-main-operation-shutdown") {
                 running=(Task<int>)type.GetMethod("RunAsync")!.Invoke(host,null)!;
                 for(var i=0;i<200 && type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host) is not GmSessionRunCoordinator {Record.Disposition:GmSessionRunDisposition.Running};i++)await Task.Delay(5);
@@ -93,15 +103,40 @@ internal static partial class MainOperationScenarioDriver
                 using var input=new StreamReader(request,Encoding.UTF8);using var response=JsonDocument.Parse((await input.ReadLineAsync(bounded.Token))!);return response.RootElement.Clone();
             }
             using var timeout=new CancellationTokenSource(TimeSpan.FromSeconds(3));
-            using var pipe=new NamedPipeClientStream(".",pipeName,PipeDirection.InOut,PipeOptions.Asynchronous);
-            await pipe.ConnectAsync(timeout.Token);
+            GmSessionRunIdentity? declaredIdentity=null;
+            async Task<Stream> OpenRetainedStreamAsync() {
+                if(declaredSnapshot) {
+                    var original=(IOwnedTerminalSession)type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+                    var recordBytes=File.ReadAllBytes(recordPath);
+                    var admission=new DeclaredBridgeFixtureAdmission(root,pipeName,original.Identity,preparedGeneration!,recordBytes);
+                    var status=admission.BeforeConnect(File.ReadAllText(Path.Combine(launch.Scratch,"game_state/control/gm_bridge_status.json")),
+                        File.ReadAllText(generationPath),File.ReadAllBytes(recordPath),original.RootExited.IsCompleted,original.AuthorityLost.IsCompleted);
+                    declaredIdentity=GmSessionRunRecordCodec.Decode(recordBytes).Identity;
+                    using var statusDocument=JsonDocument.Parse(status);
+                    var endpoint=BridgeTransportConnector.DecodeStatus(statusDocument.RootElement);
+                    result["DeclaredEndpoint"]=statusDocument.RootElement.Clone();
+                    result["DeclaredOriginalIdentity"]=declaredIdentity;
+                    return await BridgeTransportConnector.ConnectAsync(endpoint,timeout.Token);
+                }
+                var legacy=new NamedPipeClientStream(".",pipeName,PipeDirection.InOut,PipeOptions.Asynchronous);
+                try {await legacy.ConnectAsync(timeout.Token);return legacy;}catch{legacy.Dispose();throw;}
+            }
+            using var pipe=await OpenRetainedStreamAsync();
             var operation=Guid.NewGuid().ToString("N");
-            await pipe.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new{command="beginMainOperation",rootKey=root,operationId=operation})+"\n"),timeout.Token);
+            object begin=declaredSnapshot
+                ? new{command="beginMainOperation",rootKey=root,operationId=operation,expectedMainIdentity=declaredIdentity}
+                : new{command="beginMainOperation",rootKey=root,operationId=operation};
+            await pipe.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(begin)+"\n"),timeout.Token);
             using var reader=new StreamReader(pipe,Encoding.UTF8,false,1024,true);
             using var reply=JsonDocument.Parse((await reader.ReadLineAsync(timeout.Token))!);
             result["BeginResponse"]=reply.RootElement.Clone();
             if(!reply.RootElement.GetProperty("ok").GetBoolean())throw new InvalidOperationException("Actual original owner pipe did not grant a retained main operation.");
             var grant=reply.RootElement;
+            MainOperationReply? declaredGrant=null;
+            if(declaredSnapshot) {
+                declaredGrant=grant.Deserialize<MainOperationReply>(MainOperationReader.Json);
+                DeclaredBridgeFixtureAdmission.RequireMainGrant(declaredGrant,declaredIdentity!,operation);
+            }
             object Frame(string command)=>new{command,pinId=grant.GetProperty("pinId").GetString(),closeId=grant.GetProperty("closeId").GetString(),operationId=operation,identity=grant.GetProperty("identity")};
             var owner=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
             if(mode.StartsWith("terminal-main-operation-outcome-",StringComparison.Ordinal))outcomeOwner=owner;
@@ -118,6 +153,7 @@ internal static partial class MainOperationScenarioDriver
             }
             using var activated=JsonDocument.Parse(activationLine!);
             if(!activated.RootElement.GetProperty("ok").GetBoolean())throw new InvalidOperationException("Original grant did not activate.");
+            if(declaredSnapshot) DeclaredBridgeFixtureAdmission.RequireMainTransition(activated.RootElement.Deserialize<MainOperationReply>(MainOperationReader.Json),declaredGrant!,MainOperationState.Active);
             Task<JsonElement>? shutdown=null;
             if(mode=="terminal-main-operation-shutdown") {
                 shutdown=Rpc(new{command="shutdown",rootKey=root,expectedMainIdentity=owner.Identity});
@@ -139,6 +175,7 @@ internal static partial class MainOperationScenarioDriver
             await pipe.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new{command="closeMainOperation",close})+"\n"),timeout.Token);
             using var closed=JsonDocument.Parse((await reader.ReadLineAsync(timeout.Token))!);
             if(closed.RootElement.GetProperty("state").GetInt32()!=3)throw new InvalidOperationException("Actual immutable close receipt not observed.");
+            if(declaredSnapshot) DeclaredBridgeFixtureAdmission.RequireMainTransition(closed.RootElement.Deserialize<MainOperationReply>(MainOperationReader.Json),declaredGrant!,MainOperationState.ClosedObserved);
             if(mode.StartsWith("terminal-main-operation-outcome-",StringComparison.Ordinal))
                 await ParticipatingControlOutcomeScenario.RunAsync(mode["terminal-main-operation-outcome-".Length..],root,folder,host!,type,owner,result);
             if(mode=="terminal-main-operation-query") {

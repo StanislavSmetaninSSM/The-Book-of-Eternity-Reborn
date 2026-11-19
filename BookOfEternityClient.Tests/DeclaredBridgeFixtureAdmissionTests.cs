@@ -14,6 +14,23 @@ public sealed class DeclaredBridgeFixtureAdmissionTests
         sessionPath=session,pipeName="authored",terminalRunId=run,shellPid=pid,terminalUncertain=false,terminalOwnerRetained=retained,ready=false,
         transportEndpoint=new{version=1,kind,address=kind=="linux-fifo-v1"?"/tmp/boe-bridge-44444444444444444444444444444444":"/tmp/CoreFxPipe_authored",transportRun=kind=="linux-fifo-v1"?"44444444444444444444444444444444":null}});
     private static DeclaredBridgeFixtureAdmission Fresh()=>new(Root,"authored",Owner,Gen(),Record());
+    [Fact]
+    public void RetainedMainHandshake_RequiresExactOriginalGrantAndTransitions()
+    {
+        var identity=GmSessionRunRecordCodec.Decode(Record()).Identity;
+        var operation="55555555555555555555555555555555";
+        var grant=new MainOperationReply(true,MainOperationState.PreparedGrant,"66666666666666666666666666666666","77777777777777777777777777777777",operation,identity);
+        DeclaredBridgeFixtureAdmission.RequireMainGrant(grant,identity,operation);
+        foreach(var bad in new[]{grant with{Ok=false},grant with{State=MainOperationState.Active},grant with{PinId="bad"},grant with{CloseId="bad"},grant with{OperationId="other"},grant with{Identity=identity with{Epoch=2}}})
+            Assert.Throws<InvalidDataException>(()=>DeclaredBridgeFixtureAdmission.RequireMainGrant(bad,identity,operation));
+        Assert.Throws<InvalidDataException>(()=>DeclaredBridgeFixtureAdmission.RequireMainGrant(null,identity,operation));
+        foreach(var state in new[]{MainOperationState.Active,MainOperationState.ClosedObserved}) {
+            var actual=grant with{State=state};DeclaredBridgeFixtureAdmission.RequireMainTransition(actual,grant,state);
+            foreach(var bad in new[]{actual with{PinId="88888888888888888888888888888888"},actual with{CloseId="88888888888888888888888888888888"},actual with{OperationId="other"},actual with{Identity=identity with{Epoch=2}},actual with{Ok=false},grant})
+                Assert.Throws<InvalidDataException>(()=>DeclaredBridgeFixtureAdmission.RequireMainTransition(bad,grant,state));
+        }
+    }
+
     [Theory]
     [InlineData("linux-fifo-v1")]
     [InlineData("named-pipe-v1")]

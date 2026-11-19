@@ -46,6 +46,18 @@ internal sealed class DeclaredBridgeFixtureAdmission
         endpoint=observed;
         return statusJson; // Same admitted bytes, not a second status read.
     }
+    internal static void RequireMainGrant(MainOperationReply? grant,GmSessionRunIdentity expected,string operation)
+    {
+        if(grant is null || !grant.Ok || grant.State!=MainOperationState.PreparedGrant || grant.OperationId!=operation ||
+            !Guid.TryParseExact(grant.PinId,"N",out _) || !Guid.TryParseExact(grant.CloseId,"N",out _) || grant.Identity is null ||
+            !GmSessionRunValidation.IdentityMatches(expected,grant.Identity))
+            throw new InvalidDataException("Original prepared grant tuple changed.");
+    }
+    internal static void RequireMainTransition(MainOperationReply? reply,MainOperationReply grant,MainOperationState state)
+    {
+        if(state is not (MainOperationState.Active or MainOperationState.ClosedObserved) || reply!=(grant with{State=state}))
+            throw new InvalidDataException("Original retained operation tuple changed.");
+    }
     internal void CheckReply(JsonElement reply,bool shutdown)
     {
         if(!reply.GetProperty("ok").GetBoolean())throw new InvalidDataException("Original RPC refused.");
