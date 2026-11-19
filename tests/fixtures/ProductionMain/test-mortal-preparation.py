@@ -150,8 +150,44 @@ class PreparationTests(unittest.TestCase):
         for change in ({'deadline':True},{'emergencySignals':1},{'driverExitCode':7}):
             with self.subTest(change=change):self.assertEqual(prep.guardian_report_result(0,dict(valid,**change)),(True,False))
 
+    def test_guardian_compiler_alias_preserves_recorded_invocation(self):
+        from unittest.mock import patch
+        source=self.source/'tests/fixtures/LinuxHost/host-guardian.c'
+        source.parent.mkdir(parents=True);source.write_bytes(b'guardian source')
+        binary=self.root/'host-guardian';binary.write_bytes(b'guardian binary');binary.chmod(0o700)
+        compiler=self.root/'gcc-real';compiler.write_bytes(b'compiler binary');compiler.chmod(0o700)
+        alias=self.root/'cc';alias.symlink_to(compiler)
+        provenance=self.root/'build-provenance.json'
+        provenance.write_text(json.dumps({'compiler':str(alias),'compilerVersion':'cc recorded version','flags':['-O2'],
+            'assets':[{'binary':'host-guardian','source':'tests/fixtures/LinuxHost/host-guardian.c',
+                       'sourceSha256':prep.digest(source),'binarySha256':prep.digest(binary)}]}))
+        descriptor={'binaryPath':str(binary),'binarySHA256':prep.digest(binary),'sourceSHA256':prep.digest(source),
+                    'provenancePath':str(provenance),'provenanceSHA256':prep.digest(provenance),
+                    'compilerPath':str(compiler),'compilerSHA256':prep.digest(compiler)}
+        def version(argv,**kwargs):
+            return 'cc recorded version' if argv==[str(alias),'--version'] else 'gcc-real different invocation banner'
+        with patch.object(prep.subprocess,'check_output',side_effect=version) as invocation:
+            self.assertEqual(prep.guardian_tool(self.source,descriptor),binary)
+            invocation.assert_called_once_with([str(alias),'--version'],text=True,timeout=10)
+        alias=self.root/'gcc-alias';alias.symlink_to(compiler)
+        data=json.loads(provenance.read_text());data['compiler']=str(alias);data['compilerVersion']='gcc-alias recorded version'
+        provenance.write_text(json.dumps(data));descriptor['provenanceSHA256']=prep.digest(provenance)
+        with patch.object(prep.subprocess,'check_output',return_value='gcc-alias recorded version') as invocation:
+            self.assertEqual(prep.guardian_tool(self.source,descriptor),binary)
+            invocation.assert_called_once_with([str(alias),'--version'],text=True,timeout=10)
+        foreign=self.root/'foreign-compiler';foreign.write_bytes(b'different compiler');foreign.chmod(0o700)
+        descriptor['compilerPath']=str(foreign);descriptor['compilerSHA256']=prep.digest(foreign)
+        with patch.object(prep.subprocess,'check_output') as invocation:
+            with self.assertRaisesRegex(ValueError,'compiler provenance'):prep.guardian_tool(self.source,descriptor)
+            invocation.assert_not_called()
+        descriptor['compilerPath']=str(compiler)
+        descriptor['compilerSHA256']='0'*64
+        with patch.object(prep.subprocess,'check_output') as invocation:
+            with self.assertRaisesRegex(ValueError,'compiler provenance'):prep.guardian_tool(self.source,descriptor)
+            invocation.assert_not_called()
+
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(PreparationTests)
-    if suite.countTestCases()!=19:raise SystemExit('Expected exactly nineteen preparation DATA methods')
+    if suite.countTestCases()!=20:raise SystemExit('Expected exactly twenty preparation DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==19 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==20 and result.wasSuccessful() and not result.skipped else 1)

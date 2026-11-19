@@ -100,10 +100,12 @@ No PID, generation or authority is imported from an earlier process.
     assets=[a for a in provenance['assets'] if a.get('binary')=='host-guardian']
     if len(assets)!=1 or assets[0].get('source')!=source or assets[0].get('sourceSha256')!=descriptor['sourceSHA256'] or assets[0].get('binarySha256')!=descriptor['binarySHA256']:
         raise ValueError('Guardian provenance asset')
+    invocation=Path(provenance['compiler'])
+    if not invocation.is_absolute():raise ValueError('Guardian compiler invocation must be absolute')
     compiler=Path(descriptor['compilerPath']).resolve(strict=True)
-    if str(compiler)!=str(Path(provenance['compiler']).resolve(strict=True)) or digest(compiler)!=descriptor['compilerSHA256']:
+    if str(compiler)!=str(invocation.resolve(strict=True)) or digest(compiler)!=descriptor['compilerSHA256']:
         raise ValueError('Guardian compiler provenance')
-    if not provenance.get('flags') or subprocess.check_output([str(compiler),'--version'],text=True,timeout=10).strip()!=provenance['compilerVersion']:
+    if not provenance.get('flags') or subprocess.check_output([str(invocation),'--version'],text=True,timeout=10).strip()!=provenance['compilerVersion']:
         raise ValueError('Guardian compiler version/flags')
     return binary
 
@@ -181,9 +183,10 @@ Unexpected publish-generated files fail closed rather than being self-pinned.
     if not expected:raise ValueError('Missing producer inventory')
     for name in ('boe-lineage-supervisor','package-manifest.json'):
         expected['runtimes/linux-x64/native/'+name]=digest(native/name)
-    actual={row['path']:row['sha256'] for row in inventory(published)}
+    rows=inventory(published)
+    actual={row['path']:row['sha256'] for row in rows}
     if actual!=expected:raise ValueError('Published producer copy mismatch: '+project)
-    return inventory(published)
+    return rows
 
 
 def copied_source_join(source, copied):

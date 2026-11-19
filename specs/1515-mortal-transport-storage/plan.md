@@ -3949,3 +3949,16 @@ checkpoint; all 23 methods and real preparation remain UNRUN. Focused independen
 source review and remote preservation must precede execution. Published copy
 joins continue to require exact producer bytes; unexpected publish-only files
 fail for investigation, not an invented allowance. No gameplay/world changes.
+
+T028 source preflight correction (UNRUN): the official bootstrap producer records
+`/usr/bin/cc --version`, while resolving that same executable before invocation
+changes argv[0] and the first-line compiler branding. Both observed paths hash
+to `a23ecab8ff08f09ad8c80602c2c5df7f49e09c25905cb8975902e101bf72635f`;
+the initial guardian descriptor admission correctly refused the differing text.
+Keep resolved binary identity/hash checks, but compare version output from the
+producer's recorded absolute invocation path. A cheap alias/foreign-target/hash
+control raises the DATA selection to 20 methods; the four inert process methods
+remain separate. No guardian or game was started during this preflight.
+`published_join` now returns its single captured inventory instead of rereading
+that directory immediately. No cache or freshness boundary changed. All corrected
+execution remains UNRUN pending focused source review and fresh owning build.
