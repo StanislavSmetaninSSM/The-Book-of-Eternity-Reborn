@@ -316,3 +316,13 @@ remain unexecuted until implemented. Newly owned prepared phase is supplied by
 existing fresh-root preparation; trace/profile/launcher must not already exist.
 Failed partial trace remains retained and blocks re-entry, no delete/chmod repair.
 The whole phase/root absence admission remains with the existing preparer.
+
+Independent exclusive-profile RED accepted:26PASS/2feature failures/0errors0.145s.
+Minimal SOURCE implementation now checks trace/profile/launcher absence before
+profile writes, creates only owned700directory and exclusive0600marker via
+os.open, serializes actual profile once and hashes those bytes, and creates the
+launcher exclusively0700. Failed partial assets remain, no chmod/delete/repair.
+Actual-source tests now reach both P01/P02 launcher composition with the digest
+returned by real profile serialization, unique exact export lines, and refusal
+of existing/dangling outputs before trace creation. Full profile/world remains
+UNRUN; pure28 GREEN is pending source review. No published runtime bytes change.

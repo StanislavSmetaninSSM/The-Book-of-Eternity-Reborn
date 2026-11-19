@@ -209,16 +209,40 @@ class PhysicalTraceProfile(unittest.TestCase):
      elif case=='dangling':self.assertTrue(trace.is_symlink())
      else:self.assertFalse(os.path.lexists(trace))
  def test_actual_generated_launcher_binds_exact_trace_profile(self):
-  import ast,hashlib
+  import ast,hashlib,os,stat
   tree,ns=self.actual();nodes=[n for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='script' for t in n.targets)]
   self.assertEqual(len(nodes),1)
+  write=ns.get('write_physical_launch_profile');self.assertTrue(callable(write),'Missing actual profile serialization')
   for phase in ('p01','p02'):
-   profile_bytes=b'{"authored":"already frozen profile"}';digest=hashlib.sha256(profile_bytes).hexdigest()
-   ns.update(D=pathlib.Path('/workspace/shared/mm99-20261119'),phase=phase,previous_path=None if phase=='p01' else pathlib.Path('/original/p01/probe-result.json'),failure='b'*32,stop='a'*32,profile_sha=digest)
-   exec(compile(ast.Module(body=nodes,type_ignores=[]),'<actual-generated-launcher>','exec'),ns);script=ns['script']
-   expected=['export BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE=external','export BOE_TEST_CANONICAL_LEASE_TRACE_DIR="$P/physical-trace"','export BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256='+digest,'export BOE_MAIN_STOP_DIAGNOSTIC_NONCE='+'a'*32]
-   for line in expected:self.assertIn(line,script);self.assertLess(script.index(line),script.index('"$ROOT/native/host-guardian"'))
-   self.assertIn('750000',script);self.assertIn('set -euo pipefail',script)
+   with self.subTest(phase=phase),tempfile.TemporaryDirectory() as tmp:
+    root=pathlib.Path(tmp).resolve();base=root/'play';base.mkdir();folder=root/phase;folder.mkdir();launcher=root/('launch-'+phase+'.sh')
+    authored={'StopNonce':'a'*32,'FailureNonce':'b'*32,'Route':'birth' if phase=='p01' else 'permission-with-denial'}
+    actual,digest=write(base,folder,launcher,authored)
+    raw=(folder/'launch-profile.json').read_bytes();self.assertEqual(json.loads(raw),actual);self.assertEqual(hashlib.sha256(raw).hexdigest(),digest);self.assertNotIn('PhysicalTrace',authored)
+    self.assertEqual(stat.S_IMODE((folder/'launch-profile.json').stat().st_mode),0o600)
+    ns.update(D=root,phase=phase,previous_path=None if phase=='p01' else root/'p01/probe-result.json',failure='b'*32,stop='a'*32,profile_sha=digest)
+    exec(compile(ast.Module(body=nodes,type_ignores=[]),'<actual-generated-launcher>','exec'),ns);script=ns['script'];lines=script.splitlines()
+    expected=['export BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE=external','export BOE_TEST_CANONICAL_LEASE_TRACE_DIR="$P/physical-trace"','export BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256='+digest,'export BOE_MAIN_STOP_DIAGNOSTIC_NONCE='+'a'*32]
+    for line in expected:self.assertEqual(lines.count(line),1);self.assertLess(script.index(line),script.index('"$ROOT/native/host-guardian"'))
+    self.assertIn('750000',script);self.assertIn('set -euo pipefail',script)
+    ns['write_profile_artifact'](launcher,script.encode(),0o700);self.assertEqual(launcher.read_bytes(),script.encode());self.assertEqual(stat.S_IMODE(launcher.stat().st_mode),0o700)
+    before={str(p.relative_to(root)):p.read_bytes() for p in root.rglob('*') if p.is_file()}
+    with self.assertRaises((ValueError,FileExistsError)):write(base,folder,launcher,authored)
+    self.assertEqual(before,{str(p.relative_to(root)):p.read_bytes() for p in root.rglob('*') if p.is_file()})
+  for occupied in ('profile','launcher','dangling-launcher'):
+   with self.subTest(occupied=occupied),tempfile.TemporaryDirectory() as tmp:
+    root=pathlib.Path(tmp).resolve();base=root/'play';base.mkdir();folder=root/'p01';folder.mkdir();launcher=root/'launch-p01.sh'
+    target=folder/'launch-profile.json' if occupied=='profile' else launcher
+    if occupied=='dangling-launcher':target.symlink_to(root/'missing')
+    else:target.write_bytes(b'keep')
+    with self.assertRaises(ValueError):write(base,folder,launcher,{'StopNonce':'a'*32})
+    self.assertFalse(os.path.lexists(folder/'physical-trace'))
+    if occupied=='dangling-launcher':self.assertTrue(target.is_symlink())
+    else:self.assertEqual(target.read_bytes(),b'keep')
+  gates=[n for n in tree.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Name) and n.value.func.id=='require_profile_outputs_absent']
+  self.assertEqual(len(gates),1)
+  action_write=[n for n in tree.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Attribute) and n.value.func.attr=='write_bytes']
+  self.assertTrue(action_write);self.assertLess(gates[0].lineno,min(n.lineno for n in action_write))
 
 if __name__=='__main__':unittest.main(verbosity=2)
 

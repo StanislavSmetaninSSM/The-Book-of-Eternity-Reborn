@@ -36,6 +36,44 @@ def checked_continuation_binding(value):
         if type(route[key]) is not str or not route[key] or any(ord(c)<32 for c in route[key]):raise ValueError('Invalid target identity')
     return value
 
+def require_profile_outputs_absent(phase,launcher):
+    phase=pathlib.Path(phase);launcher=pathlib.Path(launcher)
+    if not phase.is_absolute() or phase!=phase.resolve() or launcher!=phase.parent/('launch-'+phase.name+'.sh'):
+        raise ValueError('Exact phase output paths required')
+    for p in (phase,*phase.parents):
+        if p.is_symlink() or (p.exists() and not p.is_dir()):raise ValueError('Linked/special phase parent')
+    for p in (phase/'physical-trace',phase/'launch-profile.json',launcher):
+        if os.path.lexists(p):raise ValueError('Profile output already exists; no repair/retry')
+
+def write_profile_artifact(path,raw,mode):
+    if mode not in (0o600,0o700):raise ValueError('Private profile mode required')
+    plain_path(pathlib.Path(path).parent,True)
+    fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,mode)
+    with os.fdopen(fd,'wb') as stream:stream.write(raw)
+    if stat.S_IMODE(plain_path(path).stat().st_mode)!=mode:
+        raise ValueError('Created profile mode differs; retained without repair')
+
+def create_physical_trace_assets(base,phase,nonce):
+    base=plain_path(base,True);phase=plain_path(phase,True)
+    if not base.is_absolute() or not phase.is_absolute() or base!=base.resolve() or phase!=phase.resolve():
+        raise ValueError('Exact canonical/phase paths required')
+    trace=phase/'physical-trace'
+    if trace==base or base in trace.parents or trace in base.parents:raise ValueError('Trace overlaps canonical play')
+    if type(nonce) is not str or re.fullmatch('[0-9a-f]{32}',nonce) is None:raise ValueError('Exact StopNonce required')
+    if os.path.lexists(trace):raise ValueError('Trace already exists; no repair/retry')
+    trace.mkdir(mode=0o700)
+    if stat.S_IMODE(trace.stat().st_mode)!=0o700:raise ValueError('Created trace mode differs; no repair')
+    write_profile_artifact(trace/'owner-nonce',nonce.encode('ascii'),0o600)
+    return {'Route':'external','Directory':str(trace)}
+
+def write_physical_launch_profile(base,phase,launcher,profile):
+    require_profile_outputs_absent(phase,launcher)
+    profile=dict(profile)
+    profile['PhysicalTrace']=create_physical_trace_assets(base,phase,profile['StopNonce'])
+    raw=(json.dumps(profile,indent=2,ensure_ascii=False)+'\n').encode('utf-8')
+    write_profile_artifact(phase/'launch-profile.json',raw,0o600)
+    return profile,hashlib.sha256(raw).hexdigest()
+
 if len(sys.argv) not in (2,3):raise ValueError('Destination and optional reviewed continuation binding required')
 D=pathlib.Path(sys.argv[1])
 if not D.is_absolute() or D!=D.resolve() or any(x.is_symlink() for x in [D,*D.parents]) or D.parent!=pathlib.Path('/workspace/shared') or re.fullmatch(r'mm[0-9]{2}-[0-9]{8}',D.name) is None:raise ValueError('Invalid prepared destination')
@@ -44,6 +82,7 @@ regular_tree(D/'play')
 assert prepared['destination']==str(D) and prepared['owningBuildManifestSHA256']==os.environ['MM_REVIEWED_INPUT_SHA256']
 phase='p02' if len(sys.argv)==3 else 'p01'
 P=D/phase;R=pathlib.Path('/workspace/shared/mortal-isolated-20261119');h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();inv=lambda root:{str(p.relative_to(root)):h(p) for p in root.rglob('*') if p.is_file()};before=inv(D/'play');os.umask(0o077)
+require_profile_outputs_absent(P,D/('launch-'+phase+'.sh'))
 a='Выхожу из покоев, ищу представителя совета и прошу проводить меня к его хозяйственному двору, показать припаркованную грузовую повозку и закрытую кладовую с разметочным мелом, объяснить владельца и порядок выдачи. Ничего не беру и не перемещаю'
 previous_path=None;route={'Route':'birth'};binding_bytes=None
 if phase=='p02':
@@ -95,7 +134,7 @@ assert not(P/'action.txt').exists();(P/'action.txt').write_bytes(a.encode());(P/
 for n in ['config','data','state','cache','tmp','home']:(P/'launch-env'/n).mkdir(parents=True,mode=0o700)
 failure=uuid.uuid4().hex;stop=uuid.uuid4().hex
 profile={'Route':route['Route'],'ExpectedTurn':43 if previous_path else 42,'PreviousResult':str(previous_path) if previous_path else None,'PreviousSHA256':h(previous_path) if previous_path else None,'GMDecisionDeferred':bool(previous_path),'SeedSHA256':h(D/'seed-manifest.json'),'FailureNonce':failure,'StopNonce':stop,'Budgets':{'provider':600,'work':660,'clientCleanup':680,'driver':720,'guardian':750},'Driver':str(R/'tests/fixtures/ProductionMain/live-mortal-phase.py'),'ReceiptHelper':str(D/'receipt-helper/BookOfEternityClient.TestSupport.dll'),'ActionSHA256':h(P/'action.txt'),'RuntimeCount':len(inv(D/'play/game_session/_runtime')),'HelperCount':len(inv(D/'receipt-helper')),'PrivateDirectoriesCreated':phase+'/launch-env/*; driver creates own phase config,data,state,cache,tmp exactly once','OperationalConfigWritten':False}
-(P/'launch-profile.json').write_text(json.dumps(profile,indent=2,ensure_ascii=False)+'\n')
+profile,profile_sha=write_physical_launch_profile(D/'play',P,D/('launch-'+phase+'.sh'),profile)
 script='''#!/bin/bash
 set -euo pipefail
 umask 077
@@ -117,6 +156,9 @@ export HOME="$P/launch-env/home" XDG_CONFIG_HOME="$P/launch-env/config" XDG_DATA
 export TMP="$TMPDIR" TEMP="$TMPDIR"
 export BOE_TEST_GAME_LOOP_FAILURE_NONCE=FAILURE_NONCE
 export BOE_MAIN_STOP_DIAGNOSTIC_NONCE=STOP_NONCE
+export BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE=external
+export BOE_TEST_CANONICAL_LEASE_TRACE_DIR="$P/physical-trace"
+export BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256=PROFILE_SHA
 export BOE_TEST_DIAGNOSTIC_ROOT="$P"
 export NPM_CONFIG_USERCONFIG="$P/empty-user.npmrc" NPM_CONFIG_GLOBALCONFIG="$P/empty-global.npmrc" NPM_CONFIG_CACHE="$P/launch-env/cache/npm" NPM_CONFIG_IGNORE_SCRIPTS=true
 unset BOE_TEST_LOAD_OBSERVATION_NONCE
@@ -151,8 +193,8 @@ except Exception: code=g if 1<=g<=255 else 98
 raise SystemExit(code)
 ENDPY
 exit $?
-'''.replace('PREPARED_DESTINATION',str(D)).replace('PREPARED_PHASE',phase).replace('PREPARED_PREVIOUS','\"$ROOT/p01/probe-result.json\"' if previous_path else '').replace('=FAILURE_NONCE','= '+failure).replace('=STOP_NONCE','= '+stop).replace('= ','=')
-(D/('launch-'+phase+'.sh')).write_text(script);(D/('launch-'+phase+'.sh')).chmod(0o700)
+'''.replace('PREPARED_DESTINATION',str(D)).replace('PREPARED_PHASE',phase).replace('PREPARED_PREVIOUS','\"$ROOT/p01/probe-result.json\"' if previous_path else '').replace('=FAILURE_NONCE','= '+failure).replace('=STOP_NONCE','= '+stop).replace('=PROFILE_SHA','='+profile_sha).replace('= ','=')
+write_profile_artifact(D/('launch-'+phase+'.sh'),script.encode('utf-8'),0o700)
 regular_tree(D/'play')
 assert inv(D/'play')==before
 if binding_bytes is not None:
