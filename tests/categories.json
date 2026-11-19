@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-state-diagnostic-data",
+      "responsibility": "#1515 T031 strict relocated diagnostic manifest admission: existing destination, traversal, source hash, link refusal and exact DATA-only copy. No validator or game execution.",
+      "excludes": "No live root, seed export, owner adoption or diagnostic cause qualification.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/MortalStateDiagnostic.cs",
+        "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+        "BookOfEternityClient.Tests/MortalStateDiagnosticTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalStateDiagnosticTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-live-preparation-process",
       "responsibility": "#1515 T028 four actual inert child/guardian controls: normal, nonzero, timeout and adopted new-session survivor, with retained logs and ECHILD.",
       "excludes": "No compiler, publish, export, game or real preparation. Requires BOE_PREPARATION_GUARDIAN_MANIFEST independently pinned bootstrap and external BOE_TEST_DIAGNOSTIC_ROOT.",

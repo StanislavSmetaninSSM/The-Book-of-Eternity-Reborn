@@ -4551,3 +4551,14 @@ reviewed isolated real-validator DATA reproduction, no runtime/owner transfer an
 no original-world mutation. Copy/root-dependent refusal must not be mistaken for
 identification of the live issue. Track T031 before adding its bounded diagnostic
 fixture. No gameplay fix is justified yet; no new live run is authorized here.
+
+T031 isolated diagnostic SOURCE WIP, unbuilt/unrun. Added a small TestSupport
+verb and class plus five cheap manifest/copy controls and one bounded category.
+It admits an exact106 accepted DATA pins plus config manifest into an exclusively
+reserved new destination, refuses links/overlap/path/hash/existing-destination
+errors, invokes strict ValidateGameStateAsync once and retains all issues/full
+exception, constructor/validation inventories and source hashes. No Inspect,
+health/normalizer/GameEngine/export, owner/runtime/queue transfer or old-world
+mutation. Independent source review is next before fresh build or a single DATA
+probe. The copy is diagnostic input, not validated authority or a claimed replay
+of the live post-health validation instant. No speculative gameplay correction.
