@@ -1247,3 +1247,15 @@ no source authority fabrication, no item move. Existing pure test module adds fo
 actual AST/DATA cases, initially feature RED expected; runtime remains unrun.
 The fresh GM decides only after genuine44. Grant/transfer/hosted Load are separate,
 not implied by requesting consideration of the recorded chalk appeal.
+
+### Closed P03 wrapper DATA GREEN
+Independent `e904c63c` verifies exact24 pure PASS (MainPath17, ProfileBinding2,
+PhysicalTraceProfile2, P03Continuation3),0.190s, before==after32,074+8. Causal
+four-feature RED `dbdea799` preceded the two-wrapper correction. Initial aborted
+inventory command is recorded separately; no test or world action occurred there.
+P03 uses P02/43 ->44, ordinary-save only, actual prior manual archive proof; all
+existing P01/P02 one-shot and exclusive-profile controls remain. Inert profile
+preparation now names its own phase output exclusively (no P02 overwrite).
+No production, driver, relay transport or managed output changed. Current retained
+P02 and new exclusive P03 profile require their own gate before live. Sole GM
+readiness accepts the council appeal, with outcome undecided until signed44.
