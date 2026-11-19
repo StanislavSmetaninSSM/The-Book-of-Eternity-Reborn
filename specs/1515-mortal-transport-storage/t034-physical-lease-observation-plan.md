@@ -779,3 +779,10 @@ are unchanged. The actual engine must accept43 with one story append, clock505,
 exact journal afterimage, preserved relevant canonical bytes and retired markers.
 Official selector mortal-ordinary-response-dry is exactly one case, UNRUN pending
 independent source/command review. No Save or live claim follows from dry success.
+
+The first dry attempt stopped before test discovery: Integration build succeeded
+in 59.68 s (135 warnings, zero errors), but PlanOnly refused the new category's
+related entries because they were strings rather than required id/when objects.
+No fixture/turn ran, and this is setup-only, not a causal RED. Correct only those
+two catalog entries; reuse the exact successful build after closed source/output
+joins, then independently reviewed PlanOnly1/run1 in a fresh evidence directory.

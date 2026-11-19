@@ -364,8 +364,8 @@
         "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MortalLivingWorldJourney.cs"
       ],
       "related": [
-        "mortal-author-debug-contract",
-        "mortal-retained-carrier-contract"
+        { "id": "mortal-author-debug-contract", "when": "Authored reasoning schema changes" },
+        { "id": "mortal-retained-carrier-contract", "when": "Historical carrier interpretation changes" }
       ],
       "requirements": {
         "frontendBuild": false,
