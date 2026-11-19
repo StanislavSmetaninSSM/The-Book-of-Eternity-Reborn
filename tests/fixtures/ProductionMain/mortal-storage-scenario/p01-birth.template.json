@@ -1,0 +1,681 @@
+{
+  "kind": "p01-birth-semantic-draft",
+  "Completion": "turn",
+  "Writes": [
+    {
+      "Path": "game_state/world/current_location.json",
+      "Mode": "replace",
+      "Data": {
+        "currentLocationData": {
+          "locationId": null,
+          "initialId": "locref_council_t034_visit42",
+          "realm": "mortal_world",
+          "name": "Хозяйственный двор у нижней лестницы",
+          "displayName": "Хозяйственный двор у нижней лестницы",
+          "purpose": "Стоянка ручной повозки и хранение разметочного запаса совета",
+          "description": "Короткая каменная лестница выходит на двор с гравийной площадкой. Под навесом стоит пустая ручная повозка; рядом кладовая с засовом и узким зарешеченным окошком.",
+          "image_prompt": "Gravel service yard behind a low fantasy manor, short stone staircase, empty handcart under a lean-to and locked store with barred window, no text",
+          "locationType": "outdoor",
+          "biome": "settled_lowlands",
+          "biomeDescription": "Обжитая низина у торгового тракта.",
+          "indoorType": null,
+          "features": [
+            "навес для повозки",
+            "запертая кладовая с окошком",
+            "каменные ступени к покоям"
+          ],
+          "region": "Столица Этернии",
+          "parentLocationId": null,
+          "parentInitialId": null,
+          "coordinates": {
+            "x": 0,
+            "y": 1,
+            "z": 0
+          },
+          "discovery": {
+            "tier": "visited",
+            "audience": "player_known",
+            "rumorSummary": null
+          },
+          "internalDifficulty": {
+            "danger": "low",
+            "recommendedLevel": 1,
+            "description": "Спокойный осмотр двора."
+          },
+          "externalDifficulty": {
+            "danger": "moderate",
+            "recommendedLevel": 1,
+            "description": "Опасность у переправы этим осмотром не устранена."
+          },
+          "lastEventsDescription": "Распорядитель провёл гостя по двору и объяснил правила выдачи. Дверь кладовой осталась заперта; имущество не выдавалось.",
+          "eventDescriptions": [],
+          "factionControl": [],
+          "actorBindings": [],
+          "locationStorages": [
+            {
+              "storageId": "storage_council_chalk_t034_visit42",
+              "name": "Запертая кладовая разметочных материалов",
+              "description": "Совет хранит запас в запертой кладовой. Через зарешеченное окошко видна полка; показ не меняет права доступа.",
+              "image_prompt": "Locked timber supply store with a small barred window and white chalk on an interior shelf, no text",
+              "capacity": 12,
+              "volume": 80,
+              "owner": {
+                "ownerType": "Faction",
+                "ownerId": "faction_journey_council",
+                "ownerName": "Crossing Council"
+              },
+              "authorizedUsers": [],
+              "hasFullAccess": false,
+              "contents": [
+                {
+                  "existedId": null,
+                  "creationRef": "chalk_t034_visit42",
+                  "name": "Кусочек разметочного мела",
+                  "description": "Один белый кусочек мела со сбитым уголком на полке за решёткой. Им намечают резы на досках.",
+                  "image_prompt": "A single white chalk nub with a chipped corner resting on a wooden shelf, no text",
+                  "type": "Бытовой предмет",
+                  "group": "Инструменты",
+                  "quality": "Common",
+                  "rarity": "Common",
+                  "price": 1,
+                  "count": 1,
+                  "weight": 0.02,
+                  "volume": 0.01,
+                  "resourceMaterialization": {
+                    "resources": [
+                      {
+                        "resourceKey": "durability",
+                        "maximum": 100
+                      }
+                    ]
+                  },
+                  "bonuses": [],
+                  "effects": [],
+                  "structuredBonuses": [],
+                  "combatEffect": [],
+                  "customProperties": [],
+                  "mechanicalSummaryAuthority": null,
+                  "mechanicalSummaryUnresolvedReason": null,
+                  "equipmentSlot": null,
+                  "accessoryForSlot": null,
+                  "requiresTwoHands": false,
+                  "isContainer": false,
+                  "capacity": null,
+                  "containerWeight": null,
+                  "weightReduction": null,
+                  "contentsPath": null,
+                  "isConsumption": false,
+                  "textContent": null,
+                  "journalEntries": [],
+                  "isSentient": false,
+                  "unreadableReason": null,
+                  "sealedReason": null,
+                  "lockedReason": null,
+                  "disassembleTo": null,
+                  "ownerBondLevelCurrent": null,
+                  "ownerBondLevelMax": null,
+                  "fateCards": [],
+                  "questLinks": [],
+                  "materialization": {
+                    "schemaVersion": 1,
+                    "materializationId": "mat_chalk_t034_visit42",
+                    "realm": "Mortal",
+                    "route": "storage_placement",
+                    "sourceTurn": 42,
+                    "sourceAuthority": {
+                      "kind": "location_storage",
+                      "authorityId": "locref_council_t034_visit42:storage_council_chalk_t034_visit42"
+                    },
+                    "creationRef": "chalk_t034_visit42",
+                    "state": "complete",
+                    "sections": {
+                      "presentation": {
+                        "state": "populated",
+                        "reason": null
+                      },
+                      "physical": {
+                        "state": "populated",
+                        "reason": null
+                      },
+                      "mechanics": {
+                        "state": "empty_by_design",
+                        "reason": "Мел не даёт самостоятельного механического бонуса."
+                      },
+                      "equipment": {
+                        "state": "empty_by_design",
+                        "reason": "Мел не является экипировкой."
+                      },
+                      "container": {
+                        "state": "empty_by_design",
+                        "reason": "Кусочек мела ничего не вмещает."
+                      },
+                      "consumption": {
+                        "state": "empty_by_design",
+                        "reason": "Мел не является расходником с самостоятельным эффектом."
+                      },
+                      "readableOrSentient": {
+                        "state": "empty_by_design",
+                        "reason": "На самом кусочке нет читаемого текста и собственного голоса."
+                      },
+                      "craftingAndDisassembly": {
+                        "state": "empty_by_design",
+                        "reason": "Этот кусочек не задаёт рецепта или полезной разборки."
+                      },
+                      "bondsAndFateCards": {
+                        "state": "empty_by_design",
+                        "reason": "Обычный мел не образует связь и не имеет Карт Судьбы."
+                      },
+                      "questRole": {
+                        "state": "empty_by_design",
+                        "reason": "Мел не связан с заданием."
+                      },
+                      "provenance": {
+                        "state": "populated",
+                        "reason": null
+                      },
+                      "ownershipAndPlacement": {
+                        "state": "populated",
+                        "reason": null
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "activeThreats": [],
+          "loreBindings": [],
+          "customStates": [],
+          "currentInteractions": [],
+          "currentChronology": [],
+          "materialization": {
+            "schemaVersion": 1,
+            "materializationId": "mloc_t034_visit42",
+            "entityKind": "mortal_location",
+            "realm": "mortal_world",
+            "route": "current_scene_creation",
+            "sourceTurn": 42,
+            "sourceAuthority": {
+              "kind": "turn_outcome",
+              "authorityId": "turn_42"
+            },
+            "initialId": "locref_council_t034_visit42",
+            "state": "complete",
+            "sections": {
+              "presentation": {
+                "disposition": "populated",
+                "reason": null
+              },
+              "physical": {
+                "disposition": "populated",
+                "reason": null
+              },
+              "placement": {
+                "disposition": "populated",
+                "reason": null
+              },
+              "discovery": {
+                "disposition": "populated",
+                "reason": null
+              },
+              "difficulty": {
+                "disposition": "populated",
+                "reason": null
+              },
+              "chronicle": {
+                "disposition": "populated",
+                "reason": null
+              },
+              "factionControl": {
+                "disposition": "empty_by_design",
+                "reason": "Владение припасами не означает контроля над территорией поместья."
+              },
+              "actorBindings": {
+                "disposition": "empty_by_design",
+                "reason": "Постоянные акторы материализуются отдельно."
+              },
+              "storageMetadata": {
+                "disposition": "populated",
+                "reason": null
+              },
+              "activeThreats": {
+                "disposition": "empty_by_design",
+                "reason": "Непосредственной угрозы во дворе нет."
+              },
+              "loreBindings": {
+                "disposition": "empty_by_design",
+                "reason": "Сюжетная привязка пока не требуется."
+              },
+              "customStates": {
+                "disposition": "empty_by_design",
+                "reason": "Особые состояния не нужны."
+              },
+              "topology": {
+                "disposition": "populated",
+                "reason": null
+              }
+            }
+          },
+          "activeEffectDefinitions": []
+        }
+      }
+    },
+    {
+      "Path": "game_state/world/world_map.json",
+      "Mode": "extend-root",
+      "Data": {
+        "worldMapUpdates": {
+          "newLinks": [
+            {
+              "linkId": null,
+              "initialId": "link_council_t034_visit42_0",
+              "sourceLocationId": "loc_valmont_private_chambers",
+              "sourceInitialId": null,
+              "targetLocationId": null,
+              "targetInitialId": "locref_council_t034_visit42",
+              "name": "Каменные ступени во двор",
+              "description": "Короткая лестница между жилым корпусом и гравийным хозяйственным двором.",
+              "directionLabel": "во двор",
+              "linkType": "path",
+              "travelMode": "foot",
+              "access": {
+                "state": "open",
+                "reason": null,
+                "requirements": []
+              },
+              "discovery": {
+                "tier": "discovered",
+                "audience": "player_known",
+                "rumorSummary": null
+              },
+              "customStates": [],
+              "materialization": {
+                "schemaVersion": 1,
+                "materializationId": "mat_link_council_t034_visit42_0",
+                "entityKind": "mortal_location_link",
+                "realm": "mortal_world",
+                "route": "world_map_link_creation",
+                "sourceTurn": 42,
+                "sourceAuthority": {
+                  "kind": "turn_outcome",
+                  "authorityId": "turn_42"
+                },
+                "initialId": "link_council_t034_visit42_0",
+                "state": "complete",
+                "sections": {
+                  "endpoints": {
+                    "disposition": "populated",
+                    "reason": null
+                  },
+                  "presentation": {
+                    "disposition": "populated",
+                    "reason": null
+                  },
+                  "traversal": {
+                    "disposition": "populated",
+                    "reason": null
+                  },
+                  "access": {
+                    "disposition": "populated",
+                    "reason": null
+                  },
+                  "discovery": {
+                    "disposition": "populated",
+                    "reason": null
+                  },
+                  "customStates": {
+                    "disposition": "empty_by_design",
+                    "reason": "Особых состояний пути нет."
+                  }
+                }
+              }
+            },
+            {
+              "linkId": null,
+              "initialId": "link_council_t034_visit42_1",
+              "sourceLocationId": null,
+              "sourceInitialId": "locref_council_t034_visit42",
+              "targetLocationId": "loc_valmont_private_chambers",
+              "targetInitialId": null,
+              "name": "Подъём к жилому корпусу",
+              "description": "Короткая лестница между жилым корпусом и гравийным хозяйственным двором.",
+              "directionLabel": "к покоям",
+              "linkType": "path",
+              "travelMode": "foot",
+              "access": {
+                "state": "open",
+                "reason": null,
+                "requirements": []
+              },
+              "discovery": {
+                "tier": "discovered",
+                "audience": "player_known",
+                "rumorSummary": null
+              },
+              "customStates": [],
+              "materialization": {
+                "schemaVersion": 1,
+                "materializationId": "mat_link_council_t034_visit42_1",
+                "entityKind": "mortal_location_link",
+                "realm": "mortal_world",
+                "route": "world_map_link_creation",
+                "sourceTurn": 42,
+                "sourceAuthority": {
+                  "kind": "turn_outcome",
+                  "authorityId": "turn_42"
+                },
+                "initialId": "link_council_t034_visit42_1",
+                "state": "complete",
+                "sections": {
+                  "endpoints": {
+                    "disposition": "populated",
+                    "reason": null
+                  },
+                  "presentation": {
+                    "disposition": "populated",
+                    "reason": null
+                  },
+                  "traversal": {
+                    "disposition": "populated",
+                    "reason": null
+                  },
+                  "access": {
+                    "disposition": "populated",
+                    "reason": null
+                  },
+                  "discovery": {
+                    "disposition": "populated",
+                    "reason": null
+                  },
+                  "customStates": {
+                    "disposition": "empty_by_design",
+                    "reason": "Особых состояний пути нет."
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "RequireAbsentOrExactlyEmptyCommandSlot": {
+        "Field": "worldMapUpdates",
+        "EmptyValue": {}
+      }
+    },
+    {
+      "Path": "game_state/misc/vehicles.json",
+      "Mode": "extend-root",
+      "Data": {
+        "UpdateVehicles": [
+          {
+            "vehicleRef": "cart_t034_visit42",
+            "name": "Ручная грузовая повозка совета",
+            "description": "Пустая исправная двухколёсная повозка. Под колесом лежит деревянный упор; оглобли опущены на гравий.",
+            "image_prompt": "Empty two wheel wooden freight handcart secured by a small wheel chock under a manor yard lean-to, no text",
+            "type": "Vehicle",
+            "isSentient": false,
+            "availability": "Parked",
+            "currentLocationId": "locref_council_t034_visit42",
+            "speedBonus": 0,
+            "actions": [],
+            "resistances": [],
+            "inventory": [],
+            "capacity": 12,
+            "volume": 200,
+            "owner": {
+              "ownerType": "Faction",
+              "ownerId": "faction_journey_council",
+              "ownerName": "Crossing Council"
+            },
+            "controller": null,
+            "authorizedUsers": [],
+            "hasFullAccess": false,
+            "resourceMaterialization": {
+              "resources": [
+                {
+                  "resourceKey": "health",
+                  "maximum": 100
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "RequireAbsentOrExactlyEmptyCommandSlot": {
+        "Field": "UpdateVehicles",
+        "EmptyValue": []
+      }
+    },
+    {
+      "Path": "game_state/npcs/npc_core.json",
+      "Mode": "extend-root",
+      "Data": {
+        "UpdateNPCs": [
+          {
+            "NPCId": null,
+            "initialId": "npc_steward_t034_visit42",
+            "npcName": "Распорядитель двора совета",
+            "name": "Распорядитель двора совета",
+            "role": "Дежурный распорядитель хозяйственного двора совета",
+            "image_prompt": "Middle aged human supply steward in simple clothes, attentive expression",
+            "rarity": "Common",
+            "worldview": "Общий запас требует согласованной выдачи.",
+            "personalityArchetype": "careful_steward",
+            "culturalStance": "Pragmatist",
+            "race": "Человек",
+            "class": "Распорядитель",
+            "appearanceDescription": "Распорядитель средних лет в сером полотняном жилете; на манжете белая меловая пыль.",
+            "history": "Ведёт учёт выдачи материалов совета и следит, чтобы инвентарь возвращали на место.",
+            "progressionType": "static_social_npc",
+            "initialLocationId": "locref_council_t034_visit42",
+            "currentLocationId": null,
+            "currentLocationName": "Хозяйственный двор у нижней лестницы",
+            "age": 38,
+            "level": 1,
+            "experience": 0,
+            "experienceForNextLevel": 0,
+            "relationshipLevel": 0,
+            "attitude": "Neutral",
+            "playerCompanionDirective": "not_companion",
+            "culturalLayer": "Хозяйство поместья и Crossing Council",
+            "personalityTraits": [
+              {
+                "traitName": "Бережливость",
+                "description": "Сохраняет общий запас.",
+                "value": 7,
+                "valueDescription": "Сохраняет общий запас."
+              },
+              {
+                "traitName": "Прямота",
+                "description": "Ясно объясняет правила.",
+                "value": 6,
+                "valueDescription": "Ясно объясняет правила."
+              },
+              {
+                "traitName": "Ответственность",
+                "description": "Согласует выдачу с нуждами совета.",
+                "value": 8,
+                "valueDescription": "Согласует выдачу с нуждами совета."
+              }
+            ],
+            "maxWeight": null,
+            "totalWeight": null,
+            "isOverloaded": false,
+            "progressionTrackers": {
+              "active": [],
+              "completed": [],
+              "summary": "No mechanical progression tracker changed in this scene."
+            },
+            "plans": "Показать гостю имущество снаружи, объяснить запись в книге выдачи и не открывать кладовую.",
+            "personalQuests": [],
+            "relationshipLock": {
+              "isLocked": false,
+              "lockState": "none",
+              "reason": "",
+              "breakthroughQuestId": null
+            },
+            "characteristics": {
+              "strength": 5,
+              "dexterity": 5,
+              "constitution": 5,
+              "intelligence": 5,
+              "wisdom": 5,
+              "faith": 5,
+              "attractiveness": 5,
+              "trade": 5,
+              "persuasion": 5,
+              "perception": 5,
+              "luck": 5,
+              "speed": 5
+            },
+            "resourceMaterialization": {
+              "resources": [
+                {
+                  "resourceKey": "health",
+                  "maximum": 100
+                }
+              ]
+            },
+            "activeSkills": [],
+            "passiveSkills": [],
+            "equippedItems": {},
+            "fateCards": [],
+            "inventory": [],
+            "goals": {
+              "primary": {
+                "goalId": "goal_store_t034_visit42",
+                "title": "Сохранить порядок выдачи",
+                "status": "active",
+                "summary": "Отделить осмотр от передачи имущества."
+              },
+              "shortTerm": "Объяснить владельца и порядок доступа.",
+              "longTerm": "Сберечь припасы для дорожных работ."
+            },
+            "sceneStatus": "present",
+            "turn": 42,
+            "lastSeenAtUtc": "@actual_request_utc@",
+            "materialization": {
+              "schemaVersion": 1,
+              "materializationId": "mat_steward_t034_visit42",
+              "actorType": "mortal_npc",
+              "actorId": "npc_steward_t034_visit42",
+              "materializedAtTurn": 42,
+              "state": "complete",
+              "capabilities": {
+                "canFight": false,
+                "canTeach": false,
+                "canTrade": false,
+                "ownsItems": false
+              },
+              "sections": {
+                "skills": {
+                  "state": "empty_by_design",
+                  "reason": "Персонаж не демонстрирует оформленных навыков в этой сцене."
+                },
+                "inventory": {
+                  "state": "empty_by_design",
+                  "reason": "У персонажа нет значимых переносимых предметов."
+                },
+                "fateCards": {
+                  "state": "empty_by_design",
+                  "reason": "Связанный узел судьбы ещё не проявился."
+                },
+                "personalQuests": {
+                  "state": "empty_by_design",
+                  "reason": "Личная задача персонажа пока не возникла."
+                },
+                "relationships": {
+                  "state": "populated"
+                }
+              }
+            },
+            "progressionProfile": {
+              "schemaVersion": 1,
+              "mode": "none"
+            },
+            "teacherProfile": {
+              "canTeach": false,
+              "skills": []
+            },
+            "currentActivity": null,
+            "completedActivities": []
+          }
+        ]
+      },
+      "RequireAbsentOrExactlyEmptyCommandSlot": {
+        "Field": "UpdateNPCs",
+        "EmptyValue": []
+      }
+    },
+    {
+      "Path": "game_state/npcs/npc_journals.json",
+      "Mode": "append-journal",
+      "Data": {
+        "appendNPCJournal": {
+          "npcId": "npc_steward_t034_visit42",
+          "npcName": "Распорядитель двора совета",
+          "lastJournalNote": "Двор показал, порядок объяснил; ключ и имущество не выдавал.",
+          "journalEntries": [
+            {
+              "entryId": "steward_inspection_t034_visit42",
+              "timestamp": "@actual_request_utc@",
+              "event": "Осмотр хозяйства",
+              "description": "Гость сразу сказал, что ничего брать не станет. Я показал мел через окошко и объяснил, что запись о выдаче делается только после согласия совета.",
+              "emotionalImpact": "спокойная настороженность",
+              "relationshipChange": "0"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "Path": "game_state/world/world_time.json",
+      "Mode": "replace",
+      "Data": {
+        "year": 124,
+        "monthName": "Month of Beginnings",
+        "dayOfMonth": 1,
+        "timeOfDay": "08:20",
+        "currentTimeInMinutes": 500
+      }
+    },
+    {
+      "Path": "output/narrative_response.json",
+      "Mode": "replace",
+      "Data": {
+        "response": "В коридоре вы находите дежурного распорядителя. Он выслушивает вас и ведёт вниз по каменным ступеням. Пока вы нашли его, спустились и осмотрелись, прошло около двадцати минут.\n\nПод навесом стоит пустая двухколёсная повозка. Под колесом забит деревянный упор. Распорядитель указывает на зарешеченное окошко кладовой: за ним на полке лежит один белый кусочек разметочного мела со сбитым уголком. Засов он не трогает.\n\n«И повозка, и кладовая с запасом принадлежат Совету переправы. Если понадобится мел, скажите, сколько и для какой работы. После согласия совета я внесу выдачу в книгу. Для повозки согласуют ещё и время возврата. Сейчас я только показываю».\n\nКладовая остаётся запертой, повозка стоит на месте. Вы ничего не берёте и не перемещаете. О состоянии переправы новых сведений нет.",
+        "timestamp": "@actual_request_utc@"
+      }
+    },
+    {
+      "Path": "output/debug_logs.json",
+      "Mode": "replace",
+      "Data": {
+        "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: Распорядитель двора совета\n- Why relevant: Принимает просьбу героя, ведёт его во двор и решает, как показать запас, не выдавая его.\n- Actors outside scope: Mira the scout\n- Why outside scope: Мира остаётся при прежнем поручении; её положение, прогресс и журнал не пересчитаны как результат осмотра.\n\n## Actor Brain 2.0\n### Распорядитель двора совета\n- Identity: npc_steward_t034_visit42\n- Текущая локация / Current location: Хозяйственный двор у нижней лестницы, locref_council_t034_visit42.\n- Ситуация: Герой просит только осмотр имущества.\n- Данные профиля: Бережливость 7, прямота 6, ответственность 8; дежурный, не торговец и не наставник.\n- Мотивация: Сохранить разметочный запас и не превращать любопытство в спор о разрешении.\n- Ограничения: Ни просьба, ни владение фракции не дают герою права на выдачу, ключ или управление.\n- Мысли: Мел виден через решётку, значит дверь можно оставить запертой.\n- Варианты стратегий:\n  1. Показать снаружи. Выгода: герой увидит запас и поймёт порядок. Риск: принять показ за выдачу; проговорить различие.\n  2. Не вести во двор. Выгода: меньше отвлечений. Риск: герой уйдёт, не поняв правил.\n- Выбранная стратегия: Проводить, показать через решётку и объяснить порядок записи.\n- Почему альтернативы отвергнуты: Отказ не требуется, потому что показать можно без открытия двери и передачи контроля.\n- Действия: Ведёт по ступеням, показывает пустую повозку и полку, объясняет порядок выдачи и возврата.\n- Изменения состояния: Новый NPC и первая личная запись в npc_journals; новый выбранный двор и два направленных прохода; отдельная пустая Parked-повозка и отдельная закрытая кладовая с одним предметом. Нет разрешений, выдачи, расхода, XP или навыков.\n\n## Bounded world audit\n- NPC: Восьмичасовое поручение Миры не завершается этим визитом; её профиль и журнал сохранены.\n- Фракция: Совет остаётся владельцем имущества; изменения состава, территории, проекта или доступа нет.\n- Мир: 480→500, 08:00→08:20; нет наступившего world/faction cycle. Ремонт переправы не выполнялся.\n- Ресурсы: Инициализация health100 для здорового распорядителя и исправной повозки на текущей шкале; durability100 для целого кусочка мела. Только создание владельцев через материализацию, никаких текущих значений, отчёта о цикле или клиентских квитанций. NPC skill claims отсутствуют.",
+        "npcSkillClaims": [],
+        "timestamp": "@actual_request_utc@"
+      }
+    },
+    {
+      "Path": "output/interface_updates.json",
+      "Mode": "replace",
+      "Data": {
+        "dialogueOptions": [
+          {
+            "text": "Спросить, как подать заявку на один кусочек мела, не беря его.",
+            "category": "neutral"
+          },
+          {
+            "text": "Уточнить, кто согласует выдачу повозки.",
+            "category": "neutral"
+          },
+          {
+            "text": "Вернуться по лестнице в покои.",
+            "category": "neutral"
+          }
+        ],
+        "timestamp": "@actual_request_utc@"
+      }
+    }
+  ]
+}

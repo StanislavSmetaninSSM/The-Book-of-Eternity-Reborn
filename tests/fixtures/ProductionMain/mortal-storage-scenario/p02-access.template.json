@@ -1,0 +1,97 @@
+{
+  "kind": "p02-permission-semantic-draft",
+  "Completion": "turn",
+  "Writes": [
+    {
+      "Path": "game_state/world/world_map.json",
+      "Mode": "extend-root",
+      "Data": {
+        "worldMapUpdates": {
+          "storageUpdates": [
+            {
+              "targetLocationId": "@accepted42_location_id@",
+              "storageId": "storage_council_chalk_t034_visit42",
+              "update": {
+                "newAuthorizedUsers": [
+                  {
+                    "playerId": "player_current",
+                    "playerName": "Пепельная Искра"
+                  }
+                ],
+                "newHasFullAccess": true
+              }
+            }
+          ]
+        }
+      },
+      "RequireAbsentOrExactlyEmptyCommandSlot": {
+        "Field": "worldMapUpdates",
+        "EmptyValue": {}
+      }
+    },
+    {
+      "Path": "game_state/npcs/npc_journals.json",
+      "Mode": "append-to-exact-existing-npc-journal",
+      "Data": {
+        "npcId": "@accepted42_steward_id@",
+        "lastJournalNote": "Разрешил взять один кусочек мела для работ у переправы. Гость при мне ничего не взял.",
+        "appendEntry": {
+          "entryId": "steward_chalk_permission_t034_visit43",
+          "timestamp": "@actual_request_utc@",
+          "event": "Разрешение на мел",
+          "description": "Гость назвал и предмет, и цель. Одного кусочка для разметки хватит. Я разрешил ему открыть кладовую, взять только этот мел для переправы и вернуть, если останется.",
+          "emotionalImpact": "деловое доверие",
+          "relationshipChange": "0"
+        }
+      }
+    },
+    {
+      "Path": "game_state/world/world_time.json",
+      "Mode": "replace",
+      "Data": {
+        "year": 124,
+        "monthName": "Month of Beginnings",
+        "dayOfMonth": 1,
+        "timeOfDay": "08:25",
+        "currentTimeInMinutes": 505
+      }
+    },
+    {
+      "Path": "output/narrative_response.json",
+      "Mode": "replace",
+      "Data": {
+        "response": "Распорядитель уточняет, что мел нужен для разметки досок у переправы, и сверяется с книгой выдачи. Убедившись, что кусочек не отложен для других работ, он снимает засов. Всё это занимает около пяти минут.\n\n«Совет разрешает взять один кусочек для этой работы. Если останется, верните его на ту же полку. Повозка в эту выдачу не входит».\n\nКладовая теперь доступна вам. Мел всё ещё лежит на полке, а повозка стоит под навесом. Вы дождались разрешения, но пока ничего не взяли и не переместили.",
+        "timestamp": "@actual_request_utc@"
+      },
+      "ExpectedSHA256": "missing"
+    },
+    {
+      "Path": "output/debug_logs.json",
+      "Mode": "replace",
+      "Data": {
+        "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: Распорядитель двора совета\n- Why relevant: Принимает просьбу и решает вопрос о выдаче.\n- Actors outside scope: Mira the scout\n- Why outside scope: Не присутствует; прежнее поручение и память сохранены.\n\n## Actor Brain 2.0\n### Распорядитель двора совета\n- Текущая локация / Current location: Хозяйственный двор у нижней лестницы.\n- Ситуация: Гость просит один кусочек мела для разметки у переправы, не беря его заранее.\n- Данные профиля: Дежурный распорядитель, не торговец и не наставник.\n- Мотивация: Выдать только нужное для дорожных работ и сохранить остальное имущество.\n- Ограничения: Согласие относится к одному кусочку; повозка не выдаётся, собственник не меняется.\n- Мысли: Цель понятна, и кусочек не отложен; можно снять засов.\n- Варианты стратегий:\n  1. Разрешить доступ. Выгода: материал пригодится у переправы. Риск: спутать разрешение на мел с разрешением на повозку; оговорить границу.\n  2. Оставить запертой. Выгода: запас неизменен. Риск: задержать нужную разметку без причины.\n- Выбранная стратегия: Разрешить текущему герою взять один кусочек и вернуть остаток, не передавая его сейчас.\n- Почему альтернативы отвергнуты: Запрошено ровно то, что можно выделить.\n- Действия: Сверяет книгу и снимает засов; сообщает условия, ничего не передаёт.\n- Изменения состояния: Один governed storage_update через world_map, сопровождающая личная запись в npc_journals; владелец и содержимое неизменны. Проекция доступа клиентская. Время 500→505, 08:20→08:25, новый cycle не наступил. Мира, переправа, положение героев и телеги не изменились. Нет механической проверки, бросков, награды, изменения навыка или перемещения предмета.",
+        "npcSkillClaims": [],
+        "timestamp": "@actual_request_utc@"
+      },
+      "ExpectedSHA256": "missing"
+    },
+    {
+      "Path": "output/interface_updates.json",
+      "Mode": "replace",
+      "Data": {
+        "dialogueOptions": [
+          {
+            "text": "Поблагодарить распорядителя, пока оставив мел на полке.",
+            "category": "neutral"
+          },
+          {
+            "text": "Уточнить, где потом оставить остаток мела.",
+            "category": "neutral"
+          }
+        ],
+        "timestamp": "@actual_request_utc@"
+      },
+      "ExpectedSHA256": "missing"
+    }
+  ]
+}

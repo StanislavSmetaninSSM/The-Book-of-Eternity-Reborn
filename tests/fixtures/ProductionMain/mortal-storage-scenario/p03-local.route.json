@@ -1,0 +1,32 @@
+{
+  "kind": "p03-storage-local-semantic-oracle",
+  "Route": "storage-local-proof",
+  "requiresAcceptedTurn": 43,
+  "maxGmActions": 0,
+  "maxAcceptedGmTurns": 0,
+  "target": {
+    "LocationId": "@accepted42_location_id@",
+    "StorageId": "storage_council_chalk_t034_visit42",
+    "ItemId": "@accepted42_chalk_item_id@",
+    "ContentsCountBeforeRetrieve": 1,
+    "StackCount": 1,
+    "OwnerFactionId": "faction_journey_council",
+    "EffectiveFullAccess": true
+  },
+  "stages": [
+    {"stage":"Retrieve","expectedCarrier":"inventory"},
+    {"stage":"Save","expectedCarrier":"inventory","saveName":"s"},
+    {"stage":"Deposit","expectedCarrier":"storage"},
+    {"stage":"Load","expectedCarrier":"inventory","useExactReturnedArchive":true}
+  ],
+  "invariants": [
+    "exact accepted location/storage/item and no second matching stack",
+    "before Retrieve, compare authorized accepted43 effective access, source location, exact item and identity receipts",
+    "after Load, exact saved location and inventory bytes restored; no rerun on uncertainty",
+    "item birth receipt, location receipt, original storage cargo birth evidence and cart receipt preserved",
+    "actual fixed menu render and exact selected entries; no heuristic or truncated label",
+    "same original daemon/process continuity where supported; distinct durable generation from the exact replacement commitment",
+    "story and living-world history unchanged; no request or accepted GM turn",
+    "unique original shutdown/replacement containment and full cleanup independently verified"
+  ]
+}

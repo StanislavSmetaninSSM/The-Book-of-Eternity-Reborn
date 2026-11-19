@@ -4875,3 +4875,23 @@ wrong-width negative remain open. No costly game setup/cache or repeated passing
 runtime suite; only actual renderer preparation is needed for this causal check.
 Independent mm20 outcome has now confirmed settled logical/physical cleanup with
 zero publication; the retained daemon error and non-predecessor status remain.
+
+T034 immutable semantic scenario is now independently reviewed as handauthored
+fixture input under tests/fixtures/ProductionMain/mortal-storage-scenario, not a
+captured response or executable relay packet. P01 birth, P02 permission and P03
+local route are complete before a future launch. Three P02 transient outputs
+explicitly expect absence after ordinary staging clears them; previous accepted
+output hashes are separate history evidence. Three canonical writes remain exact
+frozen sources. Characteristic-key dependency, typed-empty command-slot refusals
+and timestamp pointers into final composed packets are explicit. No cross-run
+97-file normalization, authority reuse, binder or game execution is introduced.
+Fixed authored scene names are unchanged; worst-case Load78 is still unqualified.
+Independent correction review accepted exact fixture hashes:
+design e90dc8a19943940102cdbf552a8b79d68f3d44e81b812f91b1757ca9c40349d2;
+p01 a7f34932d25493b96610d6600341b9b23fb72274af7dab5c6711a5d7c6c874cf;
+p02 2453b0a8d6b3ab599498383c37511a66f39840192ec91ecf2baa9fc8409632fa;
+p03 3f068e54c77c4ff638fd47b47c2aff9aecd60cd9a55280d076197f834d2023ab.
+GO is limited to durable fixture preservation and concrete-new-seed preparation
+after the geometry gate. Exact new-seed dependency bytes and all final packets
+must be fully reviewed before each launch; live-window edits are only enumerated
+fresh timestamp bindings with authenticated request checks and mismatch refusal.
