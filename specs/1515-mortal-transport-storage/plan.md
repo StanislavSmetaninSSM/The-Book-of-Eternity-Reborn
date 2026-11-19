@@ -4733,3 +4733,10 @@ T032 intentionally does not alter this path. Track one genuine Save→Load→act
 continuation regression with separate commitment/generation/continuation assertions
 before a scoped fix and before expensive live p03. Do not automatically substitute
 pre-send purpose or broaden into manual-refresh/Browser/afterlife semantics.
+
+T032 final independent outcome accepted: unchanged actual consumer1/1 GREEN,
+27/27 bounded Unit controls, exact source/output joins and owned cleanup verified.
+Logger no longer has the three former errors; canonical-failure is null. T032 is
+complete only for ordinary Mortal pre-send. T016 live journey and T033 committed
+Load continuation remain open; no claim for another GM action, Save/Load or full
+#1515 closure. Original mm19 p02 remains a failed phase, not a continuation base.
