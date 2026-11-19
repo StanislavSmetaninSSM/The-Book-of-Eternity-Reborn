@@ -251,10 +251,11 @@ class CurrentProducer(unittest.TestCase):
   functions=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='require_current_producer_contract']
   self.assertEqual(len(functions),1,'Missing exact current producer contract; downstream controls UNEXECUTED')
   ns={'pathlib':pathlib};exec(compile(ast.Module(body=functions,type_ignores=[]),'<actual-producer-contract>','exec'),ns);fn=ns['require_current_producer_contract']
-  src={'engine.cs':'a','driver.py':'b','publish-current.py':'c'}
-  valid={'owningBuildSourcePins':{'engine.cs':'a','driver.py':'old'},'allowedNonCompilerSourceChanges':{'driver.py':'b'},'allowedNonCompilerSourceAdditions':{'publish-current.py':'c'},'outputPins':{'client.dll':'d'},'producerOutputPins':{'client.dll':'d'},'contentOverlays':[]}
+  driver='tests/fixtures/ProductionMain/live-mortal-phase.py';addition='specs/1515-mortal-transport-storage/manual-mm21/publish-current.py'
+  src={'engine.cs':'a',driver:'b',addition:'c'}
+  valid={'owningBuildSourcePins':{'engine.cs':'a',driver:'old'},'allowedNonCompilerSourceChanges':{driver:'b'},'allowedNonCompilerSourceAdditions':{addition:'c'},'outputPins':{'client.dll':'d'},'producerOutputPins':{'client.dll':'d'},'contentOverlays':[]}
   fn(valid,src)
-  for case in ('changed-output','extra-output','overlay','missing-addition','unreviewed-change','removed-source','compiled-addition','compiled-change'):
+  for case in ('changed-output','extra-output','overlay','missing-addition','unreviewed-change','removed-source','compiled-addition','compiled-change','props-addition','arbitrary-python','resource-change'):
    with self.subTest(case=case):
     b=copy.deepcopy(valid);current=dict(src)
     if case=='changed-output':b['producerOutputPins']['client.dll']='old'
@@ -264,6 +265,10 @@ class CurrentProducer(unittest.TestCase):
     elif case=='unreviewed-change':b['allowedNonCompilerSourceChanges']={}
     elif case=='removed-source':current.pop('engine.cs')
     elif case=='compiled-addition':current['new.cs']='e';b['allowedNonCompilerSourceAdditions']['new.cs']='e'
+    elif case=='props-addition':current['new.props']='e';b['allowedNonCompilerSourceAdditions']['new.props']='e'
+    elif case=='arbitrary-python':current['arbitrary.py']='e';b['allowedNonCompilerSourceAdditions']['arbitrary.py']='e'
+    elif case=='resource-change':
+     b['owningBuildSourcePins']['resource.json']='old';current['resource.json']='new';b['allowedNonCompilerSourceChanges']['resource.json']='new'
     else:current['engine.cs']='changed';b['allowedNonCompilerSourceChanges']['engine.cs']='changed'
     with self.assertRaises(ValueError):fn(b,current)
 

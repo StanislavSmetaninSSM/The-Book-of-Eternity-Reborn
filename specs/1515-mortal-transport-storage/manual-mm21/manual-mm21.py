@@ -1,4 +1,27 @@
 import pathlib,json,hashlib,shutil,os,sys,importlib.util,time,subprocess
+def require_current_producer_contract(b,src):
+ # Finite reviewed Python/document preparation changes, never compiler/resource paths.
+ allowed={
+  'tests/fixtures/SelectionPrompt/test_fullroute_inputs.py',
+  'tests/fixtures/SelectionPrompt/smoke.py','tests/fixtures/SelectionPrompt/fullroute_inputs.py',
+  'tests/fixtures/ProductionMain/live-mortal-phase.py','tests/fixtures/ProductionMain/test-live-terminal-fences.py',
+  'tests/fixtures/ProductionMain/relay_phase_evidence.py','tests/fixtures/ProductionMain/test-mortal-phase-evidence.py',
+  'specs/1515-mortal-transport-storage/t034-physical-lease-observation-plan.md',
+  'specs/1515-mortal-transport-storage/manual-mm21/test-submit-mm21-data.py',
+  'specs/1515-mortal-transport-storage/manual-mm21/prepare-mm21-profile.py',
+  'specs/1515-mortal-transport-storage/manual-mm21/manual-mm21.py'}
+ additions_allowed={'specs/1515-mortal-transport-storage/manual-mm21/publish-current.py','specs/1515-mortal-transport-storage/manual-mm21/publish-current.sh'}
+ owning=b['owningBuildSourcePins']
+ if set(owning)-set(src):raise ValueError('Owning source removed')
+ changes={p:src[p] for p in owning if src[p]!=owning[p]}
+ additions={p:src[p] for p in set(src)-set(owning)}
+ if changes!=b['allowedNonCompilerSourceChanges'] or not set(changes)<=allowed:
+  raise ValueError('Unreviewed owning-source changes')
+ if additions!=b['allowedNonCompilerSourceAdditions'] or not set(additions)<=additions_allowed:
+  raise ValueError('Unreviewed owning-source additions')
+ if b['outputPins']!=b['producerOutputPins']:raise ValueError('Current producer must equal current owning outputs')
+ if b['contentOverlays']!=[]:raise ValueError('Current producer accepts zero overlays only')
+
 os.environ.update(POWERSHELL_TELEMETRY_OPTOUT='1',POWERSHELL_UPDATECHECK='Off',DOTNET_CLI_TELEMETRY_OPTOUT='1')
 R=pathlib.Path('/workspace/shared/mortal-isolated-20261119');h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 if len(sys.argv)!=3:raise ValueError('Reviewed input manifest and new destination required')
@@ -10,7 +33,12 @@ if D.parent!=pathlib.Path('/workspace/shared') or re.fullmatch(r'mm[0-9]{2}-[0-9
 input_bytes=input_path.read_bytes()
 if hashlib.sha256(input_bytes).hexdigest()!=os.environ['MM_REVIEWED_INPUT_SHA256']:raise ValueError('Reviewed input hash differs')
 b=json.loads(input_bytes);assert b['destination']==str(D)
-E=input_path.parent;serial=E;producer=pathlib.Path(b['immutableProducerRoot']);old=producer/'package'
+E=input_path.parent;serial=E;producer=pathlib.Path(b['immutableProducerRoot']);old=pathlib.Path(b['nativeDirectory'])
+for path in (producer,old):
+ assert path.is_absolute() and path==path.resolve() and not any(x.is_symlink() for x in [path,*path.parents]) and path.is_dir()
+assert h(producer/'published.json')==b['currentProducerPublishedSHA256']
+assert h(producer/'outcome.json')==b['currentProducerOutcomeSHA256']
+assert h(producer/'logs/publish-BookOfEternityClient.TestSupport.outcome.json')==b['currentProducerHelperPublishOutcomeSHA256']
 assert not os.path.lexists(D)
 # Enumerate the same owning-build source universe BEFORE importing checkout code.
 def source_inventory():
@@ -30,10 +58,7 @@ for name in b['sourcePins']:
  member=pathlib.PurePosixPath(name)
  assert name and not member.is_absolute() and str(member)==name and '..' not in member.parts and '\\' not in name
 src=source_inventory();assert src==b['sourcePins'],'Source membership/hash drift'
-owning=b['owningBuildSourcePins'];assert owning.keys()==src.keys(),'Owning build source membership changed'
-changes={name:src[name] for name in src if src[name]!=owning[name]}
-assert changes==b['allowedNonCompilerSourceChanges'],'Unreviewed owning-source delta'
-assert all(pathlib.PurePosixPath(name).suffix in {'.ps1','.py','.md','.sh','.json'} for name in changes),'Compiled-source drift requires owning build'
+require_current_producer_contract(b,src)
 assert src['tests/fixtures/ProductionMain/live-mortal-phase.py']==os.environ['MM21_REVIEWED_DRIVER_SHA256']
 def checked_output(name,digest):
  member=pathlib.PurePosixPath(name)
@@ -57,10 +82,6 @@ def output_inventory():
     else:raise ValueError('Linked/special owning output')
  return rows
 assert output_inventory()==b['outputPins'],'Owning output membership/hash drift'
-assert b['outputPins'].keys()==b['producerOutputPins'].keys(),'Producer/current output membership differs'
-output_changes={name for name,digest in b['outputPins'].items() if digest!=b['producerOutputPins'][name]}
-allowed_output_changes={project+'/bin/Debug/net8.0/game_master_daemon.ps1' for project in ('BookOfEternityClient','BookOfEternityGMBridge','BookOfEternityClient.TestSupport')} | {'BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll','BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb'}
-assert output_changes==allowed_output_changes,'Unreviewed current-vs-producer output delta'
 assert len(b['unitOutputsCorroboration'])==8
 for name,digest in b['outputPins'].items():checked_output(name,digest)
 for name,digest in b['unitOutputsCorroboration'].items():checked_output(name,digest)
@@ -80,26 +101,7 @@ for project,path in packages.items():
  assetdata=json.loads((R/project/'obj/project.assets.json').read_text());matches=[v['System.Diagnostics.EventLog/8.0.0']['runtimeTargets'][extra] for v in assetdata['targets'].values() if 'System.Diagnostics.EventLog/8.0.0' in v];assert matches and all(x=={'assetType':'runtime','rid':'win'} for x in matches)
  rows=m.inventory(path);actual={x['path']:x['sha256'] for x in rows};assert actual==expected,(project,sorted(set(actual)-set(expected)),sorted(set(expected)-set(actual)))
  verified[project]=rows
-# Closed finite refresh map: current source content and two owning helper artifacts only.
-expected_overlay={}
-for project,rows in verified.items():
- members={row['path']:row for row in rows}
- for name,source in [('game_master_daemon.ps1','BookOfEternityClient/game_master_daemon.ps1'),('Launcher/gm_main_operation.ps1','BookOfEternityClient/Launcher/gm_main_operation.ps1')]:
-  assert name in members
-  expected_overlay[(project,name)]=(source,'source')
- if project=='BookOfEternityClient.TestSupport':
-  for name in ('BookOfEternityClient.TestSupport.dll','BookOfEternityClient.TestSupport.pdb'):
-   assert name in members
-   expected_overlay[(project,name)]=(project+'/bin/Debug/net8.0/'+name,'output')
-overlays=b['contentOverlays'];assert len(overlays)==len(expected_overlay)==8
-assert len({(x['project'],x['path']) for x in overlays})==8
-for row in overlays:
- key=(row['project'],row['path']);assert key in expected_overlay
- source,kind=expected_overlay[key];assert row['source']==source and row['sourceKind']==kind
- member=next(x for x in verified[row['project']] if x['path']==row['path'])
- assert row['oldSHA256']==member['sha256'] and row['mode']==(0o700 if member['mode']&0o111 else 0o600)
- expected_hash=src[source] if kind=='source' else b['outputPins'][source]
- assert row['sha256']==expected_hash;checked_output(source,expected_hash)
+overlays=b['contentOverlays'] # Exactly empty, checked before checkout imports.
 import relay_phase_evidence as pe
 terminal_rows=[]
 for name in pe.TERMINAL_SOURCE_FILES:
@@ -114,21 +116,14 @@ def copy_exact(source,target,rows):
   p=m.safe_member(source,row['path']);assert h(p)==row['sha256'];q=target/row['path'];q.parent.mkdir(parents=True,exist_ok=True);q.write_bytes(p.read_bytes());q.chmod(0o700 if row['mode']&0o111 else 0o600);assert h(q)==row['sha256']
 copy_exact(old,D/'native',native)
 for project,rows in verified.items():copy_exact(packages[project],D/'receipt-helper' if project.endswith('TestSupport') else D/'package'/project,rows)
-for row in overlays:
- target=(D/'receipt-helper' if row['project']=='BookOfEternityClient.TestSupport' else D/'package'/row['project'])/row['path']
- assert h(target)==row['oldSHA256']
- data=(R/row['source']).read_bytes();assert hashlib.sha256(data).hexdigest()==row['sha256']
- target.write_bytes(data);target.chmod(row['mode'])
 for project,rows in verified.items():
  target=D/'receipt-helper' if project=='BookOfEternityClient.TestSupport' else D/'package'/project
  expected={x['path']:(x['sha256'],0o700 if x['mode']&0o111 else 0o600) for x in rows}
- for x in overlays:
-  if x['project']==project:expected[x['path']]=(x['sha256'],x['mode'])
- assert {x['path']:(x['sha256'],x['mode']) for x in m.inventory(target)}==expected,'Final package inventory differs from exact overlay result'
+ assert {x['path']:(x['sha256'],x['mode']) for x in m.inventory(target)}==expected,'Final package inventory differs from exact current producer'
 copy_exact(R/'tools/gm-relay',D/'p01/relay',relay)
 copy_exact(R/'tests/fixtures',D/'p01/terminal-fixture',terminal_rows)
 copy_exact(deps,D/'p01/terminal-deps',dep_rows)
-inputrecord={'kind':'manual-standard-preparation-not-T028-helper','sourceCommit':b['sourceCommit'],'publishedCheckpoint':os.environ['MM21_REVIEWED_CHECKPOINT'],'sourcePins':src,'outputPins':b['outputPins'],'unitOutputsCorroboration':b['unitOutputsCorroboration'],'owningBuildManifestSHA256':hashlib.sha256(input_bytes).hexdigest(),'nativeSourceRows':native,'publishedSourceRows':verified,'contentOverlays':overlays,'destination':str(D),'exportInput':exportinput,'publishOnlyDependency':{'path':extra,'source':str(nuget),'sha256':h(nuget),'projectAssetsSHA256':h(assets),'runtimeTarget':targets,'actualPublishLogSHA256':h(producer/'publish-BookOfEternityClient.TestSupport.log'),'depsPins':{p.name:h(p) for p in packages['BookOfEternityClient.TestSupport'].glob('*.deps.json')},'depsNote':'Exact deps files retained; EventLog.Messages is a win runtimeTarget in restore assets, not separately named in these deps.'},'bootstrap':b['guardianTool']}
+inputrecord={'kind':'manual-standard-preparation-not-T028-helper','sourceCommit':b['sourceCommit'],'publishedCheckpoint':os.environ['MM21_REVIEWED_CHECKPOINT'],'sourcePins':src,'outputPins':b['outputPins'],'unitOutputsCorroboration':b['unitOutputsCorroboration'],'owningBuildManifestSHA256':hashlib.sha256(input_bytes).hexdigest(),'nativeSourceRows':native,'publishedSourceRows':verified,'contentOverlays':overlays,'destination':str(D),'exportInput':exportinput,'publishOnlyDependency':{'path':extra,'source':str(nuget),'sha256':h(nuget),'projectAssetsSHA256':h(assets),'runtimeTarget':targets,'actualPublishOutcomeSHA256':h(producer/'logs/publish-BookOfEternityClient.TestSupport.outcome.json'),'currentProducerPublishedSHA256':b['currentProducerPublishedSHA256'],'depsPins':{p.name:h(p) for p in packages['BookOfEternityClient.TestSupport'].glob('*.deps.json')},'depsNote':'Exact deps files retained; EventLog.Messages is a win runtimeTarget in restore assets, not separately named in these deps.'},'bootstrap':b['guardianTool']}
 (D/'preparation-inputs.json').write_text(json.dumps(inputrecord,indent=2)+'\n')
 argv=[shutil.which('dotnet'),str(D/'receipt-helper/BookOfEternityClient.TestSupport.dll'),'mortal-live-seed-export',str(D/'play'),str(R/'FileSystemExample/game_session'),str(D/'seed-manifest.json')]
 result=m.run_owned(argv,R,D/'logs','seed-export',guardian,180);assert result['exitCode']==0,result
@@ -141,6 +136,9 @@ assert not(D/'play/.boe_runtime/gm-runs').exists() and not(D/'p01/queue').exists
 for n in ('input','output','ready'):assert not any((session/n).iterdir()) if (session/n).exists() else True
 for n in ('pending_turn_snapshot','pending_turn_snapshot.json','pending_turn_snapshot.authority.json','gm_bridge_status.json','validation_repair_request.json'):assert not(session/'game_state/control'/n).exists()
 assert input_path.read_bytes()==input_bytes
+assert h(producer/'published.json')==b['currentProducerPublishedSHA256']
+assert h(producer/'outcome.json')==b['currentProducerOutcomeSHA256']
+assert h(producer/'logs/publish-BookOfEternityClient.TestSupport.outcome.json')==b['currentProducerHelperPublishOutcomeSHA256']
 assert output_inventory()==b['outputPins']
 assert source_inventory()==src
 for name,digest in b['outputPins'].items():checked_output(name,digest)

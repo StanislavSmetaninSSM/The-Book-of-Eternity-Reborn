@@ -337,3 +337,13 @@ One new actual-function pure method in the existing test file establishes this
 contract; select ONLY CurrentProducer (one method), not the already closed28.
 Test-first source is UNRUN and main preparation remains unchanged. No mm24
 creation/export or fake no-op overlays; old worlds and producers untouched.
+
+CurrentProducer pure1 missing-contract RED independently accepted0.005s; no
+other tests ran. Minimal manual SOURCE now removes old overlay/delta application,
+requires producerOutputPins==outputPins and contentOverlays==[], and binds reviewed
+noncompiler changes/additions to a finite explicit Python/doc path set, not suffix
+exclusions. Native directory is separate from the new producer; actual published
+metadata/outcome/helper-publish evidence hashes are checked before and after.
+Full destination package equality still includes private-mode normalization only.
+Pure1 adds props/arbitraryPython/resource refusal controls; SOURCE/GREEN pending.
+No world preparation or producer mutation has occurred.
