@@ -27,6 +27,8 @@ internal static class NativeHostScenarioDriver
             return await MortalStateDiagnostic.RunAsync(args[1], args[2], args[3]);
         if (args.Length == 3 && args[0] == "spectre-inventory-cleanup-smoke")
             return SpectreSelectionSmoke.Run(args[1], args[2], inventory: true, cleanup: true);
+        if (args.Length == 3 && args[0] == "spectre-load-geometry-smoke")
+            return SpectreSelectionSmoke.Run(args[1], args[2], load: true, longLoad: true);
         if (args.Length == 3 && args[0] == "spectre-load-smoke")
             return SpectreSelectionSmoke.Run(args[1], args[2], load: true);
         if (args.Length == 3 && args[0] == "spectre-inventory-smoke")

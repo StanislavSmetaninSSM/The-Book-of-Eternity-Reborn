@@ -124,16 +124,21 @@ def expected_dumb_refusal(result):
 
 def main():
     root, helper, mode = pathlib.Path(sys.argv[1]),sys.argv[2],sys.argv[3]
-    assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load','pipe-inventory-cleanup')
+    assert mode in ('pty','pipe-dumb','pipe-xterm','pipe-inventory','pipe-load','pipe-inventory-cleanup','pipe-load-geometry')
     cleanup = mode == 'pipe-inventory-cleanup'
     inventory = mode in ('pipe-inventory','pipe-inventory-cleanup')
-    load = mode == 'pipe-load'
+    geometry = mode == 'pipe-load-geometry'
+    load = mode in ('pipe-load','pipe-load-geometry')
     fixed_render = inventory or load
     if fixed_render:
         sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1]/'ProductionMain'))
         from mortal_console_routes import selected_frame, fixed_menu, local_load_menu, after_menu, entry_menu
         menu=fixed_menu("🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)",["💰 Деньги: 500","← Назад"],20)
         if load:load_menu=local_load_menu('Двор совета',43,99999)
+        if geometry:
+            # Inert observation only: defer the unchanged production admission guard
+            # until real rendering, exact selection, normal exit and drain exist.
+            load_menu=dict(load_menu,choices=('s | Ход 43 | Хозяйственный двор у нижней лестницы | 18.11.2026 18:00 | 99999KB','↩️ Назад'))
         if inventory:menu=fixed_menu(menu['header'],['💰 Деньги: 500','⚔ ⚔️ Основная рука: Древний меч','📦 Древний меч [Оружие]','📦 🔒 Кладовая материалов совета (1 пр.)','← Назад'],20)
         first_label,footer=menu['choices'][0],menu['choices'][-1]
     root.mkdir(parents=True,exist_ok=False)
@@ -144,11 +149,12 @@ def main():
         os.setsid();fcntl.ioctl(slave,termios.TIOCSCTTY,0);os.tcsetpgrp(slave,os.getpid())
     env=os.environ.copy();env['TERM']='dumb' if mode=='pipe-dumb' else 'xterm-256color'
     result={'Mode':mode,'Success':False,'EOF':False,'CleanupFailures':[],'Inputs':[]}
+    result['PtySizeReadback']=list(struct.unpack('HHHH',fcntl.ioctl(slave,termios.TIOCGWINSZ,b'\0'*8)))
     process=None;screen=Screen();control=Screen(screen.keyboard);closed=set();streams={};raws={}
     frame_cut=0; captured=bytearray(); raw_cut=0
     start=time.monotonic();stage=0
     try:
-        args=['dotnet',helper,'spectre-inventory-cleanup-smoke' if cleanup else 'spectre-load-smoke' if load else 'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
+        args=['dotnet',helper,'spectre-inventory-cleanup-smoke' if cleanup else 'spectre-load-geometry-smoke' if geometry else 'spectre-load-smoke' if load else 'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
         process=subprocess.Popen(args,stdin=slave,stdout=slave if mode=='pty' else subprocess.PIPE,
                                  stderr=slave if mode=='pty' else subprocess.STDOUT,env=env,preexec_fn=own)
         result.update(OriginalPid=process.pid,Argv=args)
@@ -224,7 +230,16 @@ def main():
                 if mode=='pty' or streams[fd]=='captured':
                     captured.extend(data);screen.feed(data)
                 else:control.feed(data)
-            ready=lambda choice: (selected_frame(bytes(captured),raw_cut,menu) ==
+            def geometry_frame(choice):
+                # Inert-only exact literal observation, not live menu admission.
+                # Screen already rejects unsupported controls. Never join wrapped rows.
+                tail=screen.plain[frame_cut:].replace('\r','')
+                at=tail.rfind('Выберите сохранение:\n')
+                if at<0:return False
+                a,b=load_menu['choices']
+                expected='Выберите сохранение:\n'+('> '+a+'\n  '+b if choice=='SMOKE_ALPHA' else '  '+a+'\n> '+b)
+                return tail[at:]==expected and not screen.pending and not screen.decoder.getstate()[0]
+            ready=lambda choice: geometry_frame(choice) if geometry and stage>=2 else (selected_frame(bytes(captured),raw_cut,menu) ==
                 (first_label if choice=='SMOKE_ALPHA' else footer)) if fixed_render else (
                 screen.selected(choice) if mode=='pty' else screen.frame(choice,frame_cut))
             if stage==0 and ready('SMOKE_ALPHA'):
@@ -285,6 +300,11 @@ def main():
             assert not receipt['OutputRedirected'] and not receipt['ErrorRedirected']
         else:
             assert receipt['OutputRedirected'] and receipt['ErrorRedirected']
+        if geometry:
+            result['ActualGeometry']=json.loads((root/'geometry.json').read_text())
+            result['RenderedAndExitedBeforeGuard']=True
+            # This unchanged guard is the expected causal RED, not setup failure.
+            local_load_menu('Хозяйственный двор у нижней лестницы',43,99999)
         result['Success']=mode!='pipe-dumb'
     except BaseException as error:
         result['Failure']=type(error).__name__+': '+str(error)

@@ -4858,3 +4858,20 @@ current76-column preflight bound; that does not invalidate birth content. Reprod
 the exact full menu with real Spectre and verified fixed terminal geometry before
 adjusting supported bounds. Do not change canonical names to satisfy the harness,
 guess a menu selection, or start another world before the full inert route passes.
+
+T034 initial SOURCE WIP: five source/catalog files extend the existing Spectre
+selection fixture with one isolated geometry role and one exact category
+mortal-load-geometry-renderer (one Fact). Actual child Console/Spectre width/height
+and redirected flags, parent PTY ioctl, complete raw initial/redraw, Back/exit/EOF
+and termios precede the unchanged production76-column guard. The exact proposed
+78-column Load label follows inventory Back and Clear/Rule; no game or synthetic
+accepted authority is involved. A narrow literal frame observer belongs only to
+the inert fixture, never production admission. If actual rendering wraps, report
+that separately instead of claiming the later guard caused the failure.
+Source manifest SHA256:8cd7b67f1e4b37293b26e194c5a9a4bc0c8c0c595766315f299b7ef317b35178.
+UNBUILT/UNRUN, awaiting remote save and independent source review. Production
+driver/parser/bound remain unchanged. Full-route fixed-width positive and
+wrong-width negative remain open. No costly game setup/cache or repeated passing
+runtime suite; only actual renderer preparation is needed for this causal check.
+Independent mm20 outcome has now confirmed settled logical/physical cleanup with
+zero publication; the retained daemon error and non-predecessor status remain.

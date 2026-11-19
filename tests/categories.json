@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-load-geometry-renderer",
+      "responsibility": "#1515 T034 exact planned 78-column Load row: actual two-prompt Spectre geometry/raw frames and normal Back/EOF before unchanged 76-column admission guard. Causal diagnostic RED; not full-route qualification.",
+      "excludes": "No game, GM, world, authority, production geometry changes or bypass of live admission.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/SpectreSelectionSmoke.cs",
+        "tests/fixtures/SelectionPrompt/smoke.py"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualExact78ColumnLoadCapturesGeometryBeforeAdmission"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-loaded-canonical-data",
       "responsibility": "#1515 T033 distinct clean committed Mortal Load canonical DATA: retained quiescent owner, exact bound/durable generation, result eligibility, marker and directory absence, closing dependency drift and strict raw isolation.",
       "excludes": "No live game, new owner acquisition, result DTO authority, browser/afterlife or manual refresh extension.",
