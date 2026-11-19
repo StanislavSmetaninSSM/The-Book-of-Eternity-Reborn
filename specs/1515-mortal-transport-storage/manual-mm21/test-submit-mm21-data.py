@@ -255,6 +255,13 @@ class CurrentProducer(unittest.TestCase):
   src={'engine.cs':'a',driver:'b',addition:'c'}
   valid={'owningBuildSourcePins':{'engine.cs':'a',driver:'old'},'allowedNonCompilerSourceChanges':{driver:'b'},'allowedNonCompilerSourceAdditions':{addition:'c'},'outputPins':{'client.dll':'d'},'producerOutputPins':{'client.dll':'d'},'contentOverlays':[]}
   fn(valid,src)
+  # Exactly the reviewed ordinary-save route and directly affected Save guard.
+  for name in ('tests/fixtures/ProductionMain/mortal_console_routes.py','tests/fixtures/ProductionMain/test-mortal-console-routes.py'):
+   b=copy.deepcopy(valid);current=dict(src);b['owningBuildSourcePins'][name]='old';current[name]='reviewed';b['allowedNonCompilerSourceChanges'][name]='reviewed'
+   try:fn(b,current)
+   except ValueError as ex:self.fail('Reviewed ordinary-save fixture path not admitted: '+name+': '+str(ex))
+   b['allowedNonCompilerSourceChanges'][name]='different'
+   with self.assertRaises(ValueError):fn(b,current)
   for case in ('changed-output','extra-output','overlay','missing-addition','unreviewed-change','removed-source','compiled-addition','compiled-change','props-addition','arbitrary-python','resource-change'):
    with self.subTest(case=case):
     b=copy.deepcopy(valid);current=dict(src)

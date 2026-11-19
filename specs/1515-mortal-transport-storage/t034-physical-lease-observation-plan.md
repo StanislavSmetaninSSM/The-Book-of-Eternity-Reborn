@@ -527,3 +527,15 @@ preauthored grant. Failed mm24 is not revived. Original budgets, per-phase trace
 accepted predecessor and one-shot publication gates remain mandatory. The finite
 archive scope deliberately excludes recomposed resource authority and does not
 claim whole-state equivalence or a combined grant→transfer→Load PASS.
+
+### Fresh mm25 preparation admission WIP (UNRUN)
+
+Managed outputs and current standard producer remain reusable only after exact
+closing joins. Ordinary-save changes add precisely two noncompiler paths beyond
+the old finite eleven-path allowlist: mortal_console_routes.py and its directly
+affected test-mortal-console-routes.py. The existing CurrentProducer method now
+authors exact admission and mismatched-digest refusal for those paths; initial
+RED is UNRUN. No broad allowlist, overlay, rebuild, old-world copy, new world or
+export is part of this source checkpoint. Final preparation must independently
+join the updated thirteen changed paths, two existing additions, exact producer
+rows/modes, tools/native/terminal inputs and fresh absent destination.
