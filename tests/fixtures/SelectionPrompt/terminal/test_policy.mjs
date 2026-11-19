@@ -25,4 +25,12 @@ for(const text of ['\ufeffabc','a\ufeffb','\ufeff\x1b[6n\ufeff']) {
   assert.deepEqual(Buffer.concat([x.bytes,y.bytes,a.feed(Buffer.alloc(0),true).bytes]),bytes);
  }
 }
-console.log(JSON.stringify({Suite:'terminal-admission',Success:true,Utf8Splits:raw.length+1,RejectedControls:7,PartialEOF:2,BomCorpus:3}));
+// Cooperative player input saves/restores the cursor with empty parameters only.
+const draft=Buffer.from(' >  \x1b[s\x1b[u\x1b[J/options\x1b[u');
+for(let split=0;split<=draft.length;split++) {
+ const a=new Admission(); const x=a.feed(draft.subarray(0,split)); const y=a.feed(draft.subarray(split));
+ assert.deepEqual(Buffer.concat([x.bytes,y.bytes,a.feed(Buffer.alloc(0),true).bytes]),draft);
+}
+for(const bad of ['\x1b[0s','\x1b[1s','\x1b[;s','\x1b[0u','\x1b[1u','\x1b[?u'])
+ assert.throws(()=>new Admission().feed(Buffer.from(bad)));
+console.log(JSON.stringify({Suite:'terminal-admission',Success:true,Utf8Splits:raw.length+1,RejectedControls:7,PartialEOF:2,BomCorpus:3,DraftSplits:draft.length+1,ParameterizedCursorRefusals:6}));

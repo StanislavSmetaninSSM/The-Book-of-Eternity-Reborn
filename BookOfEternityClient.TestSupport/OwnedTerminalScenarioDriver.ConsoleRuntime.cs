@@ -19,7 +19,7 @@ internal static partial class OwnedTerminalScenarioDriver
         {
             var start=new System.Diagnostics.ProcessStartInfo("/usr/bin/python3") {UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=Path.Combine(folder,"ship")};
             var node=Environment.GetEnvironmentVariable("BOE_TERMINAL_NODE") ?? throw new InvalidOperationException("Pinned Node required");
-            var prefix=Environment.GetEnvironmentVariable("BOE_TERMINAL_PREFIX") ?? throw new InvalidOperationException("Pinned terminal packages required");
+            var prefix=Path.Combine(folder,"ship/terminal-deps");
             var peer=Path.Combine(folder,"console-wire");
             foreach(var arg in new[]{Path.Combine(folder,"ship/console-fixture/SelectionPrompt/terminal/console_navigation.py"),node,prefix,
                 Path.Combine(folder,"ship/BookOfEternityClient/BookOfEternityClient.dll"),root,peer})start.ArgumentList.Add(arg);
@@ -32,7 +32,9 @@ internal static partial class OwnedTerminalScenarioDriver
             var value=receipt.RootElement;
             if(!value.GetProperty("Success").GetBoolean() || !value.GetProperty("NoScriptedInput").GetBoolean()
                 || !value.GetProperty("EOF").GetBoolean() || !value.GetProperty("ChildRestoredConfiguredBaseline").GetBoolean()
-                || !value.GetProperty("OwnerRestoredOriginal").GetBoolean())throw new InvalidOperationException("Actual console wire outcome failed: "+value);
+                || !value.GetProperty("OwnerRestoredOriginal").GetBoolean()
+                || !value.GetProperty("TerminalNormalClose").GetBoolean() || value.GetProperty("TerminalExitCode").GetInt32()!=0
+                || value.GetProperty("ChildExitCode").GetInt32()!=0 || value.GetProperty("CleanupFailures").GetArrayLength()!=0)throw new InvalidOperationException("Actual console wire outcome failed: "+value);
             evidence["ActualConsoleWire"]=value.Clone();
             output=System.Text.Encoding.UTF8.GetString(await File.ReadAllBytesAsync(Path.Combine(peer,"pty.raw")));
         }

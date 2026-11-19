@@ -7,6 +7,7 @@ from pty_probe import PtyWriter
 class Transport(OwnedTerminal):
     def __init__(self, folder, reply):
         self.deadline=time.monotonic()+.2;self.writer=lambda *args:None
+        self.work_deadline=self.deadline;self.cleanup_deadline=self.deadline+.2;self.cleanup_entered=False
         self.seq=0;self.failed=False;self.closed=False;self.pending=False;self.buffer=b''
         self.audit=[];self.evidence=pathlib.Path(folder);self.reply=reply
         self.readfd,writefd=os.pipe();os.set_blocking(writefd,False)
@@ -30,6 +31,22 @@ class Controls(unittest.TestCase):
         t.pending=True
         with self.assertRaises(ValueError):t.key(b'x','two')
         self.assertEqual(len(sent),2)
+    def test_one_way_cleanup_uses_original_bounds_and_blocks_work_keys(self):
+        t=self.transport({});sent=[];t.writer=lambda *args:sent.append(args)
+        original=t.cleanup_deadline;t.deadline=t.work_deadline=0
+        t.enter_cleanup()
+        self.assertEqual(t.deadline,original)
+        t.key(b'x','observed-cleanup',cleanup=True)
+        self.assertEqual(len(sent),1)
+        with self.assertRaises(ValueError):t.enter_cleanup()
+        with self.assertRaises(ValueError):t.key(b'x','work-forbidden')
+        self.assertEqual(len(sent),1)
+    def test_expired_cleanup_never_extends_or_writes(self):
+        t=self.transport({});t.deadline=t.work_deadline=t.cleanup_deadline=0
+        with self.assertRaises(TimeoutError):t.enter_cleanup()
+        self.assertTrue(t.failed)
+        with self.assertRaises(ValueError):t.key(b'x','late',cleanup=True)
+        self.assertEqual(t.deadline,0)
     def test_bad_sequence_poison_snapshot_and_no_key(self):
         for reply in [{'op':'SNAPSHOT','seq':2},{'op':'SNAPSHOT','seq':True},[],{'op':'SNAPSHOT','seq':1,'cursor':{'x':False,'y':0},'lines':['']*25}]:
             with self.subTest(reply=reply):
@@ -86,7 +103,7 @@ class Controls(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(Controls)
-    assert suite.countTestCases()==7
+    assert suite.countTestCases()==9
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    summary={'Suite':'terminal-transport','Expected':7,'Executed':result.testsRun,'Failures':len(result.failures),'Errors':len(result.errors),'Skipped':len(result.skipped),'Success':result.wasSuccessful() and result.testsRun==7 and not result.skipped}
+    summary={'Suite':'terminal-transport','Expected':9,'Executed':result.testsRun,'Failures':len(result.failures),'Errors':len(result.errors),'Skipped':len(result.skipped),'Success':result.wasSuccessful() and result.testsRun==9 and not result.skipped}
     print(json.dumps(summary));raise SystemExit(0 if summary['Success'] else 1)

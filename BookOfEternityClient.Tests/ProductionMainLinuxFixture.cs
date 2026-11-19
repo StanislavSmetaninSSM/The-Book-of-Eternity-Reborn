@@ -69,6 +69,33 @@ internal static class ProductionMainLinuxFixture
                 pins[relative]=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(destination))).ToLowerInvariant();
             }
             File.WriteAllText(Path.Combine(folder,"console-wire-source-pins.json"),JsonSerializer.Serialize(pins));
+            // Exact reviewed package DATA only, never a directory-wide blind copy/download.
+            var dependencySource=Environment.GetEnvironmentVariable("BOE_TERMINAL_PREFIX")
+                ?? throw new InvalidOperationException("Pinned terminal dependency source required");
+            var dependencyTarget=Path.Combine(ship,"terminal-deps");
+            using var provenance=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(target,"SelectionPrompt/terminal/provenance.json")));
+            var dependencyPins=new Dictionary<string,string>();
+            foreach(var packageEntry in provenance.RootElement.EnumerateObject())
+                foreach(var entry in packageEntry.Value.GetProperty("files").EnumerateObject())
+                    dependencyPins.Add(entry.Name,entry.Value.GetString()!);
+            var actual=new HashSet<string>();var directories=new Stack<string>();directories.Push(Path.Combine(dependencySource,"node_modules"));
+            while(directories.TryPop(out var directory)) {
+                Assert.False(File.GetAttributes(directory).HasFlag(FileAttributes.ReparsePoint));
+                foreach(var entry in Directory.EnumerateFileSystemEntries(directory)) {
+                    var attributes=File.GetAttributes(entry);Assert.False(attributes.HasFlag(FileAttributes.ReparsePoint));
+                    if(attributes.HasFlag(FileAttributes.Directory))directories.Push(entry);
+                    else actual.Add(Path.GetRelativePath(dependencySource,entry));
+                }
+            }
+            Assert.True(actual.SetEquals(dependencyPins.Keys));
+            foreach(var entry in dependencyPins) {
+                var input=Path.Combine(dependencySource,entry.Key);var destination=Path.Combine(dependencyTarget,entry.Key);
+                var bytes=File.ReadAllBytes(input);
+                Assert.Equal(entry.Value,Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant());
+                Directory.CreateDirectory(Path.GetDirectoryName(destination)!);File.WriteAllBytes(destination,bytes);
+                Assert.Equal(entry.Value,Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(destination))).ToLowerInvariant());
+            }
+            File.WriteAllText(Path.Combine(folder,"console-wire-dependency-pins.json"),JsonSerializer.Serialize(dependencyPins));
         }
         var playerBin=Path.Combine(folder,"player-bin");Directory.CreateDirectory(playerBin);
         foreach(var executable in new[]{"dotnet","pwsh"}) {

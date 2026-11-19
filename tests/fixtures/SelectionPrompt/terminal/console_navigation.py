@@ -1,5 +1,6 @@
 """Existing genuine Continue fixture: actual System input, no provider or scripted input."""
 import copy, errno, fcntl, json, os, pathlib, pty, select, struct, subprocess, sys, termios, time
+sys.dont_write_bytecode=True
 from owned_terminal import OwnedTerminal
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent.parent))
 from fullroute_inputs import AcknowledgedTerminalView, fresh_route_key
@@ -83,7 +84,7 @@ def main():
         except BaseException as error:cleanup.append(repr(error))
         if slave is not None:os.close(slave)
         os.close(master);raw.close()
-        result={'Success':failure is None and not cleanup and owner_restored,'Failure':failure,'CleanupFailures':cleanup,'EOF':eof,'ChildRestoredConfiguredBaseline':child_restored,'OwnerRestoredOriginal':owner_restored,'ChildExitCode':None if child is None else child.returncode,'Inputs':writer.audit,'Stages':stages,'NoScriptedInput':True,'ProviderCalls':0,'OriginalTermios':repr(original),'ConfiguredTermios':repr(configured),'ElapsedSeconds':time.monotonic()-start}
+        result={'Success':failure is None and not cleanup and owner_restored,'Failure':failure,'CleanupFailures':cleanup,'EOF':eof,'ChildRestoredConfiguredBaseline':child_restored,'OwnerRestoredOriginal':owner_restored,'TerminalNormalClose':terminal is not None and terminal.closed,'TerminalExitCode':None if terminal is None or terminal.process is None else terminal.process.returncode,'ChildExitCode':None if child is None else child.returncode,'Inputs':writer.audit,'Stages':stages,'NoScriptedInput':True,'ProviderCalls':0,'OriginalTermios':repr(original),'ConfiguredTermios':repr(configured),'ElapsedSeconds':time.monotonic()-start}
         (root/'result.json').write_text(json.dumps(result,indent=2)+'\n')
     if not result['Success']:raise RuntimeError(result)
 if __name__=='__main__':main()

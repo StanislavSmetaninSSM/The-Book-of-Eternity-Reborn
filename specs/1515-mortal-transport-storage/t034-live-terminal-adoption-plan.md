@@ -153,3 +153,22 @@ Commands cannot borrow cleanup reserve before handoff. key(...,cleanup=True) is
 required after it; gameplay keys remain forbidden. The live physical writer uses
 the same phase-bound ownership, and tests cover expired work, valid reserved cleanup,
 expired cleanup and second handoff. Existing inert callers retain their fixed bound.
+
+
+### Bounded source checkpoint: main wire/shared core (UNRUN)
+
+The first review block is the existing original-owner Continue fixture with real
+System input, local `/options`, return to main and Exit. It copies only the 17
+pinned terminal package files into its own shipping directory, verifies hashes,
+and uses the existing owner bootstrap/result/Stop tail. It adds no owner registry,
+canonical factory or provider. A separate exact category owns its single Fact.
+Eight source-shaped UI DATA methods, nine transport methods (including one-way
+original-deadline cleanup handoff), split cursor-control admission and the actual
+upstream save/move/restore corpus are authored but UNRUN. The original eight-second
+wire work deadline remains; no limit was increased. Existing terminal/core DATA
+are reused, with fresh per-input geometry, noecho and prefix checks.
+
+The live caller is deliberately a separate **UNFINISHED / NOT RUNNABLE** block.
+Its saved early source refuses legacy client writes without predicates; Save,
+Load and failure cleanup callsites still need completion before any live review
+or launch. This checkpoint does not qualify live transport or hosted Load.

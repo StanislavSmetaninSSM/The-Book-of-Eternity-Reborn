@@ -2,6 +2,37 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-client-main-player-wire",
+      "responsibility": "T034 genuine System-input foreground PTY Continue to cooperative empty player input, local Options to main and Exit, with pinned terminal packages, original owner and normal cleanup. Shared terminal DATA and cursor-save/restore corpus are separate prerequisite gates.",
+      "excludes": "No scripted player input, provider, GM turn, accepted world, Save/Load commit, hosted replacement or live adapter qualification.",
+      "changeHints": [
+        "tests/fixtures/SelectionPrompt/terminal/client_ui.py",
+        "tests/fixtures/SelectionPrompt/terminal/console_navigation.py",
+        "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.ConsoleRuntime.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-terminal-emulator-qualification",
+          "when": "Shared terminal admission, phase handoff or upstream save/restore cursor semantics change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConsoleRuntimeAdmissionTests.ActualConsoleContinue_RealPtyPlayerAndExitRetainOriginalOwner"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-terminal-emulator-qualification",
       "responsibility": "T034 pinned terminal admission/transport DATA, exact Unicode11 runtime corpus, and one actual inert .NET CursorTop on owned same-PTY100/noecho with original deadline and cleanup.",
       "excludes": "No full route, game, provider, live transport, saved world or Load commit.",

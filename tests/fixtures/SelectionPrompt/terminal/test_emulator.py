@@ -35,6 +35,15 @@ def main():
             assert result['cursor']=={'x':2,'y':1}
             terminal.feed(b'\x1b[2J\x1b[1;1H'+b'line\r\n'*26)
             result=terminal.feed(b'\x1b[6n');assert result['cursor']=={'x':0,'y':24}
+            # Exact cooperative-input CSI save/restore, with authored cells/cursor.
+            terminal.feed(b'\x1b[2J\x1b[1;1H >  \x1b[s\x1b[3;8Haway\x1b[u')
+            snapshot=terminal.snapshot()
+            assert snapshot['cursor']=={'x':4,'y':0},snapshot
+            assert snapshot['lines']==[' >','','       away']+['']*22,snapshot
+            terminal.feed(b'\x1b[J/options\x1b[u')
+            snapshot=terminal.snapshot()
+            assert snapshot['cursor']=={'x':4,'y':0},snapshot
+            assert snapshot['lines']==[' >  /options']+['']*24,snapshot
             terminal.close()
         finally:
             # No successful cleanup claim if protocol failed; owner records exact child.
