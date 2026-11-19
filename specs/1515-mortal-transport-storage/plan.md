@@ -4432,3 +4432,17 @@ Original-owner shutdown now refuses before attempt/RPC while inventory cleanup
 is unresolved; the actual AST block proves zero attempts/RPC/logicalfalse and
 preserves the initial failure. These are source/cheap checks only. Corrected
 real cleanup fixture remains UNBUILT/UNRUN pending independent source re-review.
+
+T030 official six-case GREEN, final independent outcome pending, 2026-11-19.
+Fresh serial Unit/helper build37.49s,0 errors/70 warnings. Official exact selected
+renderer/route/frame categories completed six tests/three descriptors,6/6 PASS,
+22.7720735s, no skips/duplicates/timeout, complete runner-owned cleanup. Actual
+inert cleanup renderer exercised the pending first Down then settled through
+four total Down keys, one Back Enter, full production-shaped player prompt and
+normal inert exit; no Ctrl+C. All three renderer children exited0, EOF/termios/
+joined/drained true with no cleanup failures. Standard inventory and Load controls
+remain passing. This qualifies only test-fixture UI ordering; genuine main-owner
+retirement and the required live Mortal journey remain separate. No mm18 retry or
+historical uncertainty reclassification. Raw retained outside Git in
+mortal-t030/green-official. Source/output final joins and independent outcome
+review are being checked before fresh-world preparation.
