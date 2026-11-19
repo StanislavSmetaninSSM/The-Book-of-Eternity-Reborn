@@ -1168,3 +1168,12 @@ assets14/tools6/Unit8 close exactly. No tests repeated, no old world touched.
 Next clean mm28 preparation remains separately pinned and gated; live semantic
 and current-authority checks still required. Ordinary outcome must call the
 actual strict mixed freezer; scripted P01 trace has its own scoped review.
+
+### Clean mm28 preparation technically accepted
+Independent `30ca2402` verifies all16 artifacts, eight inventories and unchanged
+whole play/profile baseline; fresh setup41 only, validation0/not accepted. One
+export+profile preparation7.4168s with normal original exporter EOF/ECHILD/0.
+Exact launcher `09a53d5f` / profile `ff36be56`, private marker-only trace and
+original budgets. No origin/queue/game launch at this checkpoint. Distinct GM
+baseline and actual request/content/owner/reserve gates still apply before the
+single scripted P01; ordinary43 and its Save remain separate later evidence.
