@@ -6,7 +6,7 @@ namespace BookOfEternityClient.Tests;
 public sealed class MortalConsoleRouteTests
 {
     [Fact]
-    public Task FiniteConsoleRouteDataContracts() => RunAsync("test-mortal-console-routes.py", 14);
+    public Task FiniteConsoleRouteDataContracts() => RunAsync("test-mortal-console-routes.py", 18);
     [Fact]
     public Task MortalOutcomeUnionDataContracts() => RunAsync("test-mortal-outcome-evidence.py", 7);
     [Fact]

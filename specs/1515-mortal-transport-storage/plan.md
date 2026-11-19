@@ -4315,3 +4315,28 @@ existing narrow Spectre renderer rather than constructing another game world.
 Live selection must remain freshly observed, not cached permission or a guessed
 row. No production behavior, budgets, dependencies or network policy changed.
 All raw remains outside Git; only this written checkpoint/task is published.
+
+T029 RED fixture checkpoint, 2026-11-19. Independent source/raw review confirms
+complete Money->Money->MainHand after one Down; no geometry diagnosis. The new
+DATA controls execute the actual finite_select function. On the unchanged
+observer:18 methods,15 PASS/3 methods ERROR (four failing subcases),0.322s.
+Duplicates produce the incorrect cycle error; repeats-only produces that error
+rather than bounded timeout; skipped/hidden transitions fail to reject promptly.
+An initial test-author syntax typo was fixed before this causal behavior run and
+is not counted as RED. The real inventory renderer now has the exact five-row
+menu and the smoke calls the shipped finite_select with actual owned PTY input
+and captured output. Its target needs three Down keys then Enter. Source review,
+fresh helper build and bounded official renderer run are next; no fix is applied.
+Natural duplicate timing is not guaranteed, so a passing renderer will be a
+runtime control, not fabricated causal RED. Existing two-leaf renderer category
+is preserved with its precise inventory method renamed; DATA wrapper count18.
+
+Independent cleanup source/evidence review also established a separate failure:
+client Ctrl+C at21.362 tears down an active local-menu operation; bridge records
+connection loss for that exact pin, then pin_drain_timeout/Pins1/drainfalse.
+The shutdown at21.387 subsequently fails stop_lifecycle_inactive. Generic
+metadata/admission-unavailable is not proof that metadata files disappeared.
+A future bounded fixture correction must gracefully leave a freshly observed
+known menu and settle its operation before owner shutdown. Merely moving RPC
+before Ctrl+C is not proven safe or sufficient. No guard or cleanup source has
+changed here. Raw observations remain local and mm18 is not reused.

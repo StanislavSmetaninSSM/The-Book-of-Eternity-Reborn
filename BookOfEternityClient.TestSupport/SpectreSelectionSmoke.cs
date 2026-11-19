@@ -34,7 +34,7 @@ internal static class SpectreSelectionSmoke
                     ? "[bold yellow]🎒 📦 Инвентарь[/]  [dim](⚖ 1.8kg/45.0kg кг)[/]  [dim](выберите для просмотра / управления)[/]"
                     : "T024 inert selection")
                 .PageSize(load ? 15 : 20)
-                .AddChoices(load ? new[] { "s | Ход 43 | Двор совета | 18.11.2026 18:00 | 99999KB", "↩️ Назад" } : inventory ? new[] { "💰 Деньги: 500", "← Назад" } : new[] { "SMOKE_ALPHA", "SMOKE_BETA" }));
+                .AddChoices(load ? new[] { "s | Ход 43 | Двор совета | 18.11.2026 18:00 | 99999KB", "↩️ Назад" } : inventory ? new[] { "💰 Деньги: 500", "⚔ ⚔️ Основная рука: Древний меч", "📦 Древний меч [Оружие]", "📦 🔒 Кладовая материалов совета (1 пр.)", "← Назад" } : new[] { "SMOKE_ALPHA", "SMOKE_BETA" }));
             return 0;
         }
         catch (Exception error) { failure = error; return 1; }

@@ -133,7 +133,8 @@ def main():
         from mortal_console_routes import selected_frame, fixed_menu, local_load_menu, after_menu, entry_menu
         menu=fixed_menu("🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)",["💰 Деньги: 500","← Назад"],20)
         if load:load_menu=local_load_menu('Двор совета',43,99999)
-        first_label,footer=menu['choices']
+        if inventory:menu=fixed_menu(menu['header'],['💰 Деньги: 500','⚔ ⚔️ Основная рука: Древний меч','📦 Древний меч [Оружие]','📦 🔒 Кладовая материалов совета (1 пр.)','← Назад'],20)
+        first_label,footer=menu['choices'][0],menu['choices'][-1]
     root.mkdir(parents=True,exist_ok=False)
     master,slave=pty.openpty()
     fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0))
@@ -153,6 +154,38 @@ def main():
         streams={master:'terminal' if mode=='pty' else 'echo'}
         if mode!='pty':streams[process.stdout.fileno()]='captured'
         raws={fd:(root/(name+'.raw')).open('wb',buffering=0) for fd,name in streams.items()}
+        if inventory:
+            # Exercise the actual driver's finite selector, not another observer.
+            import ast
+            source=pathlib.Path(__file__).resolve().parents[1]/'ProductionMain/live-mortal-phase.py'
+            node=next(n for n in ast.parse(source.read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='finite_select')
+            import mortal_console_routes
+            class Peer:
+                capture=captured
+                def send(self,key,phase):
+                    assert os.write(master,key)==len(key)
+                    result['Inputs'].append({'Hex':key.hex(),'Phase':phase,'CaptureCut':len(captured)})
+            def wait(predicate,seconds,label):
+                deadline=min(start+12,time.monotonic()+seconds)
+                while not predicate():
+                    if time.monotonic()>deadline:raise TimeoutError(label)
+                    for fd in select.select([f for f in streams if f not in closed],[],[],.02)[0]:
+                        try:data=os.read(fd,65536)
+                        except OSError as ex:
+                            if fd!=master or ex.errno!=errno.EIO:raise
+                            data=b''
+                        if not data:closed.add(fd);continue
+                        raws[fd].write(data)
+                        if streams[fd]=='captured':captured.extend(data);screen.feed(data)
+                        else:control.feed(data)
+            namespace={'client':Peer(),'console_routes':mortal_console_routes,'until':wait}
+            exec(compile(ast.Module(body=[node],type_ignores=[]),'actual finite selector','exec'),namespace)
+            target=menu['choices'][3]
+            namespace['finite_select'](menu,target,0,5)
+            assert [i['Hex'] for i in result['Inputs']]==['1b5b42']*3+['0d']
+            assert selected_frame(bytes(captured),0,menu)==target
+            assert not captured.endswith(b'\r') and bytes(captured).rstrip(b' ').endswith(footer.encode())
+            result['ActualFiniteSelector']=True;result['Target']=target;result['CompleteFooterWithoutCR']=True;stage=2
         while time.monotonic()-start<12:
             for fd in select.select([f for f in streams if f not in closed],[],[],.02)[0]:
                 try:data=os.read(fd,65536)
@@ -220,7 +253,7 @@ def main():
         assert result['TermiosRestored'] and not receipt['InputRedirected']
         assert receipt['Term']==env['TERM'] and receipt['NoColor']=='1' and receipt['PlainOutput']
         if mode!='pipe-dumb':
-            assert stage==(4 if load else 2) and result['ExitCode']==0 and receipt['Selected']==(footer if fixed_render else 'SMOKE_BETA') and receipt['Failure'] is None
+            assert stage==(4 if load else 2) and result['ExitCode']==0 and receipt['Selected']==(target if inventory else footer if fixed_render else 'SMOKE_BETA') and receipt['Failure'] is None
         if mode=='pty':
             assert not receipt['OutputRedirected'] and not receipt['ErrorRedirected']
         else:

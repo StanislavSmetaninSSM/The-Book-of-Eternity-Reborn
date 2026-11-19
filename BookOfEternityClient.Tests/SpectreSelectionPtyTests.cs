@@ -13,7 +13,7 @@ public sealed class SpectreSelectionPtyTests
         => await RunModeAsync(mode);
 
     [Fact]
-    public Task ActualInventoryPipeFrameDrivesDownAndBackThroughShippedMatcher() => RunModeAsync("pipe-inventory");
+    public Task ActualFiveRowInventoryUsesFiniteSelectorAndReturnsLockedTarget() => RunModeAsync("pipe-inventory");
 
     [Fact]
     public Task ActualLongLocationLoadPipeFrameIsUnwrappedAndReturnsBack() => RunModeAsync("pipe-load");

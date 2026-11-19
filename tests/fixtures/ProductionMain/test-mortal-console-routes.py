@@ -72,6 +72,53 @@ class RouteTests(unittest.TestCase):
         peer=Peer(False);ns['client']=peer
         with self.assertRaises(TimeoutError):ns['finite_select'](console_routes.fixed_menu('Menu',['Alpha','Beta'],20),'Beta',0,2)
         self.assertEqual(peer.keys,[b'\x1b[B'])
+    def selection_sequence(self, transitions, target_index=3):
+        # Authored exact UI shape, not a copied game capture or ownership proof.
+        labels=['💰 Деньги: 500','⚔ ⚔️ Основная рука: Древний меч','📦 Древний меч [Оружие]','📦 🔒 Кладовая материалов совета (1 пр.)','← Назад']
+        menu=console_routes.fixed_menu('🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)',labels,20)
+        def frame(index):return ('\r\x1b[6A'+menu['header']+'\n'+'\n'.join(('> ' if n==index else '  ')+label for n,label in enumerate(labels))).encode()
+        class Peer:
+            def __init__(self):self.capture=bytearray(frame(0));self.keys=[];self.pending=[];self.turn=iter(transitions)
+            def send(self,key,phase):
+                self.keys.append(key)
+                if key==b'\x1b[B':self.pending.extend(next(self.turn,[]))
+        peer=Peer();peer.frame=frame
+        def until(predicate,*unused):
+            for _ in range(8):
+                if predicate():return
+                if peer.pending:
+                    chunk=peer.pending.pop(0)
+                    peer.capture.extend(chunk if isinstance(chunk,bytes) else b''.join(frame(i) for i in chunk))
+            raise TimeoutError('Fixed original poll budget')
+        node=next(n for n in ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='finite_select')
+        ns={'client':peer,'console_routes':console_routes,'until':until};exec(compile(ast.Module(body=[node],type_ignores=[]),'actual finite selector','exec'),ns)
+        return peer,lambda:ns['finite_select'](menu,labels[target_index],0,5)
+    def test_duplicate_redraw_waits_for_transition_without_extra_key(self):
+        for transitions in ([[[0],[1]],[[1],[2]],[[2],[3]]], [[[0,0,1]],[[1,2]],[[2,2,3]]]):
+            with self.subTest(transitions=transitions):
+                peer,run=self.selection_sequence(transitions);run()
+                self.assertEqual(peer.keys,[b'\x1b[B']*3+[b'\r'])
+    def test_repeated_same_selection_times_out_without_extra_key(self):
+        peer,run=self.selection_sequence([[[0],[0],[0]]])
+        with self.assertRaises(TimeoutError):run()
+        self.assertEqual(peer.keys,[b'\x1b[B'])
+    def test_skipped_backward_or_hidden_transition_refused(self):
+        for transitions in ([[[2]]],[[[1]],[[0]]],[[[1,2,1]]]):
+            with self.subTest(transitions=transitions):
+                peer,run=self.selection_sequence(transitions)
+                with self.assertRaises(RuntimeError):run()
+                self.assertNotIn(b'\r',peer.keys)
+                self.assertLessEqual(len(peer.keys),2)
+    def test_truncated_newest_frame_cannot_accept_old_target(self):
+        peer,run=self.selection_sequence([[[1],b'\r\x1b[6Aunfinished']],target_index=1)
+        # Both chunks arrive together, so no earlier complete frame can be accepted.
+        original_send=peer.send
+        def send(key,phase):
+            original_send(key,phase)
+            if key==b'\x1b[B':peer.pending=[peer.frame(1)+b'\r\x1b[6Aunfinished']
+        peer.send=send
+        with self.assertRaises(TimeoutError):run()
+        self.assertEqual(peer.keys,[b'\x1b[B'])
     def test_actual_local_branch_is_separate_from_genuine_gm_send(self):
         tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
         matches=[n for n in ast.walk(tree) if isinstance(n,ast.If) and
@@ -151,6 +198,6 @@ class RouteTests(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(RouteTests)
-    if suite.countTestCases()!=14:raise SystemExit('Expected exactly fourteen finite-route DATA methods')
+    if suite.countTestCases()!=18:raise SystemExit('Expected exactly eighteen finite-route DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==14 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==18 and result.wasSuccessful() and not result.skipped else 1)

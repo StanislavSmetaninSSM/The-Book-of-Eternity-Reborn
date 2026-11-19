@@ -69,14 +69,14 @@
     },
     {
       "id": "mortal-menu-frame-renderer",
-      "responsibility": "#1515 T027 actual inert Spectre inventory-shaped pipe/xterm render, fresh redraw and inventory-to-Load closing/Clear transition through shipped finite menu matcher, Down then Back and owned EOF/guardian cleanup.",
+      "responsibility": "#1515 T029 actual five-row inert Spectre inventory through shipped finite selector, plus inventory-to-Load closing/Clear transition; exact returned choices and owned EOF/guardian cleanup.",
       "excludes": "No game, bootstrap, GM, world, main-owner lifecycle or publication authority.",
       "changeHints": ["BookOfEternityClient.TestSupport/SpectreSelectionSmoke.cs", "tests/fixtures/SelectionPrompt/smoke.py"],
       "related": [],
       "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualInventoryPipeFrameDrivesDownAndBackThroughShippedMatcher", "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualLongLocationLoadPipeFrameIsUnwrappedAndReturnsBack"]}]
+      "selectors": [{"project": "unit", "tests": ["BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualFiveRowInventoryUsesFiniteSelectorAndReturnsLockedTarget", "BookOfEternityClient.Tests.SpectreSelectionPtyTests.ActualLongLocationLoadPipeFrameIsUnwrappedAndReturnsBack"]}]
     },
     {
       "id": "mortal-explorer-participation-data",
