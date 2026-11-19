@@ -1397,3 +1397,9 @@ Next separately authorized closed operational rebind is source design only:
 existing preparer strict config helpers/atomic writer, exactly command/cwd/pipe,
 new-root-only relay paths, every other setting and game DATA/history/ZIP unchanged.
 No UI rebind claim, no authority adoption or hosting under the cold acceptance.
+Closed-rebind test-first design34053327 independently approved, no setting write:
+construct command from constant shell form/new-root paths, exactly command/cwd/pipe,
+existing strict config helpers and atomic writer. Two temporary DATA methods are
+UNRUN; frozen admitted config evidence is pinned to the accepted cold artifact,
+not a new authority or copied canonical game state. Actual mutation remains behind
+source/DATA plus exact settings-diff and closed-instance input gate.
