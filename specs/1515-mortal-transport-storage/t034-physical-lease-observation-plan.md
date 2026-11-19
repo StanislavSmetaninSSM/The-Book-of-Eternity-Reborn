@@ -212,3 +212,13 @@ len(captured) reads require fresh mutable state, not a cache; no extra parsing o
 preparation is introduced. Source review and pure20 GREEN are pending; the
 external samePTY fullroute remains FAILED/unqualified until a separately gated
 single inert run. No new package/world or mm22/mm23 replay is admitted.
+
+Independent t022 outcome review accepted the corrected pure20 GREEN:20/20PASS
+in0.427s, zeroerrors, exact32065source/8output before=after and only the two
+chooser/doc RED→GREEN deltas. The immutable failedraw comparison is also exact.
+The source correction is accepted within authored DATA scope, not actual UI.
+Next requires one independently admitted existing fullroute1 in a new absent
+diagnostic root, same100x25/samePTY and45/55/60 limits. Current compiled source
+and eight outputs equal the32.76s owning build; four explicit noncompiler
+deltas are smoke external wiring, chooser, its DATA and this plan. No rebuild
+or local35/remote3 rerun is warranted by these Python/doc-only changes.
