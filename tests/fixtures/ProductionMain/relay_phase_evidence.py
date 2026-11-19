@@ -748,3 +748,76 @@ def require_native_bootstrap_path_budget(temp_root):
     count=len((str(Path(temp_root)/('boe-native-'+'0'*32)/'owner')).encode('utf-8'))
     if count>107:raise ValueError(f'Fixture native bootstrap path is {count} UTF-8 bytes; maximum 107. Choose a fresh shorter phase root.')
     return count
+
+# Finite scenario DATA only; resource_owner_authority is recomposed by Save and
+# deliberately not byte-compared. This is not a full-state/ownership manifest.
+ORDINARY_SAVE_PATHS = (
+    'game_state/meta/soul_state.json', 'game_state/core/player_status.json',
+    'game_state/world/world_time.json', 'game_state/control/progression_schedule.json',
+    'game_state/world/world_map.json', 'game_state/world/location_identity_index.json',
+    'game_state/world/current_location.json', 'game_state/inventory/items.json',
+    'game_state/inventory/item_identity_index.json', 'game_state/misc/vehicles.json',
+    'game_state/npcs/npc_core.json', 'game_state/npcs/npc_journals.json',
+    'game_state/npcs/item_journals.json',
+)
+
+def ordinary_save_snapshot(session, story, queue, result):
+    """One immutable scoped snapshot per boundary; no ownership or permission."""
+    session=_restored_plain_path(Path(session),True)
+    story=_restored_plain_path(Path(story));story_name=story.relative_to(session).as_posix()
+    if not story_name.startswith('stories/') or len(Path(story_name).parts)!=2:
+        raise ValueError('Ordinary Save active story path differs')
+    if (type(result.get('AcceptedTurnNumber')) is not int or result['AcceptedTurnNumber']<42
+        or any(type(result.get(k)) is not int or result[k]!=1 for k in ('AcceptedGameTurns','GenuineActionsSent'))):
+        raise ValueError('Ordinary Save requires one accepted actual action')
+    for name in ('input/turn_request.json','game_state/control/pending_turn_snapshot.json',
+        'game_state/control/pending_turn_snapshot.authority.json','game_state/control/pending_turn_snapshot',
+        'ready/turn_complete.json','ready/turn_error.json'):
+        path=session/name
+        if path.exists() or path.is_symlink():raise ValueError('Pending turn at Save boundary: '+name)
+    files={name:_restored_plain_path(session/name).read_bytes().hex() for name in (*ORDINARY_SAVE_PATHS,story_name)}
+    if sha(bytes.fromhex(files[story_name]))!=result.get('StoryAfterSHA256'):
+        raise ValueError('Accepted story changed before Save')
+    history='game_state/world/mortal_living_world_history.json';p=session/history
+    files[history]=_restored_plain_path(p).read_bytes().hex() if p.exists() or p.is_symlink() else None
+    queue=_restored_plain_path(Path(queue),True);queue_pins={}
+    for p in queue.rglob('*'):
+        if p.is_symlink():raise ValueError('Linked Save queue entry')
+        if p.is_dir():continue
+        queue_pins[p.relative_to(queue).as_posix()]=sha(_restored_plain_path(p).read_bytes())
+    return {'Turn':result['AcceptedTurnNumber'],'StoryPath':story_name,'Files':files,'Queue':queue_pins,
+        'AcceptedGameTurns':result['AcceptedGameTurns'],'GenuineActionsSent':result['GenuineActionsSent']}
+
+def verify_ordinary_save_archive(raw, snapshot, expected_turn):
+    """Verify the scoped accepted DATA, not synthesized/control archive contents."""
+    import io,zipfile
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        names=archive.namelist();seen=set()
+        for name in names:
+            path=Path(name)
+            if (not name or '\\' in name or path.is_absolute() or '..' in path.parts
+                or path.as_posix()!=name or name.casefold() in seen):
+                raise ValueError('Aliased or duplicate Save member')
+            seen.add(name.casefold())
+        if names.count('save_metadata.json')!=1:raise ValueError('Save metadata ambiguous')
+        metadata=strict_settings(archive.read('save_metadata.json'))
+        if (metadata.get('saveName')!='s' or type(metadata.get('turnNumber')) is not int
+            or metadata['turnNumber']!=expected_turn or snapshot['Turn']!=expected_turn):
+            raise ValueError('Save turn differs from accepted turn')
+        for name,value in snapshot['Files'].items():
+            if value is None:
+                if name in names:raise ValueError('Save fabricated absent history')
+            elif names.count(name)!=1 or archive.read(name)!=bytes.fromhex(value):
+                raise ValueError('Save scoped DATA differs: '+name)
+    return True
+
+def ordinary_save_proved(result):
+    try:
+        p=result['OrdinarySaveProof'];before=p['Before'];after=p['After'];turn=result['AcceptedTurnNumber']
+        if (type(turn) is not int or type(p['Turn']) is not int or p['Turn']!=turn or before['Turn']!=turn
+            or any(type(result[k]) is not int or result[k]!=1 for k in ('AcceptedGameTurns','GenuineActionsSent'))
+            or before!=after or p['ArchiveVerified'] is not True or p['CleanOutcomeBeforeFirstPlayerClear'] is not True):return False
+        if not isinstance(p['ArchiveSHA256'],str) or re.fullmatch('[0-9a-f]{64}',p['ArchiveSHA256']) is None:return False
+        story_sha=sha(bytes.fromhex(before['Files'][before['StoryPath']]))
+        return story_sha==p['StorySHA256']==result['StoryAfterSHA256']
+    except (KeyError,TypeError,ValueError):return False

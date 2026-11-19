@@ -329,7 +329,7 @@ class RouteTests(unittest.TestCase):
                      success+'\n',success+'\n'+success+'\nВаш ход\n >  '):
             with self.subTest(text=text):self.assertFalse(console_routes.clean_save_result(text))
         tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
-        fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='storage_local_route')
+        fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='save_current_turn')
         guard=next(n for n in fn.body if isinstance(n,ast.If) and ast.unparse(n.test)=='not clean')
         index=fn.body.index(guard)
         earlier=ast.unparse(ast.Module(body=fn.body[:index],type_ignores=[]))
@@ -337,7 +337,9 @@ class RouteTests(unittest.TestCase):
         self.assertIn('acknowledge actual Save result',earlier)
         self.assertTrue(earlier.rfind('fresh_player')>earlier.index('acknowledge actual Save result'))
         self.assertIn('clean_save_player_interval(outcome)',earlier)
-        self.assertIn('move(False)',later)
+        local=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='storage_local_route')
+        local_text=ast.unparse(local)
+        self.assertLess(local_text.index('save_current_turn(expected_turn - 1)'),local_text.index('move(False)'))
         with self.assertRaises(RuntimeError):exec(compile(ast.Module(body=[guard],type_ignores=[]),'actual Save result refusal','exec'),{'clean':False})
     def test_local_route_does_not_accept_story_or_queue_change(self):
         before={'StorySHA256':'a','History':{'present':False,'sha256':None},'QueuePins':{}}

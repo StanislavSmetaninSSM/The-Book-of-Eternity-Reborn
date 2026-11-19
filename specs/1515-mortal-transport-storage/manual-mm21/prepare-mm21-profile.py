@@ -31,8 +31,10 @@ def checked_continuation_binding(value):
     action=value['Action']
     if type(action) is not str or not action.strip() or len(action.encode())>4096 or any(ord(c)<32 for c in action):raise ValueError('Invalid single action')
     route=value['ConsoleRoute']
-    if type(route) is not dict or set(route)!={'Route','StorageId','ItemId'} or route['Route']!='permission-with-denial':raise ValueError('Exact permission route required')
-    for key in ('StorageId','ItemId'):
+    if type(route) is not dict:raise ValueError('Exact continuation route required')
+    fields={'permission-with-denial':{'Route','StorageId','ItemId'},'ordinary-save':{'Route'}}.get(route.get('Route'))
+    if fields is None or set(route)!=fields:raise ValueError('Exact continuation route required')
+    for key in fields-{'Route'}:
         if type(route[key]) is not str or not route[key] or any(ord(c)<32 for c in route[key]):raise ValueError('Invalid target identity')
     return value
 
@@ -111,7 +113,8 @@ if phase=='p02':
     for name,f in [('Status',D/'play/game_session/game_state/control/gm_daemon_status.json'),('Guard',D/'play/.boe_runtime/locks/gm-daemon-instance.lock')]:
         if plain_path(f).read_bytes().hex()!=previous['DaemonSettlement']['Final'+name+'RawHex']:raise ValueError('Settled daemon evidence changed')
     route=routes.checked_route(binding['ConsoleRoute']);a=binding['Action']
-    routes.storage_target(pe.strict_settings((D/'play/game_session/game_state/world/current_location.json').read_bytes()),route['StorageId'],route['ItemId'],False)
+    if route['Route']=='permission-with-denial':
+        routes.storage_target(pe.strict_settings((D/'play/game_session/game_state/world/current_location.json').read_bytes()),route['StorageId'],route['ItemId'],False)
     for name in ('input/turn_request.json','game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json','game_state/control/pending_turn_snapshot','ready/turn_complete.json','ready/turn_error.json'):
         f=D/'play/game_session'/name
         if f.exists() or f.is_symlink():raise ValueError('Pending continuation: '+name)

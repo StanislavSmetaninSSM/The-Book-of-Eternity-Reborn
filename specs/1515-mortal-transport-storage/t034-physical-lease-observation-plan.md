@@ -490,3 +490,21 @@ actual orchestration must capture fresh closing DATA, with live state/queue drif
 refusing a proof; actual shared Save must reject an overwritten or deleted prior
 archive despite one fresh ZIP. Scoped ZIP DATA duplicates and orphan pending
 snapshot directories are refused. These downstream controls are still UNRUN.
+
+### Ordinary Save causal RED and minimal source WIP
+
+Independent review accepted initial pure8 RED: eight intended feature failures,
+zero errors/skips, 0.025 s; full 32,067 sources and eight outputs unchanged. Missing
+helpers/default deadline/route and actual inventory preflight/final-success gaps
+were causal. Downstream archive/UI matrices were not executed in that RED.
+
+Fixture-only implementation now adds ordinary-save binding without inventory IDs,
+extracts the actual shared Save statements with expected-turn argument, and gates
+ordinary Save after same-turn consumer return inside original work bound. It
+checks finite accepted-state/story/history bytes, one new archive and unchanged
+prior archive hashes, fresh post-Save DATA/queue, and explicit final Save proof.
+Resource authority recomposition is excluded. The existing local Save guard test
+follows the extracted helper and still proves it precedes deposit. No parser,
+finite_select, production, deadline value or world changed. GREEN is UNRUN pending
+independent source review. Mutable live/queue/archive checks remain fresh; small
+per-Save DATA is reused, prior archives retain hashes rather than duplicate bytes.

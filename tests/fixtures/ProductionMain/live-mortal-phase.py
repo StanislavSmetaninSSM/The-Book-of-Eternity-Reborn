@@ -862,7 +862,7 @@ def until(test,seconds,label):
     while not test():
         if time.monotonic()>deadline:raise TimeoutError(label)
         pump()
-def wait_daemon_consumer_returned():
+def wait_daemon_consumer_returned(requested_deadline=None):
     if route['Route']=='storage-local-proof':
         if 'ActualRequest' in result or type(result.get('GenuineActionsSent')) is not int or result['GenuineActionsSent']!=0:
             raise RuntimeError('Unexpected turn in no-turn route; shutdown unqualified')
@@ -874,6 +874,7 @@ def wait_daemon_consumer_returned():
         'daemonGuardOwnerId':daemon_owner,'requestSHA256':result['ActualRequestSHA256'],
         'turnIdentity':{k:request[k] for k in ('sessionId','requestId','turnNumber')},'mainIdentity':original}
     deadline=start+client_cleanup_seconds
+    if requested_deadline is not None:deadline=min(deadline,requested_deadline)
     while time.monotonic()<deadline:
         proof=phase_evidence.daemon_consumer_returned(bytes(daemon.capture[daemon_return_cut:]),expected)
         if proof is not None:
@@ -1181,6 +1182,41 @@ def denied_storage_route():
         'ReturnedPromptCut':after,'Before':before,'After':local_observation(),
         'CurrentLocationSHA256':sha(current),'InventorySHA256':sha(inventory)}
 
+def save_current_turn(expected_saved_turn):
+    global client_prompt,inventory_cleanup_required
+    save_name='s' # One new archive in this phase; existing archives must remain unchanged.
+    saves=session/'saves/manual_saves';old_saves=set(saves.glob('*.zip'))
+    if any(p.is_symlink() or not p.is_file() for p in old_saves):raise ValueError('Prior Save archive is not ordinary')
+    old_hashes={p:sha(p.read_bytes()) for p in old_saves}
+    from fullroute_inputs import complete_save_observation
+    client_prompt=False;cut=options_choice(1,'💾 Сохранить')
+    until(lambda:client.console.view.prompt('Название сохранения:',cut),8,'actual Save name prompt')
+    prior=cut;cut=client.send((save_name+'\r').encode(),'fresh unique Save name',lambda:client.console.view.prompt('Название сохранения:',prior))
+    until(lambda:client.console.view.prompt('Описание (необязательно):',cut),8,'actual Save description prompt')
+    prior=cut;save_result_cut=client.send(b'\r','empty optional Save description',lambda:client.console.view.prompt('Описание (необязательно):',prior))
+    until(lambda:complete_save_observation(client.console.view,bytes(client.capture),save_result_cut),10,'complete exact clean Save outcome')
+    new_saves=set(saves.glob('*.zip'))-old_saves
+    if len(new_saves)!=1:raise RuntimeError('Actual Save did not produce one distinct archive')
+    if any(not p.is_file() or p.is_symlink() or sha(p.read_bytes())!=digest for p,digest in old_hashes.items()):raise ValueError('Prior Save archive changed')
+    archive=new_saves.pop()
+    if archive.is_symlink() or not archive.is_file():raise RuntimeError('Save archive is not ordinary file')
+    archive_bytes=archive.read_bytes()
+    with zipfile.ZipFile(io.BytesIO(archive_bytes)) as saved:
+        if saved.namelist().count('save_metadata.json')!=1:raise RuntimeError('Save metadata ambiguous')
+        metadata=strict_settings(saved.read('save_metadata.json'))
+    if metadata['saveName']!=save_name or type(metadata['turnNumber']) is not int or metadata['turnNumber']!=expected_saved_turn:raise RuntimeError('Save metadata differs from expected saved turn')
+    cut=client.send(b'\r','acknowledge actual Save result',lambda:complete_save_observation(client.console.view,bytes(client.capture),save_result_cut))
+    fresh_player(client,cut,10);client_prompt=True;inventory_cleanup_required=False
+    # GameInterface.RenderGameScreen begins with Clear. Preserve the entire outcome
+    # through that first actual clear, rather than trusting warning-erased cells.
+    outcome=bytes(client.capture[save_result_cut:])
+    clean=clean_save_player_interval(outcome)
+    if not clean:raise RuntimeError('Save return outcome unknown/warning; no subsequent move or replay')
+    if set(saves.glob('*.zip'))!=old_saves|{archive} or any(not p.is_file() or p.is_symlink() or sha(p.read_bytes())!=digest for p,digest in old_hashes.items()):raise ValueError('Save archive set changed after ACK')
+    if archive.is_symlink() or archive.read_bytes()!=archive_bytes:raise ValueError('New Save archive changed after ACK')
+    return {'ArchivePath':str(archive),'ArchiveBytes':archive_bytes,'Metadata':metadata,
+        'RawHex':outcome.hex(),'CleanOutcomeBeforeFirstPlayerClear':clean}
+
 def storage_local_route():
     global client_prompt,original,original_record,load_cut,load_expected
     # This fixed local proof creates its sole Save; refuse a broader Load menu before any local action.
@@ -1244,32 +1280,9 @@ def storage_local_route():
         cut,_=finite_select(returned_inventory,'← Назад',cut,20)
         fresh_player(client,cut,10);client_prompt=True;inventory_cleanup_required=False
     move(True);saved_location,saved_inventory=stage('Retrieve','inventory')
-    save_name='s' # Sole fresh archive, checked before any owner starts; no canonical name changes.
-    saves=session/'saves/manual_saves';old_saves=set(saves.glob('*.zip'))
-    from fullroute_inputs import complete_save_observation,save_outcome
-    client_prompt=False;cut=options_choice(1,'💾 Сохранить')
-    until(lambda:client.console.view.prompt('Название сохранения:',cut),8,'actual Save name prompt')
-    prior=cut;cut=client.send((save_name+'\r').encode(),'fresh unique Save name',lambda:client.console.view.prompt('Название сохранения:',prior))
-    until(lambda:client.console.view.prompt('Описание (необязательно):',cut),8,'actual Save description prompt')
-    prior=cut;save_result_cut=client.send(b'\r','empty optional Save description',lambda:client.console.view.prompt('Описание (необязательно):',prior))
-    until(lambda:complete_save_observation(client.console.view,bytes(client.capture),save_result_cut),10,'complete exact clean Save outcome')
-    new_saves=set(saves.glob('*.zip'))-old_saves
-    if len(new_saves)!=1:raise RuntimeError('Actual Save did not produce one distinct archive')
-    archive=new_saves.pop()
-    if archive.is_symlink() or not archive.is_file():raise RuntimeError('Save archive is not ordinary file')
-    archive_bytes=archive.read_bytes()
-    with zipfile.ZipFile(io.BytesIO(archive_bytes)) as saved:
-        if saved.namelist().count('save_metadata.json')!=1:raise RuntimeError('Save metadata ambiguous')
-        metadata=strict_settings(saved.read('save_metadata.json'))
-    if metadata['saveName']!=save_name or metadata['turnNumber']!=expected_turn-1:raise RuntimeError('Save metadata differs from actual local phase')
-    cut=client.send(b'\r','acknowledge actual Save result',lambda:complete_save_observation(client.console.view,bytes(client.capture),save_result_cut))
-    fresh_player(client,cut,10);client_prompt=True;inventory_cleanup_required=False
-    # GameInterface.RenderGameScreen begins with Clear. Preserve the entire outcome
-    # through that first actual clear, rather than trusting warning-erased cells.
-    outcome=bytes(client.capture[save_result_cut:])
-    clean=clean_save_player_interval(outcome)
-    result['LocalSaveResult']={'RawHex':outcome.hex(),'CleanOutcomeBeforeFirstPlayerClear':clean}
-    if not clean:raise RuntimeError('Save return outcome unknown/warning; no subsequent move or replay')
+    saved=save_current_turn(expected_turn-1)
+    archive=Path(saved['ArchivePath']);archive_bytes=saved['ArchiveBytes'];metadata=saved['Metadata']
+    result['LocalSaveResult']={k:saved[k] for k in ('RawHex','CleanOutcomeBeforeFirstPlayerClear')}
     save_location,save_inventory=stage('Save','inventory')
     if (save_location,save_inventory)!=(saved_location,saved_inventory):raise RuntimeError('Save changed local item bytes')
     move(False);stage('Deposit','storage')
@@ -1288,7 +1301,7 @@ def storage_local_route():
     all_save_files=[p for directory in ('manual_saves','autosaves','checkpoint_saves') for p in (session/'saves'/directory).glob('*.zip')]
     if all_save_files!=[archive]:raise RuntimeError('Finite Load fixture requires the one exact observed archive; unsupported additional saves')
     timestamp=datetime.datetime.fromisoformat(metadata['timestamp'].replace('Z','+00:00')).strftime('%d.%m.%Y %H:%M')
-    load_label=f"{save_name} | Ход {metadata['turnNumber']} | {metadata['currentLocation']} | {timestamp} | {len(archive_bytes)//1024}KB"
+    load_label=f"{metadata['saveName']} | Ход {metadata['turnNumber']} | {metadata['currentLocation']} | {timestamp} | {len(archive_bytes)//1024}KB"
     load_menu=console_routes.local_load_menu(metadata['currentLocation'],metadata['turnNumber'],len(archive_bytes)//1024,timestamp,profile=current_client_load_profile())
     if load_menu['choices'][0]!=load_label:raise RuntimeError('Actual Load metadata label differs from preflight contract')
     client_prompt=False;cut=options_choice(2,'📂 Загрузить')
@@ -1325,9 +1338,25 @@ def storage_local_route():
         'Before':before,'After':local_observation(),'SaveArchivePath':str(archive.resolve()),
         'SaveArchiveSHA256':sha(archive_bytes),'RestoreBytesExact':True}
 
+def ordinary_save_after_acceptance():
+    if route['Route']!='ordinary-save':return
+    deadline=start+work_seconds
+    wait_daemon_consumer_returned(deadline)
+    if time.monotonic()>=deadline:raise TimeoutError('Original work bound exhausted before Save')
+    before=phase_evidence.ordinary_save_snapshot(session,story,relay_queue,result)
+    saved=save_current_turn(expected_turn)
+    phase_evidence.verify_ordinary_save_archive(saved['ArchiveBytes'],before,expected_turn)
+    after=phase_evidence.ordinary_save_snapshot(session,story,relay_queue,result)
+    if before!=after:raise ValueError('Save changed accepted scoped DATA or queue')
+    if time.monotonic()>=deadline:raise TimeoutError('Original work bound exhausted during Save')
+    result['OrdinarySaveProof']={'Turn':expected_turn,'Before':before,'After':after,
+        'ArchiveSHA256':sha(saved['ArchiveBytes']),'ArchiveVerified':True,
+        'CleanOutcomeBeforeFirstPlayerClear':saved['CleanOutcomeBeforeFirstPlayerClear'],
+        'StorySHA256':sha(bytes.fromhex(before['Files'][before['StoryPath']]))}
+
 load_cut=None;load_expected=None
 # Reject unsupported fixed UI layout before starting any owned process; refresh again at each action.
-if route['Route']!='birth':
+if route['Route'] in ('permission-with-denial','storage-local-proof'):
     current_inventory_menu()
     if route['Route']=='storage-local-proof':
         pre_location=strict_settings((session/'game_state/world/current_location.json').read_bytes())
@@ -1491,6 +1520,7 @@ try:
             if (session/'ready/turn_error.json').exists():
                 result['ActualTerminalError']=read_json(session/'ready/turn_error.json');raise RuntimeError('Actual game terminal error; no automatic replay')
         if result['AcceptedGameTurns']!=1:raise TimeoutError('One-turn phase ended without actual game acceptance')
+        ordinary_save_after_acceptance()
     # The shared finally performs client exit under its reserved cleanup bound.
 except Exception as ex:
     result['Failure']=type(ex).__name__+': '+str(ex)
@@ -1608,7 +1638,7 @@ finally:
     result['ElapsedSeconds']=elapsed()
     result['Success']=(phase_evidence.relay_load_phase_cleanup_proved(result,bytes(client.capture),load_cut,load_expected)
         if route['Route']=='storage-local-proof' and client is not None and load_cut is not None and load_expected is not None
-        else phase_cleanup_proved(result) if route['Route']!='storage-local-proof' else False)
+        else (phase_cleanup_proved(result) and (route['Route']!='ordinary-save' or phase_evidence.ordinary_save_proved(result))) if route['Route']!='storage-local-proof' else False)
     if controlled_refusal:
         result['ControlledCleanupVerified']=daemon_settlement_proved(result.get('DaemonSettlement')) and rpc_helper_closed(result) and bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     (out/'rpc-journal.json').write_text(json.dumps(journal,indent=2,ensure_ascii=False)+'\n')
