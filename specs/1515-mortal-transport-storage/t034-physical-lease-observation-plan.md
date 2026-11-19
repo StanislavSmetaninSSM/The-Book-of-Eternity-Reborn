@@ -458,3 +458,15 @@ No C# suite, production change, finite_select fix, new protocol, browser or manu
 input interface is part of this block. Original budgets and failure stop remain.
 The per-Save snapshot is small operation-local immutable DATA, reused for archive
 and closing comparison; it never caches ownership or permission.
+
+The ordinary-save final success predicate must additionally require its explicit
+matching Save proof (turn/story/archive/scoped DATA), not merely generic accepted-
+turn cleanup. A pure actual-final-predicate negative covers accepted+clean with
+missing or mismatched Save evidence. The finite scenario list above is chosen;
+resource_owner_authority is intentionally outside byte equality because production
+unconditionally recomposes it during Save. Authored archive DATA must model that
+difference without rejecting a correct Save. Five test contours are route/binding,
+actual Save and archive matrix, uncertain ACK, postaccept ordering/deadline, and
+route-specific final success; actual method counts are frozen after authoring,
+not guessed in this design. Only affected pure classes and directly affected
+shared-Save caller controls will run after source review.
