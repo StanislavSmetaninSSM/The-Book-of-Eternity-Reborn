@@ -101,3 +101,30 @@ actual foreground PID intervals, zero physical prefix in raw/emulator/cells,
 physical raw exactly equal to ordered emulator WRITE bytes and normal owned
 cleanup. No mainwire run, no live world, no mm24 preparation yet. Fresh owning
 Integration and Unit/Support outputs are required after production changes.
+
+### Routing RED accepted; minimal implementation WIP
+
+Saved test-source b26fb8f3 was independently accepted and run once: fresh
+Integration build69.02s/160warnings/0errors; exact PlanOnly28 and actual28
+completed23.8894143s,19causal FAIL/9PASS, no timeout/setup failure and owned
+cleanup complete. All nineteen failures are forbidden physical stderr output
+after real acquisition/disposal. Existing8 and explicitstderr positive passed.
+The first failing assertion prevented downstream external assertions/fresh-lease
+checks in those nineteen cases; they are not reported as qualified. Independent
+review joined18artifacts,32065source and8outputs. No native/UI/world run.
+
+Implementation WIP now adds a closed raw route/path parser, immutable captured
+route/path and fresh drift checks, private external marker validation and one
+CreateNew event per PID/occurrence/stage. Existing Mark/Report are unchanged.
+External privacy currently requires Unix modes; Windows external routing refuses
+rather than invent an ACL guarantee. Explicit controlled stderr remains portable
+DEBUG behavior. Scope retains only ordinary namespace DATA, no handles/authority.
+
+The same routing theory now has26rows, with fresh marker/nonce changes, actual
+FIFO marker/directory and linked-parent refusal; one additional typed DATA Fact
+covers absent-versus-empty raw values, duplicate/partial file preservation, FIFO
+event refusal and the actual serializer with a partial-throwing writer. This is
+35planned local cases including prior8. Partial-write DATA does not claim a real
+OS disk-full/close-failure reproduction. Production never deletes/repairs these
+files; only the isolated fixture deletes its own temporary tree after assertions.
+All implementation/expanded tests are UNRUN pending exact source review.

@@ -1,5 +1,7 @@
 using System.Text.Json;
 using System.Diagnostics;
+using System.Text;
+using BookOfEternityClient.Core;
 namespace BookOfEternityClient.Services.GmRuntime;
 
 // Observational DATA only. Never used for admission, retirement, retry or cleanup.
@@ -12,17 +14,38 @@ internal static class MainOperationFailureDiagnostic
         string Consistency="Caller-supplied immutable observations; timestamp is DATA capture entry before text extraction, not event or authority time");
     // Per-acquisition immutable DATA, never a registry or an authority token.
     internal sealed record PhysicalLeaseContext(string Nonce, long Occurrence, string Root,
-        string Purpose, MainOperationReply? OriginalPin);
+        string Purpose, MainOperationReply? OriginalPin, string Route, string? Directory);
     internal sealed record PhysicalLeaseObservation(string Nonce, long Occurrence, string Root,
         string Purpose, MainOperationReply? OriginalPin, string Stage, int Attempt,
         int ProcessId, DateTimeOffset CapturedAtUtc, long CaptureMonotonicTimestamp);
     private static long _physicalOccurrence;
+    internal const string PhysicalRouteVariable = "BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE";
+    internal const string PhysicalDirectoryVariable = "BOE_TEST_CANONICAL_LEASE_TRACE_DIR";
+
+    // Raw-value DATA seam also distinguishes an explicit empty path from absence.
+    internal static string? PhysicalRoute(string? route, string? directory)
+    {
+        try
+        {
+            if (route == "stderr") return directory == null ? route : null;
+            if (route != "external" || string.IsNullOrEmpty(directory) ||
+                !Path.IsPathFullyQualified(directory) ||
+                directory != Path.TrimEndingDirectorySeparator(Path.GetFullPath(directory))) return null;
+            return route;
+        }
+        catch { return null; }
+    }
+
 
     internal static PhysicalLeaseContext? BeginPhysicalLease(string? nonce, string root,
         string purpose, MainOperationReply? pin)
     {
         try
         {
+            var rawRoute = Environment.GetEnvironmentVariable(PhysicalRouteVariable);
+            var directory = Environment.GetEnvironmentVariable(PhysicalDirectoryVariable);
+            var route = PhysicalRoute(rawRoute, directory);
+            if (route == null) return null;
             if (!Guid.TryParseExact(nonce, "N", out _) || nonce != ReadNonce() ||
                 !GmSessionRunValidation.IsRootKey(root) || string.IsNullOrWhiteSpace(purpose)) return null;
             if (pin != null)
@@ -34,7 +57,7 @@ internal static class MainOperationFailureDiagnostic
                     !GmSessionRunValidation.IsId(pin.OperationId, false) || pin.Error != null ||
                     !GmSessionRunValidation.AdmissionRootMatches(pin.Identity!.RootKey, root, pin.Identity.Backend)) return null;
             }
-            return new(nonce!, Interlocked.Increment(ref _physicalOccurrence), root, purpose, pin);
+            return new(nonce!, Interlocked.Increment(ref _physicalOccurrence), root, purpose, pin, route, directory);
         }
         catch { return null; }
     }
@@ -47,7 +70,9 @@ internal static class MainOperationFailureDiagnostic
             // Capture immediately at the physical transition, before nonce lookup/serialization/sink.
             var utc = DateTimeOffset.UtcNow;
             var monotonic = Stopwatch.GetTimestamp();
-            if (context.Nonce != ReadNonce() || attempt < 1 || stage is not
+            if (context.Nonce != ReadNonce() ||
+                context.Route != Environment.GetEnvironmentVariable(PhysicalRouteVariable) ||
+                context.Directory != Environment.GetEnvironmentVariable(PhysicalDirectoryVariable) || attempt < 1 || stage is not
                 ("physical-opened" or "lease-granted" or "physical-dispose-completed" or "contention-exhausted")) return null;
             return new(context.Nonce, context.Occurrence, context.Root, context.Purpose, context.OriginalPin,
                 stage, attempt, Environment.ProcessId, utc, monotonic);
@@ -69,8 +94,70 @@ internal static class MainOperationFailureDiagnostic
     internal static void ReportPhysical(PhysicalLeaseContext? context, string stage, int attempt)
     {
         if (context == null) return;
-        try { WritePhysical(CapturePhysical(context, stage, attempt), Console.Error, ReadNonce()); }
+        try
+        {
+            var observation = CapturePhysical(context, stage, attempt);
+            if (observation == null) return;
+            if (context.Route == "stderr") WritePhysical(observation, Console.Error, ReadNonce());
+            else if (context.Route == "external") WritePhysicalExternal(context, observation);
+        }
         catch { /* Observation cannot replace acquisition/disposal results. */ }
+    }
+
+    private static bool PrivatePhysicalPath(string path)
+    {
+        // No platform privacy guess. External routing is currently Unix-qualified only.
+        if (OperatingSystem.IsWindows()) return false;
+        const UnixFileMode others = UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.GroupExecute |
+            UnixFileMode.OtherRead | UnixFileMode.OtherWrite | UnixFileMode.OtherExecute;
+        return (File.GetUnixFileMode(path) & others) == 0;
+    }
+
+    private static void WritePhysicalExternal(PhysicalLeaseContext context, PhysicalLeaseObservation observation)
+    {
+        // Fresh ordinary namespace checks, never a retained authority/handle or canonical read.
+        // The transition's timestamp was captured before this synchronous, potentially blocking IO.
+        try
+        {
+            if (context.Route != Environment.GetEnvironmentVariable(PhysicalRouteVariable) ||
+                context.Directory != Environment.GetEnvironmentVariable(PhysicalDirectoryVariable) ||
+                context.Nonce != ReadNonce() || PhysicalRoute(context.Route, context.Directory) != "external") return;
+            var directory = context.Directory!;
+            var root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(context.Root));
+            var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            if (directory.Equals(root, comparison) || directory.StartsWith(root + Path.DirectorySeparatorChar, comparison) ||
+                root.StartsWith(directory + Path.DirectorySeparatorChar, comparison)) return;
+            var scope = new TrustedLocalFileScope([directory]);
+            scope.ValidateDirectory(directory, false); // Constructor alone allows a missing root.
+            if (!PrivatePhysicalPath(directory)) return;
+            var marker = scope.ValidateFile(Path.Combine(directory, "owner-nonce"), false);
+            if (!PrivatePhysicalPath(marker)) return;
+            using (var source = new FileStream(marker, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                if (source.Length != 32) return;
+                Span<byte> bytes = stackalloc byte[32];
+                source.ReadExactly(bytes);
+                if (Encoding.ASCII.GetString(bytes) != context.Nonce) return;
+            }
+            scope.ValidateDirectory(directory, false);
+            scope.ValidateFile(marker, false);
+            if (!PrivatePhysicalPath(directory) || !PrivatePhysicalPath(marker)) return;
+            // No payload-derived path components: PID/occurrence and previously closed stage set only.
+            var path = scope.ValidateFile(Path.Combine(directory,
+                $"{observation.ProcessId}-{observation.Occurrence}-{observation.Stage}.json"));
+            if (OperatingSystem.IsWindows()) return;
+            using var stream = new FileStream(path, new FileStreamOptions
+            {
+                Mode = FileMode.CreateNew, Access = FileAccess.Write, Share = FileShare.Read,
+                UnixCreateMode = UnixFileMode.UserRead | UnixFileMode.UserWrite
+            });
+            scope.ValidateFile(path, false);
+            if (!PrivatePhysicalPath(path)) return;
+            using var writer = new StreamWriter(stream, new UTF8Encoding(false));
+            WritePhysical(observation, writer, ReadNonce());
+            // Disposal closes even on serialization/flush failure. Partial/colliding files remain UNKNOWN.
+        }
+        catch { /* No fallback, overwrite, retry, deletion or effect on the original lease outcome. */ }
     }
     internal static string? ReadNonce()
     {

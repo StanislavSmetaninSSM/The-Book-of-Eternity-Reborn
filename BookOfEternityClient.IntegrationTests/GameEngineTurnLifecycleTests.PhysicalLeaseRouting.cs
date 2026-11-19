@@ -1,4 +1,5 @@
 using System.Text;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
@@ -31,6 +32,12 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("public-marker")]
     [InlineData("changed-route")]
     [InlineData("changed-path")]
+    [InlineData("changed-marker")]
+    [InlineData("removed-marker")]
+    [InlineData("changed-nonce")]
+    [InlineData("fifo-marker")]
+    [InlineData("fifo-directory")]
+    [InlineData("linked-parent")]
     public async Task PhysicalLeaseRoutingIsExplicitPrivateAndDoesNotPolluteStderr(string mode)
     {
         if (!OperatingSystem.IsLinux()) return; // Category explicitly Linux; Unix privacy is the contract here.
@@ -63,7 +70,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (mode == "linked-marker") { File.Move(marker, Path.Combine(external, "real-marker")); File.CreateSymbolicLink(marker, Path.Combine(external, "real-marker")); }
         if (mode == "public-directory") File.SetUnixFileMode(sink, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute | UnixFileMode.OtherRead);
         if (mode == "public-marker") File.SetUnixFileMode(marker, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.OtherRead);
-        var originalMarker = File.Exists(marker) ? File.ReadAllBytes(marker) : null;
+        if (mode == "fifo-marker") { File.Delete(marker); Assert.Equal(0, PhysicalRouteMkfifo(marker, 384)); }
+        if (mode == "fifo-directory") { path = Path.Combine(external, "fifo"); Assert.Equal(0, PhysicalRouteMkfifo(path, 384)); }
+        if (mode == "linked-parent") { var link = external + "-link"; Directory.CreateSymbolicLink(link, external); path = Path.Combine(link, "trace"); }
+        var originalMarker = mode != "fifo-marker" && File.Exists(marker) ? File.ReadAllBytes(marker) : null;
         using var stderr = new StringWriter();
         var files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         FileSystemManager.CanonicalWriteLease? lease = null;
@@ -77,11 +87,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(lease.IsActive);
             if (mode == "changed-route") Environment.SetEnvironmentVariable(routeKey, "stderr");
             if (mode == "changed-path") Environment.SetEnvironmentVariable(pathKey, external);
+            if (mode == "changed-marker") File.WriteAllText(marker, Guid.NewGuid().ToString("N"));
+            if (mode == "removed-marker") File.Delete(marker);
+            if (mode == "changed-nonce") Environment.SetEnvironmentVariable(nonceKey, Guid.NewGuid().ToString("N"));
             await lease.DisposeAsync();
             Assert.False(lease.IsActive);
             await lease.DisposeAsync();
             // Existing failure channel remains stderr even when physical routing is disabled/refused.
-            MainOperationFailureDiagnostic.Report(nonce, "route-test", null, new IOException("original failure sentinel"));
+            MainOperationFailureDiagnostic.Report(Environment.GetEnvironmentVariable(nonceKey), "route-test", null, new IOException("original failure sentinel"));
             Assert.Contains("BOE_MAIN_OPERATION_FAILURE ", stderr.ToString());
             var stderrRows = ReadPhysicalLeaseEvents(stderr.ToString());
             var eventFiles = Directory.GetFiles(sink).Where(x => Path.GetFileName(x) != "owner-nonce").ToArray();
@@ -93,7 +106,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             else
             {
                 Assert.Empty(stderrRows); // Missing default-disable/external routing is the causal RED, not setup.
-                var count = mode == "external" ? 3 : mode is "changed-route" or "changed-path" ? 2 : 0;
+                var count = mode == "external" ? 3 : mode is "changed-route" or "changed-path" or "changed-marker" or "removed-marker" or "changed-nonce" ? 2 : 0;
                 Assert.Equal(count, eventFiles.Length);
                 var rows = eventFiles.SelectMany(x => ReadPhysicalLeaseEvents(File.ReadAllText(x)))
                     .OrderBy(x => x.GetProperty("CaptureMonotonicTimestamp").GetInt64()).ToArray();
@@ -113,7 +126,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     Assert.EndsWith("\n", File.ReadAllText(file));
                 }
             }
-            if (originalMarker != null) Assert.Equal(originalMarker, File.ReadAllBytes(marker));
+            if (originalMarker != null && mode is not ("changed-marker" or "removed-marker")) Assert.Equal(originalMarker, File.ReadAllBytes(marker));
             if (mode == "missing-directory") Assert.False(Directory.Exists(path));
         }
         finally
@@ -125,10 +138,81 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Environment.SetEnvironmentVariable(routeKey, previousRoute);
                 Environment.SetEnvironmentVariable(pathKey, previousPath);
                 Environment.SetEnvironmentVariable(nonceKey, previousNonce);
+                if (mode == "linked-parent") Directory.Delete(external + "-link");
                 Directory.Delete(external, true); // Only test-owned DATA; production may never repair/delete sink files.
             }
         }
         await using var fresh = await files.AcquireCanonicalWriteLeaseAsync();
         Assert.True(fresh.IsActive);
     }
+    [DllImport("libc", EntryPoint = "mkfifo", SetLastError = true)]
+    private static extern int PhysicalRouteMkfifo(string path, uint mode);
+
+    [Fact]
+    public void PhysicalRoutingRawValuesAndCollisionsRetainPartialEvidence()
+    {
+        if (!OperatingSystem.IsLinux()) return;
+        var path = Path.Combine(Path.GetTempPath(), "boe-route-wire-" + Guid.NewGuid().ToString("N"));
+        foreach (var (route, directory) in new (string?, string?)[] {
+            (null,null), ("",null), ("unknown",null), ("stderr",""), ("stderr",path),
+            ("external",null), ("external",""), ("external","relative") })
+            Assert.Null(MainOperationFailureDiagnostic.PhysicalRoute(route, directory));
+        Assert.Equal("stderr", MainOperationFailureDiagnostic.PhysicalRoute("stderr", null));
+        Assert.Equal("external", MainOperationFailureDiagnostic.PhysicalRoute("external", path));
+        var oldRoute = Environment.GetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalRouteVariable);
+        var oldPath = Environment.GetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalDirectoryVariable);
+        var oldNonce = Environment.GetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE");
+        var oldError = Console.Error;
+        var nonce = Guid.NewGuid().ToString("N");
+        Directory.CreateDirectory(path, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+        var marker = Path.Combine(path, "owner-nonce");
+        File.WriteAllText(marker, nonce, new UTF8Encoding(false));
+        File.SetUnixFileMode(marker, UnixFileMode.UserRead | UnixFileMode.UserWrite);
+        using var stderr = new StringWriter();
+        try
+        {
+            Environment.SetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalRouteVariable, "external");
+            Environment.SetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalDirectoryVariable, path);
+            Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", nonce);
+            Console.SetError(stderr);
+            var context = MainOperationFailureDiagnostic.BeginPhysicalLease(nonce, _rootPath, "SessionMutation", null);
+            Assert.NotNull(context);
+            MainOperationFailureDiagnostic.ReportPhysical(context, "physical-opened", 1);
+            var file = Assert.Single(Directory.GetFiles(path).Where(x => x != marker));
+            var initial = File.ReadAllBytes(file);
+            MainOperationFailureDiagnostic.ReportPhysical(context, "physical-opened", 1);
+            Assert.Equal(initial, File.ReadAllBytes(file)); // CreateNew collision, not append/overwrite.
+            File.WriteAllText(file, "partial retained evidence");
+            MainOperationFailureDiagnostic.ReportPhysical(context, "physical-opened", 1);
+            Assert.Equal("partial retained evidence", File.ReadAllText(file));
+            var grant = Path.Combine(path, $"{Environment.ProcessId}-{context!.Occurrence}-lease-granted.json");
+            Assert.Equal(0, PhysicalRouteMkfifo(grant, 384));
+            MainOperationFailureDiagnostic.ReportPhysical(context, "lease-granted", 1); // Must refuse before any FIFO open.
+            Assert.Equal(3, Directory.GetFiles(path).Length); // Marker, original partial and untouched FIFO.
+            using var partial = new PhysicalPartialWriter();
+            var observation = MainOperationFailureDiagnostic.CapturePhysical(context, "physical-dispose-completed", 1);
+            Assert.NotNull(observation);
+            MainOperationFailureDiagnostic.WritePhysical(observation, partial, nonce);
+            Assert.Equal("partial-prefix", partial.ToString()); // Actual serializer catches partial-write exception.
+            Assert.Empty(ReadPhysicalLeaseEvents(stderr.ToString()));
+        }
+        finally
+        {
+            Console.SetError(oldError);
+            Environment.SetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalRouteVariable, oldRoute);
+            Environment.SetEnvironmentVariable(MainOperationFailureDiagnostic.PhysicalDirectoryVariable, oldPath);
+            Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", oldNonce);
+            Directory.Delete(path, true);
+        }
+    }
+
+    private sealed class PhysicalPartialWriter : StringWriter
+    {
+        public override void WriteLine(string? value)
+        {
+            Write("partial-prefix");
+            throw new IOException("controlled partial diagnostic write");
+        }
+    }
+
 }
