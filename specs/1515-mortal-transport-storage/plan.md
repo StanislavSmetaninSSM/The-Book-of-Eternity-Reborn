@@ -4516,3 +4516,25 @@ and owner/daemon are required. Manifest:
 a05925f673f099e737f776865eaec9adcf9d624ec184e050f0d15a20855e82e0;
 launch f9b99b5e2a81e0ef00934adf58470875bb484edb3cff3dac98cd8834ffb1ed59.
 No phase-two result is claimed yet; final delta prelaunch review remains separate.
+
+T016 mm19 p02 genuine denial PASS, subsequent permission attempt FAILED before
+request capture, 2026-11-19. Original launch2562 exited1 after30.349s;action1/
+accepted0. Probe d0c4abcd6ff7d411a82de527ee1738652c42ab0ed931d48c1d8effaaf7a052fb.
+Independent raw/journal review confirmed exact locked-storage selection, inventory
+return, Back and full fresh player prompt before permission action. Denial
+story/history/queue and location/inventory bytes were unchanged: this is genuine
+restricted-access evidence, not an inferred test result.
+
+The later client displayed 'Ход не принят' before any relay request directory,
+response or execution. Story remains setup41+accepted42. Pending request/snapshot/
+authority absent. Canonical game_state matches original-baseline except six
+operational bridge/daemon/context-pack files; no new files. Cleanup acknowledged
+the actual error pause, but rollback was not established and is not claimed.
+The failure cause is under read-only diagnosis; no repeat, repair or new GM answer.
+
+Independent original closure verified one actual ACK, exact epoch2 owner
+Stopped/OwnedScopeEmpty/durable record, all three terminals exit0/EOF/termios,
+RPC0/EOF, same daemon settled with turnCount0/errorCount0, guardianECHILD/driver1/
+emergency0/failures0/deadlinefalse. Clean closure does not promote failed p02 into
+an accepted predecessor. Preserve this result and determine the exact client
+refusal before a new controlled scenario; mm16/mm18 remain untouched.
