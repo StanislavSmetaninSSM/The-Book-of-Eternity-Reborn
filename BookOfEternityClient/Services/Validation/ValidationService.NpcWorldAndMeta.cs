@@ -5294,7 +5294,8 @@ public partial class ValidationService
                         item,
                         effectiveNpcId,
                         sectionName,
-                        mortalActorPreTurnAuthority))
+                        mortalActorPreTurnAuthority,
+                        isResponseCreationValidation))
                 {
                     var hasExactInventorySnapshot = TryGetMortalActorInventoryContinuitySnapshot(
                         item,

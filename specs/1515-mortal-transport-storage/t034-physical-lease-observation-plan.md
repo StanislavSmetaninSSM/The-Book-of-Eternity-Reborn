@@ -688,3 +688,21 @@ commands, retaining only exact same-section historical carrier DATA under a
 usable current original. Whole-row, inventory, missing/unusable-original and
 explicit-response negatives must remain strict. No failed world is reused and
 no new live qualification follows from this offline result.
+
+### WIP: exact retained historical carrier mode boundary
+
+After the accepted causal RED, pass the existing response-creation flag through
+its sole inventory predicate call. Only full-state validation with a usable
+original, exact UpdateNPCs section/envelope membership and whole-row equality
+uses the already-established historical DATA distinction. Explicit response
+commands and mutated/missing/unusable originals retain their refusals. Scene and
+ordinary missing-original behavior are unchanged. Tests are unchanged; GREEN is
+UNRUN pending independent source review and fresh owning builds.
+
+Optimization: reuse the already-loaded operation-local pre-turn actor map and
+existing duplicate-safe semantic JSON comparator; no extra file read, authority
+lookup, cache or normalization. One bounded row comparison needs no new cache.
+This is client-side interpretation of retained DATA, not a new GM command or
+permission: existing GM no-resend instructions and afterlife contracts remain
+unchanged. The worked failed/fixed authored debug fixtures preserve the separate
+GM defer decision. No live world, package refresh or retry is authorized here.

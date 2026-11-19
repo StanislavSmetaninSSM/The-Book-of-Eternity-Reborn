@@ -468,7 +468,8 @@ public partial class ValidationService
         JsonElement actor,
         string actorId,
         string sectionName,
-        MortalActorMaterializationPreTurnAuthority preTurnAuthority)
+        MortalActorMaterializationPreTurnAuthority preTurnAuthority,
+        bool isResponseCreationValidation)
     {
         if (preTurnAuthority.Status == ValidatedPendingTurnSnapshotStatus.Missing &&
             string.Equals(
@@ -502,7 +503,21 @@ public partial class ValidationService
         }
 
         if (previousState.HistoricalEnvelopeJson != null)
-            return true;
+        {
+            // Retained canonical DATA is not a newly authored response command.
+            var isUnchangedHistoricalCarrier =
+                !isResponseCreationValidation &&
+                string.Equals(
+                    sectionName,
+                    GuardianPolicyContracts.NpcCoreUpdateSectionName,
+                    StringComparison.Ordinal) &&
+                previousState.HistoricalEnvelopeSections.Contains(sectionName) &&
+                previousState.HistoricalActorJsonBySection.TryGetValue(
+                    sectionName,
+                    out var historicalActorJson) &&
+                JsonValuesSemanticallyEqual(historicalActorJson, actor.GetRawText());
+            return !isUnchangedHistoricalCarrier;
+        }
 
         var currentSignals = ReadMortalActorMaterializationPromotionSignals(actor);
         var hasMaterializationEnvelope = actor.TryGetProperty(
