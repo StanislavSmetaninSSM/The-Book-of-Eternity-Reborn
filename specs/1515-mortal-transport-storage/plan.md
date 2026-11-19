@@ -4074,3 +4074,24 @@ has occurred at this checkpoint. This note changes plan metadata only after the
 reviewed pins. Automatic T028 remains unqualified, and mm14 remains UNKNOWN;
 failed pre-seed mm15 is preserved, not resumed. Live T016 acceptance and later
 permission/inventory/Save/Load steps are still unproved by this preparation.
+
+mm16 p01 live attempt: observation blocked, outcome UNKNOWN, 2026-11-19.
+One authorized launch started and produced a genuine current turn42 relay request,
+SHA256 `6c4aaa7de1e6bab0589b8893e078a967cb907dfba927f6fda830c5eaf9f1eab6`.
+A new GM candidate was authored locally from that request and current templates,
+SHA256 `4b6d4e8e379507a15db3a123f1472eb4f5f53590315f4c1d342e43855b7859c8`.
+It was NOT submitted to the relay and did not write canonical game state.
+Before publication, the execution service rejected further observation of the
+original run, citing possible unapproved Visual Studio telemetry disclosure.
+That is the reviewer's stated risk, not independently observed network traffic.
+The inherited configuration already sets DOTNET_CLI_TELEMETRY_OPTOUT=1; targeted
+project-source checks found no such endpoint, but do not prove dependency silence.
+No rejected polling retry, indirect replacement observation, new launch or signal
+was attempted after the boundary was clarified. GM publication remains on HOLD.
+Local candidate content review is separate from live availability or authority.
+Accepted gameplay, final driver result, original-owner stop, terminal settlement
+and cleanup are NOT confirmed. Do not replay, resubmit, adopt or call this world
+clean based on elapsed time, an old request or a disappeared execution handle.
+Further work requires a permitted observation/control path or an explicit decision
+on the stated risk, not a workaround. T016 remains open; no live acceptance claim
+is added by the successful prior preparation or the locally authored candidate.
