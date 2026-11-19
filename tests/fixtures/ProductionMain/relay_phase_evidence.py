@@ -1038,5 +1038,14 @@ def require_cold_loaded_host(descriptor,out,*,previous,route,current_max):
     if settings.get('GmCliLaunchCommand')!=command or settings.get('GmBridgeShellWorkingDirectory')!=str(session):raise ValueError('Cold operational command differs')
     if re.fullmatch('og-[0-9a-f]{12}',settings.get('GmBridgePipeNameOverride','')) is None:raise ValueError('Cold pipe differs')
     generation=strict_settings((base/'.boe_runtime/session-generation/current.json').read_bytes())['GenerationId']
-    return {'ExpectedTurn':44,'SessionId':descriptor['SessionId'],'BasePath':str(base),'RuntimeRoot':descriptor['RuntimeRoot'],
+    forbidden=[]
+    if type(descriptor.get('SourceOwnerEvidence')) is not list or len(descriptor['SourceOwnerEvidence'])!=2:raise ValueError('Pinned source owners required')
+    for evidence in descriptor['SourceOwnerEvidence']:
+        old=strict_settings(pinned(evidence))['OriginalRunningRecord']['Identity']
+        if old['RootKey']==str(base) or old['GenerationId']==generation or re.fullmatch('[0-9a-f]{32}',old['RunId']) is None:raise ValueError('Not distinct source owner DATA')
+        forbidden.append(old['RunId'])
+    if len(set(forbidden))!=2:raise ValueError('Ambiguous source owner DATA')
+    archived_daemon=strict_settings((session/'game_state/control/gm_daemon_status.json').read_bytes())
+    if re.fullmatch('[0-9a-f]{32}',archived_daemon.get('daemonGuardOwnerId','')) is None:raise ValueError('Archived daemon DATA missing')
+    return {'ForbiddenRunIds':forbidden,'ArchivedDaemonOwnerId':archived_daemon['daemonGuardOwnerId'],'ExpectedTurn':44,'SessionId':descriptor['SessionId'],'BasePath':str(base),'RuntimeRoot':descriptor['RuntimeRoot'],
         'TemporaryRoot':str(temp),'ConfigBytes':config_bytes,'Command':command,'Pipe':settings['GmBridgePipeNameOverride'],'GenerationId':generation}

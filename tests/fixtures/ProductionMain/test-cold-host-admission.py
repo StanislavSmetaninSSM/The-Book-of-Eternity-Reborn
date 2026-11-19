@@ -8,8 +8,8 @@ class ColdHostAdmission(unittest.TestCase):
         admit=getattr(actual,'require_cold_loaded_host',None)
         self.assertTrue(callable(admit),'missing explicit cold-loaded host admission')
         # Explicit opt-in immutable accepted evidence, read-only current closed root.
-        fixture=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/cold-load-admission/cold-host-data.json')
-        raw=fixture.read_bytes();self.assertEqual(hashlib.sha256(raw).hexdigest(),'0eb98ec444c504ce9e6b227cd9211fc445d9b259459e7516ecaa0395fbd8f321')
+        fixture=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/cold-load-admission/cold-host-data-v2.json')
+        raw=fixture.read_bytes();self.assertEqual(hashlib.sha256(raw).hexdigest(),'4250bf3ff9524cfef29290365945a251c7cf49693f59c88741a6bafbeda67402')
         descriptor=json.loads(raw);out=pathlib.Path(descriptor['PhasePath'])
         before={str(p):p.read_bytes() for p in pathlib.Path(descriptor['BasePath']).rglob('*') if p.is_file()}
         result=admit(descriptor,out,previous=None,route='ordinary-save',current_max=43)
@@ -62,8 +62,8 @@ class ColdHostWiring(unittest.TestCase):
 
     def test_actual_cold_setup_reaches_only_existing_package_gate_after_authentication(self):
         function=self.function('prepare_cold_loaded_phase')
-        fixture=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/cold-load-admission/cold-host-data.json')
-        raw=fixture.read_bytes();self.assertEqual(hashlib.sha256(raw).hexdigest(),'0eb98ec444c504ce9e6b227cd9211fc445d9b259459e7516ecaa0395fbd8f321')
+        fixture=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/cold-load-admission/cold-host-data-v2.json')
+        raw=fixture.read_bytes();self.assertEqual(hashlib.sha256(raw).hexdigest(),'4250bf3ff9524cfef29290365945a251c7cf49693f59c88741a6bafbeda67402')
         descriptor=json.loads(raw);out=pathlib.Path(descriptor['PhasePath']);calls=[];sentinel=RuntimeError('inert package sentinel')
         def package(phase,ship,driver):
             calls.append((phase,ship,driver));self.assertEqual(phase,out);self.assertEqual(ship,pathlib.Path(descriptor['RuntimeRoot']));raise sentinel

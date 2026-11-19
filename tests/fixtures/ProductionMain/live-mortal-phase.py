@@ -634,17 +634,35 @@ def prepare_restored_diagnostic(descriptor,out,receipt_helper,driver,nonce):
     # A retained one-use descriptor is not a seed or an original stopped owner.
     return base,session,session/'_runtime',expected,package,package_sha
 
+def prepare_cold_loaded_phase(descriptor,out,receipt_helper,driver,previous,route,current_max):
+    admitted=phase_evidence.require_cold_loaded_host(descriptor,out,previous=previous,route=route,current_max=current_max)
+    ship=Path(admitted['RuntimeRoot'])
+    package,package_sha=phase_evidence.relay_package_preflight(out,ship,driver)
+    phase_evidence.receipt_package_proved(receipt_helper,package['ReceiptHelperPins'])
+    return admitted,package,package_sha
+
+def cold_loaded_operational_context(admitted,out,session):
+    if (session/'config.json').read_bytes()!=admitted['ConfigBytes']:
+        raise ValueError('Cold operational config changed after admission')
+    queue=phase_evidence._restored_plain_path(out/'queue',True)
+    if any(queue.iterdir()):raise ValueError('Cold precreated queue is not empty')
+    temp=Path(admitted['TemporaryRoot'])
+    if temp.exists() or temp.is_symlink():raise ValueError('Cold short temp must be fresh')
+    return admitted['Pipe'],admitted['Command'],queue,temp
+
 assert len(sys.argv) in (5,6), 'phase-root seed-manifest action-file evidence-helper-dll [previous-result]'
 receipt_helper=Path(sys.argv[4]).resolve();assert receipt_helper.is_file()
 receipt_helper_sha=sha(receipt_helper.read_bytes())
 out=Path(sys.argv[1]).resolve();seed_path=Path(sys.argv[2]).resolve()
 trace_profile=phase_evidence.load_physical_trace_profile(out,os.environ)
-require_native_bootstrap_path_budget(out/'tmp') # Before processes, directories or operational config writes.
 seed_bytes=seed_path.read_bytes();seed=strict_settings(seed_bytes)
 restored_diagnostic=seed.get('kind')=='restored-accepted-data-diagnostic'
-trace_base=Path(seed['BasePath'] if restored_diagnostic else seed['basePath'])
+cold_loaded=seed.get('Kind')=='cold-loaded-save43-fresh-host'
+temporary_root=Path(seed['TemporaryRoot']) if cold_loaded else out/'tmp'
+require_native_bootstrap_path_budget(temporary_root) # Before processes, directories or operational writes.
+trace_base=Path(seed['BasePath'] if restored_diagnostic or cold_loaded else seed['basePath'])
 phase_evidence.require_physical_trace_admission(trace_base,out,trace_profile,os.environ)
-assert out.is_dir() and not (out/'probe-result.json').exists() and not (out/'queue').exists()
+assert out.is_dir() and not (out/'probe-result.json').exists() and (cold_loaded or not (out/'queue').exists())
 assert os.environ.get('TERM')=='dumb'
 route_path=out/'console-route.json'
 route_bytes=route_path.read_bytes() if route_path.exists() else None
@@ -652,7 +670,12 @@ route=console_routes.checked_route(strict_settings(route_bytes) if route_bytes i
 action=checked_action(Path(sys.argv[3]).read_bytes())
 previous=strict_settings(Path(sys.argv[5]).read_bytes()) if len(sys.argv)==6 else None
 if restored_diagnostic and route['Route']!='birth':raise ValueError('Diagnostic import cannot run local storage routes')
-if restored_diagnostic:
+if cold_loaded:
+    if trace_profile.get('SeedSHA256')!=sha(seed_bytes) or trace_profile.get('ActionSHA256')!=sha(Path(sys.argv[3]).read_bytes()):raise ValueError('Cold descriptor/action profile pin differs')
+    cold_admission,package_manifest,package_sha=prepare_cold_loaded_phase(seed,out,receipt_helper,__file__,previous,route['Route'],43)
+    base=Path(cold_admission['BasePath']);session=base/'game_session';ship=Path(cold_admission['RuntimeRoot'])
+    expected_turn=cold_admission['ExpectedTurn'];historical_session=cold_admission['SessionId']
+elif restored_diagnostic:
     if previous is not None:raise ValueError('Diagnostic import cannot use prior owner continuation')
     base,session,ship,expected_turn,package_manifest,package_sha=prepare_restored_diagnostic(
         seed,out,receipt_helper,__file__,os.environ.get('BOE_TEST_GAME_LOOP_FAILURE_NONCE'))
@@ -665,7 +688,7 @@ else:
     historical_session=seed['sessionId']
 if package_manifest.get('ConsoleRouteModuleSHA256')!=sha(Path(console_routes.__file__).read_bytes()):
     raise ValueError('Finite console module differs from prepared package')
-if route['Route']!='birth' and (previous is None or restored_diagnostic):
+if route['Route']!='birth' and not cold_loaded and (previous is None or restored_diagnostic):
     raise ValueError('Finite storage routes require an ordinary accepted predecessor')
 load_nonce=os.environ.get('BOE_TEST_LOAD_OBSERVATION_NONCE')
 if route['Route']=='storage-local-proof' and (type(load_nonce) is not str or re.fullmatch('[0-9a-f]{32}',load_nonce) is None):
@@ -673,11 +696,11 @@ if route['Route']=='storage-local-proof' and (type(load_nonce) is not str or re.
 story=session/'stories/mortal_life_2.jsonl'
 story_before=story.read_bytes()
 setup_line=story_before.splitlines()[0]
-if not restored_diagnostic:
+if not restored_diagnostic and not cold_loaded:
     assert hashlib.sha256(setup_line).hexdigest()==seed['setupStoryEntrySha256'], 'Setup marker changed'
 all_entries=[json.loads(line) for path in (session/'stories').glob('*.jsonl') for line in path.read_text(encoding='utf-8-sig').splitlines() if line.strip()]
 guardian=strict_settings(Path(sys.argv[5]).with_name('guardian.json').read_bytes()) if previous else None
-if not restored_diagnostic:expected_turn=phase_admission(seed,previous,max(row['turn'] for row in all_entries),guardian)
+if not restored_diagnostic and not cold_loaded:expected_turn=phase_admission(seed,previous,max(row['turn'] for row in all_entries),guardian)
 if previous:
     assert package_manifest==previous['PhasePackage'], 'Immutable phase package changed'
     assert previous['ReceiptHelperPins']==package_manifest['ReceiptHelperPins'], 'Receipt helper changed between phases'
@@ -698,15 +721,22 @@ for pending in ['input/turn_request.json','game_state/control/pending_turn_snaps
 controlled_refusal=False;relay_mode=True
 total_seconds,work_seconds,client_cleanup_seconds,provider_seconds=720,660,680,600
 relay_contract=load_relay_contract(out/'relay')
-relay_queue=out/'queue';relay_queue.mkdir()
+if cold_loaded:
+    pipe,command,relay_queue,temporary_root=cold_loaded_operational_context(cold_admission,out,session)
+else:
+    relay_queue=out/'queue';relay_queue.mkdir()
 baseline=out/'original-baseline';baseline.mkdir()
 shutil.copytree(session/'game_state',baseline/'game_state') # One pre-action DATA capture; no live authority reuse.
-pipe='og-'+uuid.uuid4().hex[:12]
+if not cold_loaded:pipe='og-'+uuid.uuid4().hex[:12]
 quote=lambda v:"'"+str(v).replace("'","''")+"'"
-command='& '+quote('/usr/bin/python3')+' '+quote(out/'relay/relay_cli.py')+' --session '+quote(session)+' --queue '+quote(relay_queue)+' --model dots-finish-relay'
+if not cold_loaded:command='& '+quote('/usr/bin/python3')+' '+quote(out/'relay/relay_cli.py')+' --session '+quote(session)+' --queue '+quote(relay_queue)+' --model dots-finish-relay'
 env = {k:v for k,v in os.environ.items() if not k.upper().startswith('OPENCODE_')}
 for key, folder in [('XDG_CONFIG_HOME','config'),('XDG_DATA_HOME','data'),('XDG_STATE_HOME','state'),('XDG_CACHE_HOME','cache'),('TMPDIR','tmp')]:
-    path=out/folder;path.mkdir();env[key]=str(path)
+    path=temporary_root if key=='TMPDIR' else out/folder
+    if cold_loaded:path.mkdir(mode=0o700)
+    else:path.mkdir()
+    env[key]=str(path)
+if cold_loaded:env['TMP']=env['TEMP']=str(temporary_root)
 for key in ['OPENCODE_DISABLE_PROJECT_CONFIG','OPENCODE_DISABLE_AUTOUPDATE','OPENCODE_DISABLE_EXTERNAL_SKILLS','OPENCODE_DISABLE_CLAUDE_CODE']:env[key]='1'
 install = out
 env.update(NPM_CONFIG_USERCONFIG=str(install/'empty-user.npmrc'),NPM_CONFIG_GLOBALCONFIG=str(install/'empty-global.npmrc'),NPM_CONFIG_CACHE=str(out/'npm-cache'),NPM_CONFIG_IGNORE_SCRIPTS='true')
@@ -717,18 +747,22 @@ config_path=session/'config.json'
 if previous and not config_path.exists():raise ValueError('Continuation config disappeared')
 config_before=config_path.read_bytes() if config_path.exists() else b'{}'
 phase_settings=strict_settings(config_before)
-if not previous and not restored_diagnostic:
+if not previous and not restored_diagnostic and not cold_loaded:
     profile_key=next((k for k in phase_settings if k.casefold()=='gmcliinputprofile'),'GmCliInputProfile')
     profile=dict(phase_settings.get(profile_key) or {})
     for key,value in {'IdleMarker':'NEUTRAL READY','PromptPrefix':'RELAY> ','WorkingMarker':'NEUTRAL WORKING','BlockedMarkers':['RELAY ERROR'],'ObservationTimeoutMilliseconds':15000}.items():put_setting(profile,key,value)
     for key,value in {'Language':'ru','MusicEnabled':False,'SoundEnabled':False,'GenerateSceneImages':False,'ShowImagesInConsole':False,'ImageProvider':'off',
         'GmBridgeEnabled':True,'GmBridgeBackend':'OwnedTerminal','GmMainOwnerBackend':'NativeLineage','GmBridgeAutoStart':False,
         'GmCliInputProfile':profile}.items():put_setting(phase_settings,key,value)
-for key,value in {'GmBridgePipeNameOverride':pipe,'GmCliLaunchCommand':command,'GmBridgeShellWorkingDirectory':str(session)}.items():put_setting(phase_settings,key,value)
-config_next=json.dumps(phase_settings,indent=2,ensure_ascii=False).encode()+b'\n'
-config_temp=config_path.with_name('config.phase-'+uuid.uuid4().hex+'.tmp')
-with config_temp.open('xb') as target:target.write(config_next);target.flush();os.fsync(target.fileno())
-os.replace(config_temp,config_path)
+if cold_loaded:
+    if config_before!=cold_admission['ConfigBytes']:raise ValueError('Cold settings changed before launch')
+    config_next=config_before
+else:
+    for key,value in {'GmBridgePipeNameOverride':pipe,'GmCliLaunchCommand':command,'GmBridgeShellWorkingDirectory':str(session)}.items():put_setting(phase_settings,key,value)
+    config_next=json.dumps(phase_settings,indent=2,ensure_ascii=False).encode()+b'\n'
+    config_temp=config_path.with_name('config.phase-'+uuid.uuid4().hex+'.tmp')
+    with config_temp.open('xb') as target:target.write(config_next);target.flush();os.fsync(target.fileno())
+    os.replace(config_temp,config_path)
 evidence=IncrementalEvidence(out);process_observer=OwnedProcessSnapshots();observed_processes=[];last_process_sample=-5.0
 daemon_return_cut=None
 start=time.monotonic(); peers=[]; journal=EvidenceJournal(evidence); original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None;active_phase_deadline=None
@@ -739,8 +773,9 @@ result.update(ConsoleRoute=route,ConsoleRouteSHA256=sha(route_bytes) if route_by
 result.update(RuntimePins=package_manifest['RuntimePins'],PhasePackage=package_manifest,PhasePackageSHA256=package_sha,ReceiptHelperPins=package_manifest['ReceiptHelperPins'])
 if relay_mode:result.update(ConfiguredModel='dots-finish-relay',TestRelay=True,OpenCodeProviderCalls=0,RelayQueue=str(relay_queue))
 if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',ControlledRefusal=True,ProviderCalls=0)
-result.update(SeededLiveMortal=not restored_diagnostic,SeedSessionId=historical_session,BasePath=str(base),SeedManifestSha256=hashlib.sha256(seed_bytes).hexdigest(),ExpectedTurnNumber=expected_turn,SetupMarkerIsAcceptedGmTurn=False)
+result.update(SeededLiveMortal=not restored_diagnostic and not cold_loaded,SeedSessionId=historical_session,BasePath=str(base),SeedManifestSha256=hashlib.sha256(seed_bytes).hexdigest(),ExpectedTurnNumber=expected_turn,SetupMarkerIsAcceptedGmTurn=False)
 if restored_diagnostic:result.update(RestoredAcceptedDataDiagnostic=True,DiagnosticSourceProbeSHA256=seed['SourceProbeSHA256'],RuntimeSource=seed['RuntimeSource'],NotT021Qualification=True)
+if cold_loaded:result.update(ColdLoadedFreshHosted=True,ColdOutcomeSHA256=seed['ColdOutcome']['SHA256'],ColdRebindOutcomeSHA256=seed['RebindOutcome']['SHA256'],ColdArchiveSHA256=seed['ArchiveSHA256'],ColdInitialGeneration=cold_admission['GenerationId'])
 def terminal_fixture_admission():
     # Shared pure preflight, before imports and again at closing; no checkout fallback.
     return phase_evidence.terminal_package_preflight(out,package_manifest)
@@ -1370,6 +1405,9 @@ inventory_context=None;inventory_cleanup_required=False
 client=bridge=daemon=None;client_wait=False;client_prompt=False
 ledger_witness=ledger_binding=None
 try:
+    if cold_loaded:
+        phase_evidence.require_cold_loaded_namespace(base)
+        if config_path.read_bytes()!=cold_admission['ConfigBytes']:raise ValueError('Cold config changed before first child')
     client=Terminal('client',['dotnet',str(ship/'BookOfEternityClient/BookOfEternityClient.dll'),str(base),'--plain-output'],captured_output=True)
     until(lambda:client.console.main(0,0),12,'actual startup Continue menu')
     launcher=str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1')
@@ -1379,6 +1417,9 @@ try:
     record=read_json(record_path);status=rpc({'command':'status'})
     assert status['ok'] and status['status']['terminalOwnerRetained'] and status['status']['terminalRunId']==record['Identity']['RunId']
     phase_evidence.require_fresh_owner(record['Identity'],previous)
+    if cold_loaded:
+        phase_evidence.require_cold_loaded_owner(record['Identity'],{'RootKey':str(base),'GenerationId':cold_admission['GenerationId'],'ForbiddenRunIds':cold_admission['ForbiddenRunIds']})
+        if record['Identity']['BootId']!=Path('/proc/sys/kernel/random/boot_id').read_text().strip():raise ValueError('Cold owner current boot differs')
     original_record=record['Identity'];original={k[0].lower()+k[1:]:v for k,v in original_record.items()};original['backend']=2
     result['ObservedStartupRecord']=record;result['OriginalRunningStatus']=status
     if record['Disposition']!='Running' or status['status']['terminalUncertain']:
@@ -1398,6 +1439,8 @@ try:
     daemon_owner=daemon_pair_decode(result['DaemonSettlement'],'Original',False)
     if previous and daemon_owner==daemon_pair_decode(previous['DaemonSettlement'],'Final',True):
         raise RuntimeError('Daemon startup reused predecessor owner')
+    if cold_loaded and daemon_owner==cold_admission['ArchivedDaemonOwnerId']:
+        raise RuntimeError('Cold fresh daemon reused archived passive identity')
     if restored_diagnostic:
         accepted_raw=phase_evidence._restored_plain_path(seed['SourceEvidence']['Probe']).read_bytes()
         if sha(accepted_raw)!=seed['SourceProbeSHA256']:raise ValueError('Diagnostic accepted source changed before owner join')

@@ -41,7 +41,7 @@ class MortalEvidenceTests(unittest.TestCase):
         enclosing=next(n for n in TREE.body if isinstance(n,ast.Try) and any(isinstance(x,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='client' for t in x.targets) for x in n.body))
         start=next(i for i,n in enumerate(enclosing.body) if assign_name(n,'record'))
         end=next(i for i,n in enumerate(enclosing.body) if isinstance(n,ast.FunctionDef) and n.name=='ready')
-        scope.update(rpc=lambda _:dict(ok=True,status=status),result={},command='cmd',session=Path('/own/game_session'))
+        scope.update(rpc=lambda _:dict(ok=True,status=status),result={},command='cmd',session=Path('/own/game_session'),cold_loaded=False)
         try:exec(compile(ast.Module(body=enclosing.body[start:end],type_ignores=[]),str(SOURCE),'exec'),scope)
         except (AssertionError,ValueError,RuntimeError):return False
         return True
