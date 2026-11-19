@@ -271,3 +271,24 @@ original reviewed input-manifest hash at every closing check. Still UNRUN.
 Live trace design uses actual canonical base/play, not merely game_session;
 pinned profile values must match launch environment/marker, and failed partial
 assets remain retained/refused rather than repaired or reused.
+
+### Fresh producer accepted; live trace admission test-first SOURCE WIP
+
+Geometry independently accepted producer79ac6a83…cbaa/all745artifacts: actual
+239/244/249published inventories equal current bins+three exact assets in hash
+AND mode, zerooverlays. Three guarded standard publishes completed1.3195/1.1183/
+1.1683s with ECHILD/driver0/bothEOF/noemergency/failure/deadline. Closing32067
+source/723bins/14assets/tools/8Unit pins remained exact. No world/export occurred.
+
+Next test-first block extends existing test-live-terminal-fences7→11 methods,
+without executing live module: real temporary trace namespace/env matrix, actual
+Terminal/RPC constructor AST, actual final child-environment→Popen slice, and
+actual receipt prelaunch slice. Production/profile sources remain unchanged.
+Initial missing callable is feature RED only: its downstream matrix/launch
+refusal controls are explicitly UNEXECUTED until the real API exists. Matrix
+requires pinned profile versus environment, actual play-root separation,
+private regular marker32bytes, no links/specials, no mutation/repair/fallback.
+Actual child scopes use the existing shared StopNonce; failure/load nonces are
+not physical identities. Trace checks remain fresh per launch because env and
+namespace can drift; no cache or new process abstraction is introduced.
+Source review and bounded pure11 RED are pending. No live/profile/world action.
