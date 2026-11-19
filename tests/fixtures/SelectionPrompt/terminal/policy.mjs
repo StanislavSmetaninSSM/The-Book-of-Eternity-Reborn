@@ -1,6 +1,6 @@
 // Admission only: no screen model, coordinate calculation, or reply synthesis.
 export class Admission {
-  constructor() { this.decoder = new TextDecoder('utf-8', {fatal:true}); this.pending=''; this.byteTail=Buffer.alloc(0); this.failed=false; }
+  constructor() { this.decoder = new TextDecoder('utf-8', {fatal:true,ignoreBOM:true}); this.pending=''; this.byteTail=Buffer.alloc(0); this.failed=false; }
   feed(bytes, final=false) {
     if(this.failed) throw Error('Admission already failed');
     try {

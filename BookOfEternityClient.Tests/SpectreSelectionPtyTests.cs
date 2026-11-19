@@ -48,6 +48,51 @@ public sealed class SpectreSelectionPtyTests
         await RunModeAsync("pty-fullroute");
     }
 
+    [Fact]
+    public async Task PinnedTerminalPolicyAndActualCursorQueryHaveOwnedEvidence()
+    {
+        Assert.True(OperatingSystem.IsLinux());
+        var node = Environment.GetEnvironmentVariable("BOE_TERMINAL_NODE")
+            ?? throw new InvalidOperationException("Explicit pinned BOE_TERMINAL_NODE required.");
+        Assert.True(Path.IsPathFullyQualified(node));
+        Assert.Equal("acbe4b8d9153b841ed0697cbfc4f93e767386620edb745ab9358306c0a6f31aa",
+            Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(node))).ToLowerInvariant());
+        var prefix = Environment.GetEnvironmentVariable("BOE_TERMINAL_PREFIX")
+            ?? throw new InvalidOperationException("Explicit reviewed BOE_TERMINAL_PREFIX required.");
+        var root = Path.Combine(TestDiagnosticPaths.Root,"terminal-qualification",Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        var source = Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/SelectionPrompt/terminal");
+        await RunAsync(node,[Path.Combine(source,"test_policy.mjs")],root,"policy",10);
+        await RunAsync("/usr/bin/python3",[Path.Combine(source,"test_transport.py")],root,"transport",10);
+        var package=Path.Combine(root,"native");
+        await RunAsync("pwsh",["-NoLogo","-NoProfile","-File",
+            Path.Combine(TestRepoPaths.RepoRoot,"scripts/build-linux-supervisor.ps1"),
+            "-OutputDirectory",package,"-IncludeHostGuardian"],root,"native",50);
+        var helper=Path.Combine(AppContext.BaseDirectory,"BookOfEternityClient.TestSupport.dll");
+        foreach(var mode in new[]{"emulator","cursor"})
+        {
+            var report=Path.Combine(root,mode+".guardian.json");
+            string[] arguments=mode=="emulator"
+                ? [Path.Combine(source,"test_emulator.py"),node,prefix,Path.Combine(root,"emulator")]
+                : [Path.Combine(source,"pty_probe.py"),node,prefix,helper,Path.Combine(root,"cursor")];
+            await RunAsync(Path.Combine(package,"host-guardian"),
+                [report,"20000","/usr/bin/python3",..arguments],root,mode,25);
+            using var document=JsonDocument.Parse(File.ReadAllBytes(report));
+            var g=document.RootElement;
+            Assert.True(g.GetProperty("echild").GetBoolean());
+            Assert.Equal(0,g.GetProperty("driverExitCode").GetInt32());
+            Assert.Equal(0,g.GetProperty("emergencySignals").GetInt32());
+            Assert.Equal(0,g.GetProperty("failures").GetInt32());
+            Assert.False(g.GetProperty("deadline").GetBoolean());
+        }
+        using var evidence=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(root,"cursor/result.json")));
+        var r=evidence.RootElement;
+        Assert.True(r.GetProperty("Success").GetBoolean());
+        Assert.True(r.GetProperty("EOF").GetBoolean());
+        Assert.True(r.GetProperty("ChildRestoredConfiguredBaseline").GetBoolean());
+        Assert.True(r.GetProperty("OwnerRestoredOriginal").GetBoolean());
+    }
+
     /// <summary>Reuses the owned inert renderer process and its exact EOF/guardian cleanup for one explicit console mode.</summary>
     private static async Task RunModeAsync(string mode)
     {

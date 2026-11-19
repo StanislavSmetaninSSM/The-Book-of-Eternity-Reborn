@@ -18,3 +18,35 @@ This block does NOT change `smoke.py`, live driver, raw grammar or production UI
 3. After cheapruntime/source review, fresh Unit/helper build for terminal-cursor-probe, then one ownedtiny realConsoleCursorTop qualification; no fullroute until independently accepted.
 
 Before fullroute wiring, tests must additionally cover transport malformed/out-of-order/extraresponse, expiredwriter, wronggeometry/re-enabledECHO, callbackpending/partialprefix key refusal and cleanup failures. Do not substitute these source intentions for executed coverage.
+
+## Complete-source qualification gate (UNRUN)
+
+Early WIP transport gaps are now addressed in source: BOM-preserving admission,
+seven independent transport DATA methods, nonblocking bounded pipe writes,
+permanent protocol failure state, incremental raw/protocol evidence, and owned
+abort/drain on constructor or runtime failure. `closed` means joined/drained
+normal CLOSE, not merely an acknowledged command. Aborts retain separate evidence.
+Node v24.22.3 is bound to SHA256 acbe4b8d9153b841ed0697cbfc4f93e767386620edb745ab9358306c0a6f31aa;
+all inherited mandatory instrumentation is preserved. Extra linked/special package
+entries are rejected before import, not silently excluded from inventory.
+
+Official exact selection: `mortal-terminal-emulator-qualification`, ONE Fact.
+It runs policy corpus, seven transport methods, then two separate ordinary owned
+20-second guardians: emulator corpus (10-second work) and actual .NET CursorTop
+(12-second work). The existing wrapper observes each guardian for 25 seconds.
+This does not increase fullroute's separate 45/55/60 budgets. Set explicitly:
+`BOE_TERMINAL_NODE` to the pinned absolute Node and `BOE_TERMINAL_PREFIX` to the
+reviewed external extraction prefix. No runtime package is copied into Git.
+
+`pty_probe.py` owns one PTY100x25 and noecho baseline, one .NET child and one Node
+sidecar. Only upstream replies traverse its single writer; there are no user keys
+or guessed CPR. The writer freshly checks size/noecho/original deadline before
+write; this is a snapshot, not a claim of atomic exclusion of runtime changes.
+Normal qualification requires actual .NET CursorTop=4, actual all-stdio TTY100x25,
+one upstream CPR, child exit0, PTY EOF, child-restored configured baseline before
+explicit owner-original restoration, and sidecar normal disposal/drain. Any failure
+retains original evidence and only bounded exact-child cleanup; guardian remains
+the final ownership fence. No existing smoke/live transport is wired to this API.
+
+All new source remains UNRUN pending complete source review and save. The authored
+Unicode width corpus is an oracle to test, not an assertion of measured support.

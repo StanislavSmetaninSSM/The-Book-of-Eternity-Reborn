@@ -1,10 +1,11 @@
 """Reviewed later: exact package runtime DATA, not PTY/game qualification."""
-import pathlib, sys, tempfile, time
+import pathlib, sys, time
 from owned_terminal import OwnedTerminal
 
 def main():
-    node,prefix=sys.argv[1:]
-    with tempfile.TemporaryDirectory(prefix='boe-terminal-data-') as folder:
+    node,prefix,folder=sys.argv[1:]
+    pathlib.Path(folder).mkdir(exist_ok=False)
+    if True:
         emitted=[]
         terminal=OwnedTerminal(node,prefix,folder,time.monotonic()+10,
                                lambda data,kind,seq:emitted.append((data,kind,seq)))
@@ -29,7 +30,6 @@ def main():
         finally:
             # No successful cleanup claim if protocol failed; owner records exact child.
             if not terminal.closed:
-                terminal.process.terminate();terminal.process.wait(timeout=2)
-                terminal.process.stdin.close();terminal.process.stdout.close();terminal.stderr.close()
+                terminal.abort()
     print('terminal-runtime DATA passed')
 if __name__=='__main__':main()

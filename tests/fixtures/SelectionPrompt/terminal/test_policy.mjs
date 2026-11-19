@@ -14,4 +14,15 @@ for(const bad of ['\x1b[?1049h','\x1b[8m','\x1b]52;c;x\x07','\x1b[5n','\x1b[999A
 for(const partial of [Buffer.from('\x1b['),Buffer.from([0xf0,0x9f])]) {
  const a=new Admission();assert.equal(a.feed(partial).pending,true);assert.throws(()=>a.feed(Buffer.alloc(0),true));
 }
-console.log(JSON.stringify({Suite:'terminal-admission',Success:true,Utf8Splits:raw.length+1,RejectedControls:7,PartialEOF:2}));
+// Summary follows all assertions.
+// console.log(JSON.stringify({Suite:'terminal-admission',Success:true,Utf8Splits:raw.length+1,RejectedControls:7,PartialEOF:2}));
+
+// BOM is valid DATA and must never disappear at a chunk boundary.
+for(const text of ['\ufeffabc','a\ufeffb','\ufeff\x1b[6n\ufeff']) {
+ const bytes=Buffer.from(text);
+ for(let split=0;split<=bytes.length;split++) {
+  const a=new Admission();const x=a.feed(bytes.subarray(0,split));const y=a.feed(bytes.subarray(split));
+  assert.deepEqual(Buffer.concat([x.bytes,y.bytes,a.feed(Buffer.alloc(0),true).bytes]),bytes);
+ }
+}
+console.log(JSON.stringify({Suite:'terminal-admission',Success:true,Utf8Splits:raw.length+1,RejectedControls:7,PartialEOF:2,BomCorpus:3}));

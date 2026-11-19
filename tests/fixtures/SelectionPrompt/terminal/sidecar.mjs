@@ -15,18 +15,21 @@ const {Unicode11Addon}=req('@xterm/addon-unicode11');
 const term=new Terminal({cols:100,rows:25,convertEol:false,allowProposedApi:true,scrollback:1000,logLevel:'off',windowOptions:{}});
 const addon=new Unicode11Addon();term.loadAddon(addon);term.unicode.activeVersion='11';
 if(term.unicode.activeVersion!=='11')throw Error('Unicode profile not active');
-const admission=new Admission();let seq=0,closed=false,batch=null;
+const admission=new Admission();let seq=0,closed=false,batch=null,callbackFailure=null;
 const emit=x=>process.stdout.write(JSON.stringify(x)+'\n');
 const subscription=term.onData(data=>{
+ try {
  if(!batch||batch.replies.length>=batch.queries) throw Error('Unsolicited terminal reply');
  const state={x:term.buffer.active.cursorX,y:term.buffer.active.cursorY};
  const m=/^\x1b\[(\d+);(\d+)R$/.exec(data);
  if(!m||+m[1]!==state.y+1||+m[2]!==state.x+1)throw Error('Upstream reply/state mismatch');
  batch.replies.push({bytes:Buffer.from(data,'utf8').toString('base64'),state});
+ } catch(error) { callbackFailure=error; }
 });
-const binary=term.onBinary(()=>{throw Error('Unexpected binary response');});
+const binary=term.onBinary(()=>{callbackFailure=Error('Unexpected binary response');});
 function dispose(){subscription.dispose();binary.dispose();term.dispose();closed=true;}
 async function command(c) {
+ if(callbackFailure)throw callbackFailure;
  if(closed||!Number.isSafeInteger(c.seq)||c.seq!==seq+1)throw Error('Protocol order');
  seq=c.seq;
  if(c.op==='WRITE') {
@@ -35,6 +38,7 @@ async function command(c) {
   const admitted=admission.feed(raw); // Entire batch admitted BEFORE upstream auto replies.
   batch={queries:admitted.queries,replies:[]};
   if(admitted.bytes.length)await new Promise(done=>term.write(admitted.bytes,done));
+  if(callbackFailure)throw callbackFailure;
   if(batch.replies.length!==batch.queries)throw Error('Missing terminal reply');
   emit({op:'WRITTEN',seq,replies:batch.replies,pending:admitted.pending,modes:term.modes,cursor:{x:term.buffer.active.cursorX,y:term.buffer.active.cursorY}});batch=null;
  } else if(c.op==='SNAPSHOT') {
@@ -45,7 +49,7 @@ async function command(c) {
   dispose();emit({op:'CLOSED',seq});
  } else throw Error('Unknown command');
 }
-emit({op:'READY',headless:'6.0.0',unicodeAddon:'0.9.0',unicode:'11',cols:term.cols,rows:term.rows});
+emit({op:'READY',headless:'6.0.0',unicodeAddon:'0.9.0',unicode:'11',node:process.version,cols:term.cols,rows:term.rows});
 const lines=createInterface({input:process.stdin,crlfDelay:Infinity});
 let chain=Promise.resolve();
 lines.on('line',line=>{chain=chain.then(()=>{if(line.length>300000)throw Error('Oversized protocol');return command(JSON.parse(line));}).catch(fail);});

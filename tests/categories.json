@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-terminal-emulator-qualification",
+      "responsibility": "T034 pinned terminal admission/transport DATA, exact Unicode11 runtime corpus, and one actual inert .NET CursorTop on owned same-PTY100/noecho with original deadline and cleanup.",
+      "excludes": "No full route, game, provider, live transport, saved world or Load commit.",
+      "changeHints": [
+        "tests/fixtures/SelectionPrompt/terminal",
+        "BookOfEternityClient.TestSupport/TerminalCursorProbe.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-local-fullroute-geometry",
+          "when": "Only after terminal qualification outcome and separate source gate for adapter integration."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpectreSelectionPtyTests.PinnedTerminalPolicyAndActualCursorQueryHaveOwnedEvidence"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-local-fullroute-geometry",
       "responsibility": "#1515 T034 one actual local Explorer locked denial, authored access arrangement, real retrieve, custom Options/Save, deposit and Back-only Load focus on owned PTY100/noecho. Verifies actual archive and per-stage canonical/generation observations; no fake player prompt.",
       "excludes": "No GM decision, accepted game turn, archive Enter/Load commit, hosted replacement, live transport change, old world or provider.",
