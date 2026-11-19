@@ -4720,3 +4720,16 @@ duplicates. All32,018 source pins and eight outputs unchanged. Outcome SHA256:
 Independent final outcome review precedes native qualification. No live result,
 merge or issue closure claimed. A read-only preflight of the separate existing
 Load consumer is not authorization to broaden T032 or alter its strict default.
+
+Separate T033 Load preflight: independent source review found a predictable
+follow-up blocker. Real Load commits the archive and a new generation under
+quiescent admission, then rebind clears hot original/completed contexts. Save
+excludes pending snapshot/repair artifacts. PrepareLoadedConsoleContinuationAsync
+still uses default strict validation; bound generation proves ownership, not a
+signed turn original. A saved canonical parked vehicle can therefore fail known
+location lookup again, with retained NPC refusals also possible. Failure happens
+after archive commitment and blocks continuation; it is not an uncommitted Load.
+T032 intentionally does not alter this path. Track one genuine Save→Load→actual
+continuation regression with separate commitment/generation/continuation assertions
+before a scoped fix and before expensive live p03. Do not automatically substitute
+pre-send purpose or broaden into manual-refresh/Browser/afterlife semantics.
