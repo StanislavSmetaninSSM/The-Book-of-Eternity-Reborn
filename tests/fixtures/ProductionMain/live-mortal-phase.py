@@ -718,7 +718,7 @@ if not previous and not restored_diagnostic:
     profile_key=next((k for k in phase_settings if k.casefold()=='gmcliinputprofile'),'GmCliInputProfile')
     profile=dict(phase_settings.get(profile_key) or {})
     for key,value in {'IdleMarker':'NEUTRAL READY','PromptPrefix':'RELAY> ','WorkingMarker':'NEUTRAL WORKING','BlockedMarkers':['RELAY ERROR'],'ObservationTimeoutMilliseconds':15000}.items():put_setting(profile,key,value)
-    for key,value in {'Language':'ru','MusicEnabled':False,'SoundEnabled':False,'GenerateSceneImages':False,'ShowImagesInConsole':False,
+    for key,value in {'Language':'ru','MusicEnabled':False,'SoundEnabled':False,'GenerateSceneImages':False,'ShowImagesInConsole':False,'ImageProvider':'off',
         'GmBridgeEnabled':True,'GmBridgeBackend':'OwnedTerminal','GmMainOwnerBackend':'NativeLineage','GmBridgeAutoStart':False,
         'GmCliInputProfile':profile}.items():put_setting(phase_settings,key,value)
 for key,value in {'GmBridgePipeNameOverride':pipe,'GmCliLaunchCommand':command,'GmBridgeShellWorkingDirectory':str(session)}.items():put_setting(phase_settings,key,value)

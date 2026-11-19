@@ -4132,3 +4132,22 @@ Optimization: reuse verified immutable published DATA, with fresh manifest and
 copy joins; never reuse live world/authority. This read-only review adds no
 runtime speedup claim. The independent requirements matrix is still pending;
 T016 denied/authorized inventory and reload remain unproved.
+
+T016 bounded fresh-profile source delta, 2026-11-19 (not yet launched).
+Only the Python live driver initial settings gain ImageProvider='off'. Independent
+source review confirms this prevents the image-provider HTTP branch and does not
+change managed assembly, receipt or ownership contracts; no managed rebuild is
+needed. Driver/source/package pins must be refreshed before any fresh run.
+PowerShell opt-outs survive the existing environment inheritance chain, provided
+they are established before the first pwsh and never overwritten. Concrete new
+manual preparation/launch scripts still require focused prelaunch review.
+
+Independent requirements reconciliation found no unclosed static gameplay/contract
+finding in the accepted original FR1-FR9 checkpoints: those record 225 bounded
+executions, with separate display evidence, not a full suite. The missing T016
+result remains real denied selection without mutation, accepted permission turn,
+retrieve/Save/deposit/Load preserving identity and birth evidence. Historical
+accepted native birth is retained but is not a completed continuing journey.
+Unchecked later bookkeeping does not itself establish new gameplay defects;
+unexplained historical failures and the unqualified T028 remain separate. No
+previously passing tests were repeated for this read-only reconciliation.
