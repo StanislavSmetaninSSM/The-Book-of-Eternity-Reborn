@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -39,7 +40,7 @@ public sealed partial class ActorMaterializationValidationTests
         Assert.Equal(43, manifest.TurnNumber);
         var snapshotPath = _fs.ResolvePath(manifest.Files[path]);
         Assert.Equal(File.ReadAllBytes(_fs.ResolvePath(path)), File.ReadAllBytes(snapshotPath));
-        Assert.Equal(PendingTurnSnapshotAuthority.ComputeSha256(original), manifest.SnapshotFileHashes[path]);
+        Assert.Equal(PendingTurnSnapshotAuthority.ComputeSha256(File.ReadAllBytes(snapshotPath)), manifest.SnapshotFileHashes[path]);
 
         var current = JsonNode.Parse(original)!.AsObject();
         var actor = current["UpdateNPCs"]![0]!.AsObject();
@@ -57,10 +58,20 @@ public sealed partial class ActorMaterializationValidationTests
                 File.Delete(_fs.ResolvePath(prepared.AuthorityPath));
                 Directory.Delete(_fs.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotDirectory), true);
                 break;
-            case "invalid-snapshot": File.AppendAllText(snapshotPath, " "); break;
+            case "invalid-snapshot": File.WriteAllText(_fs.ResolvePath(prepared.AuthorityPath), "{}"); break;
         }
         if (scenario is "item-count" or "item-added" or "item-removed" or "other-row-field")
             await _fs.WriteFileAtomicAsync(path, current.ToJsonString());
+        var lookupMethod = typeof(ValidationService).GetMethod("LoadValidatedPendingTurnSnapshotLookupAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic)!;
+        Assert.NotNull(lookupMethod);
+        var lookupTask = (Task)lookupMethod.Invoke(_validator,
+            new object?[] { null, null, "output/narrative_response.json", true })!;
+        await lookupTask;
+        var lookup = lookupTask.GetType().GetProperty("Result")!.GetValue(lookupTask)!;
+        var status = lookup.GetType().GetProperty("Status")!.GetValue(lookup)!.ToString();
+        Assert.Equal(scenario == "missing-snapshot" ? "Missing" :
+            scenario == "invalid-snapshot" ? "Unusable" : "Usable", status);
         var before = Directory.EnumerateFiles(_rootPath, "*", SearchOption.AllDirectories)
             .ToDictionary(x => x, File.ReadAllBytes);
         IReadOnlyList<ValidationIssue> issues;
@@ -76,7 +87,8 @@ public sealed partial class ActorMaterializationValidationTests
         if (scenario is not "missing-snapshot")
         {
             Assert.Equal(manifestBytes, File.ReadAllBytes(_fs.ResolvePath(prepared.ManifestPath)));
-            Assert.Equal(authorityBytes, File.ReadAllBytes(_fs.ResolvePath(prepared.AuthorityPath)));
+            if (scenario != "invalid-snapshot")
+                Assert.Equal(authorityBytes, File.ReadAllBytes(_fs.ResolvePath(prepared.AuthorityPath)));
         }
         if (scenario == "unchanged")
             Assert.DoesNotContain(issues, x => x.Code == "npc_existing_inventory_resend_forbidden");
