@@ -58,3 +58,46 @@ Fresh owning Unit/TestSupport and exact official existing regression3 (one nativ
 Outcome374126e6 verified all36 artifacts, source32064/owning8 output joins and6 actual producer DLL/PDB/native/compiler joins. Fresh Unit/TestSupport39.63s/70warnings/0errors; exact official3/3PASS15.3691565s. Actual helper emitted9 physical events: separate generation, actual write and finalization triples, all same full Active original grant/nonce/PID. Write occurrence2 is strictly bounded by the real pre-Stop write timestamps, not the generation cycle. Same helper then refused actual snapshot-end after Stop and settled exact Failed close with both reply/stderr joined; original owner Stopped/OwnedScopeEmpty and guardian complete/no emergency/failure/deadline. Raw UTC bytes remain intact; PowerShell derived row timestamps reserialize at local offset with the same instant/fraction, not identical text.
 
 This closes the bounded actual remote projection/physical lifecycle gate only. Local8 were not rerun. Historical mm23 holder remains UNKNOWN; full live scheduling/P01/P02/P03 and exceptional OS disposal failure remain unqualified. No new live launch or prior-world reuse is authorized. Future preparation must use current compiled production, not old immutable producers with only PS overlays.
+
+## 2026-11-19: explicit physical-only routing, test-first WIP
+
+Tracked #1589/#1515. Both independent design reviews accepted the closed DEBUG
+contract: physical observation defaults disabled; exact `stderr` is for controlled
+fixtures only and requires the external path to be absent; exact `external`
+requires an explicitly owned private external directory and matching 32-byte
+`owner-nonce`. Unknown/empty/malformed or changed route/path/nonce suppresses
+physical output without fallback. Existing failure/stop stderr is unchanged.
+
+The initial test-only block preserves production bytes and adds twenty real
+public-lease routing cases to the existing eight-case local category (28 planned).
+Existing local and native fixtures now explicitly request stderr. Cases cover
+default/unknown route, valid stderr/external, rejected path/marker/privacy/link
+forms, route/path drift, actual disposal and unchanged failure channel. All are
+UNRUN pending saved source review. Initial RED cannot claim later negative
+assertions ran after its first failing assertion. Before GREEN the concrete sink
+API also needs explicit empty-value DATA (environment setters may remove empty
+values), special entry/collision/partial failure controls and fresh marker drift;
+these must not be silently claimed from this initial matrix.
+
+Implementation remains gated on causal RED. Use only an immutable per-acquisition
+route/path/nonce DATA record and fresh per-emission validation after the existing
+transition timestamp. TrustedLocalFileScope is ordinary namespace DATA, not a
+retained authority handle; require ValidateDirectory(false), concrete private
+Unix directory/marker/event modes and no links/special entries or canonical-root
+overlap in either direction. Observer creates no directory or marker. Each event
+is a private CreateNew PID/occurrence/closed-stage file, written and closed
+synchronously; collision/partial failure is retained UNKNOWN with no retry,
+repair, deletion or stderr fallback. No registry/cache/worker/async logger.
+
+Optimization: reuse immutable occurrence/route identity only during its lease;
+mutable route/marker/path checks remain fresh per emission. Synchronous IO may
+block and perturb lock timing; promise exception/policy noninterference, not
+timing neutrality or exhaustive holder coverage. A completely dropped occurrence
+is undetectable. Measure observed event count/bytes and whole inert elapsed.
+
+After reviewed local GREEN: existing remote3 with explicit child stderr, then
+ONE existing fullroute1 external same-PTY gate under unchanged45/55/60. Require
+actual foreground PID intervals, zero physical prefix in raw/emulator/cells,
+physical raw exactly equal to ordered emulator WRITE bytes and normal owned
+cleanup. No mainwire run, no live world, no mm24 preparation yet. Fresh owning
+Integration and Unit/Support outputs are required after production changes.

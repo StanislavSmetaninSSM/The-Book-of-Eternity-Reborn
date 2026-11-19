@@ -20,6 +20,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         var nonce = Guid.NewGuid().ToString("N");
         var previousNonce = Environment.GetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE");
+        var previousRoute = Environment.GetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE");
+        var previousPath = Environment.GetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_DIR");
         var previousError = Console.Error;
         using var captured = new StringWriter();
         using var failing = new PhysicalDiagnosticThrowingWriter();
@@ -27,6 +29,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         Exception? failure = null;
         try
         {
+            Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE", "stderr");
+            Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_DIR", null);
             Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE",
                 mode == "missing-nonce" ? null : mode == "malformed-nonce" ? "not-a-nonce" : nonce);
             Console.SetError(mode == "throwing-sink" ? failing : TextWriter.Synchronized(captured));
@@ -45,6 +49,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 Console.SetError(previousError);
                 Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", previousNonce);
+                Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE", previousRoute);
+                Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_DIR", previousPath);
             }
         }
         Assert.Null(failure);

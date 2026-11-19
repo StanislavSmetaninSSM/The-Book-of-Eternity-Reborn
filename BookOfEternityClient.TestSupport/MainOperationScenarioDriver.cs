@@ -224,6 +224,8 @@ internal static partial class MainOperationScenarioDriver
                 if(declaredSnapshot) {
                     var physicalNonce=Guid.NewGuid().ToString("N");
                     start.Environment[GmSessionRunCoordinator.StopDiagnosticNonceVariable]=physicalNonce;
+                    start.Environment["BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE"]="stderr";
+                    start.Environment.Remove("BOE_TEST_CANONICAL_LEASE_TRACE_DIR");
                     result["PhysicalObservationNonce"]=physicalNonce;
                 }
                 using var child=System.Diagnostics.Process.Start(start)!;var errors=child.StandardError.ReadToEndAsync();Task? stopping=null;string output;

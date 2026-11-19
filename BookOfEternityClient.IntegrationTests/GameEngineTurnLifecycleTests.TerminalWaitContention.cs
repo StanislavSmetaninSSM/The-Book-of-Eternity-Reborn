@@ -34,6 +34,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             holderReleasedAt = Stopwatch.GetTimestamp(); // Test-owned physical fact, not a production event.
         }
         var originalError = Console.Error;
+        var oldRoute = Environment.GetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE");
+        var oldPath = Environment.GetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_DIR");
         var oldNonce = Environment.GetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE");
         var nonce = Guid.NewGuid().ToString("N");
         using var physicalOutput = new StringWriter();
@@ -101,6 +103,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var elapsed = Stopwatch.StartNew();
         try
         {
+            Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE", "stderr");
+            Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_DIR", null);
             Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", nonce);
             Console.SetError(TextWriter.Synchronized(physicalOutput));
             AnsiConsole.Console = AnsiConsole.Create(new AnsiConsoleSettings
@@ -132,6 +136,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             AnsiConsole.Console = originalConsole;
             Console.SetError(originalError);
             Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", oldNonce);
+            Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE", oldRoute);
+            Environment.SetEnvironmentVariable("BOE_TEST_CANONICAL_LEASE_TRACE_DIR", oldPath);
         }
         var observedContentions = contentions;
         var observedOpened = opened;
