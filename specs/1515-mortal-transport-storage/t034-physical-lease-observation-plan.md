@@ -557,3 +557,18 @@ refusals and existing source/output/overlay/tool/mode controls executed. Full
 noncompiler contract only. Assemble and independently review fresh mm25 source,
 current producer, modes/tools/native/terminal input joins before one setup-only
 seed41 export and inert P01 profile. No new world or live action has run yet.
+
+### Fresh mm25 setup-only preparation accepted
+
+One standard guarded seed41 export and exclusive inert P01 profile completed.
+Independent review verified all eighteen artifact joins; eight actual inventories
+(4 native, 483 runtime/deployed each, 249 helper, 8 relay, 536 world, 9 terminal,
+17 dependencies), full retained play and current 32,067 source/723 managed/eight
+owning-output pins. Export took 3.274 s with child0, both EOF, guardian ECHILD,
+no emergency/failure/deadline; preparation took 7.9138 s. Seed41 remains setup-only,
+validation0/notaccepted. Separate semantic review matched six initial beforeimages,
+three absent outputs and exact authored P01 action/template. No GM/game launch or
+acceptance was part of preparation. Private trace contains only its matching nonce
+marker. Original limits remain 600/660/680/720/750. Scripted P01 is a separately
+authorized next operation; genuine ordinary43 decision and Save remain later and
+unqualified. Failed mm24 and all prior uncertain worlds are untouched.
