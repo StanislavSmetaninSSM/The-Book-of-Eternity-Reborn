@@ -6337,10 +6337,7 @@ function Process-TurnCore {
                 Write-Log "  Terminal error ($([math]::Round($duration, 1))s): $errorMessage" -Level "TURN" -Color Yellow
             }
             catch {
-        if (Test-GmDaemonReadFailure $_) {
-            $primaryReadFailure = $_
-            throw
-        }
+        Assert-GmNotDaemonReadFailure $_
                 Write-Log "  Terminal error ($([math]::Round($duration, 1))s): unreadable turn_error.json" -Level "TURN" -Color Yellow
             }
             if ([string]::IsNullOrWhiteSpace($missingHarnessTool)) {
@@ -6363,7 +6360,10 @@ function Process-TurnCore {
         }
     }
     catch {
-        Assert-GmNotDaemonReadFailure $_
+        if (Test-GmDaemonReadFailure $_) {
+            $primaryReadFailure = $_
+            throw
+        }
         $script:ErrorCount++
         Write-Log "  Error: $_" -Level "ERROR" -Color Red
     }
