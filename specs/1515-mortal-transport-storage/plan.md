@@ -3989,3 +3989,24 @@ real prepare-only integration with full producer/copy joins, not a live claim.
 Optimization: one inventory read is reused only within the immediate published
 copy comparison; final freshness checks remain. Inert process controls avoid
 compilation/export/game setup, without replacing the forthcoming real preparation.
+
+T028 actual preparation FAIL before seed, 2026-11-19. The single original helper
+invocation for new `mm15-20261119` exited 1 after 9 seconds. Native production,
+Client publish and Bridge publish each completed with driver exit0, ECHILD and no
+emergency signals. TestSupport publish returned driver exit1 with empty retained
+stdout/stderr; its guardian then reaped 11 children with nine emergency signals,
+ECHILD=true, failures=0 and no deadline. This is settled failed preparation, not
+successful publication or gameplay failure. No seed exporter ran; no play world,
+seed manifest or final preparation manifest exists. The helper's explicit
+`preparation-failed.json` and per-stage outcomes retained the refusal.
+The owning manifest pinned 32,014 tracked source/data files, 723 complete
+Client/Bridge/TestSupport dependency output members and eight Unit corroborations;
+all remained unchanged. Failed output inventory SHA256:
+`f16522be6b4ff45c14ae60804525306ece36f0d591a4ac56de90a99a46415c4e`.
+Raw evidence remains external under `mortal-t028/actual-prepare` and the failed
+preparation's logs. The failed directory is preserved, not resumed or replayed.
+The planned occupied-destination check after a successful preparation was not run
+because its prerequisite was unmet. No new GM packet, relay or game was launched.
+The TestSupport/MSBuild cause is UNKNOWN: lack of explicit serial MSBuild is only
+a hypothesis, not a demonstrated fix. Next is bounded tool-only diagnosis in a
+separate output directory, preserving the failed invocation and current guards.
