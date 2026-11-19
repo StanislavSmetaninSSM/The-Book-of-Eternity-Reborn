@@ -59431,7 +59431,9 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ManualSave_ActiveHostedMainWithoutAmbientGrantPublishesAndCloses"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ManualSave_ActiveHostedMainWithoutAmbientGrantPublishesAndCloses",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ManualSave_CommittedCloseFailurePreservesDecisionAndReplacement",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision"
           ]
         }
       ]

@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmRuntime;
+using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using Spectre.Console;
 using Xunit;
@@ -45,6 +46,75 @@ public sealed partial class GameEngineTurnLifecycleTests
         // Causal assertion follows real setup/refusal and complete original cleanup.
         Assert.True(result["MenuSucceeded"]!.GetValue<bool>(), result.ToJsonString());
         Assert.True(result["ArchiveVerified"]!.GetValue<bool>(), result.ToJsonString());
+    }
+
+    /// <summary>Preserves a real committed archive across finalization failure or detected replacement.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ManualSave_CommittedCloseFailurePreservesDecisionAndReplacement(bool replace)
+    {
+        FileSystemManager? files = null;
+        var closing = 0;
+        var sentinel = new IOException("controlled post-Save closing failure");
+        var nextGeneration = Guid.NewGuid().ToString("N");
+        string? archivePath = null;
+        byte[]? archiveBytes = null;
+        files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                SessionOperationClosingAsync = () =>
+                {
+                    closing++;
+                    archivePath = Assert.Single(Directory.GetFiles(files!.ResolvePath("saves/manual_saves"), "*.zip"));
+                    archiveBytes = File.ReadAllBytes(archivePath);
+                    if (!replace) return Task.FromException(sentinel);
+                    var generation = JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!.AsObject();
+                    generation["generationId"] = nextGeneration;
+                    File.WriteAllText(files.SessionGenerationPath, generation.ToJsonString());
+                    return Task.CompletedTask;
+                }
+            });
+        PortableSaveFixture.Seed(files);
+        var originalGeneration = JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!["generationId"]!.GetValue<string>();
+        var input = new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4));
+        var runtime = CreateGameEngineRuntime(files, input);
+        await using var audio = runtime.AudioService;
+        runtime.GameLoop.SetSession("manual-save-close", 43);
+        var prior = AnsiConsole.Console;
+        using var text = new StringWriter();
+        AnsiConsole.Console = AnsiConsole.Create(new AnsiConsoleSettings
+        { Ansi = AnsiSupport.No, ColorSystem = ColorSystemSupport.NoColors, Out = new AnsiConsoleOutput(text) });
+        Exception? failure;
+        try { failure = await Record.ExceptionAsync(() => runtime.Engine.InGameOptionsMenu()); }
+        finally { AnsiConsole.Console = prior; }
+        Assert.Equal(1, closing);
+        SaveCreationResult decision;
+        if (replace)
+        {
+            var replacement = Assert.IsType<SessionReplacedException>(failure);
+            Assert.Equal(originalGeneration, replacement.ExpectedGeneration);
+            decision = Assert.IsType<SaveCreationResult>(replacement.Data["EstablishedOperationResult"]);
+            Assert.Contains(CommittedSaveContinuationException.PlayerMessage, text.ToString());
+            Assert.Equal(nextGeneration, JsonNode.Parse(File.ReadAllBytes(files.SessionGenerationPath))!["generationId"]!.GetValue<string>());
+        }
+        else
+        {
+            var blocked = Assert.IsType<CommittedSaveContinuationException>(failure);
+            decision = blocked.Result;
+            Assert.True(decision.ContinuationBlocked);
+            var retained = Assert.IsType<MainOperationContinuationException<SaveCreationResult>>(decision.Failure);
+            Assert.Same(sentinel, retained.InnerException);
+        }
+        Assert.True(decision.Committed);
+        Assert.Equal(archivePath, files.ResolvePath(decision.DestinationRelativePath!));
+        Assert.Equal(archiveBytes, File.ReadAllBytes(archivePath!));
+        Assert.Single(Directory.GetFiles(files.ResolvePath("saves/manual_saves"), "*.zip"));
+        Assert.True(input.KeyAvailable); // ordinary success ACK was not consumed
+        var loc = new LocalizationManager();
+        Assert.DoesNotContain(loc.T("save_success"), text.ToString());
+        Assert.DoesNotContain(loc.T("save_failed"), text.ToString());
+        Assert.False(SessionOperationContext.TryGetExpectedGeneration(files.BasePath, out _));
     }
 
     /// <summary>Runs only beneath the existing native guardian; never borrows a live game world.</summary>
@@ -114,6 +184,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 result["Archives"] = archives;
                 if (menuSucceeded)
                 {
+                    Assert.Contains(new LocalizationManager().T("save_success"), text.ToString());
+                    Assert.DoesNotContain(new LocalizationManager().T("save_failed"), text.ToString());
                     using var zip = ZipFile.OpenRead(Assert.Single(archives));
                     var metadataEntry = Assert.Single(zip.Entries.Where(e => e.FullName == "save_metadata.json"));
                     using var metadataStream = metadataEntry.Open();

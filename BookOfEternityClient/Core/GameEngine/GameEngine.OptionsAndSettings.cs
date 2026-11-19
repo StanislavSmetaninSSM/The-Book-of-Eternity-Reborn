@@ -8,6 +8,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
+using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.UI;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging;
@@ -1217,7 +1218,41 @@ public partial class GameEngine
                 allowEmpty: true,
                 preserveNewlines: true);
 
-            var result = await _saveLoad.CreateSaveAsync(saveName, desc, turnNumber: _gameLoop.TurnNumber);
+            // Prompts are outside participation; the real current-session admission
+            // owns only creation and its closing checks, before any success or ACK.
+            SaveCreationResult? establishedSave = null;
+            SaveCreationResult result;
+            try
+            {
+                result = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+                {
+                    establishedSave = await _saveLoad.CreateSaveAsync(saveName, desc, turnNumber: _gameLoop.TurnNumber);
+                    if (establishedSave.ContinuationBlocked || establishedSave.Disposition == SaveCreationDisposition.Uncertain)
+                        SessionOperationContext.BlockPostOperationReadmission(_fs);
+                    return establishedSave;
+                }, establishedOutcome: () => establishedSave?.Disposition switch
+                {
+                    SaveCreationDisposition.Committed => MainOperationOutcome.Committed,
+                    SaveCreationDisposition.RolledBack => MainOperationOutcome.RolledBack,
+                    SaveCreationDisposition.Uncertain => MainOperationOutcome.Uncertain,
+                    _ => MainOperationOutcome.Failed
+                });
+            }
+            catch (MainOperationContinuationException<SaveCreationResult> failure)
+            {
+                result = failure.EstablishedResult.WithFollowUp(failure, blocksContinuation: true);
+            }
+            catch (SessionReplacedException replacement)
+            {
+                // Preserve the original replacement for the outer rebind path.
+                // A later close cannot reverse a save already committed here.
+                if ((replacement.Data["EstablishedOperationResult"] as SaveCreationResult ?? establishedSave) is { Committed: true })
+                {
+                    try { AnsiConsole.MarkupLine($"[yellow]{CommittedSaveContinuationException.PlayerMessage}[/]"); }
+                    catch { /* Presentation must not replace the established session replacement. */ }
+                }
+                throw;
+            }
             var ok = result.ToBoolean();
             AnsiConsole.MarkupLine(ok ? $"[green]{_loc.T("save_success")}[/]" : $"[red]{_loc.T("save_failed")}[/]");
             if (result.NeedsFollowUp)

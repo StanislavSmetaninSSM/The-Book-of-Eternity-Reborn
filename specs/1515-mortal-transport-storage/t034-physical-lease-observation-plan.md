@@ -954,3 +954,15 @@ creates no archive, and retains the admission failure. All 44 evidence hashes
 and built/closing pins join. This is distinct from the earlier compile-only
 failure. Next correction is only post-input Options Save participation, with
 established outcome and replacement precedence retained; no failed world reuse.
+
+Options-only correction WIP: after both input prompts, existing participating
+current-session admission encloses actual Save and closing. The exact decision
+maps to existing main outcomes; uncertain/blocked decisions prevent readmission.
+Typed later close failures retain SaveCreationResult; actual replacement remains
+the original exception, with committed notice only and no success ACK/retry.
+SaveLoad and MainFence are untouched. Exact bounded GREEN selection is five:
+real hosted positive1, actual post-commit close/replacement2, existing portable
+committed-warning/rollback menu2. Replacement control alters only its isolated
+fixture generation at the established finalization hook, never hosted authority.
+One owner per test and fresh generation/closing checks; no caching or framework.
+All implementation/control changes remain unbuilt/unrun pending source review.
