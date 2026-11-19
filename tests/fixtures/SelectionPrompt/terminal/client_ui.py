@@ -33,4 +33,4 @@ def player_ready(view,raw,cut):
     if re.search(r'(?:\r?\n)'+_EDGE+r' > '+_EDGE+r' \x1b\[s$',text) is None:return False
     state=view.cursor
     if state.get('x')!=4 or not 0<=state.get('y',-1)<25:return False
-    return view.lines[state['y']]==' >' and any('✦ Ваш ход ✦' in line for line in view.lines)
+    return view.lines[state['y']]==' >  ' and any('✦ Ваш ход ✦' in line for line in view.lines)

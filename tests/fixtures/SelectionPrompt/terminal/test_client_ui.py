@@ -31,7 +31,7 @@ class ClientUiData(unittest.TestCase):
         self.assertFalse(main_ready(v,raw,0,0))
     def test_player_complete_system_input_suffix(self):
         raw='── ✦ Ваш ход ✦ ──\r\n  /help\r\n >  \x1b[s'.encode()
-        lines=['── ✦ Ваш ход ✦ ──','  /help',' >']+['']*22
+        lines=['── ✦ Ваш ход ✦ ──','  /help',' >  ']+['']*22
         self.assertTrue(player_ready(view(raw,lines,{'x':4,'y':2}),raw,0))
         styled=raw.replace(b' >  ',b'\x1b[1m > \x1b[0m ')
         self.assertTrue(player_ready(view(styled,lines,{'x':4,'y':2}),styled,0))
@@ -40,14 +40,17 @@ class ClientUiData(unittest.TestCase):
             self.assertFalse(player_ready(view(part,lines,{'x':4,'y':2}),part,0))
     def test_heading_or_prompt_alone_or_reversed_refuses(self):
         for raw in ('✦ Ваш ход ✦',' >  \x1b[s',' >  \x1b[s\n✦ Ваш ход ✦'):
-            b=raw.encode();self.assertFalse(player_ready(view(b,[' >']*25,{'x':4,'y':0}),b,0))
+            b=raw.encode();self.assertFalse(player_ready(view(b,[' >  ']*25,{'x':4,'y':0}),b,0))
     def test_draft_multiline_and_postprompt_bytes_refuse(self):
-        raw='✦ Ваш ход ✦\r\n >  \x1b[s'.encode();lines=['✦ Ваш ход ✦',' >']+['']*23
+        raw='✦ Ваш ход ✦\r\n >  \x1b[s'.encode();lines=['✦ Ваш ход ✦',' >  ']+['']*23
         for b in (raw+b'x',raw+b'\x1b[u',raw+b'\r\n',b'\x1b[2J'+raw+b'partial',('Сохранённый черновик\n').encode()+raw,raw.replace(b' >  ',' │ '.encode())):
             self.assertFalse(player_ready(view(b,lines,{'x':4,'y':1}),b,0))
     def test_wrong_cursor_cells_or_pending_refuse(self):
-        raw='✦ Ваш ход ✦\r\n >  \x1b[s'.encode();lines=['✦ Ваш ход ✦',' >']+['']*23
+        raw='✦ Ваш ход ✦\r\n >  \x1b[s'.encode();lines=['✦ Ваш ход ✦',' >  ']+['']*23
         for cursor in ({'x':3,'y':1},{'x':4,'y':0}):self.assertFalse(player_ready(view(raw,lines,cursor),raw,0))
+        for wrong in (' >',' > ',' >   ',' > x'):
+            altered=list(lines);altered[1]=wrong
+            self.assertFalse(player_ready(view(raw,altered,{'x':4,'y':1}),raw,0))
         v=view(raw,lines,{'x':4,'y':1});v.pending=True
         self.assertFalse(player_ready(v,raw,0))
 

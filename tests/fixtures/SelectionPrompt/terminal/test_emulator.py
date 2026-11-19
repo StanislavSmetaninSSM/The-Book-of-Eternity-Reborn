@@ -39,7 +39,7 @@ def main():
             terminal.feed(b'\x1b[2J\x1b[1;1H >  \x1b[s\x1b[3;8Haway\x1b[u')
             snapshot=terminal.snapshot()
             assert snapshot['cursor']=={'x':4,'y':0},snapshot
-            assert snapshot['lines']==[' >','','       away']+['']*22,snapshot
+            assert snapshot['lines']==[' >  ','','       away']+['']*22,snapshot
             terminal.feed(b'\x1b[J/options\x1b[u')
             snapshot=terminal.snapshot()
             assert snapshot['cursor']=={'x':4,'y':0},snapshot

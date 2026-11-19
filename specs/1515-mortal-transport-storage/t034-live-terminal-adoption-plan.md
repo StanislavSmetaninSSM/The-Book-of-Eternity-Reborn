@@ -172,3 +172,19 @@ The live caller is deliberately a separate **UNFINISHED / NOT RUNNABLE** block.
 Its saved early source refuses legacy client writes without predicates; Save,
 Load and failure cleanup callsites still need completion before any live review
 or launch. This checkpoint does not qualify live transport or hosted Load.
+
+
+### First staged qualification: exact prompt-cell mismatch (no live)
+
+Cheap UI8/transport10/menu20/fullroute13 and policy corpus passed. Fresh owning
+Unit build passed in 37.81s (70 warnings, zero errors); PlanOnly selected exactly
+two leaves. Terminal qualification stopped before tiny .NET or main-wire: upstream
+cursor restore was exactly x4/y0, but its visible row retained the four explicitly
+written cells ` >  ` rather than authored ` >`. Exact acquired BufferLine.ts
+getTrimmedLength/translateToString trims null cells, not written U+0020 content.
+The fixture expectation AND player readiness predicate are corrected together to
+exact four cells, cursor4 and raw ESC[s, with shorter/longer/draft-cell refusals.
+No rstrip/substring admission is added. Correction is SOURCE ONLY until review.
+Original failure outcome is retained; guardian ECHILD/driver1 with no emergency,
+sidecar abort joined/EOF (not normal close). All 32050 sources and eight owning
+outputs joined unchanged across that attempt. Main-wire and live remain UNRUN.
