@@ -232,10 +232,23 @@ public sealed partial class GameEngineTurnLifecycleTests
                     {
                         var raw = File.ReadAllText(path);
                         const string prefix = "BOE_MAIN_OPERATION_MARKER ";
-                        if (!raw.StartsWith(prefix, StringComparison.Ordinal)) continue;
+                        if (!raw.StartsWith(prefix, StringComparison.Ordinal))
+                        {
+                            Assert.StartsWith("BOE_CANONICAL_LEASE_OBSERVATION ", raw);
+                            continue; // Physical rows have their separate strict lifecycle regression.
+                        }
+                        Assert.EndsWith(Environment.NewLine, raw);
                         using var row = JsonDocument.Parse(raw[prefix.Length..]);
                         var value = row.RootElement;
-                        if (value.GetProperty("Stage").GetString() == "active-received") activeMarkers.Add(value.Clone());
+                        Assert.Equal(files.BasePath, value.GetProperty("Root").GetString());
+                        Assert.Equal(nonce, value.GetProperty("Nonce").GetString());
+                        Assert.Equal(Environment.ProcessId, value.GetProperty("ProcessId").GetInt32());
+                        Assert.True(value.GetProperty("Occurrence").GetInt64() > 0);
+                        Assert.True(value.GetProperty("CaptureMonotonicTimestamp").GetInt64() > 0);
+                        Assert.Equal($"{Environment.ProcessId}-marker-{value.GetProperty("Occurrence").GetInt64()}-{value.GetProperty("Stage").GetString()}.json", Path.GetFileName(path));
+                        Assert.Equal("active-received", value.GetProperty("Stage").GetString());
+                        Assert.Equal(JsonValueKind.Null, value.GetProperty("OriginalClose").ValueKind);
+                        activeMarkers.Add(value.Clone());
                     }
                     var joined = false;
                     if (activeMarkers.Count == 1)

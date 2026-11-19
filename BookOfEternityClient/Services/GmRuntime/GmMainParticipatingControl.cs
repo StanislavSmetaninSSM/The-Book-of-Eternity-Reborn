@@ -81,9 +81,9 @@ internal static partial class GmMainParticipatingControl
                 try
                 {
                 originalProjection=files.DescribeMainOperationClose(MainOperationOutcome.Completed,false);
-                MainOperationFailureDiagnostic.Mark(diagnosticNonce,"helper-before-ready",close:originalProjection);
+                MainOperationFailureDiagnostic.Mark(diagnosticNonce,files.BasePath,"helper-before-ready",close:originalProjection);
                 await MainOperationReader.WriteAsync(output, new { ok = true, state = "active", sequence, originalClose = originalProjection }, CancellationToken.None);
-                MainOperationFailureDiagnostic.Mark(diagnosticNonce,"helper-ready-written",close:originalProjection);
+                MainOperationFailureDiagnostic.Mark(diagnosticNonce,files.BasePath,"helper-ready-written",close:originalProjection);
                 while (true)
                 {
                     var command = await reader.ReadAsync<Command>(CancellationToken.None, FrameLimit)
@@ -129,7 +129,7 @@ internal static partial class GmMainParticipatingControl
                 }
                 finally { if (!explicitClose) files.MarkMainOperationUnresolved(); }
             }, () => outcome, (close, observed, remote) => { terminalClose = close; closeObserved = observed; remoteAdmission = remote; },
-                beforeCurrentGeneration: diagnosticNonce==null ? null : _ => { MainOperationFailureDiagnostic.Mark(diagnosticNonce,"canonical-current-generation-lease-acquired"); return Task.CompletedTask; });
+                beforeCurrentGeneration: diagnosticNonce==null ? null : _ => { MainOperationFailureDiagnostic.Mark(diagnosticNonce,files.BasePath,"canonical-current-generation-lease-acquired"); return Task.CompletedTask; });
             // Successful return includes actual bound finalization and scoped
             // disposal. A guarded local scope does not invent a remote receipt.
             localScopeCompleted = !remoteAdmission;

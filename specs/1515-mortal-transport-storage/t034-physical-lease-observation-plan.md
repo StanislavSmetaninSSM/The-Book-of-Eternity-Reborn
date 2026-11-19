@@ -1085,3 +1085,22 @@ One separately selected actual-artifact mixed DATA method initially fails the
 missing classifier callable; its downstream typed/malformed/foreign cases are
 unexecuted until implementation. No production diagnostic/Save/parser changes,
 no runtime yet. Exact source/count/command review required before bounded RED.
+
+### Healthy marker causal RED accepted; minimal routing implementation WIP
+Independent outcome `a863b910` verifies 58 artifacts: mixed DATA fails only
+missing classifier (downstream unexecuted); actual C#6 gives four intended
+failures and two legacy/explicit stderr passes. Real owned hosted Save commits
+turn43, direct unadmitted Save refuses, protected bytes stay exact, original
+stops normally. Its exact merged tail contains one authentic Active marker then
+success. Failure Report assertions pass in every direct route case. No live
+retry or mm27 mutation. This is not a new PTY qualification.
+
+Minimal WIP routes the four healthy stages using already-known BasePath and the
+existing explicit external sink's fresh checks. Both-unset preserves legacy
+stderr; malformed explicit configuration never falls back. Failure Report/Write
+remain unchanged. Shared external writer retains physical filename/serialization
+and namespace semantics; marker filenames are disjoint. Offline typed mixed
+classification rejects unknown/foreign/partial rows, with physical occurrence
+triples still a separate required proof. SelectionPrompt stays strict physical-
+only because its local isolated route does not open a hosted main operation.
+No current GREEN or new package/live claim; exact source review precedes tests.

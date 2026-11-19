@@ -51,7 +51,7 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
             handshake="activate-write";await MainOperationReader.WriteAsync(pipe,new MainOperationFrame{Command="activateMainOperation",PinId=grant.PinId,CloseId=grant.CloseId,OperationId=operation,Identity=grant.Identity},bounded.Token);
             handshake="active-reply-read";var active=await reader.ReadAsync<MainOperationReply>(bounded.Token)??throw GmSessionRunPersistence.Invalid();
             if(active!=(grant with{State=MainOperationState.Active}))throw GmSessionRunPersistence.Invalid();
-            MainOperationFailureDiagnostic.Mark(diagnosticNonce,"active-received",active);
+            MainOperationFailureDiagnostic.Mark(diagnosticNonce,files.BasePath,"active-received",active);
             var client=new GmMainOperationClient(pipe,reader,active,diagnosticNonce);client._readTask=client.ReadRepliesAsync();return client;
         } catch(Exception failure) {
             failure.Data["ParticipatingAdmissionPhase"]="original-connection";

@@ -6,6 +6,56 @@ proofs are freshly checked at boundaries. No cross-phase cache.
 import hashlib, json, re, stat, sys
 from pathlib import Path
 
+def parse_observed_diagnostic_trace_row(filename, raw, nonce, root, pids, owner):
+    """Strict observed artifact DATA, never authority. Caller checks private files and
+    groups physical occurrences separately; missing whole events remain unknowable."""
+    def require(condition):
+        if not condition:raise ValueError('Invalid observed diagnostic artifact')
+    def unique(pairs):
+        result={};seen=set()
+        for key,value in pairs:
+            require(key.casefold() not in seen);seen.add(key.casefold());result[key]=value
+        return result
+    require(type(raw) is bytes and raw.endswith(b'\n') and raw.count(b'\n')==1)
+    prefixes={'physical':b'BOE_CANONICAL_LEASE_OBSERVATION ','marker':b'BOE_MAIN_OPERATION_MARKER '}
+    kinds=[kind for kind,prefix in prefixes.items() if raw.startswith(prefix)]
+    require(len(kinds)==1);kind=kinds[0]
+    try:row=json.loads(raw[len(prefixes[kind]):-1].decode('utf-8'),object_pairs_hook=unique)
+    except (UnicodeError,json.JSONDecodeError) as error:raise ValueError('Malformed diagnostic JSON') from error
+    require(type(row) is dict)
+    common={'Nonce','Occurrence','Root','Stage','ProcessId','CaptureMonotonicTimestamp','OriginalPin'}
+    require(set(row)==common|({'Purpose','Attempt','CapturedAtUtc'} if kind=='physical' else {'ObservedAtUtc','OriginalClose'}))
+    require(row['Nonce']==nonce and row['Root']==root and re.fullmatch('[0-9a-f]{32}',nonce) is not None)
+    require(type(row['ProcessId']) is int and row['ProcessId']>0 and row['ProcessId'] in pids)
+    require(type(row['Occurrence']) is int and row['Occurrence']>0)
+    require(type(row['CaptureMonotonicTimestamp']) is int and row['CaptureMonotonicTimestamp']>0)
+    stages={'physical-opened','lease-granted','physical-dispose-completed','contention-exhausted'} if kind=='physical' else {'active-received','helper-before-ready','helper-ready-written','canonical-current-generation-lease-acquired'}
+    require(type(row['Stage']) is str and row['Stage'] in stages)
+    require(filename==str(row['ProcessId'])+('-marker-' if kind=='marker' else '-')+str(row['Occurrence'])+'-'+row['Stage']+'.json')
+    stamp=row['CapturedAtUtc' if kind=='physical' else 'ObservedAtUtc']
+    require(type(stamp) is str and re.fullmatch(r'\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,7})?(?:Z|\+00:00)',stamp) is not None)
+    def tuple_fields(value):
+        require(type(value) is dict and value.get('Identity')==owner)
+        for key in ('PinId','CloseId','OperationId'):
+            require(type(value.get(key)) is str and re.fullmatch('[0-9a-f]{32}',value[key]) is not None)
+    pin=row['OriginalPin']
+    if pin is not None:
+        tuple_fields(pin)
+        require(set(pin)=={'Ok','State','PinId','CloseId','OperationId','Identity','Error'})
+        require(pin['Ok'] is True and type(pin['State']) is int and pin['State']==1 and pin['Error'] is None)
+    if kind=='physical':
+        require(type(row['Purpose']) is str and bool(row['Purpose'].strip()))
+        require(type(row['Attempt']) is int and row['Attempt']>0)
+    else:
+        close=row['OriginalClose'];stage=row['Stage']
+        if stage=='active-received':require(pin is not None and close is None)
+        elif stage=='canonical-current-generation-lease-acquired':require(pin is None and close is None)
+        else:
+            require(pin is None);tuple_fields(close)
+            require(set(close)=={'PinId','CloseId','OperationId','Identity','Outcome','ClosingFailed'})
+            require(type(close['Outcome']) is int and close['Outcome']==0 and close['ClosingFailed'] is False)
+    return kind,row
+
 def load_physical_trace_profile(out, env):
     """Read only the launcher's independently pinned profile; no asset creation."""
     expected=env.get('BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256')

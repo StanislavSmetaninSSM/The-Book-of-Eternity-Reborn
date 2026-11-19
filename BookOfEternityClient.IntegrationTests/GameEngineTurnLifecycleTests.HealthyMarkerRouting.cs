@@ -31,7 +31,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Environment.SetEnvironmentVariable(pathKey, mode == "stderr-path" ? Path.Combine(_rootPath, "not-created") : null);
             Environment.SetEnvironmentVariable(nonceKey, nonce);
             Console.SetError(captured);
-            MainOperationFailureDiagnostic.Mark(nonce, "canonical-current-generation-lease-acquired");
+            MainOperationFailureDiagnostic.Mark(nonce, _rootPath, "canonical-current-generation-lease-acquired");
             MainOperationFailureDiagnostic.Report(nonce, "actual-failure-channel", null, new IOException("preserved-failure"));
         }
         finally

@@ -19,6 +19,7 @@ internal static class MainOperationFailureDiagnostic
         string Purpose, MainOperationReply? OriginalPin, string Stage, int Attempt,
         int ProcessId, DateTimeOffset CapturedAtUtc, long CaptureMonotonicTimestamp);
     private static long _physicalOccurrence;
+    private static long _markerOccurrence;
     internal const string PhysicalRouteVariable = "BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE";
     internal const string PhysicalDirectoryVariable = "BOE_TEST_CANONICAL_LEASE_TRACE_DIR";
 
@@ -114,16 +115,22 @@ internal static class MainOperationFailureDiagnostic
     }
 
     private static void WritePhysicalExternal(PhysicalLeaseContext context, PhysicalLeaseObservation observation)
+        => WriteExternal(context.Nonce, context.Root, context.Route, context.Directory,
+            $"{observation.ProcessId}-{observation.Occurrence}-{observation.Stage}.json",
+            writer => WritePhysical(observation, writer, ReadNonce()));
+
+    private static void WriteExternal(string nonce, string canonicalRoot, string route, string? traceDirectory,
+        string filename, Action<TextWriter> write)
     {
         // Fresh ordinary namespace checks, never a retained authority/handle or canonical read.
         // The transition's timestamp was captured before this synchronous, potentially blocking IO.
         try
         {
-            if (context.Route != Environment.GetEnvironmentVariable(PhysicalRouteVariable) ||
-                context.Directory != Environment.GetEnvironmentVariable(PhysicalDirectoryVariable) ||
-                context.Nonce != ReadNonce() || PhysicalRoute(context.Route, context.Directory) != "external") return;
-            var directory = context.Directory!;
-            var root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(context.Root));
+            if (route != Environment.GetEnvironmentVariable(PhysicalRouteVariable) ||
+                traceDirectory != Environment.GetEnvironmentVariable(PhysicalDirectoryVariable) ||
+                nonce != ReadNonce() || PhysicalRoute(route, traceDirectory) != "external") return;
+            var directory = traceDirectory!;
+            var root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(canonicalRoot));
             if (root == Path.GetPathRoot(root)) return; // No path is external to the filesystem root.
             var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             if (directory.Equals(root, comparison) || directory.StartsWith(root + Path.DirectorySeparatorChar, comparison) ||
@@ -138,14 +145,13 @@ internal static class MainOperationFailureDiagnostic
                 if (source.Length != 32) return;
                 Span<byte> bytes = stackalloc byte[32];
                 source.ReadExactly(bytes);
-                if (Encoding.ASCII.GetString(bytes) != context.Nonce) return;
+                if (Encoding.ASCII.GetString(bytes) != nonce) return;
             }
             scope.ValidateDirectory(directory, false);
             scope.ValidateFile(marker, false);
             if (!PrivatePhysicalPath(directory) || !PrivatePhysicalPath(marker)) return;
             // No payload-derived path components: PID/occurrence and previously closed stage set only.
-            var path = scope.ValidateFile(Path.Combine(directory,
-                $"{observation.ProcessId}-{observation.Occurrence}-{observation.Stage}.json"));
+            var path = scope.ValidateFile(Path.Combine(directory, filename));
             if (!OperatingSystem.IsLinux()) return;
             using var stream = new FileStream(path, new FileStreamOptions
             {
@@ -155,7 +161,7 @@ internal static class MainOperationFailureDiagnostic
             scope.ValidateFile(path, false);
             if (!PrivatePhysicalPath(path)) return;
             using var writer = new StreamWriter(stream, new UTF8Encoding(false));
-            WritePhysical(observation, writer, ReadNonce());
+            write(writer);
             // Disposal closes even on serialization/flush failure. Partial/colliding files remain UNKNOWN.
         }
         catch { /* No fallback, overwrite, retry, deletion or effect on the original lease outcome. */ }
@@ -188,12 +194,33 @@ internal static class MainOperationFailureDiagnostic
         try {Write(Capture(nonce,ReadNonce(),stage,pin,failure,close,closing,sequence,action,owner,projection),Console.Error,ReadNonce());}
         catch { /* Observation must not replace the original failure. */ }
     }
-    internal static void Mark(string? nonce,string stage,MainOperationReply? pin=null,MainOperationClose? close=null)
+    internal static void Mark(string? nonce, string root, string stage, MainOperationReply? pin=null, MainOperationClose? close=null)
     {
-        try {
-            if(nonce==null || nonce!=ReadNonce())return;
-            Console.Error.WriteLine("BOE_MAIN_OPERATION_MARKER "+JsonSerializer.Serialize(new{Nonce=nonce,Stage=stage,ProcessId=Environment.ProcessId,ObservedAtUtc=DateTime.UtcNow,OriginalPin=pin,OriginalClose=close}));
-        }catch { }
+        try
+        {
+            var utc = DateTime.UtcNow;
+            var monotonic = Stopwatch.GetTimestamp();
+            if (nonce == null || nonce != ReadNonce() || !GmSessionRunValidation.IsRootKey(root) || stage is not
+                ("active-received" or "helper-before-ready" or "helper-ready-written" or "canonical-current-generation-lease-acquired")) return;
+            var rawRoute = Environment.GetEnvironmentVariable(PhysicalRouteVariable);
+            var directory = Environment.GetEnvironmentVariable(PhysicalDirectoryVariable);
+            // Preserve the established nonce-only diagnostic contract only when both options are absent.
+            var route = rawRoute == null && directory == null ? "stderr" : PhysicalRoute(rawRoute, directory);
+            if (route == null) return;
+            var occurrence = Interlocked.Increment(ref _markerOccurrence);
+            var pid = Environment.ProcessId;
+            var observation = new { Nonce=nonce, Stage=stage, ProcessId=pid, ObservedAtUtc=utc,
+                OriginalPin=pin, OriginalClose=close, Root=root, Occurrence=occurrence, CaptureMonotonicTimestamp=monotonic };
+            void Emit(TextWriter writer)
+            {
+                if (nonce != ReadNonce() || rawRoute != Environment.GetEnvironmentVariable(PhysicalRouteVariable) ||
+                    directory != Environment.GetEnvironmentVariable(PhysicalDirectoryVariable)) return;
+                writer.WriteLine("BOE_MAIN_OPERATION_MARKER " + JsonSerializer.Serialize(observation));
+            }
+            if (route == "stderr") Emit(Console.Error);
+            else WriteExternal(nonce, root, route, directory, $"{pid}-marker-{occurrence}-{stage}.json", Emit);
+        }
+        catch { /* Healthy observation cannot replace the operation or fall back into the UI. */ }
     }
     internal static void Write(Observation? observation,TextWriter sink,string? currentNonce)
     {
