@@ -4664,3 +4664,18 @@ pins remained unchanged and no Integration output existed. Next: bounded restore
 of that project from the existing isolated local package cache, then one fresh
 owning build and the reviewed single-case consumer regression. Do not substitute
 a strict-validator diagnostic for the actual pre-send consumer assertion.
+
+T032 actual consumer causal RED: after local-only restore from five exact public
+official NuGet packages, fresh Integration build passed113.409s/177warnings/0errors.
+PlanOnly selected exactly one Fact. Actual mortal-retired-birth-pre-send completed
+1/1 FAIL at final Assert.True(admitted), after accepted42/calls1, typed retired
+original, pending absence and unchanged post-consumer canonical bytes all passed.
+The same consumer logger reported vehicle_unknown_current_location,
+npc_existing_inventory_resend_forbidden and npc_scene_location_mismatch. Runner
+23.5022s, no timeout, owned cleanup complete; fixture removed with no cleanup
+failure. All32,016 source pins and eight outputs joined. Outcome SHA256:
+4c76928918f3cedd07841f608812457c50f3234a24ae8d2ca01216257a75d42b.
+Independent outcome review is next; no production purpose fix yet. This is causal
+consumer RED, not setup failure or another live game turn. Earlier NETSDK1004
+remains separate. Local restore disabled remote vulnerability lookup only;
+package identity/dependencies/signature settings were preserved.
