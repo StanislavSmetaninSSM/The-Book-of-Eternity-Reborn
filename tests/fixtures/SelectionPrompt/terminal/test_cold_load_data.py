@@ -1,5 +1,6 @@
 """Cold Load navigation DATA only: no game, PTY, provider, or old-world mutation."""
-import hashlib, json, pathlib, tempfile, types, unittest, zipfile
+import hashlib, json, pathlib, tempfile, types, unittest, zipfile, sys
+sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent.parent))
 import cold_load_navigation as actual
 
 CHOICES=('🌟 Новая игра','📂 Загрузить профиль','Тренировка QTE','Вылазка Дарена','⚙️ Опции','ℹ️ Об игре','🚪 Выход')
