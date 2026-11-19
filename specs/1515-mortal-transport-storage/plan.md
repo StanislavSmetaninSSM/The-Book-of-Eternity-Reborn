@@ -4373,3 +4373,18 @@ frame20/20 PASS0.013s; independent source/outcome review and official GREEN stil
 pending. Existing fresh C# outputs are unchanged since the causal renderer RED;
 NoBuild is allowed only after rechecking those exact input/output inventories.
 No cleanup correction, new live run, game state reuse or gameplay change here.
+
+T029 official GREEN outcome pending final independent receipt, 2026-11-19.
+`pwsh scripts/test-csharp.ps1 -Category mortal-menu-frame-renderer,mortal-console-route-data,mortal-menu-frame-data -NoBuild`
+selected exactly three descriptors/five tests and completed5/5 PASS,19.5563831s,
+no skip/duplicate/timeout, complete runner-owned cleanup. Inner DATA counts are
+route18, retained-Load23 and frame20. Both real renderers completed exit0 with
+EOF/termios/join/drain true and no cleanup failures. Inventory used the actual
+fixed selector: capture cuts700->2098->2797->3496, exactly three Down plus Enter,
+returned the locked storage target. The duplicate redraw is now absorbed without
+an extra input. Both guardians ECHILD/driver0/reaped1/emergency0/failures0.
+Before/after32014 source and eight compiled-output inventories match; compiled
+inputs remained unchanged from the fresh RED build, so reuse did not skip a
+required rebuild. No game, main owner, world or live permission is qualified by
+these inert tests. T030 local-menu failure cleanup remains open before next live
+preparation. Evidence remains outside Git under mortal-t029/green.
