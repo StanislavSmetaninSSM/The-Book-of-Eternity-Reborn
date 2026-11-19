@@ -170,6 +170,10 @@ def entry_menu(menu, command=None, load_clear=False):
     return dict(menu,command_echo=command,load_clear=load_clear)
 
 def selected_frame(raw, cut, menu):
+    frames=selected_frames(raw,cut,menu)
+    return frames[-1] if frames else None
+
+def selected_frames(raw, cut, menu):
     """Exact emitted frames; only SGR and the source-sized CR/cursor-up redraw prefix are accepted."""
     if type(raw) is not bytes or type(cut) is not int or not 0<=cut<=len(raw) or type(menu) is not dict:return None
     try:
@@ -222,11 +226,12 @@ def selected_frame(raw, cut, menu):
     # A fresh cut can start at the redraw prefix. Coalesced old frames must also
     # be complete; a newest partial draw can never fall back to an earlier one.
     if len(parts)>1 and not parts[0].strip(' '):parts=parts[1:]
-    selected=None
+    selections=[]
     for index,part in enumerate(parts):
         selected=one(part,index==0)
         if selected is None:return None
-    return selected
+        selections.append(selected)
+    return selections
 
 
 def local_load_menu(location_name, turn, size_kb, timestamp='18.11.2026 18:00'):

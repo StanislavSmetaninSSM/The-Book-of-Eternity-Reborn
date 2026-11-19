@@ -963,20 +963,33 @@ def exit_client(client):
     client.send(b'8\r','observed eight-item main menu: exit');until(lambda:client.process.poll() is not None,8,'client normal exit')
     assert client.process.returncode==0
 def finite_select(menu,label,cut,maximum_rows,commit=True):
-    # Only callers below supply fixed source-read menus. No arbitrary key program.
-    seen=set()
+    # One input per observed ordered transition. A duplicate redraw is not a move.
+    selected=None;prior=None
     for _ in range(maximum_rows):
-        until(lambda:console_routes.selected_frame(bytes(client.capture),cut,menu) is not None,
-              5,'fresh fixed menu selection')
-        selected=console_routes.selected_frame(bytes(client.capture),cut,menu)
-        if selected in seen:raise RuntimeError('Menu wrapped before exact target; no guessing or pagination')
-        seen.add(selected)
+        def transitioned():
+            nonlocal selected
+            frames=console_routes.selected_frames(bytes(client.capture),cut,menu)
+            if not frames:return False  # Includes incomplete newest frame; never fallback.
+            if prior is None:
+                if any(row!=frames[0] for row in frames):raise RuntimeError('Unrequested menu transition')
+                selected=frames[0];return True
+            choices=menu['choices'];index=choices.index(prior)
+            if index+1>=len(choices):raise RuntimeError('Menu cycle before exact target')
+            expected=choices[index+1];moved=False
+            for row in frames:
+                if row==prior and not moved:continue
+                if row!=expected:raise RuntimeError('Unexpected menu transition; no guessing or pagination')
+                moved=True
+            if moved:selected=expected
+            return moved
+        # One unchanged deadline covers any number of same-selection redraws.
+        until(transitioned,5,'fresh fixed menu ordered transition')
         if selected==label:
             selected_cut=cut;after=len(client.capture)
             if commit:client.send(b'\r','fixed menu exact selected row: '+label)
             return after,selected_cut
-        cut=len(client.capture)
-        # Captured pipe/xterm emits normal CSI arrows, independently smoke-qualified.
+        if menu['choices'].index(selected)+1>=len(menu['choices']):raise RuntimeError('Menu cycle before exact target')
+        prior=selected;cut=len(client.capture)
         client.send(b'\x1b[B','fixed menu observed next row')
     raise RuntimeError('Fixed menu exceeds visible bounded rows; no pagination')
 

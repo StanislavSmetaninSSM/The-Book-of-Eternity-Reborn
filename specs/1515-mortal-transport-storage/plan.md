@@ -4362,3 +4362,14 @@ failures0 proves owned physical cleanup. Unchanged Load leaf exited0 with normal
 EOF/termios. Before/built/after inventories agree on32014 source paths and eight
 built outputs. Evidence retained locally under mortal-t029/renderer-red, no raw
 committed. The narrow observer correction is next; T030 cleanup remains separate.
+
+T029 observer WIP: one Down now waits for the exact next ordered row under one
+unchanged deadline. Repeated old-row redraws cause no extra input. Strict parser
+exposes its already-validated complete frame sequence so coalesced hidden skips/
+backtracking cannot be concealed by the last frame; existing selected_frame
+consumers retain the last-frame API. Incomplete newest frames still refuse.
+No wrap key is sent at the menu end. Cheap DATA18/18 PASS0.354s and existing
+frame20/20 PASS0.013s; independent source/outcome review and official GREEN still
+pending. Existing fresh C# outputs are unchanged since the causal renderer RED;
+NoBuild is allowed only after rechecking those exact input/output inventories.
+No cleanup correction, new live run, game state reuse or gameplay change here.
