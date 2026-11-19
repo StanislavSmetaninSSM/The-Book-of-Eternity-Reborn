@@ -4698,3 +4698,13 @@ Explicit ordinary console Mortal pre-send now retains typed participation and ve
 Captured canonical NPC rows are parsed once per invocation and reused only inside that physical read lifetime; closing compares fresh bytes without parsing again. No global cache or authority transfer. New authored controls and selected existing owner/primary-failure/generation-veto controls are source-only, awaiting independent review and fresh official owning build. The stable combined consumer test is unchanged. No test outcome or performance speedup is claimed yet.
 
 Separate final gates remain: prose-only usable vehicle/private storage without canonical entity (historical RED 3e7f62a) and the independent Mortal audit. T032 or a later live grant/transfer/Load journey does not automatically close either criterion.
+
+T032 reviewed purpose Unit verification: fresh Unit build90.7847s/91warnings/
+0errors. Official PlanOnly selected27; mortal-ordinary-pre-send-data27/27 PASS,
+runner17.51118s, no skipped/duplicate/timeout cases. Owned-tree cleanup complete;
+no boe-pre-send fixture roots remain. All32,018 source pins and eight outputs
+unchanged before/build/after. Outcome SHA256:
+3eeb4067d95c32fcb49c0642eb26f6d72ddf401d7a306306d89ba148dd670aea.
+Independent outcome review precedes a fresh Integration build and the unchanged
+one-case genuine pre-send consumer regression. No combined GREEN or live run yet;
+no universal speedup claim, main merge or issue closure.
