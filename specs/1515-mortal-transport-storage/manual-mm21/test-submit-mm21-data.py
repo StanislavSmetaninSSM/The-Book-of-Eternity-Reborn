@@ -146,5 +146,24 @@ class ProfileBinding(unittest.TestCase):
   bad=copy.deepcopy(base);bad['Extra']=True
   with self.assertRaises(ValueError):checked(bad)
 
+ def test_actual_regular_tree_refuses_links_and_special_entries(self):
+  import ast,stat,os,hashlib
+  tree=ast.parse(p.with_name('prepare-mm21-profile.py').read_text());nodes=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in ('plain_path','regular_tree','exact_tree')];scope={'pathlib':pathlib,'stat':stat,'hashlib':hashlib}
+  exec(compile(ast.Module(body=nodes,type_ignores=[]),'<actual-profile-paths>','exec'),scope)
+  with tempfile.TemporaryDirectory() as tmp:
+   root=pathlib.Path(tmp);source=root/'source';source.mkdir();(source/'file').write_bytes(b'exact')
+   self.assertEqual(scope['regular_tree'](source),source)
+   pins={'file':hashlib.sha256(b'exact').hexdigest()};self.assertEqual(scope['exact_tree'](source,pins),pins)
+   cache=source/'__pycache__';cache.mkdir();(cache/'extra.pyc').write_bytes(b'extra')
+   with self.assertRaises(ValueError):scope['exact_tree'](source,pins)
+   (cache/'extra.pyc').unlink();cache.rmdir()
+   linked=root/'linked';linked.symlink_to(source,target_is_directory=True)
+   with self.assertRaises(ValueError):scope['regular_tree'](linked)
+   with self.assertRaises(ValueError):scope['plain_path'](linked/'file')
+   (source/'samebytes').symlink_to(source/'file')
+   with self.assertRaises(ValueError):scope['regular_tree'](source)
+   (source/'samebytes').unlink();os.mkfifo(source/'fifo')
+   with self.assertRaises(ValueError):scope['regular_tree'](source)
+
 if __name__=='__main__':unittest.main(verbosity=2)
 
