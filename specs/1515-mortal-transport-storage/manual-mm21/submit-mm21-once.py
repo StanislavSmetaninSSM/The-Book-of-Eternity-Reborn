@@ -25,10 +25,10 @@ def validate_packet(session,raw,expected_sha):
         if not matches(member(session,w['Path']),w['ExpectedSHA256']):raise ValueError('Current baseline differs: '+w['Path'])
 
 def main():
-    a=argparse.ArgumentParser();a.add_argument('--root',required=True,type=pathlib.Path);a.add_argument('--request-dir',required=True,type=pathlib.Path);a.add_argument('--candidate',required=True,type=pathlib.Path);a.add_argument('--candidate-sha',required=True);a.add_argument('--expectations',required=True,type=pathlib.Path);a.add_argument('--expectations-sha',required=True);args=a.parse_args()
+    a=argparse.ArgumentParser();a.add_argument('--root',required=True,type=pathlib.Path);a.add_argument('--phase',choices=['p01','p02'],default='p01');a.add_argument('--request-dir',required=True,type=pathlib.Path);a.add_argument('--candidate',required=True,type=pathlib.Path);a.add_argument('--candidate-sha',required=True);a.add_argument('--expectations',required=True,type=pathlib.Path);a.add_argument('--expectations-sha',required=True);args=a.parse_args()
     ROOT=args.root
     if not ROOT.is_absolute() or ROOT!=ROOT.resolve() or any(p.is_symlink() for p in [ROOT,*ROOT.parents]):raise ValueError('Aliased original root')
-    phase=ROOT/'p01';session=ROOT/'play/game_session';q=args.request_dir
+    phase=ROOT/args.phase;session=ROOT/'play/game_session';q=args.request_dir
     for p in [q,args.candidate,args.expectations]:
         if not p.is_absolute() or p!=p.resolve():raise ValueError('Aliased input path')
     if q.parent!=phase/'queue':raise ValueError('Not exact original queue')

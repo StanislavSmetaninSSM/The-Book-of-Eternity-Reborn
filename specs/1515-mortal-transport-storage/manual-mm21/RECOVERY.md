@@ -74,3 +74,17 @@ Launch origin is exclusively source-emitted before original guardian launch;
 expectations must bind its SHA256 and exact UTC, boot and immutable original
 monotonic cutoff. Submission never recreates/refreshes it. The authored pure test
 uses temporary DATA and an inert worker substitute; it does not launch a game.
+
+## Reviewed p02 continuation binding (SOURCE WIP, unrun)
+
+The same profile source accepts an optional second path argument after destination,
+containing a separately reviewed hash-bound p02 input. `MM_REVIEWED_CONTINUATION_SHA256`
+must match it. This closed mode requires accepted P01 result/guardian/seed/package
+hashes, current source pins, exact locked storage/item and one action. It retains
+same runtime/receipt helper and copies only verified relay/terminal dependencies
+into absent p02. It never repairs the world or overwrites p01. Generated launch
+passes the exact p01 result; budgets/origin and no-retry semantics are unchanged.
+Submit uses explicit `--phase p02` with that phase's queue/origin/once marker;
+default p01 remains unchanged and p03 is not admitted to this answer utility.
+P02 acceptance is not a grant assertion: independent GM decides on actual fresh
+facts; classify resulting canonical access separately and admit P03 only if granted.

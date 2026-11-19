@@ -43,9 +43,9 @@ class MainPath(unittest.TestCase):
   if path.exists():path.chmod(0o600)
   path.write_text(json.dumps({'OriginalDriverStartedAtUtc':self.expected['OriginalDriverStartedAtUtc'],'BootId':self.owner['BootId'],'MonotonicSeconds':time.monotonic()-monotonic_age}))
   path.chmod(0o400);self.expected['LaunchOriginSHA256']=g.sha(path.read_bytes())
- def call(self,worker=None):
+ def call(self,worker=None,phase='p01'):
   from unittest.mock import patch
-  self.e.write_text(json.dumps(self.expected));argv=['gate','--root',str(self.root),'--request-dir',str(self.q),'--candidate',str(self.c),'--candidate-sha',g.sha(self.packet),'--expectations',str(self.e),'--expectations-sha',g.sha(self.e.read_bytes())]
+  self.e.write_text(json.dumps(self.expected));argv=['gate','--root',str(self.root),'--phase',phase,'--request-dir',str(self.q),'--candidate',str(self.c),'--candidate-sha',g.sha(self.packet),'--expectations',str(self.e),'--expectations-sha',g.sha(self.e.read_bytes())]
   with patch.object(g.sys,'argv',argv),patch.object(g.subprocess,'run',side_effect=worker) as run:
    try:result=g.main()
    finally:self.calls=run.call_count
@@ -112,6 +112,39 @@ class MainPath(unittest.TestCase):
   self.assertEqual(self.calls,1)
   with self.assertRaisesRegex(ValueError,'already attempted'):self.call(worker)
   self.assertEqual(self.calls,0)
+
+ def phase_two(self):
+  old=self.phase;self.phase=self.root/'p02';old.rename(self.phase);self.q=self.phase/'queue/request-data';self.c=self.phase/'candidate.json';self.e=self.phase/'expected.json'
+ def test_p02_uses_only_its_queue_origin_and_once_marker(self):
+  import subprocess
+  self.phase_two()
+  def worker(argv,**kwargs):
+   self.assertEqual(argv[1],str(self.phase/'relay/relay_worker.py'));self.assertEqual(argv[3],str(self.q));self.assertTrue((self.phase/'submission-attempt.json').exists())
+   return subprocess.CompletedProcess(argv,0,'inert','')
+  self.assertEqual(self.call(worker,phase='p02'),0);self.assertEqual(self.calls,1)
+  with self.assertRaisesRegex(ValueError,'already attempted'):self.call(worker,phase='p02')
+  self.assertEqual(self.calls,0)
+ def test_p02_queue_cannot_bind_p01(self):
+  self.phase_two()
+  with self.assertRaisesRegex(ValueError,'exact original queue'):self.call(phase='p01')
+  self.assertEqual(self.calls,0)
+ def test_unknown_phase_refused_before_worker(self):
+  with self.assertRaises(SystemExit):self.call(phase='p03')
+  self.assertEqual(self.calls,0)
+
+class ProfileBinding(unittest.TestCase):
+ def test_actual_binding_shape_and_refusals(self):
+  import ast,copy,re
+  source=p.with_name('prepare-mm21-profile.py').read_text();tree=ast.parse(source)
+  node=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='checked_continuation_binding');scope={'re':re}
+  exec(compile(ast.Module(body=[node],type_ignores=[]),'<actual-profile-binding>','exec'),scope)
+  checked=scope['checked_continuation_binding'];base={'Phase':'p02','PreviousSHA256':'1'*64,'GuardianSHA256':'2'*64,'SeedSHA256':'3'*64,'PhasePackageSHA256':'4'*64,'SourcePins':{},'Action':'Прошу разрешение, ничего не беру','ConsoleRoute':{'Route':'permission-with-denial','StorageId':'storage','ItemId':'item'}}
+  self.assertEqual(checked(copy.deepcopy(base)),base)
+  for key,value in [('Phase','p01'),('PreviousSHA256','BAD'),('Action','bad\ninput'),('ConsoleRoute',{'Route':'birth'})]:
+   bad=copy.deepcopy(base);bad[key]=value
+   with self.assertRaises(ValueError):checked(bad)
+  bad=copy.deepcopy(base);bad['Extra']=True
+  with self.assertRaises(ValueError):checked(bad)
 
 if __name__=='__main__':unittest.main(verbosity=2)
 
