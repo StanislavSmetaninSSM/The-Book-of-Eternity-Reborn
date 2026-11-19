@@ -1,4 +1,5 @@
 """Pure authored DATA for the closure-only post-return observation; never IPC."""
+import ast
 import copy
 import importlib.util
 import json
@@ -17,6 +18,7 @@ class ReturnedObservation(unittest.TestCase):
   line=lambda e: b'BOE_MAIN_OPERATION_PS '+json.dumps(e,separators=(',',':')).encode()+b'\n'
   raw=line(event)
   # Absence is the initial feature RED, not import failure or fabricated authority.
+  # Until implemented this assertion fails; all following matrix subcases are UNEXECUTED.
   self.assertTrue(callable(getattr(phase,'daemon_consumer_returned',None)), 'Missing pure correlated post-return predicate')
   check=lambda value:phase.daemon_consumer_returned(value,expected)
   self.assertEqual(check(raw),event)
@@ -29,4 +31,16 @@ class ReturnedObservation(unittest.TestCase):
   for field,value in [('outcome',1),('closingFailed',True),('pinId','9'*32),('identity',dict(identity,runId='9'*32))]:
    bad=copy.deepcopy(event);bad['terminalClose'][field]=value;self.assertIsNone(check(line(bad)),field)
   self.assertIsNone(check(b'')) # caller must pass only fresh bytes after its actual action cut
+ def test_actual_shutdown_block_does_not_fall_through_unknown_return(self):
+  source=Path(__file__).with_name('live-mortal-phase.py').read_text()
+  tree=ast.parse(source)
+  nodes=[n for n in ast.walk(tree) if isinstance(n,ast.If) and isinstance(n.test,ast.Compare) and ast.unparse(n.test)=='original is not None' and any(isinstance(x,ast.AugAssign) and isinstance(x.target,ast.Name) and x.target.id=='shutdown_attempts' for x in ast.walk(n))]
+  self.assertEqual(len(nodes),1)
+  calls=[]
+  def rpc(*args):calls.append(args);raise RuntimeError('Unexpected shutdown without return witness')
+  def refused(*args,**kwargs):raise RuntimeError('Consumer return UNKNOWN')
+  scope=dict(original={'rootKey':'/owned'},inventory_cleanup_required=False,result={},shutdown_attempts=0,rpc=rpc,wait_daemon_consumer_returned=refused)
+  exec(compile(ast.fix_missing_locations(ast.Module(body=nodes,type_ignores=[])),'actual-shutdown-block','exec'),scope)
+  self.assertEqual(scope['shutdown_attempts'],0)
+  self.assertEqual(calls,[])
 if __name__=='__main__':unittest.main()
