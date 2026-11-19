@@ -75,3 +75,23 @@ Do not claim DATA validates runtime filesystem mode checks; those are maintained
 connector obligations and remain subject to a later separately reviewed runtime
 gate. No main-wire rerun, NamedPipe retry, sandbox escalation or alternate IPC has
 been authorized or performed by this proposal.
+
+## Source implementation checkpoint (UNRUN)
+
+New fixture-only DeclaredBridgeFixtureAdmission is called by the actual new-mode
+RPC branch immediately before the unchanged shipped RequestAsync. It compares
+prepared generation captured before StartShell, fixed root, full durable identity,
+held original run/PID and physical tasks; retains admitted status bytes and endpoint.
+Ordinary replies retain original owner; shutdown keeps the existing caller receipt
+contract. Responses are retained in scenario evidence even without optional journal.
+Old modes remain NamedPipe unchanged. No transport implementation/security change.
+
+Exact impact selection: mortal-main-wire-declared-endpoint-data (5 authored cases),
+then separately authorized mortal-client-main-player-wire (1). No broad suite.
+New C# sources require an owning build only after source review; none executed.
+Constructor DATA7 passed 0.566s with injected-only resources. Main-wire runtime
+remains unqualified. Immutable endpoint/identity are reused within this one fixture;
+current durable generation/record/status and physical tasks are freshly checked
+before each request, so cached coordinates confer no authority.
+
+Parent verified fresh exact-commit recovery of four source files at 9d0e590 to external recovery-9d0e590; hashes join constructor81a435 and plan45670d. This is bounded source recovery, not checkout/build recovery.

@@ -2,6 +2,37 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-main-wire-declared-endpoint-data",
+      "responsibility": "T034 fixture-only advertised endpoint admission: independent root/original owner/durable generation, endpoint continuity, physical owner loss and command-specific reply retention. Pure authored DATA refuses before connector.",
+      "excludes": "No IPC, native owner, bootstrap, network, main-wire runtime or sandbox-policy qualification.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/DeclaredBridgeFixtureAdmission.cs",
+        "BookOfEternityClient.Tests/DeclaredBridgeFixtureAdmissionTests.cs",
+        "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-client-main-player-wire",
+          "when": "After source and DATA acceptance, actual declared connector wire gate remains separately bounded."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.DeclaredBridgeFixtureAdmissionTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-client-main-player-wire",
       "responsibility": "T034 genuine System-input foreground PTY Continue to cooperative empty player input, local Options to main and Exit, with pinned terminal packages, original owner and normal cleanup. Shared terminal DATA and cursor-save/restore corpus are separate prerequisite gates.",
       "excludes": "No scripted player input, provider, GM turn, accepted world, Save/Load commit, hosted replacement or live adapter qualification.",

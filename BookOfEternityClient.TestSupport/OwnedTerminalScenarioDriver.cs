@@ -127,11 +127,17 @@ internal static partial class OwnedTerminalScenarioDriver
             .GetType("BookOfEternityGMBridge.BridgeHost", true)!;
         var pipe = "neutral-" + Guid.NewGuid().ToString("N");
         object? Invoke(string name, params object?[] args) => type.GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)!.Invoke(host, args);
+        IOwnedTerminalSession? declaredOriginal=null;
+        DeclaredBridgeFixtureAdmission? declaredAdmission=null;
+        string? preparedGeneration=null;
+        var declaredRoot=Path.GetFullPath(Path.Combine(folder,"root"));
+        var declaredRecord=Path.Combine(declaredRoot,".boe_runtime/gm-runs/main.json");
+        var declaredGeneration=Path.Combine(declaredRoot,".boe_runtime/session-generation/current.json");
+        var declaredStatus=Path.Combine(declaredRoot,"game_session/game_state/control/gm_bridge_status.json");
         async Task<JsonElement> Rpc(object request)
         {
             var requestBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request) + "\n");
             string? command = null;
-            if (journal is not null)
             {
                 using var requestDocument = JsonDocument.Parse(requestBytes);
                 if (requestDocument.RootElement.ValueKind == JsonValueKind.Object &&
@@ -142,6 +148,22 @@ internal static partial class OwnedTerminalScenarioDriver
             var timingName = "NativeTerminalFixture.Rpc." + command;
             using var total = journal?.Measure(timingName);
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(mode.StartsWith("production-main-relay-",StringComparison.Ordinal)?18:mode=="production-main-driver-held-pin"?12:3));
+            if(mode=="production-main-console-continue-pty")
+            {
+                var original=declaredOriginal ?? throw new InvalidOperationException("Original owner was not captured.");
+                var admission=declaredAdmission ?? throw new InvalidOperationException("Original admission was not captured.");
+                var statusJson=admission.BeforeConnect(File.ReadAllText(declaredStatus),File.ReadAllText(declaredGeneration),
+                    File.ReadAllBytes(declaredRecord),original.RootExited.IsCompleted,original.AuthorityLost.IsCompleted);
+                using var requested=JsonDocument.Parse(requestBytes);
+                var shutdown=requested.RootElement.GetProperty("command").GetString()=="shutdown";
+                var responseJson=await BridgeTransportConnector.RequestAsync(statusJson,requested.RootElement.GetRawText(),3000,deadline.Token);
+                using var responseDocument=JsonDocument.Parse(responseJson);
+                admission.CheckReply(responseDocument.RootElement,shutdown);
+                journal?.Record("rpc_response",new {Command=command,Response=responseDocument.RootElement});
+                if(!result.TryGetValue("DeclaredRpcResponses",out var rows))result["DeclaredRpcResponses"]=rows=new List<object>();
+                ((List<object>)rows!).Add(new {Command=command,Response=responseDocument.RootElement.Clone()});
+                return responseDocument.RootElement.Clone();
+            }
             using var peer = new NamedPipeClientStream(".", pipe, PipeDirection.InOut, PipeOptions.Asynchronous);
             using (journal?.Measure(timingName + ".Connect")) await peer.ConnectAsync(deadline.Token);
             using (journal?.Measure(timingName + ".Write"))
@@ -175,6 +197,7 @@ internal static partial class OwnedTerminalScenarioDriver
                 result["Success"]=true;return 0;
             }
             if(mode=="terminal-partial-start")File.SetUnixFileMode(Path.Combine(package,"neutral-cli"),UnixFileMode.UserRead|UnixFileMode.UserWrite);
+            if(mode=="production-main-console-continue-pty")preparedGeneration=File.ReadAllText(declaredGeneration);
             try { using (journal?.Measure("NativeTerminalFixture.StartShell")) await (Task)Invoke("StartShellAsync")!; }
             catch(OwnedTerminalStartException ex) when(mode=="terminal-partial-start") {
                 result["PartialExceptionOriginal"]=ReferenceEquals(ex.Owner,type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host));
@@ -187,6 +210,13 @@ internal static partial class OwnedTerminalScenarioDriver
                 if(run.Disposition!=GmSessionRunDisposition.Running || run.Identity.RunId!=original.Identity.RunId)
                     throw new InvalidOperationException("Actual released terminal is not bound to durable Running identity.");
                 result["DurableOriginalRunning"]=true;
+            }
+            if(mode=="production-main-console-continue-pty")
+            {
+                // Existing owner field access, moved before first RPC only for this mode.
+                declaredOriginal=(IOwnedTerminalSession)type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+                declaredAdmission=new(declaredRoot,pipe,declaredOriginal.Identity,
+                    preparedGeneration!,File.ReadAllBytes(declaredRecord));
             }
             server = (Task)Invoke("RunServerLoopAsync", serverCancellation.Token)!;
             if(mode=="terminal-partial-start") {
@@ -232,7 +262,7 @@ internal static partial class OwnedTerminalScenarioDriver
                 Require(competing==null,"Disabled helpers lost the retained original worker inventory.");
                 result["OriginalWorkerInventoryRetained"]=true;
             }
-            var originalSession=type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)!;
+            var originalSession=(object?)declaredOriginal ?? type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)!;
             if(mode.StartsWith("production-main-relay-",StringComparison.Ordinal)) {
                 if(mode=="production-main-relay-http-reads") {
                     Require(ready.GetProperty("status").GetProperty("ready").GetBoolean(),"Original relay did not become ready from its own output.");
