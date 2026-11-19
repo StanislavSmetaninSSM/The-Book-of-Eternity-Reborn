@@ -1321,3 +1321,11 @@ failures/0 errors,0.001s;32076 source+8 outputs unchanged. Initial authored arch
 member corrected before run to production `save_metadata.json`; downstream
 controls were unexecuted. Minimal three helper implementation now WIP/source
 review, no process driver or cold world created. Runtime proof remains UNRUN.
+
+Cold helpers GREEN independently accepted531c6af6: all3 PASS/0.009s, full
+32076source+8 outputs unchanged. This covers DATA predicates, not actual rendering
+or Load. A distinct small `cold_load_console.py` now reuses the existing ordinary
+navigation ownership shape: no bridge/daemon, exact initial file set, actual
+seven-item Load selection, sole archive, exact success before fresh screen clear,
+player prompt, Options/main exit, and fresh archive/scoped-data/absent-runtime
+checks. Driver is WIP source review only; no new world or runtime executed.
