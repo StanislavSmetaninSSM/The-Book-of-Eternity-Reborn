@@ -3857,3 +3857,39 @@ prepare-only integration before any separately reviewed mm15 live launch.
 Cost assessment: independent directories avoid concurrent mutation with the
 unknown old restore; cold dependency download is one recovery cost, not a
 performance comparison. Reuse this fresh owning build only with unchanged pins.
+
+T028 implementation-source checkpoint, 2026-11-19 (UNRUN). After the accepted
+seven causal assertion failures and two existing socket passes, the coordinator
+now implements input admission, inventory, serial stages and final real-file
+joins. Only the isolated checkout is used; old recovery directories are untouched.
+The owning-build input uses `sourceCommit`, `configuration: Debug`,
+`framework: net8.0`, `toolVersions` (exact trimmed outputs of dotnet --version,
+pwsh --version and cc --version), `sourcePins` and `outputPins` dictionaries of
+repo-relative path to lowercase SHA256. All tracked source members and complete
+Client/Bridge/TestSupport bin/Debug/net8.0 output trees must be covered. This input
+is not generated from stale outputs by the helper. Current source/output/native
+joins are rechecked; no source identity alone establishes a valid owning build.
+
+One coordinator executes native, three serial no-build publishes, export, deploy
+and verify. Each external stage owns a new process group, retained file sinks,
+180-second work deadline and bounded kill/wait settlement. Timeout, a surviving
+group, missing stream completion or nonzero exit prevents later stages and final
+readiness. Cleanup does not convert a failed stage into success. No game/relay
+launch or retry exists. Exporter no-runtime checks apply before deployment;
+post-deployment verifies the intended _runtime and no live artifacts, without
+forbidding legitimate exporter generation metadata.
+
+The same narrow category now owns 15 Python methods through one wrapper. Original
+nine methods remain; six add traversal/mode refusal, native source/binary/package
+joins, exact successful stage ordering without issuing readiness, each-stage
+failure/incomplete-output fences and start-exception refusal. Injected stage
+results remain DATA-only, not actual preparation qualification. New source and
+all tests are UNRUN pending focused review/save. A valid real preparation and
+subprocess failure/settlement integration are still required before readiness is
+accepted; no source-only test establishes those outcomes.
+
+Optimization: no additional compiler invocation or cross-run cache. Bounded
+inventory DATA is reused for final manifest assembly after fresh closing joins.
+Hashing and fresh exporter validation intentionally repeat at copy/source
+boundaries; elapsed external-stage costs are retained, but no cost reduction or
+runtime result is claimed. No gameplay, prompt or authority schema changed.

@@ -1,5 +1,5 @@
 """T028 cheap authored inputs, no game, compiler, export or authority."""
-import hashlib, importlib.util, tempfile, unittest
+import hashlib, importlib.util, json, tempfile, unittest
 from pathlib import Path
 from relay_phase_evidence import require_native_bootstrap_path_budget
 
@@ -61,8 +61,59 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(require_native_bootstrap_path_budget(root),107)
         with self.assertRaises(ValueError):require_native_bootstrap_path_budget(root+'a')
 
+    def test_path_alias_and_traversal_refuse(self):
+        for path in ('../output','/etc/passwd','x/../input.cs','./input.cs','x//input.cs','x\\input.cs'):
+            with self.subTest(path=path),self.assertRaises(ValueError):prep.safe_member(self.source,path)
+    def test_unsafe_modes_refuse(self):
+        path=self.source/'input.cs';path.chmod(0o666)
+        with self.assertRaisesRegex(ValueError,'mode'):prep.inventory(self.source)
+        with self.assertRaisesRegex(ValueError,'mode'):self.admission()
+    def test_exact_stage_order_cannot_itself_issue_prepared(self):
+        calls=[]
+        def run(stage):
+            calls.append(stage)
+            return {'exitCode':0,'settled':True,'stdoutEof':True,'stderrEof':True}
+        self.assertEqual(prep.prepare_stages(run),{'prepared':False,'failedStage':None})
+        self.assertEqual(calls,['native','publish-client','publish-bridge','publish-helper','export','deploy','verify'])
+        self.assertFalse(self.dest.exists())
+    def test_each_stage_failure_and_incomplete_log_fence_stops(self):
+        for failed in prep.STAGES:
+            for fault in ({'exitCode':1},{'stdoutEof':False},{'stderrEof':False}):
+                calls=[]
+                def run(stage):
+                    calls.append(stage);result={'exitCode':0,'settled':True,'stdoutEof':True,'stderrEof':True}
+                    if stage==failed:result.update(fault)
+                    return result
+                with self.subTest(stage=failed,fault=fault):
+                    self.assertEqual(prep.prepare_stages(run),{'prepared':False,'failedStage':failed})
+                    self.assertEqual(calls,list(prep.STAGES[:prep.STAGES.index(failed)+1]))
+                    self.assertFalse(self.dest.exists())
+    def test_native_source_binary_package_join(self):
+        native=self.root/'native';native.mkdir(mode=0o700);assets=[]
+        for binary,source in (('boe-lineage-supervisor','native/linux/boe-lineage-supervisor.c'),('host-guardian','tests/fixtures/LinuxHost/host-guardian.c')):
+            path=self.source/source;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(source.encode())
+            target=native/binary;target.write_bytes(binary.encode());target.chmod(0o700)
+            assets.append({'source':source,'binary':binary,'sourceSha256':prep.digest(path),'binarySha256':prep.digest(target)})
+        package={'sourceCommit':'a'*40,'sourceSha256':assets[0]['sourceSha256'],'binarySha256':assets[0]['binarySha256'],
+                 'runtimeIdentifier':'linux-x64','guarantee':'ordinary-same-namespace-lineage'}
+        (native/'build-provenance.json').write_text(json.dumps({'assets':assets}))
+        (native/'package-manifest.json').write_text(json.dumps(package))
+        self.assertEqual(len(prep.native_join(self.source,native,'a'*40)),4)
+        for field in ('sourceCommit','sourceSha256','binarySha256'):
+            altered=dict(package);altered[field]='f'*40
+            (native/'package-manifest.json').write_text(json.dumps(altered))
+            with self.subTest(field=field),self.assertRaises(ValueError):prep.native_join(self.source,native,'a'*40)
+        (native/'package-manifest.json').write_text(json.dumps(package));(native/'host-guardian').write_bytes(b'changed')
+        with self.assertRaisesRegex(ValueError,'hash join'):prep.native_join(self.source,native,'a'*40)
+    def test_unexpected_stage_exception_never_finishes_or_creates_manifest(self):
+        calls=[]
+        def run(stage):
+            calls.append(stage);raise OSError('injected stage start failure')
+        with self.assertRaisesRegex(OSError,'injected'):prep.prepare_stages(run)
+        self.assertEqual(calls,['native']);self.assertFalse(self.dest.exists())
+
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(PreparationTests)
-    if suite.countTestCases()!=9:raise SystemExit('Expected exactly nine preparation DATA methods')
+    if suite.countTestCases()!=15:raise SystemExit('Expected exactly fifteen preparation DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==9 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==15 and result.wasSuccessful() and not result.skipped else 1)
