@@ -82,8 +82,9 @@ New fixture-only DeclaredBridgeFixtureAdmission is called by the actual new-mode
 RPC branch immediately before the unchanged shipped RequestAsync. It compares
 prepared generation captured before StartShell, fixed root, full durable identity,
 held original run/PID and physical tasks; retains admitted status bytes and endpoint.
-Ordinary replies retain original owner; shutdown keeps the existing caller receipt
-contract. Responses are retained in scenario evidence even without optional journal.
+Ordinary replies retain original owner; shutdown additionally requires the exact source-shaped terminalStop identity,
+stopped-within-scope, complete/no-authority proof and null PID/nonretained/nonuncertain status.
+The legacy caller only checked ok; the new-mode helper closes this evidence gap. Responses are retained in scenario evidence even without optional journal.
 Old modes remain NamedPipe unchanged. No transport implementation/security change.
 
 Exact impact selection: mortal-main-wire-declared-endpoint-data (5 authored cases),

@@ -40,7 +40,7 @@ public sealed class DeclaredBridgeFixtureAdmissionTests
     [Fact]
     public void MalformedForeignAndDriftingEndpoint_RefuseBeforeConnector()
     {
-        foreach(var status in new[]{"{}",Status().Replace("\"version\":1","\"version\":2"),Status("unknown"),Status(session:"/tmp/foreign/game_session"),Status(pid:456),Status(run:"55555555555555555555555555555555")})
+        foreach(var status in new[]{"{}",Status().Replace("\"version\":1","\"version\":2"),Status("unknown"),Status(session:"/tmp/foreign/game_session"),Status(pid:456),Status().Replace("\"pipeName\":\"authored\"","\"pipeName\":\"foreign\""),Status().Replace("\"terminalUncertain\":false","\"terminalUncertain\":true"),Status(run:"55555555555555555555555555555555")})
             Assert.ThrowsAny<Exception>(()=>Fresh().BeforeConnect(status,Gen(),Record(),false,false));
         var gate=Fresh();gate.BeforeConnect(Status(),Gen(),Record(),false,false);
         Assert.ThrowsAny<Exception>(()=>gate.BeforeConnect(Status("named-pipe-v1"),Gen(),Record(),false,false));
@@ -49,8 +49,21 @@ public sealed class DeclaredBridgeFixtureAdmissionTests
     public void OrdinaryRetentionAndShutdownReceiptHaveDistinctContracts()
     {
         var gate=Fresh();gate.BeforeConnect(Status(),Gen(),Record(),false,false);
-        using var retired=JsonDocument.Parse("{\"ok\":true,\"status\":"+Status()+"}");
-        Assert.ThrowsAny<Exception>(()=>gate.CheckReply(retired.RootElement,false));
-        gate.CheckReply(retired.RootElement,true); // Existing actual caller still verifies the shutdown receipt.
+        using var live=JsonDocument.Parse("{\"ok\":true,\"status\":"+Status()+"}");
+        Assert.ThrowsAny<Exception>(()=>gate.CheckReply(live.RootElement,false));
+        Assert.ThrowsAny<Exception>(()=>gate.CheckReply(live.RootElement,true));
+        var status=System.Text.Json.Nodes.JsonNode.Parse(Status())!.AsObject();
+        status["shellPid"]=null;
+        status["terminalStop"]=JsonSerializer.SerializeToNode(new {identity=new {runId=Owner.RunId,backend=Owner.Backend,guarantee=Owner.Guarantee,rootPid=Owner.RootPid},state="stopped-within-scope",cleanupComplete=true,authorityRetained=false});
+        var valid="{\"ok\":true,\"status\":"+status.ToJsonString()+"}";
+        using var retired=JsonDocument.Parse(valid);gate.CheckReply(retired.RootElement,true);
+        foreach(var invalid in new[]{valid.Replace("\"terminalOwnerRetained\":false","\"terminalOwnerRetained\":true"),
+            valid.Replace("\"terminalUncertain\":false","\"terminalUncertain\":true"),
+            valid.Replace("\"rootPid\":123","\"rootPid\":456"),
+            valid.Replace("\"cleanupComplete\":true","\"cleanupComplete\":false"),
+            valid.Replace("\"authorityRetained\":false","\"authorityRetained\":true"),
+            valid.Replace("stopped-within-scope","uncertain")})
+        {using var bad=JsonDocument.Parse(invalid);Assert.ThrowsAny<Exception>(()=>gate.CheckReply(bad.RootElement,true));}
+
     }
 }
