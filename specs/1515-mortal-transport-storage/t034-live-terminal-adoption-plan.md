@@ -231,3 +231,16 @@ post-drain cut for both storage_move entries, updating registered cleanup contex
 only after confirmed write. An inert AST subcase injects drained old redraw bytes
 before the write for both actual source blocks. This correction is UNRUN until
 saved/focused review; original passing logs remain separate.
+
+## Constructor-owned rollback source checkpoint (UNRUN)
+
+Post-drain action-cut correction passed pure route AST28 (0.712s); no IPC or child.
+Terminal construction now guards all local PTY configuration, package admission,
+sidecar creation, child start and registration. Refusal restores/closes acquired
+PTYs, aborts an acquired sidecar and settles an owned child if already started;
+cleanup errors are collected without replacing the primary exception. This is
+failure rollback, never normal-exit proof. New actual-init AST injection covers
+seven acquisition boundaries and cleanup-error preservation without real processes.
+No caching applies to one-shot acquisition/rollback; current package checks remain
+fresh. Main-wire runtime remains blocked, endpoint fidelity is only a separate
+SOURCE/DATA proposal, and live transport remains unqualified.

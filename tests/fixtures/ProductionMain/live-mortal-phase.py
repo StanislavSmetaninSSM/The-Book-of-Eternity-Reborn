@@ -743,40 +743,61 @@ def terminal_fixture_admission():
 
 class Terminal:
     def __init__(self,name,args,captured_output=False):
-        self.console=None
-        if name=='client':captured_output=False
-        self.name=name;self.master,self.slave=pty.openpty();self.capture=bytearray();self.echo=bytearray();self.eof=False;self.captured_output=captured_output
-        fcntl.ioctl(self.slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0));self.initial=termios.tcgetattr(self.slave)
-        self.configured=copy.deepcopy(self.initial)
-        if name=='client':
-            self.configured[3]&=~(termios.ECHO|termios.ECHONL)
-            termios.tcsetattr(self.slave,termios.TCSANOW,self.configured)
-            if termios.tcgetattr(self.slave)!=self.configured:raise ValueError('Client noecho baseline mismatch')
-            os.set_blocking(self.master,False)
-            module_root,node,prefix=terminal_fixture_admission()
-            sys.dont_write_bytecode=True
-            sys.path.insert(0,str(module_root/'SelectionPrompt/terminal'))
-            from client_session import ClientSession
-            (out/'client-terminal').mkdir(exist_ok=False)
-            self.console=ClientSession(self.master,self.capture,out/'client-terminal',str(node),str(prefix),start+work_seconds,start+client_cleanup_seconds,lambda:drain_client(self))
-        def own():
-            os.setsid();fcntl.ioctl(self.slave,termios.TIOCSCTTY,0);os.tcsetpgrp(self.slave,os.getpid())
-        child_env=dict(console_routes.client_environment(env),NO_COLOR='1') if name=='client' else env
+        self.console=None;self.process=None;self.master=None;self.slave=None;self.initial=None
         try:
+            if name=='client':captured_output=False
+            self.name=name;self.master,self.slave=pty.openpty();self.capture=bytearray();self.echo=bytearray();self.eof=False;self.captured_output=captured_output
+            fcntl.ioctl(self.slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0));self.initial=termios.tcgetattr(self.slave)
+            self.configured=copy.deepcopy(self.initial)
+            if name=='client':
+                self.configured[3]&=~(termios.ECHO|termios.ECHONL)
+                termios.tcsetattr(self.slave,termios.TCSANOW,self.configured)
+                if termios.tcgetattr(self.slave)!=self.configured:raise ValueError('Client noecho baseline mismatch')
+                os.set_blocking(self.master,False)
+                module_root,node,prefix=terminal_fixture_admission()
+                sys.dont_write_bytecode=True
+                sys.path.insert(0,str(module_root/'SelectionPrompt/terminal'))
+                from client_session import ClientSession
+                (out/'client-terminal').mkdir(exist_ok=False)
+                self.console=ClientSession(self.master,self.capture,out/'client-terminal',str(node),str(prefix),start+work_seconds,start+client_cleanup_seconds,lambda:drain_client(self))
+            def own():
+                os.setsid();fcntl.ioctl(self.slave,termios.TIOCSCTTY,0);os.tcsetpgrp(self.slave,os.getpid())
+            child_env=dict(console_routes.client_environment(env),NO_COLOR='1') if name=='client' else env
             self.process=subprocess.Popen(args,cwd=ship,env=child_env,stdin=self.slave,
                 stdout=subprocess.PIPE if captured_output else self.slave,
                 stderr=subprocess.STDOUT if captured_output else self.slave,preexec_fn=own)
-        except BaseException:
-            if self.console is not None:self.console.abort()
-            os.close(self.slave);os.close(self.master);raise
-        evidence.raw(name,b'')
-        if captured_output:evidence.raw(name+'-echo',b'')
-        observed_processes.append((name,self.process,process_observer.register(self.process.pid)))
-        self.streams={self.master:'echo' if captured_output else 'output'}
-        if captured_output:self.streams[self.process.stdout.fileno()]='output'
-        self.closed_streams=set()
-        peers.append(self);journal.append({'At':elapsed(),'Entrypoint':name,'Argv':args,'OriginalPid':self.process.pid,
-            'OutputMode':'captured-pipe' if captured_output else 'original-pty','StdinMode':'original-controlling-pty'})
+            evidence.raw(name,b'')
+            if captured_output:evidence.raw(name+'-echo',b'')
+            observed_processes.append((name,self.process,process_observer.register(self.process.pid)))
+            self.streams={self.master:'echo' if captured_output else 'output'}
+            if captured_output:self.streams[self.process.stdout.fileno()]='output'
+            self.closed_streams=set()
+            peers.append(self);journal.append({'At':elapsed(),'Entrypoint':name,'Argv':args,'OriginalPid':self.process.pid,
+                'OutputMode':'captured-pipe' if captured_output else 'original-pty','StdinMode':'original-controlling-pty'})
+        except BaseException as primary:
+            # The caller cannot register this object until __init__ returns.
+            # Roll back every locally acquired resource, preserving the first error.
+            failures=[]
+            def collect(label,action):
+                try:action()
+                except BaseException as error:failures.append(label+': '+repr(error))
+            if self.process is not None:
+                def stop_child():
+                    if self.process.poll() is None:
+                        self.process.terminate()
+                        try:self.process.wait(timeout=1)
+                        except subprocess.TimeoutExpired:
+                            self.process.kill();self.process.wait(timeout=1)
+                collect('owned child settlement',stop_child)
+                if captured_output and self.process.stdout is not None:collect('owned output close',self.process.stdout.close)
+            if self.console is not None:collect('sidecar abort',self.console.abort)
+            if self.slave is not None and self.initial is not None:
+                collect('original termios restore',lambda:termios.tcsetattr(self.slave,termios.TCSANOW,self.initial))
+            for label,fd in (('slave',self.slave),('master',self.master)):
+                if fd is not None:collect(label+' close',lambda fd=fd:os.close(fd))
+            if self in peers:peers.remove(self)
+            if failures:primary.add_note('Terminal initialization cleanup failures: '+'; '.join(failures))
+            raise
     def send(self,data,phase,predicate=None,*,cleanup=False):
         assert elapsed()<(total_seconds if cleaning else work_seconds) and self.process.poll() is None
         assert active_phase_deadline is None or time.monotonic()<active_phase_deadline
