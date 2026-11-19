@@ -277,7 +277,7 @@ class OrdinarySave(unittest.TestCase):
             else:
                 with self.assertRaises(RuntimeError) as caught:exec(compile(ast.Module(body=[node],type_ignores=[]),'<actual-preflight>','exec'),ns)
                 self.assertIs(caught.exception,sentinel)
-    def save_scope(self,turn=43,uncertain=False,warning=False,multiple=False):
+    def save_scope(self,turn=43,uncertain=False,warning=False,multiple=False,prior_change=None):
         import io,zipfile
         tmp=tempfile.TemporaryDirectory();self.addCleanup(tmp.cleanup);session=pathlib.Path(tmp.name)
         saves=session/'saves/manual_saves';saves.mkdir(parents=True)
@@ -290,6 +290,8 @@ class OrdinarySave(unittest.TestCase):
             if 'Save name' in label:capture.extend('Описание (необязательно):'.encode())
             elif 'Save description' in label:
                 capture.extend('✅ Игра сохранена\r\n'.encode())
+                if prior_change=='overwrite':(saves/'prior.zip').write_bytes(b'overwritten')
+                if prior_change=='delete':(saves/'prior.zip').unlink()
                 for name in (('new.zip','extra.zip') if multiple else ('new.zip',)):
                     with zipfile.ZipFile(saves/name,'w') as z:z.writestr('save_metadata.json',json.dumps({'saveName':'s','turnNumber':turn}))
             elif 'acknowledge' in label:
@@ -317,8 +319,8 @@ class OrdinarySave(unittest.TestCase):
         uses=[n for n in ast.walk(local) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='save_current_turn']
         self.assertEqual(len(uses),1);self.assertEqual(ast.unparse(uses[0].args[0]),'expected_turn - 1')
     def test_actual_save_uncertain_ack_warning_multiple_and_wrong_turn(self):
-        for mode in ('uncertain','warning','multiple','wrong-turn'):
-            ns,calls,primary,_=self.save_scope(42 if mode=='wrong-turn' else 43,uncertain=mode=='uncertain',warning=mode=='warning',multiple=mode=='multiple')
+        for mode in ('uncertain','warning','multiple','wrong-turn','overwrite','delete'):
+            ns,calls,primary,_=self.save_scope(42 if mode=='wrong-turn' else 43,uncertain=mode=='uncertain',warning=mode=='warning',multiple=mode=='multiple',prior_change=mode)
             fn=self.actual('save_current_turn',ns)
             with self.assertRaises((RuntimeError,ValueError)) as caught:fn(43)
             if mode=='uncertain':self.assertIs(caught.exception,primary);self.assertNotIn('fresh-player',calls)
@@ -354,11 +356,12 @@ class OrdinarySave(unittest.TestCase):
                         if raw is not None:z.writestr(path,b'changed' if change==path else bytes.fromhex(raw))
                     z.writestr('game_state/resources/resource_owner_authority.json',b'new recomposed authority')
                     if change=='duplicate':z.writestr('save_metadata.json',b'{}')
+                    if change=='duplicate-data':z.writestr('game_state/world/world_time.json',bytes.fromhex(snap['Files']['game_state/world/world_time.json']))
                     if change=='alias':z.writestr('game_state/world/../world/world_time.json',b'alias')
                     if change=='history':z.writestr('game_state/world/mortal_living_world_history.json',b'fabricated')
             return b.getvalue()
         self.assertTrue(verify(archive(),snap,43))
-        for bad in ('turn','duplicate','alias','history','game_state/world/world_time.json',story.relative_to(s).as_posix()):
+        for bad in ('turn','duplicate','duplicate-data','alias','history','game_state/world/world_time.json',story.relative_to(s).as_posix()):
             with self.subTest(bad=bad),self.assertRaises(ValueError):verify(archive(bad),snap,43)
         history=s/'game_state/world/mortal_living_world_history.json';history.write_bytes(b'{"actual":"history"}')
         snap=capture(s,story,q,result);self.assertTrue(verify(archive(),snap,43))
@@ -366,28 +369,41 @@ class OrdinarySave(unittest.TestCase):
             p=s/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b'{}')
             with self.subTest(name=name),self.assertRaises(ValueError):capture(s,story,q,result)
             p.unlink()
+        pending=s/'game_state/control/pending_turn_snapshot';pending.mkdir()
+        with self.assertRaises(ValueError):capture(s,story,q,result)
+        pending.rmdir()
         for key in ('AcceptedTurnNumber','AcceptedGameTurns','GenuineActionsSent'):
             bad=dict(result);bad[key]=0
             with self.subTest(key=key),self.assertRaises(ValueError):capture(s,story,q,bad)
         (q/'unsettled').write_bytes(b'extra');self.assertNotEqual(capture(s,story,q,result),snap)
     def test_actual_postaccept_gate_precedes_save_without_renewing_deadline(self):
-        for mode in ('ok','refused','late'):
+        for mode in ('ok','refused','late','state-drift','queue-drift'):
             events=[];now=[200.];primary=RuntimeError('consumer refusal');result={'AcceptedGameTurns':1,'AcceptedTurnNumber':43}
+            snapshot_value={'Files':{'stories/mortal_life_1.jsonl':b'accepted'.hex()},'Turn':43,'Queue':{},'StoryPath':'stories/mortal_life_1.jsonl'}
             def gate(deadline):
                 events.append(('consumer',deadline))
                 if mode=='refused':raise primary
                 if mode=='late':now[0]=761.
-            def snapshot(*args):events.append('snapshot');return {'Files':{},'Turn':43}
-            def save(turn):events.append(('save',turn));return {'ArchiveBytes':b'archive'}
+            def snapshot(*args):events.append('snapshot');return copy.deepcopy(snapshot_value)
+            def save(turn):
+                events.append(('save',turn))
+                if mode=='state-drift':snapshot_value['Files']['stories/mortal_life_1.jsonl']=b'changed'.hex()
+                if mode=='queue-drift':snapshot_value['Queue']['unexpected']='changed'
+                return {'ArchiveBytes':b'archive','Metadata':{'turnNumber':turn},'CleanOutcomeBeforeFirstPlayerClear':True}
+            def verify(*args):events.append('verify');return True
             ns=dict(route={'Route':'ordinary-save'},result=result,start=100.,work_seconds=660,time=types.SimpleNamespace(monotonic=lambda:now[0]),
                 wait_daemon_consumer_returned=gate,save_current_turn=save,session='data',story='story',relay_queue='queue',expected_turn=43,
-                phase_evidence=types.SimpleNamespace(ordinary_save_snapshot=snapshot,verify_ordinary_save_archive=lambda *a:True),sha=evidence.sha)
+                phase_evidence=types.SimpleNamespace(ordinary_save_snapshot=snapshot,verify_ordinary_save_archive=verify),sha=evidence.sha)
             fn=self.actual('ordinary_save_after_acceptance',ns)
-            if mode=='ok':fn();self.assertEqual(events[0],('consumer',760.));self.assertEqual(events[1],'snapshot');self.assertIn(('save',43),events)
+            if mode=='ok':
+                fn();self.assertEqual(events,[('consumer',760.),'snapshot',('save',43),'verify','snapshot'])
+                self.assertEqual(result['OrdinarySaveProof']['Before'],result['OrdinarySaveProof']['After'])
             else:
-                with self.assertRaises((RuntimeError,TimeoutError)) as caught:fn()
+                with self.assertRaises((RuntimeError,TimeoutError,ValueError)) as caught:fn()
                 if mode=='refused':self.assertIs(caught.exception,primary)
-                self.assertEqual(events,[('consumer',760.)]);self.assertNotIn('OrdinarySaveProof',result)
+                if mode in ('late','refused'):self.assertEqual(events,[('consumer',760.)])
+                else:self.assertEqual(events,[('consumer',760.),'snapshot',('save',43),'verify','snapshot'])
+                self.assertNotIn('OrdinarySaveProof',result)
         # This helper must be invoked by actual postaccept orchestration, not tests only.
         calls=[n for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='ordinary_save_after_acceptance']
         self.assertEqual(len(calls),1)

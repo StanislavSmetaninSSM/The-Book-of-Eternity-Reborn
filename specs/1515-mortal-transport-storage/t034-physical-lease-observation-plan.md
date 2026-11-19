@@ -484,3 +484,9 @@ Expected initial feature RED: eight methods fail at missing route/helper/gate or
 existing inventory/final-success behavior; downstream new matrices remain unrun
 until implementation. No runtime, world, production or finite_select change.
 Source review and remote preservation precede this exact pure selection.
+
+Independent test-source review strengthened the same eight methods before RED:
+actual orchestration must capture fresh closing DATA, with live state/queue drift
+refusing a proof; actual shared Save must reject an overwritten or deleted prior
+archive despite one fresh ZIP. Scoped ZIP DATA duplicates and orphan pending
+snapshot directories are refused. These downstream controls are still UNRUN.
