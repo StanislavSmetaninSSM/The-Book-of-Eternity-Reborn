@@ -212,6 +212,7 @@ def main():
     env=os.environ.copy();env['TERM']='dumb' if mode=='pipe-dumb' else 'xterm-256color'
     result={'Mode':mode,'Success':False,'EOF':False,'CleanupFailures':[],'Inputs':[]}
     result['PtySizeReadback']=list(struct.unpack('HHHH',fcntl.ioctl(slave,termios.TIOCGWINSZ,b'\0'*8)))
+    terminal=None;terminal_writer=None
     process=None;screen=Screen();control=Screen(screen.keyboard);closed=set();streams={};raws={}
     frame_cut=0; captured=bytearray(); raw_cut=0
     start=time.monotonic();stage=0
@@ -231,6 +232,15 @@ def main():
             readback=termios.tcgetattr(slave)
             result['ConfiguredReadback']=termios_data(readback)
             assert readback==configured
+        if fullroute:
+            sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent/'terminal'))
+            from owned_terminal import OwnedTerminal
+            from pty_probe import PtyWriter
+            from fullroute_inputs import AcknowledgedTerminalView
+            os.set_blocking(master,False)
+            terminal_writer=PtyWriter(master,master,start+45)
+            terminal=OwnedTerminal(os.environ['BOE_TERMINAL_NODE'],os.environ['BOE_TERMINAL_PREFIX'],root,start+45,terminal_writer)
+            screen=AcknowledgedTerminalView(terminal,captured)
         args=['dotnet',helper,'mortal-fullroute-smoke' if fullroute else 'spectre-inventory-cleanup-smoke' if cleanup else 'spectre-load-geometry-smoke' if geometry else 'spectre-load-smoke' if load else 'spectre-inventory-smoke' if inventory else 'spectre-selection-smoke',str(root),'--plain-output']
         process=subprocess.Popen(args,stdin=slave,stdout=slave if same_pty else subprocess.PIPE,
                                  stderr=slave if same_pty else subprocess.STDOUT,env=env,preexec_fn=own)
@@ -298,7 +308,7 @@ def main():
             result['ActualFiniteSelector']=True;result['Target']=target;stage=2
         if fullroute:
             # Same owned transport/cleanup as the qualified geometry modes. No new process scheme.
-            from fullroute_inputs import run as run_fullroute
+            from fullroute_inputs import run as run_fullroute, fresh_route_key
             def pump_fullroute():
                 if process.poll() not in (None, 0):
                     report=root/'fullroute-result.json'
@@ -309,7 +319,7 @@ def main():
                         if fd!=master or error.errno!=errno.EIO:raise
                         data=b''
                     if not data:closed.add(fd);continue
-                    raws[fd].write(data);captured.extend(data);screen.feed(data)
+                    raws[fd].write(data);captured.extend(data);screen.observe(data)
             full_deadline=start+45
             while inert_initial_pty_cut(bytes(captured),screen.keyboard) is None:
                 if time.monotonic()>=full_deadline:raise TimeoutError('Actual initial PTY mode')
@@ -323,10 +333,13 @@ def main():
             result['ActualGeometry']=measured
             profile=measured_load_profile(measured,result['PtySizeReadback'],termios.tcgetattr(master))
             result['QualifiedDataProfile']=profile
-            def route_send(key,label):
-                if time.monotonic() >= full_deadline:raise TimeoutError('Original full-route input deadline')
-                write_input(key)
-                result['Inputs'].append({'Hex':key.hex(),'Phase':label,'CaptureCut':len(captured)})
+            def drain_fullroute():
+                while select.select([f for f in streams if f not in closed],[],[],0)[0]:
+                    if time.monotonic()>=full_deadline:raise TimeoutError('Original pre-key drain deadline')
+                    pump_fullroute()
+            def route_send(key,label,predicate):
+                resolved=fresh_route_key(terminal,screen,drain_fullroute,key,label,predicate,full_deadline)
+                result['Inputs'].append({'Hex':resolved.hex(),'Phase':label,'CaptureCut':len(captured),'TerminalSeq':screen.seq})
             run_fullroute(root,captured,screen,pump_fullroute,route_send,result,full_deadline,first_cut,profile)
             while time.monotonic()<full_deadline:
                 pump_fullroute()
@@ -415,7 +428,7 @@ def main():
                 os.close(slave);slave=-1
             if len(closed)==len(streams):break
         result['EOF']=len(closed)==len(streams)
-        if result['EOF']:screen.finish();control.finish()
+        if result['EOF'] and not fullroute:screen.finish();control.finish()
         if result.get('ExpectedWrappedRefusal'):
             raise RuntimeError('Expected inert wrong-width refusal; owned cleanup required')
         if not result['EOF']:raise TimeoutError('Actual selection/exit/EOF not observed within original bounded deadline')
@@ -428,6 +441,9 @@ def main():
             assert result['ExitCode']==0 and receipt['Success'] and receipt['FixtureRootAbsent']
             assert receipt['CleanupFailures']==[] and result['ChildRestoredConfiguredBaseline']
             assert [entry['Stage'] for entry in receipt['Stages']]==['locked-denial','retrieve','save','deposit','load-focus-back']
+            terminal.close()
+            result['TerminalNormalClose']=terminal.closed
+            result['TerminalInputs']=terminal_writer.audit
             result['Success']=True
         else:
             receipt=json.loads((root/'choice.json').read_text())
@@ -468,6 +484,14 @@ def main():
                 result['CleanupDrained']=len(closed)==len(streams)
                 if not result['CleanupDrained']:result['CleanupFailures'].append('Owned stream drain incomplete')
             except BaseException as error:result['CleanupFailures'].append(str(error))
+        if terminal is not None and not terminal.closed:
+            try:
+                result['TerminalAbort']=terminal.abort()
+                proof=result['TerminalAbort']
+                if not proof['Joined'] or not proof['EOF'] or proof['Errors']:
+                    result['CleanupFailures'].append('Terminal abort incomplete: '+str(proof))
+            except BaseException as error:result['CleanupFailures'].append('Terminal abort: '+str(error))
+        if terminal_writer is not None:result['TerminalInputs']=terminal_writer.audit
         if owned_noecho:
             try:
                 if process is not None and result.get('Joined') is not True:

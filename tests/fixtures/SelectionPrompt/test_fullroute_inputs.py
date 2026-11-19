@@ -1,8 +1,9 @@
 """Bounded DATA controls for the actual full-route input observer. No child/UI."""
 import unittest
+import types
 from unittest.mock import patch
 from fullroute_inputs import (OPTIONS, DESCRIPTIONS, OPTIONS_FOOTER, options_frame,
-                             ordered_transition, retained_selection, clean_save_interval, require_time, wait_observation, send_current)
+                             ordered_transition, retained_selection, clean_save_interval, require_time, wait_observation, send_current, AcknowledgedTerminalView, options_cells, save_outcome, returned_save_boundary, fresh_route_key)
 import mortal_console_routes as routes
 
 
@@ -60,6 +61,63 @@ class FullRouteInputData(unittest.TestCase):
             self.assertFalse(clean_save_interval(collected))
         self.assertFalse(clean_save_interval(success * 2))
 
+    def test_options_requires_fresh_whole_raw_and_exact_acknowledged_cells(self):
+        raw=bytearray(options(OPTIONS[0]));view=AcknowledgedTerminalView(None,raw)
+        grid=['── ⚙️ Игровое меню ──','Esc — назад']
+        for label,description in zip(OPTIONS,DESCRIPTIONS):
+            grid.append(('➤ ' if label==OPTIONS[0] else '◆ ')+label)
+            if description:grid.append(description)
+        grid.append(OPTIONS_FOOTER);view.lines=grid+['']*(25-len(grid));view.pending=False;view.cut=len(raw)
+        self.assertTrue(view.options(0,OPTIONS[0],True))
+        cut=len(raw)
+        for tail in (b'\x1b[5;1H',b'\x1b[0m',options(OPTIONS[0],False)[:-8]):
+            raw[:]=options(OPTIONS[0])+tail;view.cut=len(raw)
+            self.assertFalse(view.options(cut,OPTIONS[0],False))
+        raw[:]=options(OPTIONS[0])+options(OPTIONS[0],False);view.cut=len(raw)
+        self.assertTrue(view.options(cut,OPTIONS[0],False))
+        view.lines[2]='◆ '+OPTIONS[0]
+        self.assertFalse(view.options(cut,OPTIONS[0],False))
+        view.pending=True
+        self.assertFalse(view.options(cut,OPTIONS[0],False))
+
+    def test_arrow_intent_is_resolved_after_mode_changing_drain(self):
+        for up in (False,True):
+            for mode in (False,True):
+                captured=bytearray(b'complete')
+                view=AcknowledgedTerminalView(None,captured);view.pending=False;view.cut=len(captured)
+                view.modes={'applicationCursorKeysMode':not mode};sent=[]
+                terminal=types.SimpleNamespace(key=lambda data,label:sent.append((data,label)))
+                def drain():
+                    captured.extend(b'newmode');view.cut=len(captured);view.modes['applicationCursorKeysMode']=mode
+                fresh_route_key(terminal,view,drain,lambda:view.arrow(up),'arrow',lambda:True,float('inf'))
+                expected=(b'\x1bO' if mode else b'\x1b[')+(b'A' if up else b'B')
+                self.assertEqual(sent,[(expected,'arrow')])
+
+    def test_final_drain_partial_or_changed_ui_never_sends(self):
+        for pending,predicate in ((True,True),(False,False)):
+            view=AcknowledgedTerminalView(None,bytearray(b'old'));view.pending=False;view.cut=3
+            sent=[];terminal=types.SimpleNamespace(key=lambda *args:sent.append(args))
+            def drain():
+                view.captured.extend(b'new');view.cut=len(view.captured);view.pending=pending
+            with self.assertRaises(ValueError):
+                fresh_route_key(terminal,view,drain,b'x','forbidden',lambda:predicate,float('inf'))
+            self.assertEqual(sent,[])
+
+    def test_save_exact_outcome_and_returned_inventory_reject_interleaving(self):
+        success='✅ Игра сохранена\r\n'.encode()
+        self.assertTrue(save_outcome(b'\r\n'+success))
+        menu=routes.fixed_menu('Inventory',['chalk','Back'],20)
+        inventory=b'Inventory\n> chalk\n  Back'
+        self.assertEqual(returned_save_boundary(success+inventory,0,menu),len(success))
+        warning='Требуется служебная проверка хранилища сохранений.'
+        for text in (warning,warning[:8]+'\x1b[0m'+warning[8:],warning[:8]+'\x1b[1D'+warning[8:],'unknown outcome'):
+            raw=success+text.encode()+b'\r\n'
+            self.assertFalse(save_outcome(raw))
+            self.assertIsNone(returned_save_boundary(raw+inventory,0,menu))
+        self.assertFalse(save_outcome(success*2))
+        self.assertFalse(save_outcome(success.replace('сохранена'.encode(),b'\x1b[0m'+'сохранена'.encode())))
+        self.assertIsNone(returned_save_boundary(success+inventory[:-3],0,menu))
+
     def test_deadline_equality_and_late_observation_refuse(self):
         require_time(45, 44.999)
         for now in (45, 45.001, 60):
@@ -87,7 +145,7 @@ class FullRouteInputData(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(FullRouteInputData)
-    assert suite.countTestCases() == 9
+    assert suite.countTestCases() == 13
     result = unittest.TextTestRunner(verbosity=2).run(suite)
-    assert result.testsRun == 9 and not result.skipped
+    assert result.testsRun == 13 and not result.skipped
     raise SystemExit(0 if result.wasSuccessful() else 1)

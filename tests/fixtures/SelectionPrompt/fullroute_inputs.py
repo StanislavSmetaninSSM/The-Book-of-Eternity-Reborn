@@ -104,6 +104,59 @@ def clean_save_interval(text):
     return text.count('✅ Игра сохранена') == 1 and SAVE_WARNING not in text
 
 
+class AcknowledgedTerminalView:
+    """Read-only callback-fenced terminal evidence for this one literal route."""
+    def __init__(self, terminal, captured):
+        self.terminal=terminal;self.captured=captured;self.cut=0;self.seq=0
+        self.pending=True;self.lines=[];self.modes={}
+    def observe(self, raw):
+        value=self.terminal.feed(raw)
+        self.pending=value['pending'];self.modes=value['modes'];self.seq=value['seq'];self.cut=len(self.captured)
+        if not self.pending:self.lines=self.terminal.snapshot()['lines']
+    @property
+    def keyboard(self):return {'cursor':self.modes.get('applicationCursorKeysMode',False),'keypad':self.modes.get('applicationKeypadMode',False)}
+    def arrow(self, up=False):
+        if self.pending:raise ValueError('Unacknowledged terminal prefix')
+        return (b'\x1bO' if self.modes['applicationCursorKeysMode'] else b'\x1b[')+(b'A' if up else b'B')
+    def prompt(self, text, after):
+        return not self.pending and self.cut==len(self.captured) and self.cut>after and any(text in line for line in self.lines)
+    def options(self, after, selected, initial):
+        if self.pending or self.cut!=len(self.captured) or self.cut<=after:return False
+        return options_frame(bytes(self.captured),after,selected,initial=initial) and options_cells(self.lines,selected)
+
+def options_cells(lines, selected):
+    if len(lines)!=25 or selected not in OPTIONS:return False
+    visible=[line.strip() for line in lines if line.strip()]
+    expected=[]
+    for label,description in zip(OPTIONS,DESCRIPTIONS):
+        expected.append(('➤ ' if label==selected else '◆ ')+label)
+        if description:expected.append(description)
+    expected.append(OPTIONS_FOOTER)
+    return len(visible)==len(expected)+2 and re.fullmatch(r'[─ ]*⚙️ Игровое меню[─ ]*',visible[0]) is not None and visible[1]=='Esc — назад' and visible[2:]==expected
+
+# Exact standalone production outcome; only known nonconcealing edge decorations.
+_EDGE=rb'(?:\x1b\[(?:0|1|2|3|4|9|22|23|24|29)(?:;(?:0|1|2|3|4|9|22|23|24|29))*m)*'
+_SUCCESS=re.compile(rb'[ \r\n]*'+_EDGE+'✅ Игра сохранена'.encode()+_EDGE+rb' *\r?\n[ \r\n]*')
+def save_outcome(raw):
+    return _SUCCESS.fullmatch(raw) is not None
+
+def returned_save_boundary(raw, cut, menu):
+    match=_SUCCESS.match(raw[cut:])
+    if match is None:return None
+    boundary=cut+match.end()
+    frames=routes.selected_frames(raw,boundary,menu)
+    return boundary if frames else None
+
+def fresh_route_key(terminal, view, drain, key, label, predicate, deadline):
+    """Drain+revalidate before resolving a mode-dependent key intent exactly once."""
+    require_time(deadline);drain();require_time(deadline)
+    if view.pending or view.cut!=len(view.captured) or not predicate():
+        raise ValueError('Fresh complete intended UI not proved before input')
+    resolved=key() if callable(key) else key
+    require_time(deadline);terminal.key(resolved,label)
+    return resolved
+
+
 def run(root, captured, screen, pump, send, result, deadline, initial_cut, profile):
     """All waits share the original bounded deadline. No retry after unknown UI."""
     game = root / 'isolated-data' / 'game_session'
@@ -116,8 +169,9 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
         return wait_observation(predicate, pump, deadline, label)
 
     original_send = send
-    def send(key, label):
-        send_current(original_send, key, label, deadline)
+    def send(key, label, predicate):
+        require_time(deadline)
+        return original_send(key,label,predicate)
 
     def data(path):
         return json.loads((game / path).read_text(encoding='utf-8-sig'))
@@ -156,8 +210,8 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
                 raise ValueError('Unexpected navigation cycle')
             expected = menu['choices'][next_index]
             boundary = len(captured)
-            key = (b'\x1bOA' if screen.keyboard['cursor'] else b'\x1b[A') if up else screen.down()
-            send(key, 'Up' if up else 'Down')
+            proof={'raw':bytes(captured),'menu':menu,'selected':selected}
+            send(lambda: screen.arrow(up), 'Up' if up else 'Down', lambda: retained_selection(bytes(captured),proof)==selected)
             def transition():
                 fresh = routes.selected_frames(bytes(captured), boundary, menu)
                 return ordered_transition(fresh, selected, expected)
@@ -169,7 +223,8 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
             cut = boundary
         if enter:
             cut = len(captured)
-            send(b'\r', 'Enter exact ' + target)
+            proof={'raw':bytes(captured),'menu':menu,'selected':selected}
+            send(b'\r', 'Enter exact ' + target, lambda: retained_selection(bytes(captured),proof)==selected)
             previous = menu
             previous_selected = target
         else:
@@ -188,12 +243,14 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
     def open_options(name, number, selected):
         nonlocal previous, cut
         stage(name)
-        wait(lambda: options_frame(bytes(captured), cut, '💾 Сохранить', initial=True), 'Fresh complete Options custom frame')
+        wait(lambda: screen.options(cut,'💾 Сохранить',True), 'Fresh complete Options custom frame')
+        options_cut=cut
+        send(str(number).encode(), 'Options numeric selection', lambda: screen.options(options_cut,'💾 Сохранить',True))
         cut = len(captured)
-        send(str(number).encode(), 'Options numeric selection')
-        wait(lambda: options_frame(bytes(captured), cut, selected, initial=False), 'Fresh complete Options selected redraw')
+        wait(lambda: screen.options(cut,selected,False), 'Fresh complete Options selected redraw')
+        options_cut=cut
+        send(b'\r', 'Options Enter', lambda: screen.options(options_cut,selected,False))
         cut = len(captured); previous = None
-        send(b'\r', 'Options Enter')
 
     stage('locked-denial')
     menu = inventory()
@@ -212,23 +269,19 @@ def run(root, captured, screen, pump, send, result, deadline, initial_cut, profi
     choose(panel(0, 2), '← Назад к инвентарю')
     choose(inventory(), '← Назад')
     open_options('save', 1, '💾 Сохранить')
-    wait(lambda: 'Название сохранения:' in screen.plain and not screen.pending, 'Actual Save name composer')
-    send(b's\r', 'Save replacement text s and Enter')
-    wait(lambda: 'Описание (необязательно):' in screen.plain and not screen.pending, 'Actual Save description composer')
-    save_cut = len(screen.plain)
-    send(b'\r', 'Empty description Enter')
-    wait(lambda: '✅ Игра сохранена' in screen.plain[save_cut:] and not screen.pending, 'Actual Save outcome')
-    if not clean_save_interval(screen.plain[save_cut:]):
-        raise ValueError('Save committed with follow-up, not clean route')
-    cut = len(captured); send(b'\r', 'Save acknowledgement')
-    stage('deposit')
-    previous = None
-    # Same ordered PTY stream must reach a complete new inventory, not merely the
-    # external stage file, before deciding whether the entire Save was clean.
-    deposit_menu = inventory()
-    wait(lambda: routes.selected_frames(bytes(captured), cut, deposit_menu), 'Returned post-Save inventory boundary')
-    if not clean_save_interval(screen.plain[save_cut:]):
-        raise ValueError('Save follow-up observed through actual returned inventory')
+    prompt_cut=cut
+    wait(lambda: screen.prompt('Название сохранения:',prompt_cut), 'Actual Save name composer')
+    send(b's\r','Save replacement text s and Enter',lambda: screen.prompt('Название сохранения:',prompt_cut))
+    prompt_cut=len(captured)
+    wait(lambda: screen.prompt('Описание (необязательно):',prompt_cut), 'Actual Save description composer')
+    send(b'\r','Empty description Enter',lambda: screen.prompt('Описание (необязательно):',prompt_cut))
+    save_cut=len(captured)
+    wait(lambda: screen.prompt('✅ Игра сохранена',save_cut), 'Actual Save outcome')
+    if not save_outcome(bytes(captured)[save_cut:]):raise ValueError('Noncanonical or follow-up Save outcome')
+    send(b'\r','Save acknowledgement',lambda: screen.prompt('✅ Игра сохранена',save_cut) and save_outcome(bytes(captured)[save_cut:]))
+    stage('deposit');previous=None
+    deposit_menu=inventory()
+    cut=wait(lambda: returned_save_boundary(bytes(captured),save_cut,deposit_menu),'Clean Save through actual returned inventory')
     choose(inventory(), f'📦 {STORAGE} (0 пр.) → управление')
     choose(panel(0, 2), '📥 Положить предмет в хранилище (2 в инвентаре)')
     choose(routes.fixed_menu('Выберите предмет для перемещения в хранилище:',
