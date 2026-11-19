@@ -324,6 +324,7 @@ def main():
             profile=measured_load_profile(measured,result['PtySizeReadback'],termios.tcgetattr(master))
             result['QualifiedDataProfile']=profile
             def route_send(key,label):
+                if time.monotonic() >= full_deadline:raise TimeoutError('Original full-route input deadline')
                 write_input(key)
                 result['Inputs'].append({'Hex':key.hex(),'Phase':label,'CaptureCut':len(captured)})
             run_fullroute(root,captured,screen,pump_fullroute,route_send,result,full_deadline,first_cut,profile)

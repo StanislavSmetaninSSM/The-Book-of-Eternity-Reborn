@@ -5025,3 +5025,15 @@ native tool setup. Existing single-prompt budgets and live transport are unchang
 No build, Python fixture execution, game/world run or runtime success is claimed.
 Independent completed constructor/input/source review and saved checkpoint precede
 any bounded execution. Fullroute and live T016 remain open.
+
+T034 full-route input SOURCE correction (still UNRUN): retained exact validated
+selection survives coalesced prior→current redraws, but any incomplete newest draw
+blocks input; the custom Options observer now requires a fresh raw complete ordered
+five-row grid/descriptions/footer, with actual static title/Esc header on entry.
+Save cleanliness is rechecked through a complete actual returned inventory in the
+same PTY stream, not just the external stage file. Original45s deadline is checked
+before/after predicates and before every write. Nine isolated DATA methods cover
+coalescing/reversal, Options missing/reordered/stale/partial/control tails, split
+Save warning and expired wait/write; the one official fullroute Fact owns these
+nine before its renderer. No tests or build were run while correcting source.
+Disabled AudioService is now explicitly async-disposed by its fixture owner.

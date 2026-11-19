@@ -52,7 +52,8 @@ internal static class MortalFullRouteSmoke
             var loop = new GameLoop(); loop.SetSession("t034-authored-geometry", 43);
             var saveLogger = new PortableSaveFixture.CaptureLogger();
             var saves = new SaveLoadService(files, state, saveLogger);
-            var engine = CreateEngine(files, state, loop, explorer, loc, saves, clipboard);
+            await using var audio = new AudioService(files, settings, NullLogger<AudioService>.Instance);
+            var engine = CreateEngine(files, state, loop, explorer, loc, saves, clipboard, audio);
             async Task<T> Expected<T>(Func<Task<T>> operation) =>
                 await SessionOperationContext.RunParticipatingExpectedSessionAsync(files, generation, operation);
             async Task<Dictionary<string, string?>> Pins() => await Expected(async () =>
@@ -166,11 +167,11 @@ internal static class MortalFullRouteSmoke
     }
 
     private static GameEngine CreateEngine(FileSystemManager files, StateManager state, GameLoop loop,
-        ExplorerMode explorer, LocalizationManager loc, SaveLoadService saves, IClipboardService clipboard) =>
+        ExplorerMode explorer, LocalizationManager loc, SaveLoadService saves, IClipboardService clipboard, AudioService audio) =>
         new(fs: files, stateManager: state, gameLoop: loop, normalizer: null!, progressionSchedule: null!,
             ui: null!, explorer: explorer, loc: loc, saveLoad: saves, imageService: null!, validator: null!,
             charService: null!, storyService: null!, actorMemoryService: null!,
-            audioService: new AudioService(files, state.Settings, NullLogger<AudioService>.Instance),
+            audioService: audio,
             consoleAppearance: new ConsoleAppearanceService(state.Settings, NullLogger<ConsoleAppearanceService>.Instance),
             systemModService: new SystemModService(files, state.Settings, NullLogger<SystemModService>.Instance),
             systemGuardianLibraryService: null!, criticalStateHealth: null!, worldDirectiveService: null!, scenarioCoreService: null!,

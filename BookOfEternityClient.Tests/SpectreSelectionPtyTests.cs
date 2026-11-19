@@ -38,7 +38,15 @@ public sealed class SpectreSelectionPtyTests
     public Task ActualSamePtyLoadGeometryHasExplicitOutcome(string mode) => RunModeAsync(mode);
 
     [Fact]
-    public Task ActualLocalStorageSaveAndBackOnlyLoadUseRealUi() => RunModeAsync("pty-fullroute");
+    public async Task ActualLocalStorageSaveAndBackOnlyLoadUseRealUi()
+    {
+        var root = Path.Combine(TestDiagnosticPaths.Root, "fullroute-input-data", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        await RunAsync("/usr/bin/python3",
+            [Path.Combine(TestRepoPaths.RepoRoot, "tests/fixtures/SelectionPrompt/test_fullroute_inputs.py")],
+            root, "data-nine", 10);
+        await RunModeAsync("pty-fullroute");
+    }
 
     /// <summary>Reuses the owned inert renderer process and its exact EOF/guardian cleanup for one explicit console mode.</summary>
     private static async Task RunModeAsync(string mode)
