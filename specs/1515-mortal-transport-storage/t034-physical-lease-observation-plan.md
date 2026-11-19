@@ -1024,3 +1024,21 @@ shutdown, same owner Stopped/OwnedScopeEmpty, daemon0→0, terminal/RPC/sidecar
 normal EOF/restores and guardian clean. Captured8964events/2988orderedtriples/
 54PIDs/4399231bytes, no client trace prefix; not exhaustive. Next separate
 ordinary-save43 asks permission without inventory prologue or presumed grant.
+
+mm27 ordinary43 outcome independently verified as split, not overall PASS
+(217e9d5e,13376 artifacts): genuine independent GM defer was accepted once,
+500→505 without access/item changes. Actual ordinary manual Save committed
+`s`/turn43: sole ZIP CRC good,110 unique entries, exact13 scoped DATA members
+and accepted story/history absence. This is NOT autosave substitution. However
+no Save ACK/fresh-player proof or normal shutdown occurred. Strict Save window
+at cut679589 contains a641-byte BOE_MAIN_OPERATION_MARKER active-received from
+actual foreground21/currentnonce/original Active pin, then exact successline.
+Maintained emulator also shows success; exact parser correctly rejects extra
+JSON. Source OpenAsync54→Mark→Console.Error195 routes the healthy participating
+admission marker into samePTY. Physical trace prefix remains absent; this is
+not the old admission refusal, geometry, timeout or Save publication failure.
+Owner remains Running, sidecar abort−15/joinEOF, guardian ECHILD/driver1 proves
+physical containment only. mm27 is nonpredecessor, no ACK/retry/repair/reuse.
+Next source-only design must route healthy markers via existing explicit
+external diagnostics (or narrowly suppress healthy-only output), preserving
+failure diagnostics; no parser stripping, grammar relaxation or timeout change.
