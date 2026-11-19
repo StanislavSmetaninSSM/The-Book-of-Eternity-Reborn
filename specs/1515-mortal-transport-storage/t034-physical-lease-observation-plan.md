@@ -1144,3 +1144,15 @@ without an independent operation interval. A narrow actual freezer entrypoint
 will bind settled phase profile/probe/journal bytes and invoke the same helper
 for every event file, preserving separate physical triplets and marker counts.
 No old frozen outcome or world is modified. No runtime or new package yet.
+
+### Actual offline mixed freezer DATA accepted
+Independent `f9f58bf8` verifies both selected pure methods, seven artifacts,
+32,074 source and eight output before/after joins. Every immutable accepted
+mixed file is classified; temporary malformed/orphan/order/foreign-path controls
+execute. Actual freezer entrypoint binds phase profile/probe/journal SHA and
+settled launch exit, writes exclusive output, and keeps route success separate.
+Helper marker timing must lie within its same-pin physical lease, followed by
+ready; foreground PID comes from unique actual client launch journal. Other PIDs
+remain observed-only, and non-helper Active-only rows are labelled as such.
+This ordinary-participation freezer does not require scripted P01 to emit a
+foreground marker. No new runtime, no old outcome rewrite, no exhaustive claims.
