@@ -5287,6 +5287,8 @@ public partial class ValidationService
                 }
                 if (hasEffectiveNpcId &&
                     hasInventoryContinuityAuthority &&
+                    !(mortalActorPreTurnAuthority.Status == ValidatedPendingTurnSnapshotStatus.Missing &&
+                      !isResponseCreationValidation && IsOrdinaryCanonicalActor(item, sectionName)) &&
                     item.TryGetProperty("inventory", out var currentInventory) &&
                     ShouldBlockMortalActorInventoryResend(
                         item,

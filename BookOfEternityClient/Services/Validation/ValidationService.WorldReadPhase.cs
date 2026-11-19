@@ -37,6 +37,7 @@ public partial class ValidationService
         internal bool Reserved => WorldReserved || MetaReserved || PendingReserved || GameStateSourceReserved || CompletedLocationReserved;
         internal bool Closed;
         internal HashSet<string>? LocationIds;
+        internal OrdinaryCanonicalRead? OrdinaryCanonical;
     }
 
     /// <summary>

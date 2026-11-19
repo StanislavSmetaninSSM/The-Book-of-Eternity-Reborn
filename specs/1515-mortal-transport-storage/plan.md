@@ -4679,3 +4679,14 @@ Independent outcome review is next; no production purpose fix yet. This is causa
 consumer RED, not setup failure or another live game turn. Earlier NETSDK1004
 remains separate. Local restore disabled remote vulnerability lookup only;
 package identity/dependencies/signature settings were preserved.
+
+T032 independently accepted causal RED; early production-purpose SOURCE WIP now
+preserved before further work. Ordinary Mortal pre-send uses separate invocation
+purpose and two pending-read windows around health. Current membership is not
+completed-publication authority; strict/default/Browser semantics stay separate.
+Fresh realm DATA bounds the change to Mortal, with no generation bootstrap.
+Eleven initial pre-health controls are authored only. This is UNBUILT/UNRUN and
+not reviewed as a complete implementation. Remaining: closing dependency drift,
+owner/reentrancy/raw-strict controls and parse retained NPC DATA once per scoped
+invocation rather than per actor. New controls have no category owner yet; add it
+before build/execution. Stable genuine consumer regression is unchanged.

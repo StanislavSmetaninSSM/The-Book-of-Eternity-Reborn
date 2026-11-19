@@ -74,7 +74,8 @@ public partial class ValidationService
     /// </returns>
     private async Task<List<ValidationIssue>> RunPendingSnapshotValidationCoreAsync(
         Func<Task<List<ValidationIssue>>> validate, Func<FileSystemManager.PendingSnapshotValidationReadScope> beginRead,
-        WorldValidationInvocation? existingAdmission = null, CompletedLocationComparison? completedLocation = null)
+        WorldValidationInvocation? existingAdmission = null, CompletedLocationComparison? completedLocation = null,
+        bool ordinaryPreSend = false, bool ordinaryCanonical = false)
     {
         ArgumentNullException.ThrowIfNull(validate);
         _pendingSnapshotInvocation.Value?.RequireCurrent();
@@ -108,6 +109,14 @@ public partial class ValidationService
             await invocation.Physical.OpenAsync();
             invocation.Evidence = CapturePendingSnapshotEvidence(invocation.Physical);
             invocation.Active = true;
+            OrdinaryCanonicalRead? idleRead = null;
+            if (ordinaryPreSend)
+            {
+                if (invocation.Evidence.CreateLookup().Status != ValidatedPendingTurnSnapshotStatus.Missing)
+                    throw new InvalidDataException("Ordinary pre-send requires a missing original.");
+                idleRead = CaptureOrdinaryCanonicalRead(invocation.Physical, ordinaryCanonical);
+                if (ordinaryCanonical) admitted.OrdinaryCanonical = idleRead;
+            }
             invocation.RequireCurrent();
             if (completedLocation is not null)
             {
@@ -116,6 +125,8 @@ public partial class ValidationService
             }
             issues = await validate();
             await CompareCompletedTreatmentItemsAsync(invocation, issues);
+            if (idleRead is not null)
+                idleRead.RequireSame(CaptureOrdinaryCanonicalRead(invocation.Physical, ordinaryCanonical));
             invocation.RequireCurrent();
             invocation.Evidence.RequireSame(CapturePendingSnapshotEvidence(invocation.Physical));
             if (completedLocation is not null)
@@ -128,6 +139,7 @@ public partial class ValidationService
             invocation.Closed = true;
             invocation.Active = false;
             admitted.LocationIds = null;
+            admitted.OrdinaryCanonical = null;
             try { if (invocation.Physical != null) await invocation.Physical.DisposeAsync(); }
             catch (Exception close)
             {

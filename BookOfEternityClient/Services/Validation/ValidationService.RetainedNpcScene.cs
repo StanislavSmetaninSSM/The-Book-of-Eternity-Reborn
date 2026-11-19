@@ -11,6 +11,8 @@ public partial class ValidationService
     private IReadOnlySet<string>? ReadIdleInspectionHistoricalLocations(
         MortalActorMaterializationPreTurnAuthority original, bool isResponseCreationValidation)
     {
+        if (!isResponseCreationValidation && original.Status == ValidatedPendingTurnSnapshotStatus.Missing &&
+            ReadOrdinaryCanonicalLocationIds() is { } canonical) return canonical;
         if (isResponseCreationValidation ||
             _activeGameStateValidationSelection.Value?.IsReadOnlyInspection != true ||
             original.Status != ValidatedPendingTurnSnapshotStatus.Missing)

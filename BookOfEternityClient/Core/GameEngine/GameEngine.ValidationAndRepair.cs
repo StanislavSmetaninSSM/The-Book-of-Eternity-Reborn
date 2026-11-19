@@ -43,7 +43,18 @@ public partial class GameEngine
 {
     /// <summary>Runs the ordinary console pre-send consumer without issuing a request or beginning another turn.</summary>
     internal Task<bool> ValidateBeforeOrdinaryPlayerTurnAsync()
-        => ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода");
+    {
+        if (!RealmSemantics.IsMortalRealm(_stateManager.CurrentState.CurrentRealm))
+            return ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода");
+        return SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,
+            () => ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода", ordinaryPreSend: true),
+            beforeCurrentGeneration: lease =>
+            {
+                if (_fs.ReadExistingSessionGeneration(lease) is null)
+                    throw new InvalidDataException("Ordinary pre-send requires an initialized generation.");
+                return Task.CompletedTask;
+            });
+    }
 
     private const string WoundNarrativeOutputPath =
         "output/narrative_response.json";
@@ -268,7 +279,8 @@ public partial class GameEngine
             treatmentResourcePublicationTransaction = null,
         ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
             guardianMusingsForRepair = null,
-        ValidationService.CompletedLocationComparison? completedLocation = null)
+        ValidationService.CompletedLocationComparison? completedLocation = null,
+        bool ordinaryPreSend = false)
     {
         using var stateTiming = _fs.MeasureOperation("PlayerTurn.ValidateCurrentState.Total");
         var repairAttempt = 0;
@@ -283,6 +295,7 @@ public partial class GameEngine
 
         while (true)
         {
+            if (ordinaryPreSend) await _validator.RequireOrdinaryPreSendIdleAsync();
             using (_fs.MeasureOperation("PlayerTurn.ValidateCurrentState.SystemHealth"))
                 await EnsureClientOwnedSystemFilesHealthyAsync();
             // Install in this flow after the fresh read-only lease has closed.
@@ -300,7 +313,9 @@ public partial class GameEngine
                 using var rawStateTiming = _fs.MeasureOperation("PlayerTurn.ValidateCurrentState.GameState");
                 try
                 {
-                    issues = completedLocation is not null && !_fs.HasBrowserOriginalOperation
+                    issues = ordinaryPreSend
+                        ? await _validator.ValidateOrdinaryPreSendGameStateAsync()
+                        : completedLocation is not null && !_fs.HasBrowserOriginalOperation
                         ? await _validator.ValidateCompletedLocationStateAsync(completedLocation, GameStateValidationSelection.All)
                         : source == PostAcceptedMaterializedStateValidationSource && !_fs.HasBrowserOriginalOperation
                         ? await _validator.ValidatePostMaterializedGameStateAsync()
