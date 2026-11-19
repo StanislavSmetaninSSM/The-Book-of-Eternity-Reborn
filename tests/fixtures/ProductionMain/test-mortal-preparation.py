@@ -139,8 +139,19 @@ class PreparationTests(unittest.TestCase):
         (copied/'input.cs').unlink()
         with self.assertRaises(ValueError):prep.copied_source_join(self.source,copied)
 
+    def test_missing_malformed_or_lost_guardian_never_proves_settlement(self):
+        valid={'echild':True,'driverExitCode':0,'emergencySignals':0,'failures':0,'reaped':1,'deadline':False}
+        self.assertEqual(prep.guardian_report_result(0,valid),(True,True))
+        for report in (None,{},dict(valid,reaped=True),dict(valid,echild=False),dict(valid,extra=1)):
+            with self.subTest(report=report):self.assertEqual(prep.guardian_report_result(0,report),(False,False))
+        self.assertEqual(prep.guardian_report_result(98,valid),(False,False))
+    def test_settled_deadline_or_emergency_is_never_stage_success(self):
+        valid={'echild':True,'driverExitCode':0,'emergencySignals':0,'failures':0,'reaped':1,'deadline':False}
+        for change in ({'deadline':True},{'emergencySignals':1},{'driverExitCode':7}):
+            with self.subTest(change=change):self.assertEqual(prep.guardian_report_result(0,dict(valid,**change)),(True,False))
+
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(PreparationTests)
-    if suite.countTestCases()!=17:raise SystemExit('Expected exactly seventeen preparation DATA methods')
+    if suite.countTestCases()!=19:raise SystemExit('Expected exactly nineteen preparation DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==17 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==19 and result.wasSuccessful() and not result.skipped else 1)

@@ -2,8 +2,38 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-live-preparation-process",
+      "responsibility": "#1515 T028 four actual inert child/guardian controls: normal, nonzero, timeout and adopted new-session survivor, with retained logs and ECHILD.",
+      "excludes": "No compiler, publish, export, game or real preparation. Requires BOE_PREPARATION_GUARDIAN_MANIFEST independently pinned bootstrap and external BOE_TEST_DIAGNOSTIC_ROOT.",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/prepare-mortal-live.py",
+        "tests/fixtures/ProductionMain/test-mortal-preparation-process.py"
+      ],
+      "related": [
+        {
+          "id": "mortal-live-preparation-data",
+          "when": "Changing preparation stage admission or settlement."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalPreparationTests.PrepareOnlyOwnedProcessContracts"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-live-preparation-data",
-      "responsibility": "#1515 T028 seventeen prepare-only input/inventory/stage-failure/socket DATA contracts.",
+      "responsibility": "#1515 T028 nineteen prepare-only input/inventory/stage-failure/socket DATA contracts.",
       "excludes": "No real build, native execution, publication, seed export, prepared-world qualification or live launch.",
       "changeHints": [
         "tests/fixtures/ProductionMain/prepare-mortal-live.py",

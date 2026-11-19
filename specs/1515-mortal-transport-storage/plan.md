@@ -3915,3 +3915,37 @@ a parallel Python process-tree owner or treat process-group absence as proof.
 Actual small normal/timeout/escaped-survivor controls remain required before real
 preparation. This checkpoint is incomplete and must not be used to prepare a
 world; no build, test or native run has occurred.
+
+T028 guardian correction source-ready, 2026-11-19 (UNRUN). Focused independent
+design approved the separately prebuilt/pinned guardian bootstrap input. The
+unsafe numeric PID/process-group signalling path has been removed. All external
+stages now invoke the existing host-guardian through absolute executable argv;
+its existing --live-turn switch supplies a 300-second ceiling for the explicit
+180-second preparation stage budget only, not a game execution. Success requires
+guardian exit0 and the exact fresh report: echild=true, driverExitCode=0,
+emergencySignals=0, failures=0, deadline=false. Missing/malformed reports, guardian
+loss and outer timeout are UNKNOWN, never readiness, with no signal fallback.
+MSBuild node reuse/shared compilation and persistent CLI MSBuild server are
+explicitly disabled. File sinks and final ECHILD prove owned writer settlement;
+failures retain actual logs, stage outcome and terminal diagnostics.
+
+The owning-build input now includes `guardianTool` with absolute `binaryPath`,
+`provenancePath`, `compilerPath` and lowercase `binarySHA256`, `sourceSHA256`,
+`provenanceSHA256`, `compilerSHA256`. Verify these before any preparation stage
+against `tests/fixtures/LinuxHost/host-guardian.c`, the existing native builder's
+host-guardian asset/provenance row, actual compiler bytes/version and executable
+mode. The separately supervised/bootstrap build is not claimed to supervise
+itself. Its cost is explicit and no speedup is claimed. Record this descriptor
+as guardianBootstrap in the final preparation DATA, with checkoutHead separately
+from publishedCheckpoint and exact source hashes.
+
+Current selection: `mortal-live-preparation-data` owns one wrapper / 19 methods;
+`mortal-live-preparation-process` owns one wrapper / four actual inert Python
+process controls (normal logs, nonzero, deadline, adopted new-session survivor).
+The latter requires BOE_PREPARATION_GUARDIAN_MANIFEST naming the descriptor JSON
+and external BOE_TEST_DIAGNOSTIC_ROOT. It does not build its own guardian or run a
+compiler/exporter/game. Source parse and diff checks only are permitted at this
+checkpoint; all 23 methods and real preparation remain UNRUN. Focused independent
+source review and remote preservation must precede execution. Published copy
+joins continue to require exact producer bytes; unexpected publish-only files
+fail for investigation, not an invented allowance. No gameplay/world changes.

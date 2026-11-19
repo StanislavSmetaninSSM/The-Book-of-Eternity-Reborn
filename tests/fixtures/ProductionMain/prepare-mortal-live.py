@@ -5,7 +5,6 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import shutil
-import signal
 import stat
 import subprocess
 import time
@@ -82,35 +81,73 @@ def prepare_stages(run_stage):
     return {'prepared':False,'failedStage':None} # Final real-file verifier alone issues the manifest.
 
 
-def run_owned(argv, cwd, log_root, stage, seconds=180):
-    """Run one new process group with retained file sinks and bounded owned settlement.
+def guardian_tool(repo, descriptor):
+    """Verify separately bootstrapped guardian bytes/source/compiler provenance.
 
-No pipes can deadlock. Completion requires the original child reaped AND its
-owned process group absent; surviving writers/descendants are a failed stage.
+Bootstrap is an explicit input, not work claimed to have supervised itself.
+No PID, generation or authority is imported from an earlier process.
 """
-    log_root=Path(log_root);start=time.monotonic();proc=None;settled=False;code=None
+    binary=Path(descriptor['binaryPath']);provenance_path=Path(descriptor['provenancePath'])
+    for path in (binary,provenance_path):
+        if not path.is_absolute():raise ValueError('Guardian tool path must be absolute')
+        safe_member(path.parent,path.name)
+        if not path.is_file() or path.stat().st_mode & 0o022:raise ValueError('Unsafe guardian tool')
+    if not os.access(binary,os.X_OK) or digest(binary)!=descriptor['binarySHA256']:raise ValueError('Guardian binary pin')
+    if digest(provenance_path)!=descriptor['provenanceSHA256']:raise ValueError('Guardian provenance pin')
+    provenance=strict_settings(provenance_path.read_bytes())
+    source='tests/fixtures/LinuxHost/host-guardian.c'
+    if digest(safe_member(repo,source))!=descriptor['sourceSHA256']:raise ValueError('Guardian source pin')
+    assets=[a for a in provenance['assets'] if a.get('binary')=='host-guardian']
+    if len(assets)!=1 or assets[0].get('source')!=source or assets[0].get('sourceSha256')!=descriptor['sourceSHA256'] or assets[0].get('binarySha256')!=descriptor['binarySHA256']:
+        raise ValueError('Guardian provenance asset')
+    compiler=Path(descriptor['compilerPath']).resolve(strict=True)
+    if str(compiler)!=str(Path(provenance['compiler']).resolve(strict=True)) or digest(compiler)!=descriptor['compilerSHA256']:
+        raise ValueError('Guardian compiler provenance')
+    if not provenance.get('flags') or subprocess.check_output([str(compiler),'--version'],text=True,timeout=10).strip()!=provenance['compilerVersion']:
+        raise ValueError('Guardian compiler version/flags')
+    return binary
+
+
+def guardian_report_result(guardian_exit, report):
+    """Interpret only the existing exact guardian report; malformed DATA is unknown."""
+    if not isinstance(report,dict):return False,False
+    counts=('driverExitCode','emergencySignals','failures','reaped')
+    well_formed=(set(report)=={'echild','driverExitCode','emergencySignals','reaped','failures','deadline'} and
+                 all(type(report.get(k)) is int for k in counts) and
+                 type(report.get('deadline')) is bool and report.get('echild') is True and
+                 report['reaped']>=1 and report['emergencySignals']>=0 and report['failures']>=0)
+    settled=well_formed and report['failures']==0 and type(guardian_exit) is int and guardian_exit==0
+    success=settled and report['driverExitCode']==0 and report['emergencySignals']==0 and report['deadline'] is False
+    return settled,success
+
+
+def run_owned(argv, cwd, log_root, stage, guardian, seconds=180):
+    """Use the existing child-pidfd guardian, never numeric PID/group signals.
+
+Its longer-budget switch selects only the existing deadline cap, not a game
+launch. File sinks plus guardian ECHILD prove writer closure; an outer timeout
+or missing/malformed report leaves settlement UNKNOWN and issues no readiness.
+"""
+    log_root=Path(log_root);start=time.monotonic();report_path=log_root/(stage+'.guardian.json')
+    if not 0.05<=seconds<=300 or report_path.exists():raise ValueError('Guardian deadline/report path')
+    if not argv or not Path(argv[0]).is_absolute() or not Path(guardian).is_absolute():raise ValueError('Absolute executable required')
+    result={'exitCode':-1,'settled':False,'stdoutEof':False,'stderrEof':False,'argv':argv,'guardianReport':str(report_path)}
+    env=os.environ.copy();env.update(MSBUILDDISABLENODEREUSE='1',DOTNET_CLI_USE_MSBUILD_SERVER='0')
     with (log_root/(stage+'.stdout')).open('xb') as out,(log_root/(stage+'.stderr')).open('xb') as err:
-        proc=subprocess.Popen(argv,cwd=cwd,stdin=subprocess.DEVNULL,stdout=out,stderr=err,start_new_session=True)
         try:
-            code=proc.wait(timeout=seconds)
-            try:os.killpg(proc.pid,0)
-            except ProcessLookupError:settled=True
-        except subprocess.TimeoutExpired:
-            code=-1
-        finally:
-            if not settled:
-                try:os.killpg(proc.pid,signal.SIGKILL)
-                except ProcessLookupError:pass
-                proc.wait(timeout=10)
-                deadline=time.monotonic()+10
-                while time.monotonic()<deadline:
-                    try:os.killpg(proc.pid,0)
-                    except ProcessLookupError:settled=True;break
-                    time.sleep(.02)
-                # Cleanup cannot turn a timed-out/leaking stage into success.
-                code=-1
-    return {'exitCode':code,'settled':settled,'stdoutEof':settled,'stderrEof':settled,
-            'elapsedSeconds':time.monotonic()-start,'argv':argv}
+            proc=subprocess.Popen([str(guardian),'--live-turn',str(report_path),str(int(seconds*1000)),*argv],
+                cwd=cwd,env=env,stdin=subprocess.DEVNULL,stdout=out,stderr=err)
+            result['guardianExitCode']=proc.wait(timeout=seconds+15)
+            report=strict_settings(report_path.read_bytes());result['report']=report
+            settled,success=guardian_report_result(result['guardianExitCode'],report)
+            result.update(exitCode=0 if success else -1,settled=settled,stdoutEof=settled,stderrEof=settled)
+        except Exception as error:
+            result.update(exceptionType=type(error).__name__,exception=str(error),settlement='UNKNOWN')
+            # No signal fallback. Retain the report/logs and let the actual guardian
+            # continue its own ownership work if its observation deadline expired.
+    result['elapsedSeconds']=time.monotonic()-start
+    write_diagnostic(log_root/(stage+'.outcome.json'),result)
+    return result
 
 
 def native_join(repo, native, commit):
@@ -179,6 +216,7 @@ def prepare(repo, destination, build_manifest):
     published=build.get('publishedCheckpoint','')
     if len(published)!=40 or any(c not in '0123456789abcdef' for c in published):raise ValueError('Published checkpoint required separately')
     dirty=subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True,timeout=10).splitlines()
+    guardian=guardian_tool(repo,build['guardianTool'])
     source=build['sourcePins'];outputs=build['outputPins']
     tracked=subprocess.check_output(['git','ls-files','-z'],cwd=repo,timeout=10).decode().split('\0')
     tracked={name for name in tracked if name and (repo/name).is_file()}
@@ -204,12 +242,14 @@ def prepare(repo, destination, build_manifest):
                   'publish-bridge':('BookOfEternityGMBridge',package/'BookOfEternityGMBridge'),
                   'publish-helper':('BookOfEternityClient.TestSupport',helper)}
         outcomes={};verified={}
+        executables={name:shutil.which(name) for name in ('dotnet','pwsh')}
+        if not all(executables.values()):raise ValueError('Required executable missing')
         def stage(name):
             if name=='native':argv=['pwsh','-NoProfile','-File',str(repo/'scripts/build-linux-supervisor.ps1'),'-OutputDirectory',str(native),'-IncludeHostGuardian']
             elif name in projects:
                 project,target=projects[name]
                 argv=['dotnet','publish',str(repo/project/(project+'.csproj')),'-c','Debug','--no-build','--no-restore',
-                      '-p:BoeNativePackageDirectory='+str(native),'-p:BoeRequireNativePackage=true','-o',str(target)]
+                      '-p:BoeNativePackageDirectory='+str(native),'-p:BoeRequireNativePackage=true','-nodeReuse:false','-p:UseSharedCompilation=false','-o',str(target)]
             elif name=='export':argv=['dotnet',str(helper/'BookOfEternityClient.TestSupport.dll'),'mortal-live-seed-export',str(dest/'play'),str(repo/'FileSystemExample/game_session'),str(seed_path)]
             else:
                 session=dest/'play/game_session'
@@ -239,30 +279,36 @@ def prepare(repo, destination, build_manifest):
                     if (dest/'play/.boe_runtime/gm-runs').exists() or (phase/'queue').exists():raise ValueError('Unexpected owner/queue')
                     verified.update(native=native_join(repo,native,commit),runtime=inventory(package),helper=inventory(helper),relay=inventory(phase/'relay'),seed=inventory(session))
                 return {'exitCode':0,'settled':True,'stdoutEof':True,'stderrEof':True}
-            result=run_owned(argv,repo,logs,name);outcomes[name]=result
+            argv[0]=executables[argv[0]]
+            result=run_owned(argv,repo,logs,name,guardian);outcomes[name]=result
             if name=='native' and result['exitCode']==0:native_join(repo,native,commit)
             return result
         def observed_stage(name):
             try:
                 result=stage(name)
                 outcomes[name]=result
-                write_diagnostic(logs/(name+'.outcome.json'),result)
+                if not (logs/(name+'.outcome.json')).exists():write_diagnostic(logs/(name+'.outcome.json'),result)
                 return result
             except BaseException as error:
                 failure={'stage':name,'exceptionType':type(error).__name__,'exception':str(error),'prepared':False}
-                write_diagnostic(logs/(name+'.outcome.json'),failure)
+                try:
+                    path=logs/(name+'.exception.json')
+                    write_diagnostic(path,failure)
+                except Exception as diagnostic_error:error.add_note('Diagnostic write failed: '+str(diagnostic_error))
                 raise
         result=prepare_stages(observed_stage)
         if result['failedStage'] is not None:raise ValueError('Preparation failed: '+result['failedStage'])
         manifest={'schemaVersion':1,'kind':'mortal-live-preparation','prepared':True,'checkoutHead':commit,'publishedCheckpoint':published,'checkoutChanges':dirty,
-                  'configuration':'Debug','framework':'net8.0','toolVersions':build['toolVersions'],
+                  'configuration':'Debug','framework':'net8.0','toolVersions':build['toolVersions'],'guardianBootstrap':build['guardianTool'],
                   'owningBuildManifest':str(build_path),'owningBuildManifestSHA256':hashlib.sha256(build_raw).hexdigest(),
                   'sourcePins':source,'outputPins':outputs,'inventories':verified,'stages':outcomes,
                   'seedManifestSHA256':digest(seed_path),'packageManifestSHA256':digest(phase/'relay-phase-package.json')}
         with (dest/'preparation.json').open('x') as stream:json.dump(manifest,stream,indent=2)
         return manifest
     except BaseException as error:
-        if owned:write_diagnostic(dest/'preparation-failed.json',{'prepared':False,'exceptionType':type(error).__name__,'exception':str(error)})
+        if owned:
+            try:write_diagnostic(dest/'preparation-failed.json',{'prepared':False,'exceptionType':type(error).__name__,'exception':str(error)})
+            except Exception as diagnostic_error:error.add_note('Terminal diagnostic write failed: '+str(diagnostic_error))
         raise
     finally:os.umask(old_umask)
 
