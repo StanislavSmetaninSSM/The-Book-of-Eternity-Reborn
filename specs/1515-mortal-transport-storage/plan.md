@@ -4221,3 +4221,37 @@ The upcoming attempt must use its own request, GM authoring and content review;
 no candidate/world/authority is copied from mm17. mm16 remains untouched UNKNOWN.
 Only this checkpoint prose changes after the reviewed source/data pins; runtime,
 driver and gameplay sources remain frozen. No build or passed suite was repeated.
+
+T016 mm18 p01 actual GM-relay birth accepted, 2026-11-19.
+One permitted original launch and one frozen-precheck publication completed.
+Full independent content review accepted all nine writes / 164 classified objects
+at candidate SHA256 839da7d2e9d5320ef40b9d6a431fc6b83bfdfb33d5574730f335dfc1ad35b66d.
+Fresh current request/witnesses and original owner passed the reviewed one-shot
+submission gate; publication took 0.098 seconds with 337.853 seconds reserved.
+The real consumer exited0 and drained I/O; the real client displayed the authored
+excursion and returned to its player prompt. This is not a canned relay response.
+
+Original launch finished exit0: Success=true, AcceptedGameTurns=1,
+GenuineActionsSent=1, AcceptedTurn42, elapsed344.488 seconds. Probe SHA256:
+b933e491edaec9a9638cf43b67edcbdfc6458411d313e78a57564ceadba5a889.
+The client allocated canonical location loc_71ccb605f66547b78ce216e485693e47,
+vehicle vehicle_e8ea189b90d74b21bbfb9aedb619e54e and chalk item
+itm_a9a6fbf4f09d4a4c88a8f741ea5eb5c1. The accepted Council storage
+storage_council_materials remains restricted, authorizedUsers empty and
+hasFullAccess=false; no goods were taken or moved. The accepted item has its
+client-issued birth receipt for turn42. Living-world typed receipt applicability
+is separately NotRequired: clock480->500, no due cycle, history absent before/after;
+this does not mean materialization receipts were omitted.
+
+Executor evidence and coordinator readback agree on the probe hash, accepted count,
+original exit0 and guardian ECHILD/driver0/reaped1/emergency0/failures0/deadlinefalse.
+All106 final world pins and config hash match. Exact original shutdown ACK and
+Stopped/OwnedScopeEmpty, three terminal EOF/termios, RPC and daemon settlement are
+reported; full independent outcome/predecessor review is underway.
+One daemon error is explicitly retained: main_loop at03:53:02.9841553Z refused a
+participating canonical mutation/original close in WriteLinuxGmDaemonStatus,
+following shutdown ACK updated03:53:02.9801909Z. Final daemon settlement is true.
+This timestamp relationship is evidence, not a claim that the historical error
+is fixed or that the entire run was error-free. Determine its continuation impact
+before p02. No game/relay source changed and no fixed budgets were increased.
+T016 remains open for the actual denied/authorized and move/save/load journey.
