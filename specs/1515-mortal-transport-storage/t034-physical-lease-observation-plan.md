@@ -1191,3 +1191,16 @@ sequences after pinned Stop UTC, with forged-null/pre-shutdown/incomplete/cross-
 pin negatives. Accepted runtime/evidence/package stays byte-identical; no blanket
 null acceptance or OS-lineage claim. Original P01 must only be reread, never run
 again. Ordinary43 remains deferred until this bounded evidence review closes.
+
+### Offline local shape GREEN; mm28 P01 predecessor accepted
+Independent `27cf5d97` verifies three pure PASS and actual same frozen P01
+reclassification; original `e6d57552` remains byte-identical (8641 artifacts).
+Exact7,795-file trace inventory:7,653 physical/2,551 complete triples plus141
+healthy markers, including two explicitly local post-shutdown helper triplets.
+All local groups are null projection with real successful original Stop boundary,
+correct physical acquisition/finalization order and no OS-lineage claim. Sealed
+all-file union has no dropped/ignored entry; default runtime classifier remains
+strict and unchanged. Actual P01 accepted42 + normal one shutdown is now a clean
+predecessor. No runtime repeat, no physical world repair. Next ordinary43 profile
+is separately bound; fresh GM decision is not preselected, Save/cleanup remain
+unproved for that next live phase.

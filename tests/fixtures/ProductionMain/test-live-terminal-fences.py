@@ -560,6 +560,7 @@ class LocalTraceFreezer(unittest.TestCase):
         outcome=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/mm28-preparation/p01-outcome.json')
         self.assertEqual(hashlib.sha256(outcome.read_bytes()).hexdigest(),'e6d57552b4f862afb753892d94bf1063b1b4437a34b444c2aebfd52745b70365')
         pins=json.loads(outcome.read_text())['Files'];sources=[*sorted((actual/'physical-trace').iterdir()),*(actual/n for n in ('launch-profile.json','probe-result.json','rpc-journal.json','launch.exit'))]
+        self.assertEqual({str(p) for p in (actual/'physical-trace').iterdir()},{p for p in pins if p.startswith(str(actual/'physical-trace')+'/')})
         for path in sources:self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),pins[str(path)])
         wrapper=pathlib.Path(__file__).resolve().parents[3]/'specs/1515-mortal-transport-storage/manual-mm21/freeze-diagnostic-trace.py'
         ns={'__file__':str(wrapper),'__name__':'local_trace_data'};exec(compile(wrapper.read_text(),str(wrapper),'exec'),ns)
@@ -578,6 +579,8 @@ class LocalTraceFreezer(unittest.TestCase):
             self.assertEqual(summary['LocalPostShutdownHelpers'],2)
             self.assertEqual(summary['HealthyMarkers'],141);self.assertEqual(summary['PhysicalEvents'],7653)
             self.assertFalse(summary['ExhaustiveCoverage'])
+            self.assertEqual(summary['Files'],{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in trace.iterdir()})
+            self.assertEqual(len(summary['Files']),7653+141+1)
             marker=trace/'895-marker-2-helper-before-ready.json';baseline=marker.read_bytes()
             for mode in ('pre-shutdown','incomplete','forged-null','cross-pin'):
                 with self.subTest(mode=mode):
