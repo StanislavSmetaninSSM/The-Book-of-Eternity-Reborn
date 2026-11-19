@@ -146,8 +146,11 @@ def returned_save_boundary(raw, cut, menu):
     boundary=cut+match.end()
     # Unlike the generic menu grammar, Save return permits NO plain prefix.
     # Real Spectre may hide the cursor and decorate the exact first header line.
-    first=menu['header'].split('\n')[0].encode()
-    entry=rb'(?:\x1b\[\?25l)?'+_EDGE+re.escape(first)+_EDGE+rb' *\r?\n'
+    first=menu['header'].split('\n')[0]
+    # Actual Explorer header decorates title, weight and help independently.
+    # Preserve the complete exact header at offset zero; no title-search fallback.
+    parts=first.split('  ')
+    entry=rb'(?:\x1b\[\?25l)?'+b'  '.join(_EDGE+re.escape(part.encode())+_EDGE for part in parts)+rb' *\r?\n'
     if re.match(entry,raw[boundary:]) is None:return None
     frames=routes.selected_frames(raw,boundary,menu)
     return boundary if frames else None

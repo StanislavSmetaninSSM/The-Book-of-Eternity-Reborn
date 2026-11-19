@@ -128,6 +128,14 @@ class FullRouteInputData(unittest.TestCase):
         menu=routes.fixed_menu('Inventory',['chalk','Back'],20)
         inventory=b'Inventory\n> chalk\n  Back'
         self.assertEqual(returned_save_boundary(success+inventory,0,menu),len(success))
+        header='🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)'
+        real_menu=routes.fixed_menu(header,['chalk','Back'],20)
+        title,weight,help_text=header.split('  ')
+        real_entry=(b'\x1b[?25l\x1b[1m'+title.encode()+b'\x1b[0m  \x1b[2m'+weight.encode()+b'\x1b[0m  \x1b[2m'+help_text.encode()+b'\x1b[0m\r\n> chalk\r\n  Back')
+        self.assertEqual(returned_save_boundary(success+real_entry,0,real_menu),len(success))
+        for extra in (title.encode()+b'\r\nwarning\r\n',b'unknown\r\n','Требуется служебная проверка хранилища сохранений.\r\n'.encode(),b'\x1b[1D'):
+            self.assertIsNone(returned_save_boundary(success+extra+real_entry,0,real_menu))
+
         warning='Требуется служебная проверка хранилища сохранений.'
         for text in (warning,warning[:8]+'\x1b[0m'+warning[8:],warning[:8]+'\x1b[1D'+warning[8:],'unknown outcome'):
             raw=success+text.encode()+b'\r\n'
