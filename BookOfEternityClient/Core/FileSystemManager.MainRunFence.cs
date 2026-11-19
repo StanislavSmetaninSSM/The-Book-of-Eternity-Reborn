@@ -97,7 +97,8 @@ public partial class FileSystemManager
         {
             get
             {
-                try { return _access?.Remote?.ObservedOriginalGrant ?? _access?.Original?.Pin?.Reply; }
+                // Local OperationPin has no protocol IDs. Absence is truthful; never synthesize or look up a tuple.
+                try { return _access?.Remote?.ObservedOriginalGrant; }
                 catch { return null; } // Observability absence cannot change admission.
             }
         }

@@ -5207,3 +5207,5 @@ Independent partialRED review confirmed the two test-seam failures. Narrow SOURC
 
 ### T034/#1589 physical observation corrected RED and implementation WIP
 Corrected raw-holder exact8 independently accepted:6 missing-observer FAIL/2 absent-or-malformed nonce PASS,0setupfail; Integration56.53s/134warnings/0errors, official22.7716963s owned cleanup complete. Source32064/8output joins and unchanged production verified. Previous partialRED remains4causal+2fixture failures, not retroactively accepted. Minimal physical transition observer plus same-category typed DATA controls now SOURCE WIP, UNRUN; no policy/authority/retry change. Per-lease immutable context reuse only, fresh transition timestamps/nonce, synchronous stderr cost unmeasured. mm23 remains frozen/nonpredecessor/holderUNKNOWN; no live authorization.
+
+Physical-observer GREEN preparation retained two build-only setup errors (7.15s missing alias;32.92s wrong local pin member), no tests. Exact type reassessment keeps only held remote grant projection; local pin has no protocol tuple and emits null. No lock/owner change or historical holder conclusion; next fresh build remains source-gated.
