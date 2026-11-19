@@ -23,19 +23,29 @@ public sealed partial class GameEngineTurnLifecycleTests
         var contentions = 0;
         var opened = 0;
         var inspections = 0;
-        FileStream? held = null;
+        var physicalStart = 0;
+        Task? holderTask = null;
+        var holderAcquired = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseHolder = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var originalError = Console.Error;
+        var oldNonce = Environment.GetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE");
+        var nonce = Guid.NewGuid().ToString("N");
+        using var physicalOutput = new StringWriter();
         var integrityFailure = new InvalidDataException("terminal inspection post-open integrity sentinel");
         var files = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             {
-                CanonicalWriteLockContendedAsync = () =>
+                CanonicalWriteLockContendedAsync = async () =>
                 {
                     if (armed)
                     {
                         Interlocked.Increment(ref contentions);
-                        if (mode == "released") Interlocked.Exchange(ref held, null)?.Dispose();
+                        if (mode == "released")
+                        {
+                            releaseHolder.TrySetResult();
+                            await holderTask!;
+                        }
                     }
-                    return Task.CompletedTask;
                 },
                 AfterCanonicalWriteLockOpenedAsync = () =>
                 {
@@ -54,20 +64,31 @@ public sealed partial class GameEngineTurnLifecycleTests
             settings.GmTimeoutSeconds = 900;
         }, new GameEngineSessionFinalizationHooks
         {
-            AtCheckpointAsync = checkpoint =>
+            AtCheckpointAsync = async checkpoint =>
             {
                 if (checkpoint == SessionFinalizationCheckpoint.TerminalWaitStarted)
                 {
+                    physicalStart = physicalOutput.GetStringBuilder().Length;
                     // Timeout/status inspection has finished. The next real polling lease,
                     // not a preparation write or diagnostic read, meets this independent handle.
                     if (mode != "post-open-integrity")
-                        held = new FileStream(files.CanonicalWriteLockPath, FileMode.Open,
-                            FileAccess.ReadWrite, FileShare.None);
+                    {
+                        using (ExecutionContext.SuppressFlow())
+                            holderTask = Task.Run(async () =>
+                            {
+                                var holderFiles = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+                                await using var actualHolder = await holderFiles.AcquireCanonicalWriteLeaseAsync();
+                                holderAcquired.TrySetResult();
+                                await releaseHolder.Task;
+                            });
+                        var first = await Task.WhenAny(holderAcquired.Task, holderTask).WaitAsync(TimeSpan.FromSeconds(5));
+                        if (first == holderTask) await holderTask;
+                        await holderAcquired.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                    }
                     armed = true;
                 }
                 if (checkpoint == SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired)
                     Interlocked.Increment(ref inspections);
-                return Task.CompletedTask;
             }
         }, files);
         var paths = new[] { "input/turn_request.json", "ready/turn_complete.json", "game_state/world/weather.json" };
@@ -84,6 +105,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var elapsed = Stopwatch.StartNew();
         try
         {
+            Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", nonce);
+            Console.SetError(TextWriter.Synchronized(physicalOutput));
             AnsiConsole.Console = AnsiConsole.Create(new AnsiConsoleSettings
             {
                 Ansi = AnsiSupport.No, Interactive = InteractionSupport.No,
@@ -96,7 +119,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         finally
         {
             armed = false;
-            try { Interlocked.Exchange(ref held, null)?.Dispose(); }
+            releaseHolder.TrySetResult();
+            try { if (holderTask != null) await holderTask.WaitAsync(TimeSpan.FromSeconds(5)); }
             catch (Exception error) { cleanupFailure = error; }
             // A failed assertion/observation does not abandon the original waiter or its tasks.
             // The original ready signal remains available after release; Escape is only teardown.
@@ -111,6 +135,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 }
             }
             AnsiConsole.Console = originalConsole;
+            Console.SetError(originalError);
+            Environment.SetEnvironmentVariable("BOE_MAIN_STOP_DIAGNOSTIC_NONCE", oldNonce);
         }
         var observedContentions = contentions;
         var observedOpened = opened;
@@ -156,5 +182,47 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.Equal(1, observedOpened);
             }
         }
+        var observations = ReadPhysicalLeaseEvents(physicalOutput.ToString()[physicalStart..], nonce);
+        _directGachaOutput?.WriteLine(physicalOutput.ToString());
+        Assert.NotEmpty(observations); // Initial RED: actual physical intervals are not emitted yet.
+        Assert.All(observations, row =>
+        {
+            Assert.Equal(Environment.ProcessId, row.GetProperty("ProcessId").GetInt32());
+            Assert.Equal(files.BasePath, row.GetProperty("Root").GetString());
+            Assert.Equal("SessionMutation", row.GetProperty("Purpose").GetString());
+            Assert.True(row.GetProperty("Occurrence").GetInt64() > 0);
+            Assert.Equal(JsonValueKind.Null, row.GetProperty("OriginalPin").ValueKind);
+            Assert.True(row.GetProperty("CaptureMonotonicTimestamp").GetInt64() > 0);
+            Assert.True(row.GetProperty("CapturedAtUtc").TryGetDateTimeOffset(out _));
+        });
+        var openedRows = observations.Where(x => PhysicalStage(x) == "physical-opened").ToArray();
+        var grants = observations.Where(x => PhysicalStage(x) == "lease-granted").ToArray();
+        var closes = observations.Where(x => PhysicalStage(x) == "physical-dispose-completed").ToArray();
+        Assert.Equal(mode == "released" ? 2 : 1, openedRows.Length);
+        Assert.Equal(openedRows.Length, closes.Length);
+        foreach (var openedRow in openedRows)
+        {
+            var id = openedRow.GetProperty("Occurrence").GetInt64();
+            var close = Assert.Single(closes.Where(x => x.GetProperty("Occurrence").GetInt64() == id));
+            Assert.True(close.GetProperty("CaptureMonotonicTimestamp").GetInt64() >= openedRow.GetProperty("CaptureMonotonicTimestamp").GetInt64());
+        }
+        Assert.Equal(mode == "post-open-integrity" ? 0 : mode == "released" ? 2 : 1, grants.Length);
+        if (mode == "exhausted")
+        {
+            var exhausted = Assert.Single(observations.Where(x => PhysicalStage(x) == "contention-exhausted"));
+            Assert.Equal(200, exhausted.GetProperty("Attempt").GetInt32());
+            Assert.DoesNotContain(openedRows, x => x.GetProperty("Occurrence").GetInt64() == exhausted.GetProperty("Occurrence").GetInt64());
+        }
+        if (mode == "released")
+        {
+            // Original holder really closed before the waiting original could open.
+            Assert.True(closes[0].GetProperty("CaptureMonotonicTimestamp").GetInt64() <= openedRows[1].GetProperty("CaptureMonotonicTimestamp").GetInt64());
+        }
     }
+
+    private static string? PhysicalStage(JsonElement row) => row.GetProperty("Stage").GetString();
+    private static JsonElement[] ReadPhysicalLeaseEvents(string text, string nonce) => text.Split('\n')
+        .Where(line => line.StartsWith("BOE_CANONICAL_LEASE_OBSERVATION ", StringComparison.Ordinal))
+        .Select(line => JsonDocument.Parse(line["BOE_CANONICAL_LEASE_OBSERVATION ".Length..]).RootElement.Clone())
+        .Where(row => row.GetProperty("Nonce").GetString() == nonce).ToArray();
 }

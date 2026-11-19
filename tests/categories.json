@@ -987,7 +987,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TerminalWaitDistinguishesPhysicalContentionFromPostOpenIntegrityFailure"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TerminalWaitDistinguishesPhysicalContentionFromPostOpenIntegrityFailure",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PhysicalLeaseObservationPreservesNonceAndActualDisposal"
           ]
         }
       ]
