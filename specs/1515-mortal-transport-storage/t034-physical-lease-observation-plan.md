@@ -591,3 +591,40 @@ P01 is scripted transport/materialization, not an independent GM grant or Save.
 The clean predecessor may now supply a separately reviewed ordinary-save P02
 profile: ordinary player permission request, no inventory prologue/IDs, fresh GM
 choice only after actual43, then scoped Save proof. No43/Save has run yet.
+
+### mm25 ordinary P02 failed validation; no accepted43 or Save
+
+The one ordinary player request43 ran without an inventory prologue. A separate
+GM authored a fresh, reasoned defer decision before its packet: Council consent
+was not established; access/items stayed unchanged and conversation advanced
+500→505. One five-CAS response executed successfully, but the client rejected it.
+The independent failed-outcome review distinguishes transport execution from
+acceptance: zero accepted turns, no OrdinarySaveProof, no shutdown attempt.
+Original operation exited1 after473.689s; guardian ECHILD/reaped3 with no emergency,
+failure or deadline proves physical containment, not logical owner cleanup.
+The bridge stopped under its existing stalled-validation-repair policy; no second
+response or repair was submitted. mm25 is now UNKNOWN/nonpredecessor, not reusable.
+
+Twelve errors concern the authored debug markdown's exact NPC Scope/Actor Brain
+field contract, including commentary parsed as another Relevant actor. The
+independent pre-publication review missed that machine-checked schema; semantic
+reasonableness was insufficient. A thirteenth error rejects existing-NPC inventory
+resend from UpdateNPCs. This packet never wrote npc_core: its current bytes equal
+the authenticated pre-turn original, retaining P01's historical steward carrier.
+Source inspection shows ordinary pre-send recognizes historical UpdateNPCs rows,
+whereas response inventory validation with a usable snapshot rejects a non-scene
+actor carrying a historical envelope without an unchanged-row exception. This
+is a separate bounded interpretation seam, not grounds to delete an actor or
+inventory, bypass validation, or repair the failed world.
+
+Full frozen evidence remains external (21,309 artifact hashes); current32,067
+source pins and723/eight outputs joined with the declared prior document delta.
+Historical mm19 denial remains a separate proof, not an inventory prefix here.
+No grant, transfer, Load or ordinary Save qualification is claimed.
+
+Next authorized block is test-only: exact failed/corrected authored debug bytes
+through the existing public ValidateAcceptedTurnReasoningAsync fixture, and a
+separate true-snapshot unchanged historical-carrier response regression with
+changed-inventory/fresh-resend negative controls. Reuse existing validators and
+fixtures; source review before execution and causal RED before any production
+proposal. No new live world or retry is authorized by this checkpoint.
