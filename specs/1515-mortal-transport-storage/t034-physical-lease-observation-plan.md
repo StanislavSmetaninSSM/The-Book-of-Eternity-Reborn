@@ -1177,3 +1177,17 @@ Exact launcher `09a53d5f` / profile `ff36be56`, private marker-only trace and
 original budgets. No origin/queue/game launch at this checkpoint. Distinct GM
 baseline and actual request/content/owner/reserve gates still apply before the
 single scripted P01; ordinary43 and its Save remain separate later evidence.
+
+
+### mm28 P01 clean runtime, offline local marker shape found
+Independent frozen `e6d57552` verifies all8641 artifacts: actual scripted42,
+consumer-return before one shutdown, original Stopped/OwnedScopeEmpty and normal
+terminal/RPC/guardian closure. New offline classifier rejected four null-close
+before/ready rows from two local helpers after successful shutdown; no game
+failure or rerun. Source and exact physical intervals distinguish local no-remote
+projection, not remote closure. Preserve rejected evidence unchanged.
+A single explicit offline-only regression will classify whole local helper
+sequences after pinned Stop UTC, with forged-null/pre-shutdown/incomplete/cross-
+pin negatives. Accepted runtime/evidence/package stays byte-identical; no blanket
+null acceptance or OS-lineage claim. Original P01 must only be reread, never run
+again. Ordinary43 remains deferred until this bounded evidence review closes.

@@ -554,9 +554,53 @@ class TraceFreezer(unittest.TestCase):
             with self.assertRaises(ValueError):wrapper_ns['freeze'](phase,hashlib.sha256(raw).hexdigest(),*digests[1:],pathlib.Path(td)/'wrong-phase.json')
         for name,digest in pins.items():self.assertEqual(hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest(),digest)
 
+class LocalTraceFreezer(unittest.TestCase):
+    def test_exact_post_shutdown_local_helpers_are_separate_not_remote_receipts(self):
+        actual=pathlib.Path('/workspace/shared/mm28-20261119/p01')
+        outcome=pathlib.Path('/workspace/shared/relay-alternative/mortal-t034/mm28-preparation/p01-outcome.json')
+        self.assertEqual(hashlib.sha256(outcome.read_bytes()).hexdigest(),'e6d57552b4f862afb753892d94bf1063b1b4437a34b444c2aebfd52745b70365')
+        pins=json.loads(outcome.read_text())['Files'];sources=[*sorted((actual/'physical-trace').iterdir()),*(actual/n for n in ('launch-profile.json','probe-result.json','rpc-journal.json','launch.exit'))]
+        for path in sources:self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),pins[str(path)])
+        wrapper=pathlib.Path(__file__).resolve().parents[3]/'specs/1515-mortal-transport-storage/manual-mm21/freeze-diagnostic-trace.py'
+        ns={'__file__':str(wrapper),'__name__':'local_trace_data'};exec(compile(wrapper.read_text(),str(wrapper),'exec'),ns)
+        with tempfile.TemporaryDirectory() as td:
+            phase=pathlib.Path(td)/'phase';phase.mkdir();trace=phase/'physical-trace';trace.mkdir(mode=0o700)
+            for path in sources:
+                target=trace/path.name if path.parent.name=='physical-trace' else phase/path.name
+                target.write_bytes(path.read_bytes());target.chmod(0o600)
+            profile=json.loads((phase/'launch-profile.json').read_text());profile['PhysicalTrace']['Directory']=str(trace)
+            (phase/'launch-profile.json').write_text(json.dumps(profile))
+            def invoke(name):
+                digests=[hashlib.sha256((phase/n).read_bytes()).hexdigest() for n in ('launch-profile.json','probe-result.json','rpc-journal.json')]
+                return ns['freeze'](phase,*digests,pathlib.Path(td)/name)
+            try:summary=invoke('positive.json')
+            except ValueError as failure:self.fail('actual qualified local post-shutdown shape refused: '+str(failure))
+            self.assertEqual(summary['LocalPostShutdownHelpers'],2)
+            self.assertEqual(summary['HealthyMarkers'],141);self.assertEqual(summary['PhysicalEvents'],7653)
+            self.assertFalse(summary['ExhaustiveCoverage'])
+            marker=trace/'895-marker-2-helper-before-ready.json';baseline=marker.read_bytes()
+            for mode in ('pre-shutdown','incomplete','forged-null','cross-pin'):
+                with self.subTest(mode=mode):
+                    altered=None;old=None
+                    if mode=='incomplete':marker.unlink()
+                    elif mode=='pre-shutdown':
+                        row=json.loads(baseline.split(b' ',1)[1]);row['ObservedAtUtc']='2026-11-19T21:54:00Z'
+                        marker.write_bytes(('BOE_MAIN_OPERATION_MARKER '+json.dumps(row)+'\n').encode())
+                    elif mode=='forged-null':
+                        altered=next(p for p in trace.glob('*-helper-before-ready.json') if json.loads(p.read_bytes().split(b' ',1)[1])['OriginalClose'] is not None);old=altered.read_bytes()
+                        row=json.loads(old.split(b' ',1)[1]);row['OriginalClose']=None;altered.write_bytes(('BOE_MAIN_OPERATION_MARKER '+json.dumps(row)+'\n').encode())
+                    else:
+                        pin=next(json.loads(p.read_bytes().split(b' ',1)[1])['OriginalPin'] for p in trace.glob('*-active-received.json'))
+                        altered=trace/'895-1-lease-granted.json';old=altered.read_bytes();row=json.loads(old.split(b' ',1)[1]);row['OriginalPin']=pin
+                        altered.write_bytes(('BOE_CANONICAL_LEASE_OBSERVATION '+json.dumps(row)+'\n').encode())
+                    with self.assertRaises(ValueError):invoke(mode+'.json')
+                    marker.write_bytes(baseline);marker.chmod(0o600)
+                    if altered is not None:altered.write_bytes(old)
+        for path in sources:self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),pins[str(path)])
+
 if __name__=='__main__':
-    selected=TraceFreezer if sys.argv[1:]==['trace-freezer'] else MixedTrace if sys.argv[1:]==['mixed-trace'] else OrdinarySave if sys.argv[1:]==['ordinary-save'] else Fences
-    expected=1 if selected in (MixedTrace,TraceFreezer) else 8 if selected is OrdinarySave else 11
+    selected=LocalTraceFreezer if sys.argv[1:]==['local-trace-freezer'] else TraceFreezer if sys.argv[1:]==['trace-freezer'] else MixedTrace if sys.argv[1:]==['mixed-trace'] else OrdinarySave if sys.argv[1:]==['ordinary-save'] else Fences
+    expected=1 if selected in (MixedTrace,TraceFreezer,LocalTraceFreezer) else 8 if selected is OrdinarySave else 11
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(selected);assert suite.countTestCases()==expected
     result=unittest.TextTestRunner(verbosity=2).run(suite)
     raise SystemExit(0 if result.wasSuccessful() and result.testsRun==expected and not result.skipped else 1)
