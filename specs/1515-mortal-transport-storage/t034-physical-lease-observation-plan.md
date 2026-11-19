@@ -539,3 +539,13 @@ RED is UNRUN. No broad allowlist, overlay, rebuild, old-world copy, new world or
 export is part of this source checkpoint. Final preparation must independently
 join the updated thirteen changed paths, two existing additions, exact producer
 rows/modes, tools/native/terminal inputs and fresh absent destination.
+
+Independent pure1 RED accepted the exact first missing-path refusal (0.004 s,
+zero errors, unchanged 32,067 sources/eight outputs). The only preparation
+contract change now adds those two reviewed path literals. GREEN is UNRUN pending
+focused review. The original semantic design's locked-row/Back requirement is
+historical: new ordinary43 has no inventory prologue or denial-prefix claim.
+The mm19 denial remains separate evidence, not a combined scenario. P01 remains
+scripted; a genuine ordinary43 response requires a fresh independent GM decision
+and rationale after the actual request. No semantic template was changed to force
+a grant; grant/denial and actual Save must be reported separately and honestly.

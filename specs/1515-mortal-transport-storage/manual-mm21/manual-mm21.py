@@ -5,6 +5,7 @@ def require_current_producer_contract(b,src):
   'tests/fixtures/SelectionPrompt/test_fullroute_inputs.py',
   'tests/fixtures/SelectionPrompt/smoke.py','tests/fixtures/SelectionPrompt/fullroute_inputs.py',
   'tests/fixtures/ProductionMain/live-mortal-phase.py','tests/fixtures/ProductionMain/test-live-terminal-fences.py',
+  'tests/fixtures/ProductionMain/mortal_console_routes.py','tests/fixtures/ProductionMain/test-mortal-console-routes.py',
   'tests/fixtures/ProductionMain/relay_phase_evidence.py','tests/fixtures/ProductionMain/test-mortal-phase-evidence.py',
   'specs/1515-mortal-transport-storage/t034-physical-lease-observation-plan.md',
   'specs/1515-mortal-transport-storage/manual-mm21/test-submit-mm21-data.py',
