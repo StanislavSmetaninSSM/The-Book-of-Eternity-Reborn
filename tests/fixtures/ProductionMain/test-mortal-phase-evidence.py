@@ -70,6 +70,25 @@ class MortalEvidenceTests(unittest.TestCase):
             module=SOURCE.with_name('relay_phase_evidence.py')
             package['EvidenceModuleSHA256']=NS['sha'](module.read_bytes()) if module.exists() else 'not-created-before-green'
             package['ConsoleRouteModuleSHA256']=NS['sha'](module.with_name('mortal_console_routes.py').read_bytes())
+            # Exact current fixture/dependency DATA only; no package import, Node or IPC.
+            source_root=SOURCE.parent.parent;prefix=Path(os.environ['BOE_TERMINAL_PREFIX'])
+            terminal=out/'terminal-fixture';dependencies=out/'terminal-deps'
+            for name in phase_evidence.TERMINAL_SOURCE_FILES:
+                source=source_root/name
+                self.assertFalse(any(p.is_symlink() for p in [source,*source.parents]))
+                target=terminal/name;target.parent.mkdir(parents=True,exist_ok=True)
+                target.write_bytes(source.read_bytes());target.chmod(source.stat().st_mode & 0o7777)
+            provenance=json.loads((terminal/'SelectionPrompt/terminal/provenance.json').read_text())
+            dependency_pins={name:digest for value in provenance.values() for name,digest in value['files'].items()}
+            self.assertEqual(len(dependency_pins),17)
+            for name,digest in dependency_pins.items():
+                source=prefix/name
+                self.assertFalse(any(p.is_symlink() for p in [source,*source.parents]))
+                data=source.read_bytes();self.assertEqual(NS['sha'](data),digest)
+                target=dependencies/name;target.parent.mkdir(parents=True,exist_ok=True)
+                target.write_bytes(data);target.chmod(source.stat().st_mode & 0o7777)
+            modes=lambda root:{str(p.relative_to(root)):p.stat().st_mode & 0o7777 for p in root.rglob('*') if p.is_file()}
+            package.update(TerminalFixturePins=inventory(terminal),TerminalFixtureModes=modes(terminal),TerminalDependencyPins=inventory(dependencies),TerminalDependencyModes=modes(dependencies),TerminalNodePath=os.environ['BOE_TERMINAL_NODE'],TerminalNodeSHA256=phase_evidence.TERMINAL_NODE_SHA256)
             (out/'relay-phase-package.json').write_text(json.dumps(package))
             if continuation:
                 prior=valid();prior['OriginalRunningRecord']['Identity']['RootKey']=str(base)
