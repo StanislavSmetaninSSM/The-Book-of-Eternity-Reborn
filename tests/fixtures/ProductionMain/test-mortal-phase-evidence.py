@@ -133,6 +133,9 @@ class MortalEvidenceTests(unittest.TestCase):
             last=next(i for i,n in enumerate(TREE.body[first:],first) if assign_name(n,'controlled_refusal'))
             exec(compile(ast.Module(body=TREE.body[first:last],type_ignores=[]),str(SOURCE),'exec'),scope)
             if closing:
+                # This actual function closes over the phase setup globals, not shared NS.
+                admission=next(n for n in TREE.body if isinstance(n,ast.FunctionDef) and n.name=='terminal_fixture_admission')
+                exec(compile(ast.Module(body=[admission],type_ignores=[]),str(SOURCE),'exec'),scope)
                 result=valid();result['TypedReceiptEvidence']={'historyAfter':{'present':False,'sha256':None}};result.update(RuntimePins=package['RuntimePins'],PhasePackage=package,ReceiptHelperPins=package['ReceiptHelperPins'])
                 if mutation:
                     target=helper/mutation.removeprefix('helper/') if mutation.startswith('helper/') else session/mutation
