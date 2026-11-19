@@ -420,3 +420,41 @@ was implemented. The selected next scope is an independently reviewed finite
 ordinary-request→fresh GM decision→ordinary Save path on clean proven state;
 transfer/Load remain separate later proofs. No new world or runtime is authorized
 by this checkpoint itself.
+
+## Selected short path: ordinary request and Save (design only)
+
+Independent design review admits a bounded test-first Python/source block, not a
+new world or runtime run. Use a closed `ordinary-save` route containing only Route,
+requiring the accepted P01 predecessor. Restrict inventory layout preflight to the
+two existing storage routes; no inventory IDs, selection, transfer or Load in this
+path. Keep the existing request, typed receipt, story, owner and one-shot pipeline.
+The current historical restored-data path is fixed to accepted44→45 and cannot
+admit P01/42 unchanged; exact old P01 config bytes were not recovered. Prefer the
+existing fresh seed→scripted P01→ordinary43 sequence, explicitly two live stages.
+Failed mm24 is never revived or treated as a predecessor.
+
+Extract the existing ordinary Save UI statements into one helper taking the exact
+expected saved turn. Existing storage caller keeps expected_turn−1; ordinary caller
+uses expected_turn. Before Save, require the same-turn consumer-return observation
+within the original work660 bound (no renewed deadline); final cleanup retains680.
+Then capture immutable per-Save DATA: accepted story; soul/player; world clock and
+schedule; map/location index/current location; inventory/item identity; vehicles;
+NPC core and NPC/item journals; actual containing file of any granted-state field;
+and living-history bytes or explicit absence. Do not compare all operational pins
+or synthesized resource-owner authority bytes. Save uses the unchanged Options→
+Save→name→empty description→clean success→ACK→fresh-player path. Require exactly
+one new archive, no existing archive overwrite, unique nonaliased asserted ZIP
+members and metadata/current accepted turn, exact scoped archived DATA and live
+post-Save bytes. Preserve queue/action/accepted-turn counts and pending/ready
+absence. Absence of history never becomes a fabricated receipt.
+
+Tests will use actual source functions/AST and temporary authored archive DATA in
+existing Python test files only: closed route/binding and no inventory preflight;
+real extracted Save statements/expected-turn distinction; archive/story/state/
+history/duplicate-member refusals; consumer-return-before-Save and zero Save calls
+on refusal/expired original bound; uncertain ACK and warning refusal. Freeze the
+actual discovered method selection for independent source review before any run.
+No C# suite, production change, finite_select fix, new protocol, browser or manual
+input interface is part of this block. Original budgets and failure stop remain.
+The per-Save snapshot is small operation-local immutable DATA, reused for archive
+and closing comparison; it never caches ownership or permission.
