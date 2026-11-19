@@ -1,3 +1,12 @@
+## Current status (supersedes historical UNRUN notes below)
+
+Bounded qualification independently accepted: outcome `78239928…93f8bb9`.
+Policy corpus + transport7 passed; fresh owning build and official1/1 passed.
+Exact pinned xterm/Unicode11 runtime corpus and real .NET CursorTop4 on PTY100x25
+passed with upstream CPR, normal child/sidecar exit/EOF and separate child-configured
+and owner-original termios restoration. This does NOT qualify fullroute or live.
+Fullroute-only integration is now source WIP/UNRUN pending a separate source gate.
+
 # Owned terminal fixture (SOURCE ONLY)
 
 Exact packages: headless6.0.0 / unicode11 0.9.0, metadata gitHead f447274f430fd22513f6adbf9862d19524471c04. package-lock/provenance bind official registry SHA512 and all17 regular files. No dependency/peer graph. Registry signatures were retained externally but not cryptographically verified. `node_modules`, tarballs and raw evidence are external, never tracked. Already verified tarballs were extracted without running scripts; no JS import has yet occurred.
