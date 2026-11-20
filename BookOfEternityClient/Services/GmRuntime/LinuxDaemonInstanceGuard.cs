@@ -7,7 +7,7 @@ using Microsoft.Win32.SafeHandles;
 namespace BookOfEternityClient.Services.GmRuntime;
 
 /// <summary>Linux-x64 trusted local daemon exclusion only; never canonical publication authority.</summary>
-public sealed class LinuxDaemonInstanceGuard : IDisposable
+public sealed partial class LinuxDaemonInstanceGuard : IDisposable
 {
     private const string FileName = "gm-daemon-instance.lock";
     private static readonly JsonSerializerOptions Json = new() { PropertyNameCaseInsensitive = true };

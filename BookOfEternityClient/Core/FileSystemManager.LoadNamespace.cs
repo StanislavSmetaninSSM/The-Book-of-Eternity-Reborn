@@ -1,3 +1,4 @@
+using BookOfEternityClient.Services.GmRuntime;
 using System.Text.Json;
 
 namespace BookOfEternityClient.Core;
@@ -69,6 +70,22 @@ public partial class FileSystemManager
             throw new InvalidDataException("The canonical save library must be an ordinary directory or absent.");
         var boundaries = new List<TrustedLocalNamespaceBoundary> { new(library, libraryKind.Kind, 0, null) };
         var source = TrustedLocalFilePublication.NormalizeAuthorityPath(selectedSource, OperatingSystem.IsWindows());
+        LinuxDaemonInstanceGuard.LoadGuardEvidence? daemonGuard = null;
+        if (LinuxDaemonInstanceGuard.HasLocalStatusBoundary)
+        {
+            var daemonPath = ResolveLoadNamespacePath(LinuxDaemonInstanceGuard.LocalStatusPath);
+            if (source == daemonPath || source.StartsWith(daemonPath + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+                throw new InvalidDataException("The selected archive occupies the reserved daemon status path.");
+            var statusKind = scope.ObserveNamespace(daemonPath);
+            if (statusKind.BlockingFileAncestor != null || statusKind.Kind == TrustedLocalNamespaceKind.Directory)
+                throw new InvalidDataException("The live daemon status path must be an ordinary file or absent.");
+            var status = statusKind.Kind == TrustedLocalNamespaceKind.File
+                ? LinuxDaemonInstanceGuard.CaptureLoadStatus(scope, daemonPath) : null;
+            daemonGuard = LinuxDaemonInstanceGuard.ObserveLoadGuard(BasePath);
+            LinuxDaemonInstanceGuard.ValidateLocalLoadPair(root, daemonGuard, status);
+            if (status != null)
+                boundaries.Add(new(daemonPath, TrustedLocalNamespaceKind.File, status.Length, status.Sha256));
+        }
         if (source.StartsWith(root + Path.DirectorySeparatorChar, comparison))
         {
             var image = TrustedLocalFileImage.CaptureFile(scope, source);
@@ -96,7 +113,7 @@ public partial class FileSystemManager
                 else nodes.Add(relative, new(TrustedLocalNamespaceKind.File, TrustedLocalFileImage.CaptureFile(scope, path)));
             }
         }
-        return new(nodes, boundaries);
+        return new(nodes, boundaries, daemonGuard);
     }
 
     /// <summary>

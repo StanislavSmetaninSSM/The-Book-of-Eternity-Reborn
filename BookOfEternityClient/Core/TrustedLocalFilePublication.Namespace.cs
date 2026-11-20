@@ -1,3 +1,4 @@
+using BookOfEternityClient.Services.GmRuntime;
 using System.Security.Cryptography;
 
 namespace BookOfEternityClient.Core;
@@ -189,11 +190,14 @@ internal sealed partial class TrustedLocalFilePublication
             else if (boundary.Length != 0 || boundary.Sha256 != null)
                 throw Conflict("A non-file boundary contains file metadata.");
         }
+        var daemonStatus = LinuxDaemonInstanceGuard.HasLocalStatusBoundary
+            ? NormalizeAuthorityPath(_files.ResolvePath(LinuxDaemonInstanceGuard.LocalStatusPath), false) : null;
+        var includesDaemonStatus = daemonStatus != null && boundaries.ContainsKey(daemonStatus);
         if (!boundaries.TryGetValue(library, out var libraryBoundary) ||
             libraryBoundary.Kind is not (TrustedLocalNamespaceKind.Directory or TrustedLocalNamespaceKind.Missing) ||
-            boundaries.Count > 2 || boundaries.Values.Any(boundary =>
+            boundaries.Count > (includesDaemonStatus ? 3 : 2) || boundaries.Values.Any(boundary =>
                 !MemberComparer.Equals(boundary.Path, library) && boundary.Kind != TrustedLocalNamespaceKind.File))
-            throw Conflict("Namespace boundaries must be the canonical library and optional exact selected source.");
+            throw Conflict("Namespace boundaries must be the canonical library, optional exact selected source, and optional Linux daemon status.");
         foreach (var member in journal.Members)
         {
             foreach (var boundary in boundaries.Values)

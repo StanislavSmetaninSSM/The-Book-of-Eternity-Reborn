@@ -72,6 +72,7 @@ public sealed partial class PortableLoadReplacementTests
     [InlineData("omitted-manifest")]
     [InlineData("missing-member")]
     [InlineData("descendant")]
+    [InlineData("reserved-directory")]
     public async Task DaemonArchiveStatus_InvalidLegacyEvidenceRejectedBeforePublication(string corruption)
     {
         if (!LinuxDaemonArchiveContract) return;
@@ -269,8 +270,10 @@ public sealed partial class PortableLoadReplacementTests
         AssertOwnedScratchEmpty();
     }
 
-    [Fact]
-    public async Task DaemonArchiveStatus_SettledPairChangedAfterCaptureRefusesBeforeIntent()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task DaemonArchiveStatus_RevalidatesGuardAfterCaptureWithoutRejectingAnUnrelatedSibling(bool changeGuard)
     {
         if (!LinuxDaemonArchiveContract) return;
         var source = await PrepareDaemonArchiveAsync();
@@ -293,7 +296,8 @@ public sealed partial class PortableLoadReplacementTests
                 {
                     if (armDrift && !drifted)
                     {
-                        File.WriteAllBytes(DaemonGuardPath, faultGuard);
+                        if (changeGuard) File.WriteAllBytes(DaemonGuardPath, faultGuard);
+                        else Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(DaemonGuardPath)!, "unrelated-runtime-sibling"));
                         drifted = true;
                     }
                     return Task.CompletedTask;
@@ -312,6 +316,15 @@ public sealed partial class PortableLoadReplacementTests
         var result = await service.LoadGameWithOutcomeAsync(source);
 
         Assert.True(drifted);
+        if (!changeGuard)
+        {
+            Assert.Equal(LoadReplacementDisposition.Committed, result.Disposition);
+            Assert.False(result.NeedsFollowUp);
+            Assert.Equal(_loadedMarker, File.ReadAllBytes(_files.ResolvePath(MarkerPath)));
+            Assert.Equal(local, File.ReadAllBytes(statusPath));
+            AssertOwnedScratchEmpty();
+            return;
+        }
         Assert.Equal(LoadReplacementDisposition.NotLoaded, result.Disposition);
         Assert.Empty(observerPhases);
         Assert.Equal(protectedFiles.Keys.Order(), Snapshot(_files.GameSessionPath).Keys.Order());
@@ -336,12 +349,13 @@ public sealed partial class PortableLoadReplacementTests
         using (var read = oldManifest.Open()) manifest = JsonNode.Parse(read)!.AsObject();
         oldManifest.Delete();
         var path = corruption == "descendant" ? DaemonArchiveStatus + "/child.bin" : DaemonArchiveStatus;
-        if (corruption != "missing-member")
+        if (corruption == "reserved-directory") archive.CreateEntry(DaemonArchiveStatus + "/");
+        else if (corruption != "missing-member")
         {
             using var entry = archive.CreateEntry(path).Open();
             entry.Write(payload);
         }
-        if (corruption != "omitted-manifest")
+        if (corruption is not ("omitted-manifest" or "reserved-directory"))
         {
             var digest = corruption == "hash" ? new string('0', 64) : Convert.ToHexString(SHA256.HashData(payload));
             manifest["entries"]!.AsArray().Add(new JsonObject

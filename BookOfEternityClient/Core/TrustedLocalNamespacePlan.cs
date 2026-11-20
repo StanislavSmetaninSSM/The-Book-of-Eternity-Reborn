@@ -1,3 +1,4 @@
+using BookOfEternityClient.Services.GmRuntime;
 namespace BookOfEternityClient.Core;
 
 /// <summary>
@@ -97,10 +98,13 @@ internal sealed record CanonicalLoadNamespaceChange(string RelativePath, Trusted
 /// The complete unique session-relative node inventory with exact namespace images.
 /// </param>
 /// <param name="Boundaries">
-/// The exact absolute canonical library and any admitted in-session selected-source boundary.
+/// The exact canonical library, any admitted in-session selected source, and the Linux local daemon status if present.
+/// </param>
+/// <param name="DaemonGuard">
+/// Read-only local guard image; rechecked before publication, never imported or journaled.
 /// </param>
 internal sealed record CanonicalLoadNamespaceSnapshot(IReadOnlyDictionary<string, TrustedLocalNamespaceImage> Nodes,
-    IReadOnlyList<TrustedLocalNamespaceBoundary> Boundaries);
+    IReadOnlyList<TrustedLocalNamespaceBoundary> Boundaries, LinuxDaemonInstanceGuard.LoadGuardEvidence? DaemonGuard);
 
 /// <summary>
 /// Supplies a complete prepared load namespace without granting arbitrary runtime or external path mutation.

@@ -1546,3 +1546,18 @@ invalid/orphan/drift and reserved-descendant cases committed rather than refused
 Exact source and output joins before/after remained pinned. Local evidence index
 `c8f7fbb896f2574bcfcfc0bc018b0b846e2a09faa50dc645d5d95f0e38a422b5`.
 This is causal test evidence, not product correction or live/hosted acceptance.
+
+**Bounded Linux x64 implementation (verification pending).** After original
+archive integrity admission, omit the exact daemon-status file only from the
+portable payload, including from the manifest in newly produced saves. Legacy
+archive bytes are neither altered nor adopted. Same-root Load keeps the exact
+local status as an immutable namespace boundary only if its checked device-local
+guard is consistent (running/processing unsettled, or stopped settled). This
+does not establish liveness or permission to adopt the daemon. Absent/absent
+is admissible; partial, inconsistent, or changed own evidence refuses before
+publication. No lifecycle/guard-acquisition weakening, Windows change, or new
+cache. Check the local status from one bounded byte capture; the original
+namespace publisher still validates its live hash. An unrelated directory may
+change link counts of guard ancestors without replacing the ancestors.
+The added exact reserved-directory and benign-sibling cases have no prior RED
+claim. Product and the nearest existing integration controls remain UNRUN here.

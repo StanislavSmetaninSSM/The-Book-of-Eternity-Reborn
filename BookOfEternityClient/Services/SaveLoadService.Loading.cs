@@ -1,3 +1,4 @@
+using BookOfEternityClient.Services.GmRuntime;
 using System.Buffers;
 using System.Collections.Frozen;
 using System.IO.Compression;
@@ -216,7 +217,13 @@ public partial class SaveLoadService
 
             var replacement = Guid.NewGuid().ToString("N");
             var outcome = await _fs.PublishLoadReplacementNamespaceAsync(writeLease, generation, namespacePlan, replacement,
-                candidate.Revalidate, cancellationToken);
+                () =>
+                {
+                    candidate.Revalidate();
+                    if (LinuxDaemonInstanceGuard.HasLocalStatusBoundary &&
+                        LinuxDaemonInstanceGuard.ObserveLoadGuard(_fs.BasePath) != live.DaemonGuard)
+                        throw new InvalidDataException("The local daemon guard changed during Load preparation.");
+                }, cancellationToken);
             result = new(outcome.Disposition switch
             {
                 TrustedLocalPublicationDisposition.Committed => LoadReplacementDisposition.Committed,
@@ -322,7 +329,18 @@ public partial class SaveLoadService
                 await ValidateArchiveStructureAsync(archive, stagingRoot, preserveNativePayloadNames: true);
                 foreach (var entry in archive.Entries)
                 {
-                    if (IsArchiveDirectoryPath(entry.FullName)) continue;
+                    if (IsArchiveDirectoryPath(entry.FullName))
+                    {
+                        if (LinuxDaemonInstanceGuard.HasLocalStatusBoundary &&
+                            TryResolveArchiveEntryTargetPath(stagingRoot, entry.FullName, out var directoryTarget))
+                        {
+                            var directory = Path.GetRelativePath(stagingRoot, directoryTarget).TrimEnd('/');
+                            if (LinuxDaemonInstanceGuard.IsLocalStatusPath(directory) ||
+                                LinuxDaemonInstanceGuard.IsBelowLocalStatusPath(directory))
+                                throw new InvalidDataException($"Archive directory occupies reserved daemon status path '{directory}'.");
+                        }
+                        continue;
+                    }
                     // Windows GetFullPath can erase trailing spaces. Check original
                     // spelling after original manifest/hash admission, before resolution.
                     if (!entry.FullName.Equals(entry.FullName.Trim(), StringComparison.Ordinal))
@@ -331,6 +349,10 @@ public partial class SaveLoadService
                     if (!relative.Equals(relative.Trim(), StringComparison.Ordinal))
                         throw new InvalidDataException($"Load payload '{relative}' does not use canonical spelling.");
                     relative = CanonicalizeFixedLoadStatePath(relative);
+                    if (LinuxDaemonInstanceGuard.IsBelowLocalStatusPath(relative))
+                        throw new InvalidDataException($"Archive payload occupies reserved daemon status path '{relative}'.");
+                    // Historical images remain hash-verified above but are not portable state.
+                    if (LinuxDaemonInstanceGuard.IsLocalStatusPath(relative)) continue;
                     if (relative.Equals("saves", StringComparison.OrdinalIgnoreCase) ||
                         relative.StartsWith("saves/", StringComparison.OrdinalIgnoreCase))
                         throw new InvalidDataException("A save archive cannot replace the live saves library.");

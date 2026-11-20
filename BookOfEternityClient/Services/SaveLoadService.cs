@@ -1,3 +1,4 @@
+using BookOfEternityClient.Services.GmRuntime;
 using System.Buffers.Binary;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -562,7 +563,7 @@ public partial class SaveLoadService
         {
             var relativePath = Path.GetRelativePath(sourceDir, file);
             var entryPath = NormalizeHostArchiveSeparators(Path.Combine(entryPrefix, relativePath));
-            if (IsEphemeralArchivePath(entryPath) ||
+            if (IsEphemeralArchivePath(entryPath) || LinuxDaemonInstanceGuard.IsLocalStatusPath(entryPath) ||
                 entryPath.Equals(
                     CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
                     StringComparison.OrdinalIgnoreCase))

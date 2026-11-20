@@ -116,6 +116,22 @@ internal static class LinuxBridgeFifoNative
         catch { handle.Dispose(); throw; }
     }
 
+    // Observe the existing singleton image without taking or modifying its exclusive lease.
+    internal static SafeFileHandle? OpenGuardObservationEntry(SafeFileHandle parent, string name, bool directory)
+    {
+        Name(name);
+        SafeFileHandle handle;
+        try { handle = OpenAt(parent, name, ReadOnly | (directory ? DirectoryFlag : 0)); }
+        catch (IOException error) when (Missing(error)) { return null; }
+        try
+        {
+            if (!directory) ValidateGuard(handle);
+            RequireNamedIdentity(parent, name, handle);
+            return handle;
+        }
+        catch { handle.Dispose(); throw; }
+    }
+
     internal static void ValidateGuard(SafeFileHandle handle)
     {
         RequirePrivate(handle, 0x8000, 0x180);
