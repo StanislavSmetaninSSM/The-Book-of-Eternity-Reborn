@@ -78,7 +78,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         return runtime;
     }
 
-    private async Task WriteMortalLivingWorldJourneyOutputAsync(TurnRequest request, string narrative, string[] changedPaths, string? actorReasoning = null, bool omitNoDueProgressionReport = false)
+    private async Task WriteMortalLivingWorldJourneyOutputAsync(TurnRequest request, string narrative, string[] changedPaths, string? actorReasoning = null, bool omitNoDueProgressionReport = false, string? authoredTimestamp = null)
     {
         var control = request.ProgressionControl!;
         if (omitNoDueProgressionReport)
@@ -99,7 +99,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }});
             changedPaths = changedPaths.Append(ProgressionScheduleService.ReportPath).ToArray();
         }
-        var timestamp = DateTime.UtcNow.ToString("o");
+        var timestamp = authoredTimestamp ?? DateTime.UtcNow.ToString("o");
         await WriteJsonAsync("output/narrative_response.json", new { response = narrative, timestamp });
         await WriteJsonAsync("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
         await WriteJsonAsync("output/debug_logs.json", new { timestamp, npcSkillClaims = Array.Empty<object>(),

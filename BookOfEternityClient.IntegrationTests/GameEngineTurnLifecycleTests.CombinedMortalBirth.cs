@@ -29,7 +29,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         => RunCombinedMortalBirthAsync(false, null, validateRetiredState: true);
 
     /// <summary>Runs the same full ordinary candidate, optionally correcting only journal/output DATA after publication.</summary>
-    private async Task RunCombinedMortalBirthAsync(bool unresolvedEffect, string? repairMode, bool validateRetiredState = false, bool validateLoadedContinuation = false, bool validateOrdinaryContinuation = false)
+    private async Task RunCombinedMortalBirthAsync(bool unresolvedEffect, string? repairMode, bool validateRetiredState = false, bool validateLoadedContinuation = false, bool validateOrdinaryContinuation = false, bool inspectWithMira = false)
     {
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         const string currentPath = "game_state/world/current_location.json";
@@ -493,7 +493,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await AssertCombinedBirthLoadedContinuationAsync(runtime, artifact, () => calls);
         if (validateOrdinaryContinuation)
             await AssertCombinedBirthOrdinaryContinuationAsync(
-                runtime, artifact, author => continuationAuthor = author, () => calls);
+                runtime, artifact, author => continuationAuthor = author, () => calls, inspectWithMira);
     }
 
     /// <summary>Tees the existing diagnostic stream without replacing the production emitter or limiting captured evidence.</summary>

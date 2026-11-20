@@ -15,13 +15,20 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task CombinedMortalBirth_OrdinaryDeferAcceptsThroughActualPipeline()
         => RunCombinedMortalBirthAsync(false, null, validateRetiredState: true, validateOrdinaryContinuation: true);
 
+    [Fact]
+    public Task CombinedMortalBirth_OrdinaryMiraInspectionAcceptsThroughActualPipeline()
+        => RunCombinedMortalBirthAsync(false, null, validateRetiredState: true,
+            validateOrdinaryContinuation: true, inspectWithMira: true);
+
     private async Task AssertCombinedBirthOrdinaryContinuationAsync(
-        GameEngineTestRuntime runtime, string artifact, Action<Func<TurnRequest, Task>> setAuthor, Func<int> calls)
+        GameEngineTestRuntime runtime, string artifact, Action<Func<TurnRequest, Task>> setAuthor, Func<int> calls, bool inspectWithMira)
     {
         const string npcPath = "game_state/npcs/npc_core.json";
         const string journalPath = "game_state/npcs/npc_journals.json";
         const string storyPath = "stories/mortal_life_2.jsonl";
-        const string action = "Прошу у совета один кусочек мела для разметки у переправы. Ничего не беру и не перемещаю.";
+        var action = inspectWithMira
+            ? "Иду по открытому пути из двора к покоям Вальмонта, нахожу Миру и начинаю вместе с ней осмотр видимых опор и уровня воды. Прошу отметить только то, что удастся увидеть."
+            : "Прошу у совета один кусочек мела для разметки у переправы. Ничего не беру и не перемещаю.";
         Assert.Equal(42, runtime.GameLoop.TurnNumber);
         Assert.Equal(1, calls());
         Assert.True(runtime.Engine.HasRetiredOrdinaryOriginal);
@@ -47,6 +54,26 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Single(priorStory.Split('\n', StringSplitOptions.RemoveEmptyEntries));
         var journalBytesBefore = (await _fs.ReadFileBytesAsync(journalPath))!;
         var journalBefore = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(journalBytesBefore))!;
+        const string currentPath = "game_state/world/current_location.json";
+        var actorId = inspectWithMira ? JourneyScoutId : stewardId;
+        var actorName = inspectWithMira
+            ? Assert.Single(core["NPCsInScene"]!.AsArray(), row => row!["NPCId"]!.GetValue<string>() == actorId)!["name"]!.GetValue<string>()
+            : stewardName;
+        if (inspectWithMira)
+        {
+            var scout = Assert.Single(core["NPCsInScene"]!.AsArray(), row => row!["NPCId"]!.GetValue<string>() == actorId)!;
+            Assert.Equal(JourneyLocationId, scout["currentLocationId"]!.GetValue<string>());
+            var map = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(retained[MortalLocationMaterializationContract.WorldMapPath]))!;
+            Assert.Single(map["links"]!.AsArray(), link =>
+                link!["sourceLocationId"]!.GetValue<string>() == locationId &&
+                link["targetLocationId"]!.GetValue<string>() == JourneyLocationId &&
+                link["access"]!["state"]!.GetValue<string>() == "open" &&
+                link["access"]!["requirements"]!.AsArray().Count == 0 &&
+                link["discovery"]!["audience"]!.GetValue<string>() == "player_known");
+            Assert.Single(journalBefore["NPCJournals"]!.AsArray(), row =>
+                (row!["npcId"] ?? row["NPCId"])?.GetValue<string>() == actorId &&
+                row["journalEntries"]!.AsArray().Count > 0);
+        }
         var scheduleBefore = JsonSerializer.Deserialize<ProgressionScheduleState>(
             (await _fs.ReadFileAsync(ProgressionScheduleService.SchedulePath))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
         Assert.Equal(0, scheduleBefore.PendingWorldCycles);
@@ -83,15 +110,21 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(journalBytesBefore, await _fs.ReadFileBytesAsync(journalPath));
             Assert.Equal(retained[npcPath], await _fs.ReadFileBytesAsync(npcPath));
             Assert.False(_fs.FileExists(ProgressionScheduleService.ReportPath));
+            if (inspectWithMira)
+            {
+                foreach (var path in new[] { currentPath, MortalLocationMaterializationContract.WorldMapPath })
+                    Assert.Equal(retained[path], await _fs.ReadFileBytesAsync(manifest.Files[path]));
+                await WriteJsonAsync(currentPath, new { currentLocationData = new { locationId = JourneyLocationId } });
+            }
             var journals = journalBefore.DeepClone();
-            var row = Assert.Single(journals["NPCJournals"]!.AsArray(), j => j!["npcId"]?.GetValue<string>() == stewardId)!;
+            var row = Assert.Single(journals["NPCJournals"]!.AsArray(), j => (j!["npcId"] ?? j["NPCId"])?.GetValue<string>() == actorId)!;
             row["journalEntries"]!.AsArray().Add(new JsonObject
             {
-                ["entryId"] = "steward_chalk_request_deferred_t034_visit43", ["timestamp"] = request.Timestamp,
-                ["event"] = "Просьба о меле", ["description"] = "Я записал просьбу о меле и передам её совету. Пока согласия нет, кладовая останется закрытой.",
+                ["entryId"] = inspectWithMira ? "mira_crossing_initial_observation_43" : "steward_chalk_request_deferred_t034_visit43", ["timestamp"] = request.Timestamp,
+                ["event"] = inspectWithMira ? "Начало осмотра" : "Просьба о меле", ["description"] = inspectWithMira ? "Я начала наблюдение из поместья. Отсюда видны не все опоры; состояние скрытых частей не проверено." : "Я записал просьбу о меле и передам её совету. Пока согласия нет, кладовая останется закрытой.",
                 ["emotionalImpact"] = "сдержанность", ["relationshipChange"] = "0"
             });
-            row["lastJournalNote"] = "Я передам просьбу совету, не выдавая мел без согласия.";
+            row["lastJournalNote"] = inspectWithMira ? "Я пока не могу судить о состоянии скрытых частей опор." : "Я передам просьбу совету, не выдавая мел без согласия.";
             expectedJournals = journals.DeepClone();
             await _fs.WriteFileAtomicAsync(journalPath, journals.ToJsonString());
             var time = await ReadCombinedJsonAsync(MortalLivingWorldSource.WorldTimePath);
@@ -105,10 +138,39 @@ public sealed partial class GameEngineTurnLifecycleTests
                 .Replace("npc_steward_t034_visit42", stewardId, StringComparison.Ordinal)
                 .Replace("loc_42ab98676d6f4e258e2250db02f656e4", locationId, StringComparison.Ordinal)
                 .Replace("Хозяйственный двор у нижней лестницы", steward["currentLocationName"]!.GetValue<string>(), StringComparison.Ordinal);
-            await WriteMortalLivingWorldJourneyOutputAsync(request,
+            const string inspectionNarrative = "Вы идёте из двора к покоям Вальмонта и начинаете осмотр с Мирой. Часть опор не видна из поместья. Мира отмечает предел видимости; осмотр не завершён.";
+            if (inspectWithMira)
+                reasoning = $$"""
+                    ## NPC Scope
+                    - Mode: Scene-local
+                    - Relevant actors: {{actorName}}
+                    - Why relevant: Мира начинает наблюдение вместе с героем.
+                    - Actors outside scope: {{stewardName}}
+                    - Why outside scope: Распорядитель остаётся во дворе; его состояние не меняется.
+
+                    ## Actor Brain 2.0
+                    ### {{actorName}}
+                    - Текущая локация: loc_valmont_private_chambers; остаётся в поместье.
+                    - Ситуация: Герой просит начать осмотр, но не все опоры видны.
+                    - Данные профиля: Наблюдательная осторожная разведчица, действует в рамках прежнего поручения.
+                    - Мотивация: Сообщать только подтверждённое наблюдением.
+                    - Ограничения: Скрытые части опор не проверены.
+                    - Мысли: Я могу отметить предел видимости, но не подтверждать безопасность переправы.
+                    - Варианты стратегий:
+                      1. Записать предел наблюдения. Выгода: совет получит точную границу известного. Риск: окончательный вывод откладывается.
+                      2. Объявить осмотр завершённым. Выгода: ответ немедленный. Риск: скрытые опоры не проверены.
+                    - Выбранная стратегия: Начать наблюдение и записать предел видимости.
+                    - Почему альтернативы отвергнуты: Нельзя считать скрытые части проверенными.
+                    - Действия: Мира наблюдает из поместья и добавляет одну запись; не перемещается и не завершает поручение.
+                    - Изменения состояния: В game_state/npcs/npc_journals.json только запись mira_crossing_initial_observation_43 и lastJournalNote у {{actorId}}. Герой прибывает в известную локацию; время 500→505 минут. Доступ, предметы и прогресс поручения не меняются.
+                    """;
+            await WriteMortalLivingWorldJourneyOutputAsync(request, inspectWithMira ? inspectionNarrative :
                 "Распорядитель записывает просьбу и обещает передать её совету. Кладовая остаётся закрытой; мел не выдан.",
-                [journalPath, MortalLivingWorldSource.WorldTimePath], reasoning, omitNoDueProgressionReport: true);
-            foreach (var pair in retained) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+                inspectWithMira ? [journalPath, MortalLivingWorldSource.WorldTimePath, currentPath] :
+                    [journalPath, MortalLivingWorldSource.WorldTimePath], reasoning, omitNoDueProgressionReport: true,
+                authoredTimestamp: inspectWithMira ? request.Timestamp : null);
+            foreach (var pair in retained.Where(pair => !inspectWithMira || pair.Key != currentPath))
+                Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
         });
         try
         {
@@ -125,9 +187,22 @@ public sealed partial class GameEngineTurnLifecycleTests
         var story = (await _fs.ReadFileAsync(storyPath))!;
         Assert.StartsWith(priorStory, story);
         Assert.Equal(2, story.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length);
-        Assert.Contains("мел не выдан", story);
+        Assert.Contains(inspectWithMira ? "осмотр не завершён" : "мел не выдан", story);
+        if (inspectWithMira)
+        {
+            Assert.Equal(JourneyLocationId, (await ReadCombinedJsonAsync(currentPath))["locationId"]!.GetValue<string>());
+            // Moving parks the original court contents off-screen; it must not take the chalk.
+            var oldCurrent = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(retained[currentPath]))!;
+            var storage = Assert.Single(oldCurrent["locationStorages"]!.AsArray())!;
+            var parked = await ReadCombinedJsonAsync(MortalLocationStorageContentsState.StatePath);
+            var matching = Assert.Single(parked["entries"]!.AsArray(), entry =>
+                entry!["locationId"]!.GetValue<string>() == locationId &&
+                entry["storageId"]!.GetValue<string>() == storage["storageId"]!.GetValue<string>())!;
+            Assert.True(JsonNode.DeepEquals(storage["contents"], matching["contents"]));
+        }
         Assert.Equal(505, (await ReadCombinedJsonAsync(MortalLivingWorldSource.WorldTimePath))["currentTimeInMinutes"]!.GetValue<int>());
-        foreach (var pair in retained) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+        foreach (var pair in retained.Where(pair => !inspectWithMira || pair.Key != currentPath))
+            Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
         foreach (var path in new[] { LiveTurnPreparationService.TurnRequestPath,
             LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,
             "game_state/control/validation_repair_request.json", "game_state/control/validation_repair_ready.json",
@@ -138,7 +213,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(await runtime.Engine.ValidateBeforeOrdinaryPlayerTurnAsync(), _journeyLogger.Describe());
         Assert.Equal(43, runtime.GameLoop.TurnNumber);
         Assert.Equal(2, calls());
-        foreach (var pair in retained) Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+        foreach (var pair in retained.Where(pair => !inspectWithMira || pair.Key != currentPath))
+            Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
         var scheduleAfter = JsonSerializer.Deserialize<ProgressionScheduleState>(
             (await _fs.ReadFileAsync(ProgressionScheduleService.SchedulePath))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
         Assert.Equal(505, scheduleAfter.CurrentWorldTimeInMinutes);

@@ -390,6 +390,17 @@
       ]
     },
     {
+      "id": "mortal-author-mira-inspection",
+      "responsibility": "#1515 offline real-engine author format for an ordinary move along an existing link and a bounded first-person scout observation.",
+      "excludes": "No live request, provider, vote, completed inspection or grant.",
+      "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CombinedMortalOrdinary.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CombinedMortalBirth_OrdinaryMiraInspectionAcceptsThroughActualPipeline"]}]
+    },
+    {
       "id": "mortal-retired-birth-pre-send",
       "responsibility": "#1515 T032 genuine combined publication and retired original followed by the actual ordinary pre-send consumer, preserving canonical carriers and complete logged issues.",
       "excludes": "No second GM action, live world, strict API relaxation or repeat of the old five combined selections.",

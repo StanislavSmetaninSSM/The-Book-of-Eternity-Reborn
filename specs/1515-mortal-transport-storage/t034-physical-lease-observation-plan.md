@@ -1450,3 +1450,13 @@ fake predecessor, actual fresh owner boot/root/generation and historical RunId
 exclusions, actual daemon owner distinct from archived passive DATA. No packages
 initialized or live start. Next closed profile renderer sharing and publisher
 allowlist are test-first; normal P01/P02/P03 launcher byte hashes frozen for equality.
+Renderer/publisher causal RED86823e33 preserved: two missing renderer and one closed
+phase refusal, no setup error. Mechanical main guard/shared renderer preserves
+byte-exact original P01/P02/P03 scripts; cold mode binds recovered-live/no prior,
+real private empty queue including hidden entries, absent short temp, actual cold
+descriptor. Publisher adds only this closed phase to unchanged one-shot controls.
+Selected35 DATA tests independently accepted8aba8abd (.294s), no runtime.
+Mira dry source independently reviewed: one additional actual ProcessPlayerTurn
+case for an existing open link and initial observation, explicit first-person
+journal, unchanged chalk/access/faction/progression; not a live decision or grant.
+One fresh owning Integration build/official Plan1/run1 awaits exact command gate.

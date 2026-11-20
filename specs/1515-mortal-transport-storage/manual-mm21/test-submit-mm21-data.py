@@ -202,6 +202,8 @@ class PhysicalTraceProfile(unittest.TestCase):
   ns=dict(pathlib=pathlib,json=json,hashlib=hashlib,os=os,re=re,stat=stat,uuid=uuid,shutil=shutil,sys=sys)
   functions=[n for n in tree.body if isinstance(n,ast.FunctionDef)]
   exec(compile(ast.Module(body=functions,type_ignores=[]),'<actual-profile-functions>','exec'),ns)
+  main=next((n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='main'),None)
+  if main is not None:tree=ast.Module(body=functions+main.body,type_ignores=[])
   return tree,ns
  def test_exclusive_actual_trace_assets_no_repair(self):
   import os,stat
@@ -356,6 +358,20 @@ class ColdProfileRendering(unittest.TestCase):
   self.assertNotIn('guardian.json probe-result.json queue;',text)
   self.assertIn("'queue'",text);self.assertIn('iterdir()',text);self.assertIn('0o700',text);self.assertIn('is_symlink()',text)
   self.assertNotIn('"$ROOT/p01/probe-result.json"',text);self.assertNotIn('"$ROOT/p02/probe-result.json"',text)
+  import sys,stat
+  from unittest.mock import patch
+  code=text.split("<<'COLD_QUEUE'\n",1)[1].split('\nCOLD_QUEUE\n',1)[0]
+  for case in ('empty','hidden','linked','public','temp-present'):
+   with self.subTest(case=case),tempfile.TemporaryDirectory() as name:
+    local=pathlib.Path(name);phase=local/'recovered-live';phase.mkdir(mode=0o700);queue=phase/'queue';queue.mkdir(mode=0o700)
+    if case=='hidden':(queue/'.hidden').write_text('x')
+    if case=='linked':queue.rmdir();queue.symlink_to(local,target_is_directory=True)
+    if case=='public':queue.chmod(0o755)
+    if case=='temp-present':(local/'rt').mkdir()
+    with patch.object(sys,'argv',['guard',str(local),str(phase)]):
+     if case=='empty':exec(compile(code,'<actual-emitted-cold-queue>','exec'),{})
+     else:
+      with self.assertRaises(ValueError):exec(compile(code,'<actual-emitted-cold-queue>','exec'),{})
   for phase,prior in [('p01',None),('recovered-live',root/'p02/probe-result.json')]:
    with self.assertRaises(ValueError):render(root,phase,prior,'b'*32,'a'*32,'c'*64,cold=True)
 
