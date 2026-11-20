@@ -974,6 +974,37 @@ def require_cold_loaded_owner(identity,expected):
     if type(identity['BootId']) is not str or re.fullmatch('[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}',identity['BootId']) is None:
         raise ValueError('Malformed owner boot identity')
 
+def require_portable_cold_daemon_witness(base, archive_bytes):
+    """Require fresh absence; return the authenticated historical owner as DATA only."""
+    import io,zipfile
+    base=_restored_plain_path(Path(base),True)
+    session=_restored_plain_path(base/'game_session',True)
+    relative='game_state/control/gm_daemon_status.json'
+    status=session/relative
+    guard=base/'.boe_runtime/locks/gm-daemon-instance.lock'
+    if any(path.exists() or path!=path.resolve() or any(parent.is_symlink() for parent in (path,*path.parents))
+        for path in (status,guard)):
+        raise ValueError('Cold host has local daemon status or guard evidence')
+    with zipfile.ZipFile(io.BytesIO(archive_bytes)) as archive:
+        names=archive.namelist()
+        if names.count(relative)!=1 or names.count('save_manifest.json')!=1:
+            raise ValueError('Historical daemon archive evidence is ambiguous or absent')
+        row=archive.getinfo(relative)
+        manifest_row=archive.getinfo('save_manifest.json')
+        if not 0<row.file_size<=65536 or not 0<manifest_row.file_size<=1048576:
+            raise ValueError('Historical daemon status size differs')
+        raw=archive.read(row)
+        manifest=strict_settings(archive.read(manifest_row))
+        matches=[entry for entry in manifest['entries'] if entry['path']==relative]
+        if (len(matches)!=1 or type(matches[0]['length']) is not int
+            or matches[0]['length']!=len(raw) or type(matches[0]['sha256']) is not str or matches[0]['sha256'].lower()!=sha(raw)):
+            raise ValueError('Historical daemon status manifest differs')
+    former=strict_settings(raw)
+    owner=former.get('daemonGuardOwnerId')
+    if type(former.get('daemonGuardVersion')) is not int or former['daemonGuardVersion']!=1 or not isinstance(owner,str) or re.fullmatch('[0-9a-f]{32}',owner) is None:
+        raise ValueError('Historical daemon owner DATA missing')
+    return owner
+
 def require_cold_loaded_host(descriptor,out,*,previous,route,current_max):
     """Authenticate closed cold/rebind evidence and current DATA. Does not acquire
     authority, prepare packages, copy state, start a process or update settings.
@@ -1045,7 +1076,6 @@ def require_cold_loaded_host(descriptor,out,*,previous,route,current_max):
         if old['RootKey']==str(base) or old['GenerationId']==generation or re.fullmatch('[0-9a-f]{32}',old['RunId']) is None:raise ValueError('Not distinct source owner DATA')
         forbidden.append(old['RunId'])
     if len(set(forbidden))!=2:raise ValueError('Ambiguous source owner DATA')
-    archived_daemon=strict_settings((session/'game_state/control/gm_daemon_status.json').read_bytes())
-    if re.fullmatch('[0-9a-f]{32}',archived_daemon.get('daemonGuardOwnerId','')) is None:raise ValueError('Archived daemon DATA missing')
-    return {'ForbiddenRunIds':forbidden,'ArchivedDaemonOwnerId':archived_daemon['daemonGuardOwnerId'],'ExpectedTurn':44,'SessionId':descriptor['SessionId'],'BasePath':str(base),'RuntimeRoot':descriptor['RuntimeRoot'],
+    historical_owner=require_portable_cold_daemon_witness(base,archive)
+    return {'ForbiddenRunIds':forbidden,'ArchivedDaemonOwnerId':historical_owner,'ExpectedTurn':44,'SessionId':descriptor['SessionId'],'BasePath':str(base),'RuntimeRoot':descriptor['RuntimeRoot'],
         'TemporaryRoot':str(temp),'ConfigBytes':config_bytes,'Command':command,'Pipe':settings['GmBridgePipeNameOverride'],'GenerationId':generation}

@@ -29,6 +29,41 @@ class ColdHostAdmission(unittest.TestCase):
         self.assertEqual(before,{str(p):p.read_bytes() for p in pathlib.Path(descriptor['BasePath']).rglob('*') if p.is_file()})
         self.assertEqual(list((out/'queue').iterdir()),[])
 
+    def test_portable_daemon_witness_verifies_archive_but_refuses_local_files(self):
+        import io,zipfile
+        status_name='game_state/control/gm_daemon_status.json'
+        old_id='0'*32
+        raw=json.dumps({'daemonGuardVersion':1,'daemonGuardOwnerId':old_id,
+            'sessionPath':'/old/game_session','status':'running','terminalSettled':False}).encode()
+        def fixture(broken=None):
+            stream=io.BytesIO()
+            with zipfile.ZipFile(stream,'w') as archive:
+                if broken!='absent':archive.writestr(status_name,raw)
+                row={'path':status_name,'length':len(raw)+(broken=='length'),
+                    'sha256':('f'*64 if broken=='digest' else hashlib.sha256(raw).hexdigest())}
+                archive.writestr('save_manifest.json',json.dumps({'entries':[row]}))
+            return stream.getvalue()
+        sealed=fixture()
+        with tempfile.TemporaryDirectory() as name:
+            base=pathlib.Path(name)/'play';session=base/'game_session'
+            live=session/status_name
+            guard=base/'.boe_runtime/locks/gm-daemon-instance.lock'
+            live.parent.mkdir(parents=True);guard.parent.mkdir(parents=True)
+            check=actual.require_portable_cold_daemon_witness
+            self.assertEqual(check(base,sealed),old_id)
+            for defect in ('absent','length','digest'):
+                with self.assertRaises(ValueError):check(base,fixture(defect))
+            for path in (live,guard):
+                path.write_bytes(raw)
+                with self.assertRaises(ValueError):check(base,sealed)
+                self.assertEqual(path.read_bytes(),raw)
+                path.unlink()
+                path.symlink_to(path.with_name('unmaterialized-test'))
+                with self.assertRaises(ValueError):check(base,sealed)
+                self.assertTrue(path.is_symlink())
+                path.unlink()
+            self.assertEqual(check(base,sealed),old_id)
+
     def test_actual_pending_namespace_refuses_without_any_owner_adoption(self):
         check=getattr(actual,'require_cold_loaded_namespace',None)
         self.assertTrue(callable(check),'missing actual closed namespace check')
