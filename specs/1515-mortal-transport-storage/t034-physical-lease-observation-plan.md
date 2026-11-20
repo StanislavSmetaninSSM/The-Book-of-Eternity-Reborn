@@ -1594,3 +1594,47 @@ Local immutable outcome indexes: target
 `5b1bf7684a022aebf3f644dfb9a8e68f5c8939d1494b41a8138aa07bd05e638d`.
 No hosted CI, full suite, Windows runtime, actual Save43 repeat, or live
 Mira turn implied; mm30 remains frozen and will not be reused.
+
+## Real Linux cold Save43 → new hosted daemon → live Mira Turn44 → ordinary Save44
+
+2026-11-20, one original per stage. Current package uses the precise owning
+Linux build above, with normal no-build/no-restore packaging and no overlays.
+Fixture source `656e3f277606e17b9bc9e1e0272f0fb4ddc15c8e` reads the previous
+daemon owner strictly from the intact archive as historical data and requires
+both current local files absent. The four focused fixture-only cases pass.
+Retained same-root/hosted A→B Load is not part of this activity.
+
+- Fresh ordinary UI cold Load selected exact `s_20261119_171314.zip`
+  (`3e4a90125ecc488d95df3f95fde6bdd810561f17ef3f4f3a0b99995b8b83d61f`).
+  The older daemon status still matches the original ZIP manifest; neither
+  current daemon status nor guard materialized. The actual cold client returned
+  normally and restored terminal baseline. A separate closed rebind changed
+  only the three reviewed operational settings and prepared the private
+  empty relay queue. Player state and the source archive remained exact.
+- The new original started a distinct real Linux daemon and ordinary player
+  action produced one genuine relay request. The sole live GM chose to allow
+  the known open route to Mira and begin a preliminary observation from the
+  manor, based on the fresh request/state, without inferring hidden condition,
+  completion, council consent or access. The reviewed packet was published
+  once and the actual game accepted Turn44, moved to the known location,
+  wrote only Mira's scoped observation, and advanced 505→510 minutes.
+- Ordinary Save produced exact `s_20261120_020100.zip`
+  (`fecc8d9df887b1ba6145c8b352d956464914dc24c44fb1293b575ff9a8ecd630`).
+  Live off-screen storage and the archive contain the same exact chalk
+  item at its established courtyard/locker coordinates, quantity one, with
+  the active item-identity carrier aligned and no other current/player copy.
+  The new ZIP and its manifest omit daemon status. The old ZIP is unchanged.
+- The original main owner completed a single verified shutdown. Client,
+  bridge and daemon returned 0 with EOF and terminal restoration, the daemon
+  guard/status pair settled, the RPC helper closed normally and the guardian
+  reported complete process reaping without an emergency signal or deadline.
+  No pending turn or repair remained. No hosted CI or raw diagnostic upload.
+
+Frozen local evidence indexes: cold
+`ae610cc8bf508f450bb2bbc3be36cbe0d3626cbb298cc0df028775457be2f104`,
+closed rebind
+`d7e4b4dd96999f569209877cecdbfbc4a5d3ad94e3615349a7d122e03c768e5c`,
+one real hosted outcome
+`9cc7f509c32275c56aadc293eacfaf242a3db223898e5d895c7c64e536495f8e`.
+This proves the corrected fresh-host sequence and one bounded live GM move /
+Save; no grant, transfer, active hosted A→B Load or issue closure is claimed.
