@@ -91,7 +91,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(originalGeneration, ownerAIdentity.GenerationId);
             Assert.False(terminalA.RootExited.IsCompleted);
             evidence["OriginalIdentity"] = ownerAIdentity;
-            var loadFiles = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            // Like the console, SaveLoadService and StateManager must share
+            // their exact filesystem manager for the committed refresh lease.
+            var loadFiles = seed;
             var loadService = new SaveLoadService(loadFiles, state, NullLogger<SaveLoadService>.Instance,
                 new SaveLoadServiceHooks
                 {

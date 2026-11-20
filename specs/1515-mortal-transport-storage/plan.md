@@ -5547,3 +5547,10 @@ comparison data; keep fresh actual guard, record, generation, original Load
 receipt and helper response/close observations at each boundary. No cache or
 change to lock attempts, no expectation of improved runtime yet. No GM prompt,
 mechanic, authoring or gameplay contract changes.
+
+Initial SOURCE review of 8fd07e3f blocked running that fixture: a second
+FileSystemManager cannot refresh the seeded StateManager with its physical
+lease even when the root path matches. The fixture now keeps the exact
+producer/StateManager/Load manager, while the protocol waiter still gets
+its own separate manager and non-ambient flow. No build or case was run on
+the initial candidate. Corrected SOURCE remains pending re-review and RED.
