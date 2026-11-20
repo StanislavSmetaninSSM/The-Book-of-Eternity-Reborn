@@ -261,6 +261,86 @@ class DriverStorageRoute(unittest.TestCase):
         self.assertEqual(accepted.count('storage_ui_move('),1)
         self.assertNotIn('load_created_save(',accepted)
 
+    def test_absent_offscreen_is_real_data_not_invented_file(self):
+        import pathlib,tempfile
+        import relay_phase_evidence as evidence
+        with tempfile.TemporaryDirectory() as tmp:
+            root=pathlib.Path(tmp)
+            canonical=root/'scope.json';canonical.write_text('{}')
+            absent=root/'offscreen.json'
+            ns=dict(STORAGE_RETRIEVE_PATHS={'current':'scope.json','contents':'offscreen.json'},
+                    phase_evidence=evidence,strict_settings=evidence.strict_settings)
+            read=self.driver('storage_retrieve_data',ns)
+            self.assertEqual(read(root),{'current':{},'contents':None})
+            absent.write_text('{"schemaVersion":1,"entries":[]}')
+            self.assertEqual(read(root)['contents'],{'schemaVersion':1,'entries':[]})
+            absent.unlink();absent.symlink_to(canonical)
+            with self.assertRaises(ValueError):read(root)
+
+    def test_denied_storage_requires_exact_chalk_and_ledger_not_same_labels(self):
+        self.assertTrue(hasattr(routes,'require_storage_no_grant'),'full denied scope witness missing')
+        data={'map':{},'access':{},'contents':None,'inventory':{},'item_index':{},'location_index':{},
+              'current':{'locationId':'yard','locationStorages':[{'storageId':'locker','contents':[{'itemId':'chalk','count':1}]}]}}
+        changed=copy.deepcopy(data)
+        changed['current']['locationStorages'][0]['contents'][0]['count']=2
+        routes.require_storage_no_grant({'LocationId':'yard','StorageId':'locker'},data,copy.deepcopy(data))
+        with self.assertRaisesRegex(ValueError,'locked storage'):
+            routes.require_storage_no_grant({'LocationId':'yard','StorageId':'locker'},data,changed)
+
+    def test_preparer_admits_only_exact_p02_descriptor(self):
+        import ast,pathlib,re
+        root=pathlib.Path(__file__).resolve().parents[3]
+        preparer=root/'specs/1515-mortal-transport-storage/manual-mm21/prepare-mm21-profile.py'
+        names={'continuation_spec','checked_continuation_binding'}
+        defs=[n for n in ast.parse(preparer.read_text()).body if isinstance(n,ast.FunctionDef) and n.name in names]
+        ns={'re':re};exec(compile(ast.Module(body=defs,type_ignores=[]),str(preparer),'exec'),ns)
+        route={'Route':'ordinary-save-with-storage-retrieve','LocationId':'yard',
+               'StorageId':'storage_council_chalk_t034_visit42','ItemId':'chalk'}
+        binding={'Phase':'p02','PreviousSHA256':'a'*64,'GuardianSHA256':'b'*64,'SeedSHA256':'c'*64,
+                 'PhasePackageSHA256':'d'*64,'SourcePins':{},'Action':'Прошу разрешения взять мел.','ConsoleRoute':route}
+        try:self.assertEqual(ns['checked_continuation_binding'](binding),binding)
+        except ValueError as exc:self.fail('Exact P02 descriptor refused: '+str(exc))
+        for invalid in (dict(binding,Phase='p03'),dict(binding,ConsoleRoute=dict(route,StorageId='other')),
+                        dict(binding,ConsoleRoute=dict(route,ItemId=' chalk'))):
+            with self.assertRaises(ValueError):ns['checked_continuation_binding'](invalid)
+
+    def test_wrong_launch_action_or_route_pin_refuses(self):
+        self.assertTrue(hasattr(routes,'require_storage_retrieve_profile'),'profile binding missing')
+        import hashlib
+        hash=lambda data:hashlib.sha256(data).hexdigest()
+        action=b'action';route=b'route';seed=b'seed';prior=b'prior'
+        profile={'Route':'ordinary-save-with-storage-retrieve','ExpectedTurn':43,'GMDecisionDeferred':True,
+                 'ActionSHA256':hash(action),'ConsoleRouteSHA256':hash(route),'SeedSHA256':hash(seed),'PreviousSHA256':hash(prior)}
+        routes.require_storage_retrieve_profile(profile,action,route,seed,prior)
+        for changed in (dict(profile,ActionSHA256='a'*64),dict(profile,ConsoleRouteSHA256='b'*64)):
+            with self.assertRaisesRegex(ValueError,'launch pins'):
+                routes.require_storage_retrieve_profile(changed,action,route,seed,prior)
+
+    def test_decision_has_to_be_observed_before_reply(self):
+        self.assertTrue(hasattr(routes,'require_initial_storage_decision'),'pre-reply evidence check missing')
+        request={'sessionId':'world','requestId':'real','turnNumber':43}
+        note={**request,'Decision':'Grant','Rationale':'Actual observed owner consents',
+              'RequestSHA256':'r','CanonicalPins':{'scope':'b'}}
+        routes.require_initial_storage_decision(note,request,'r',{'scope':'b'},False)
+        for changed,reply_visible in ((note,True),(dict(note,CanonicalPins={}),False),(dict(note,turnNumber=44),False)):
+            with self.assertRaises(ValueError):
+                routes.require_initial_storage_decision(changed,request,'r',{'scope':'b'},reply_visible)
+
+    def test_absent_offscreen_archive_cannot_invent_empty_companion(self):
+        import io,zipfile
+        import relay_phase_evidence as evidence
+        name='game_state/world/location_storage_contents.json'
+        snapshot={'Turn':43,'Files':{name:None}}
+        def archive(include):
+            data=io.BytesIO()
+            with zipfile.ZipFile(data,'w') as z:
+                z.writestr('save_metadata.json',json.dumps({'saveName':'s','turnNumber':43}))
+                if include:z.writestr(name,'{"schemaVersion":1,"entries":[]}')
+            return data.getvalue()
+        self.assertTrue(evidence.verify_ordinary_save_archive(archive(False),snapshot,43))
+        with self.assertRaisesRegex(ValueError,'absent scoped DATA'):
+            evidence.verify_ordinary_save_archive(archive(True),snapshot,43)
+
     def test_final_result_does_not_confuse_denial_with_success(self):
         self.assertTrue(hasattr(routes,'storage_retrieve_save_proved'),'outcome proof missing')
         for decision in ('Deny','Defer','Grant'):

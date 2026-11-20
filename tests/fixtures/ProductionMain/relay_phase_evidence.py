@@ -957,13 +957,16 @@ def ordinary_save_snapshot(session, story, queue, result, *, storage_retrieve=Fa
         'ready/turn_complete.json','ready/turn_error.json'):
         path=session/name
         if path.exists() or path.is_symlink():raise ValueError('Pending turn at Save boundary: '+name)
-    storage_paths=('game_state/misc/storage_access.json','game_state/world/location_storage_contents.json') if storage_retrieve else ()
+    storage_paths=('game_state/misc/storage_access.json',) if storage_retrieve else ()
     files={name:_restored_plain_path(session/name).read_bytes().hex()
            for name in (*ORDINARY_SAVE_PATHS,*storage_paths,story_name)}
     if sha(bytes.fromhex(files[story_name]))!=result.get('StoryAfterSHA256'):
         raise ValueError('Accepted story changed before Save')
-    history='game_state/world/mortal_living_world_history.json';p=session/history
-    files[history]=_restored_plain_path(p).read_bytes().hex() if p.exists() or p.is_symlink() else None
+    optional=('game_state/world/mortal_living_world_history.json',)
+    if storage_retrieve:optional+=('game_state/world/location_storage_contents.json',)
+    for name in optional:
+        p=session/name
+        files[name]=_restored_plain_path(p).read_bytes().hex() if p.exists() or p.is_symlink() else None
     queue=_restored_plain_path(Path(queue),True);queue_pins={}
     for p in queue.rglob('*'):
         if p.is_symlink():raise ValueError('Linked Save queue entry')
@@ -990,7 +993,7 @@ def verify_ordinary_save_archive(raw, snapshot, expected_turn):
             raise ValueError('Save turn differs from accepted turn')
         for name,value in snapshot['Files'].items():
             if value is None:
-                if name in names:raise ValueError('Save fabricated absent history')
+                if name in names:raise ValueError('Save fabricated absent scoped DATA: '+name)
             elif names.count(name)!=1 or archive.read(name)!=bytes.fromhex(value):
                 raise ValueError('Save scoped DATA differs: '+name)
     return True

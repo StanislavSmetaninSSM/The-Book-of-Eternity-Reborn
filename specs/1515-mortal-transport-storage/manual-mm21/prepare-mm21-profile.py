@@ -51,10 +51,15 @@ def checked_continuation_binding(value):
     if type(action) is not str or not action.strip() or len(action.encode())>4096 or any(ord(c)<32 for c in action):raise ValueError('Invalid single action')
     route=value['ConsoleRoute']
     if type(route) is not dict:raise ValueError('Exact continuation route required')
-    fields={'permission-with-denial':{'Route','StorageId','ItemId'},'ordinary-save':{'Route'}}.get(route.get('Route'))
+    fields={'permission-with-denial':{'Route','StorageId','ItemId'},'ordinary-save':{'Route'},
+            'ordinary-save-with-storage-retrieve':{'Route','LocationId','StorageId','ItemId'}}.get(route.get('Route'))
     if fields is None or set(route)!=fields or (value['Phase']=='p03' and route.get('Route')!='ordinary-save'):raise ValueError('Exact continuation route required')
     for key in fields-{'Route'}:
         if type(route[key]) is not str or not route[key] or any(ord(c)<32 for c in route[key]):raise ValueError('Invalid target identity')
+    if route['Route']=='ordinary-save-with-storage-retrieve' and (
+        value['Phase']!='p02' or route['StorageId']!='storage_council_chalk_t034_visit42' or
+        any(route[key]!=route[key].strip() for key in fields-{'Route'})):
+        raise ValueError('Only the exact reviewed P02 courtyard storage continuation is supported')
     return value
 
 def require_profile_outputs_absent(phase,launcher):
@@ -136,7 +141,7 @@ def require_standalone_preparation(root,phase):
         raise ValueError('Standalone setup chat/session differs')
     return seed
 
-def render_launch_script(D,phase,previous_path,failure,stop,profile_sha,cold=False,*,load_nonce=None):
+def render_launch_script(D,phase,previous_path,failure,stop,profile_sha,cold=False,*,load_nonce=None,fresh_p02_paths=None):
     if load_nonce is not None and (cold or phase!='p01' or previous_path is not None
             or type(load_nonce) is not str or re.fullmatch('[0-9a-f]{32}',load_nonce) is None):
         raise ValueError('A Load observation nonce requires the exact standalone Load route')
@@ -208,6 +213,14 @@ exit $?
     if load_nonce is not None:
         script=script.replace('unset BOE_TEST_LOAD_OBSERVATION_NONCE\n',
                               'export BOE_TEST_LOAD_OBSERVATION_NONCE='+load_nonce+'\n')
+    if fresh_p02_paths is not None:
+        from shlex import quote
+        if cold or load_nonce is not None or phase!='p02' or previous_path is None:
+            raise ValueError('Fresh toolchain paths belong only to the exact P02 continuation')
+        repo,binary_path=fresh_p02_paths
+        script=script.replace('source /workspace/shared/isolated-restore-20261119/env.sh',
+                              'export PATH='+quote(binary_path))
+        script=script.replace('cd /workspace/shared/mortal-isolated-20261119','cd '+quote(str(repo)))
     return script
 
 def main():
@@ -228,7 +241,15 @@ def main():
         if hashlib.sha256(binding_bytes).hexdigest()!=os.environ['MM_REVIEWED_CONTINUATION_SHA256']:raise ValueError('Continuation binding changed')
         binding=checked_continuation_binding(json.loads(binding_bytes))
     phase=binding['Phase'] if binding is not None else 'p01' 
-    P=D/phase;R=pathlib.Path('/workspace/shared/mortal-isolated-20261119');h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();inv=lambda root:{str(p.relative_to(root)):h(p) for p in root.rglob('*') if p.is_file()};before=inv(D/'play');os.umask(0o077)
+    retrieve=binding is not None and binding['ConsoleRoute']['Route']=='ordinary-save-with-storage-retrieve'
+    P=D/phase;R=pathlib.Path(__file__).resolve().parents[3] if retrieve else pathlib.Path('/workspace/shared/mortal-isolated-20261119')
+    fresh_p02_paths=None
+    if retrieve:
+        executables=[shutil.which(tool) for tool in ('dotnet','pwsh')]
+        if any(path is None for path in executables):raise ValueError('Reviewed fresh P02 toolchain is not present')
+        dirs=[str(pathlib.Path(path).resolve().parent) for path in executables]
+        fresh_p02_paths=(R,':'.join(dict.fromkeys([*dirs,'/usr/bin','/bin'])))
+    h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();inv=lambda root:{str(p.relative_to(root)):h(p) for p in root.rglob('*') if p.is_file()};before=inv(D/'play');os.umask(0o077)
     require_profile_outputs_absent(P,D/('launch-'+phase+'.sh'))
     a='Выхожу из покоев, ищу представителя совета и прошу проводить меня к его хозяйственному двору, показать припаркованную грузовую повозку и закрытую кладовую с разметочным мелом, объяснить владельца и порядок выдачи. Ничего не беру и не перемещаю'
     previous_path=None;route={'Route':'birth'}
@@ -261,6 +282,11 @@ def main():
         route=routes.checked_route(binding['ConsoleRoute']);a=binding['Action']
         if route['Route']=='permission-with-denial':
             routes.storage_target(pe.strict_settings((D/'play/game_session/game_state/world/current_location.json').read_bytes()),route['StorageId'],route['ItemId'],False)
+        if retrieve:
+            root=D/'play/game_session'
+            read=lambda path:pe.strict_settings(plain_path(root/path).read_bytes())
+            routes.require_storage_retrieve_predecessor(route,previous,read('game_state/world/location_identity_index.json'),
+                read('game_state/world/current_location.json'),read('game_state/inventory/item_identity_index.json'))
         for name in ('input/turn_request.json','game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json','game_state/control/pending_turn_snapshot','ready/turn_complete.json','ready/turn_error.json'):
             f=D/'play/game_session'/name
             if f.exists() or f.is_symlink():raise ValueError('Pending continuation: '+name)
@@ -288,13 +314,14 @@ def main():
     for n in ['config','data','state','cache','tmp','home']:(P/'launch-env'/n).mkdir(parents=not self_save_load,mode=0o700)
     failure=uuid.uuid4().hex;stop=uuid.uuid4().hex
     profile={'Route':route['Route'],'ExpectedTurn':continuation_spec(phase,previous)[2] if previous_path else 42,'PreviousResult':str(previous_path) if previous_path else None,'PreviousSHA256':h(previous_path) if previous_path else None,'GMDecisionDeferred':bool(previous_path),'SeedSHA256':h(D/'seed-manifest.json'),'FailureNonce':failure,'StopNonce':stop,'Budgets':{'provider':600,'work':660,'clientCleanup':680,'driver':720,'guardian':750},'Driver':str(R/'tests/fixtures/ProductionMain/live-mortal-phase.py'),'ReceiptHelper':str(D/'receipt-helper/BookOfEternityClient.TestSupport.dll'),'ActionSHA256':h(P/'action.txt'),'RuntimeCount':len(inv(D/'play/game_session/_runtime')),'HelperCount':len(inv(D/'receipt-helper')),'PrivateDirectoriesCreated':phase+'/launch-env/*; driver creates own phase config,data,state,cache,tmp exactly once','OperationalConfigWritten':False}
+    if retrieve:profile['ConsoleRouteSHA256']=h(P/'console-route.json')
     load_nonce=uuid.uuid4().hex if self_save_load else None
     if self_save_load:
         profile['GMDecisionDeferred']=True
         profile['LoadObservationNonce']=load_nonce
         profile['RuntimeCount']=len(inv(D/'package'))
     profile,profile_sha=write_physical_launch_profile(D/'play',P,D/('launch-'+phase+'.sh'),profile)
-    script=render_launch_script(D,phase,previous_path,failure,stop,profile_sha,load_nonce=load_nonce)
+    script=render_launch_script(D,phase,previous_path,failure,stop,profile_sha,load_nonce=load_nonce,fresh_p02_paths=fresh_p02_paths)
     write_profile_artifact(D/('launch-'+phase+'.sh'),script.encode('utf-8'),0o700)
     regular_tree(D/'play')
     assert inv(D/'play')==before

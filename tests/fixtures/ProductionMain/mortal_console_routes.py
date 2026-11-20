@@ -395,6 +395,24 @@ def _require_canonical_stack(rows, item):
 def _same_data(a,b):
     return json.dumps(a,sort_keys=True)==json.dumps(b,sort_keys=True)
 
+def require_storage_no_grant(route,before,after):
+    """No-grant does not change the locked item, access or scoped authority surfaces."""
+    loc,locker=route['LocationId'],route['StorageId']
+    def selected(data):
+        current=data['current']
+        if current.get('locationId')!=loc:raise ValueError('No-grant left the exact locked courtyard')
+        return _exact_row(current['locationStorages'],lambda row:row.get('storageId')==locker,
+                          'exact locked storage required')
+    if any(not _same_data(before[key],after[key])
+           for key in ('map','access','contents','inventory','item_index','location_index')) or not _same_data(selected(before),selected(after)):
+        raise ValueError('No-grant decision changed locked storage or scoped authority DATA')
+
+def _offscreen_entries(root):
+    if root is None:return []
+    if type(root) is not dict or type(root.get('schemaVersion')) is not int or root['schemaVersion']!=1 or type(root.get('entries')) is not list:
+        raise ValueError('invalid offscreen contents DATA')
+    return root['entries']
+
 def require_retrieve_start(route, world_map, offscreen, birth_index,
                            live_index, current, inventory, item_index):
     """Check current canonical location, birth and source carrier before any console input."""
@@ -408,7 +426,7 @@ def require_retrieve_start(route, world_map, offscreen, birth_index,
     if (metadata.get('hasFullAccess') is not True or holding.get('hasFullAccess') is not True or
         any(metadata.get(k)!=holding.get(k) for k in ('owner','authorizedUsers'))):
         raise ValueError('canonical map metadata and current storage disagree')
-    if any((entry.get('locationId'),entry.get('storageId'))==(loc,locker) for entry in offscreen['entries']):
+    if any((entry.get('locationId'),entry.get('storageId'))==(loc,locker) for entry in _offscreen_entries(offscreen)):
         raise ValueError('current locker is duplicated in offscreen contents')
     stack=_require_canonical_stack(holding['contents'],item)
     if item_position(current,inventory,locker,item)!='storage':
@@ -450,7 +468,7 @@ def require_retrieve_evidence(route, world_map, offscreen_before, offscreen_afte
             row.get('authorizedUsers')!=metadata.get('authorizedUsers')):
             raise ValueError('canonical map metadata and current storage disagree')
     for root in offscreen_before,offscreen_after:
-        if any((entry.get('locationId'),entry.get('storageId'))==(loc,locker) for entry in root['entries']):
+        if any((entry.get('locationId'),entry.get('storageId'))==(loc,locker) for entry in _offscreen_entries(root)):
             raise ValueError('current locker is duplicated in offscreen contents')
     if (item_position(current_before,inventory_before,locker,item)!='storage' or
         item_position(current_after,inventory_after,locker,item)!='inventory'):
@@ -501,7 +519,8 @@ def storage_birth_witness(route, index, prior_request):
     if (type(birth.get('turn')) is not int or birth['turn']!=prior_request['turnNumber'] or
         birth.get('entityId')!=loc or cargo.get('locationId')!=loc or cargo.get('storageId')!=locker or
         cargo.get('carrierKind')!='location_storage' or cargo.get('sourceTurn')!=birth['turn'] or
-        any(authority.get(k)!=prior_request.get(k) or not authority.get(k) for k in _TURN_FIELDS[:2])):
+        any(authority.get(k)!=prior_request.get(k) or not authority.get(k) for k in _TURN_FIELDS[:2]) or
+        ('snapshotToken' in prior_request and authority.get('snapshotToken')!=prior_request['snapshotToken'])):
         raise ValueError('storage birth differs from accepted predecessor')
     row=_exact_row(cargo['cargoMeasurements'],lambda row:row.get('itemId')==item,'one exact born chalk cargo identity required')
     if type(row.get('count')) is not int or row['count']!=1:
@@ -516,3 +535,41 @@ def storage_retrieve_save_proved(result):
                 all(type(witness[k]) is str and bool(witness[k]) for k in ('BirthTransitionId','ItemTransitionId')) and
                 result['OrdinarySaveProof']['Turn']==result['AcceptedTurnNumber'])
     except (KeyError,TypeError):return False
+
+
+def require_storage_retrieve_profile(profile,action,route,seed,prior):
+    """Independently pinned exact P02 inputs, not evidence of access or authority."""
+    exact={'Route':_ROUTE,'ExpectedTurn':43,'GMDecisionDeferred':True}
+    for name,data in (('ActionSHA256',action),('ConsoleRouteSHA256',route),('SeedSHA256',seed),('PreviousSHA256',prior)):
+        if type(data) is not bytes:raise ValueError('Missing exact Retrieve launch pins')
+        exact[name]=hashlib.sha256(data).hexdigest()
+    if any(type(profile.get(key)) is not type(value) or profile[key]!=value for key,value in exact.items()):
+        raise ValueError('Exact Retrieve action/route/seed/predecessor launch pins differ')
+
+def require_storage_retrieve_predecessor(route,previous,location_index,current,item_index):
+    """Narrow reviewed P01 birth42; does not itself admit continuation."""
+    if (previous.get('AcceptedTurnNumber')!=42 or previous.get('ConsoleRoute')!={'Route':'birth'} or
+        route['StorageId']!='storage_council_chalk_t034_visit42'):
+        raise ValueError('The exact fresh reviewed P01 birth42 predecessor is required')
+    prior={**previous['ActualRequest'],'snapshotToken':previous['TypedReceiptEvidence']['snapshotToken']}
+    location=_exact_row(location_index['locationEntries'],
+        lambda row:row.get('locationId')==route['LocationId'],'exact P01 location history required')
+    if location.get('initialId')!='locref_council_t034_visit42':
+        raise ValueError('Different P01 courtyard birth')
+    entry=_exact_row(item_index['entries'],lambda row:row.get('itemId')==route['ItemId'],'exact P01 chalk identity required')
+    if entry.get('originCreationRefs')!=['chalk_t034_visit42']:
+        raise ValueError('Different P01 chalk birth source')
+    birth=storage_birth_witness(route,location_index,prior)
+    target=storage_target(current,route['StorageId'],route['ItemId'],False)
+    if target['LocationId']!=route['LocationId']:raise ValueError('Exact P01 courtyard is not current')
+    return birth
+
+def require_initial_storage_decision(note, request, request_sha, canonical_pins, reply_visible):
+    """Detached check for an independently authored choice recorded before any reply."""
+    if (reply_visible is not False or type(note) is not dict or
+        set(note)!={'Decision','Rationale','RequestSHA256','CanonicalPins',*_TURN_FIELDS} or
+        note.get('Decision') not in ('Grant','Deny','Defer') or
+        type(note.get('Rationale')) is not str or not note['Rationale'].strip() or
+        type(note.get('turnNumber')) is not int or any(note.get(key)!=request[key] for key in _TURN_FIELDS) or
+        note['RequestSHA256']!=request_sha or note['CanonicalPins']!=canonical_pins):
+        raise ValueError('Independent decision must match exact current request and canonical originals before reply')

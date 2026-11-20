@@ -2,6 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "mortal-storage-retrieve-save-data",
+      "reason": "#1515 T038 new bounded test-only P02 grant-to-Retrieve-to-Save route.",
+      "contracts": [
+        "Exact reviewed P01 birth and selected courtyard/carrier, pre-reply decision and consumed-reply join, no-grant stop, ordinary Save and optional companion absence; DATA only."
+      ]
+    },
+    {
       "category": "gm-bridge-fifo-linux",
       "reason": "Shared endpoint transport and actual main/load/draft consumers.",
       "contracts": [

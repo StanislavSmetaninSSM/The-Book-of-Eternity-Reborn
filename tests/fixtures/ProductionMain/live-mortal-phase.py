@@ -662,7 +662,11 @@ route_path=out/'console-route.json'
 route_bytes=route_path.read_bytes() if route_path.exists() else None
 route=console_routes.checked_route(strict_settings(route_bytes) if route_bytes is not None else None)
 action_bytes=Path(sys.argv[3]).read_bytes();action=checked_action(action_bytes)
-previous=strict_settings(Path(sys.argv[5]).read_bytes()) if len(sys.argv)==6 else None
+previous_bytes=Path(sys.argv[5]).read_bytes() if len(sys.argv)==6 else None
+previous=strict_settings(previous_bytes) if previous_bytes is not None else None
+if route['Route']=='ordinary-save-with-storage-retrieve':
+    if sys.flags.optimize:raise ValueError('Retrieve-save requires normal assertion-enabled fixture execution')
+    console_routes.require_storage_retrieve_profile(trace_profile,action_bytes,route_bytes,seed_bytes,previous_bytes)
 if route['Route']=='self-save-load-turn':
     phase_evidence.require_self_save_launch(out,seed_path,seed_bytes,action_bytes,receipt_helper,trace_profile,previous,sys.flags.optimize)
 if restored_diagnostic and route['Route']!='birth':raise ValueError('Diagnostic import cannot run local storage routes')
@@ -1449,8 +1453,13 @@ STORAGE_RETRIEVE_PATHS={
 }
 
 def storage_retrieve_data(root):
-    return {key:strict_settings(phase_evidence._restored_plain_path(root/path).read_bytes())
-            for key,path in STORAGE_RETRIEVE_PATHS.items()}
+    result={}
+    for key,relative in STORAGE_RETRIEVE_PATHS.items():
+        path=root/relative
+        # Production distinguishes an absent off-screen companion from a present empty tree.
+        result[key]=None if key=='contents' and not (path.exists() or path.is_symlink()) else strict_settings(
+            phase_evidence._restored_plain_path(path).read_bytes())
+    return result
 
 def storage_access_row(data):
     rows=[row for row in data['access']['entries']
@@ -1462,17 +1471,40 @@ def prepare_storage_retrieve():
     if expected_turn!=43 or not previous or previous.get('AcceptedTurnNumber')!=42:
         raise ValueError('Retrieve-save requires the fresh same-world accepted birth42 predecessor')
     path=out/'gm-storage-decision.json'
-    if path.exists() or path.is_symlink():raise ValueError('Pre-existing GM decision is not current-turn evidence')
+    decision_paths=(path,out/'gm-storage-decision-before-reply.json',out/'gm-storage-decision-observed.json')
+    if any(p.exists() or p.is_symlink() for p in decision_paths):
+        raise ValueError('Pre-existing GM decision is not current-turn evidence')
     data=storage_retrieve_data(baseline)
-    prior=previous['ActualRequest']
-    birth=console_routes.storage_birth_witness(route,data['location_index'],prior)
-    target=console_routes.storage_target(data['current'],route['StorageId'],route['ItemId'],False)
-    if target['LocationId']!=route['LocationId'] or storage_access_row(data).get('hasFullAccess') is not False:
+    birth=console_routes.require_storage_retrieve_predecessor(route,previous,data['location_index'],data['current'],data['item_index'])
+    if storage_access_row(data).get('hasFullAccess') is not False:
         raise ValueError('Initial exact courtyard/locker is not canonically locked')
-    return data,birth
+    pin_paths=(*STORAGE_RETRIEVE_PATHS.values(),
+               'game_state/npcs/npc_core.json','game_state/factions/faction_core.json')
+    pins={relative:(sha(phase_evidence._restored_plain_path(baseline/relative).read_bytes())
+          if (baseline/relative).exists() or (baseline/relative).is_symlink() else None) for relative in pin_paths}
+    return data,birth,pins
+
+def observe_initial_storage_decision(provider_deadline):
+    if 'StorageDecisionObserved' in result:return
+    candidate=out/'gm-storage-decision-before-reply.json'
+    if not (candidate.exists() or candidate.is_symlink()):return
+    candidate=phase_evidence._restored_plain_path(candidate)
+    raw=candidate.read_bytes();note=strict_settings(raw)
+    replied=any(any((folder/name).exists() or (folder/name).is_symlink()
+                    for name in ('reply.json','started.json','executing-response.json','execution.json'))
+                for folder in relay_queue.glob('request-*'))
+    console_routes.require_initial_storage_decision(note,result['ActualRequest'],result['ActualRequestSHA256'],
+        storage_retrieve_preflight[2],replied)
+    remaining=provider_deadline-time.monotonic()
+    if remaining<=0:raise TimeoutError('GM decision outside original reply reserve')
+    witness={'DecisionSHA256':sha(raw),'RequestSHA256':result['ActualRequestSHA256'],'RemainingSeconds':remaining,
+        'ObservedAtUtc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+    with (out/'gm-storage-decision-observed.json').open('x',encoding='utf-8') as stream:
+        json.dump(witness,stream)
+    result['StorageDecisionObserved']=witness
 
 def accepted_storage_retrieve(deadline):
-    original_data,birth=storage_retrieve_preflight
+    original_data,birth,pins=storage_retrieve_preflight
     request=result['ActualRequest']
     responses=result['RelayResponseEvidence']
     if len(responses)!=1 or responses[0]['Kind']!='turn':
@@ -1482,10 +1514,16 @@ def accepted_storage_retrieve(deadline):
     path=phase_evidence._restored_plain_path(out/'gm-storage-decision.json')
     decision_raw=path.read_bytes()
     decision=strict_settings(decision_raw)
-    if (set(decision)!={'Decision','Rationale','sessionId','requestId','turnNumber','RequestSHA256','ResponseSHA256'}
-        or type(decision.get('Rationale')) is not str or not decision['Rationale'].strip()
-        or decision['RequestSHA256']!=result['ActualRequestSHA256'] or decision['ResponseSHA256']!=row['ResponseSHA256']):
-        raise ValueError('Independent GM decision does not match the actual request and consumed reply')
+    original_path=phase_evidence._restored_plain_path(out/'gm-storage-decision-before-reply.json')
+    original_raw=original_path.read_bytes()
+    original_note=strict_settings(original_raw)
+    witnessed=result.get('StorageDecisionObserved',{})
+    expected_decision={k:v for k,v in original_note.items() if k!='CanonicalPins'}
+    expected_decision.update(DecisionRecordSHA256=sha(original_raw),ResponseSHA256=row['ResponseSHA256'])
+    if (decision!=expected_decision or witnessed.get('DecisionSHA256')!=expected_decision['DecisionRecordSHA256'] or
+        witnessed.get('RequestSHA256')!=result['ActualRequestSHA256']):
+        raise ValueError('Independent pre-reply GM decision does not match the actual request and consumed reply')
+    console_routes.require_initial_storage_decision(original_note,request,result['ActualRequestSHA256'],pins,False)
     accepted={key:request[key] for key in ('sessionId','requestId','turnNumber')}
     if result['AcceptedTurnNumber']!=request['turnNumber']:
         raise ValueError('Client accepted another turn')
@@ -1496,20 +1534,19 @@ def accepted_storage_retrieve(deadline):
     result['StorageDecision']=decision['Decision']
     result['StorageDecisionSHA256']=sha(decision_raw)
     if target is None:
-        if (storage_access_row(live)!=storage_access_row(original_data) or live['inventory']!=original_data['inventory']
-            or console_routes.storage_target(live['current'],route['StorageId'],route['ItemId'],False)!=
-               console_routes.storage_target(original_data['current'],route['StorageId'],route['ItemId'],False)):
-            raise ValueError('No-grant decision did not preserve the locked storage and inventory')
+        console_routes.require_storage_no_grant(route,original_data,live)
         return False
     if time.monotonic()>=deadline:raise TimeoutError('Original work budget exhausted before Retrieve')
-    if path.read_bytes()!=decision_raw:raise ValueError('Independent decision changed before Retrieve')
+    if path.read_bytes()!=decision_raw or original_path.read_bytes()!=original_raw:
+        raise ValueError('Independent decision changed before Retrieve')
     # Validate accepted map/birth/carrier before any inventory key; a post-check alone could act on a wrong target.
     console_routes.require_retrieve_start(route,live['map'],live['contents'],original_data['location_index'],
         live['location_index'],live['current'],live['inventory'],live['item_index'])
     before=local_observation()
     storage_ui_move(target,True)
     after=storage_retrieve_data(session)
-    if live['map']!=after['map'] or storage_access_row(live)!=storage_access_row(after):
+    if (live['map']!=after['map'] or live['contents']!=after['contents'] or
+        storage_access_row(live)!=storage_access_row(after)):
         raise ValueError('Accepted map/access changed during local Retrieve')
     proof=console_routes.require_retrieve_evidence(route,after['map'],live['contents'],after['contents'],
         original_data['location_index'],after['location_index'],live['current'],after['current'],
@@ -1636,6 +1673,8 @@ try:
         provider_deadline=min(start+work_seconds,time.monotonic()+provider_seconds)
         while time.monotonic()<provider_deadline:
             pump()
+            if route['Route']==STORAGE_RETRIEVE_ROUTE:
+                observe_initial_storage_decision(provider_deadline)
             # Capture transient client rejection evidence before a later rollback can
             # delete it; each artifact is copied once, at first observation.
             for artifact_name in ['error_log.txt','output/validation_repair_request.json',

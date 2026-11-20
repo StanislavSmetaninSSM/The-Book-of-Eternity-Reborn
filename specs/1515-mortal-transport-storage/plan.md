@@ -5626,3 +5626,54 @@ its optional direct invocation, not gameplay results. Exact selected official
 C# category `mortal-storage-retrieve-save-data`, owning SDK 10.0.404 / .NET 8
 runtime / PowerShell 7, pinned terminal package, independent source/outcome
 review and actual live launch still pending at this checkpoint. No hosted CI.
+
+#### T038 independent SOURCE HOLD and corrective source checkpoint
+
+The first independent SOURCE review of `d3ef24a8` reproduced all 33 DATA
+controls, but withheld launch. Important findings: the fresh seed and selected
+P01 courtyard birth do not create a physical empty offscreen companion,
+no-grant was comparing a rendered target instead of exact canonical data,
+the pre-answer GM decision was not observed, and the P02 preparer did not
+admit the new driver route or authenticate its exact scenario.
+
+Corrective source binds only a P02 new route with fixed P01 courtyard/locker
+and chalk creation refs, the accepted birth42 request and typed snapshot
+token, current canonical target, exact action/route/seed/predecessor profile
+hashes, and existing authenticated predecessor/guardian gates. The bounded
+P02 preparer now copies and verifies that exact route from the reviewed
+binding. Existing routes remain under their existing selectors. For the
+new route, the preparer uses its exact fresh checkout and reviewed toolchain
+directories, not a historical checkout or live session. Refuse if the
+dependencies or any source pin are absent. No P01/P02 launch in this block.
+
+New external pre-reply witness for T038: record independently authored
+`gm-storage-decision-before-reply.json` with `Decision`, `Rationale`,
+`sessionId`, `requestId`, `turnNumber`, `RequestSHA256`, `CanonicalPins`.
+The pins cover the exact scoped pre-action original files, including current
+location, map, access, item/storage indexes, inventory, actor/faction authority
+and optional offscreen existence. The driver observes it during the original
+provider window, before any reply/started/execution evidence, and writes a
+local `gm-storage-decision-observed.json` with its exact digest and actual
+remaining reserve. Wait for this acknowledgment before publishing the single
+response. The separately observed post-consumption decision binding
+`gm-storage-decision.json` repeats the note identity/text (except
+`CanonicalPins`) and adds `DecisionRecordSHA256` and `ResponseSHA256`.
+The acting GM and independent evidence reviewer are still responsible for the
+real choice and factual steward/council basis; replies are not fixtures.
+
+No-grant now compares exact locked storage and scoped map/access/item/identity
+state, not display labels. Fresh absent offscreen data is preserved as
+observed absence, not a synthetic output; Save checks that absent member is
+not fabricated. Separate direct Python controls are 39/39 after causal
+refusals. The official C# category is registered and selected; no hosted
+workflow dispatched. Exact real menu geometry/carrier-scope prelaunch review,
+pinned terminal dependencies, official category/owning build and the live
+route remain HOLD/UNRUN. A clean prerequisite is not a result.
+
+After the corrective source pass, the explicit terminal package was restored
+from the reviewed npm lock without install scripts; all 17 dependency hashes
+and the existing bundled Node 24.22.3 SHA-256 match the pinned provenance.
+With that exact local prefix, the existing phase-evidence DATA suite is 38/38
+PASS. New 39/39, console 28/28, self-save DATA 20/20 and retained-load DATA
+23/23 also pass. The initial missing-environment run remains setup-only.
+No runtime package, Windows result, or causal T037 outcome is claimed.
