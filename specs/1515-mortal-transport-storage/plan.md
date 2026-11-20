@@ -5554,3 +5554,75 @@ lease even when the root path matches. The fixture now keeps the exact
 producer/StateManager/Load manager, while the protocol waiter still gets
 its own separate manager and non-ambient flow. No build or case was run on
 the initial candidate. Corrected SOURCE remains pending re-review and RED.
+
+### T038 bounded live storage Retrieve → Save fixture source WIP (2026-11-20)
+
+#1515/T016, separate authorized branch `1515-mortal-grant-retrieve-save`,
+base `92f858eae69fa29c9e1e789b788f3266bb4ec298`. Do not reuse earlier worlds,
+archives, prior interrupted routes, terminal generations or decisions. T035/
+T037 and all stopped technical actions remain separate. No production gameplay,
+daemon/session permissions or GM authoring contract change, so production
+prompts and examples need no update. No Deposit, Load, raw artifact upload,
+hosted CI, main change or issue closure.
+
+After a newly admitted setup41/P01 birth42, the exact clean predecessor and
+guardian record, seed and immutable runtime participation remain mandatory.
+For this route use a new P02 directory with a pinned console-route.json:
+`Route=ordinary-save-with-storage-retrieve` and exact `LocationId`, `StorageId`,
+`ItemId` from that accepted birth only. Starting player/current scene must
+already be the authentic locked courtyard. The prior request/session and birth
+cargo evidence must join. Choose a normal player request for permission, not a
+storage-move command or a selected grant outcome. This is not the old P03 route.
+Do not use cold/active Load, any pre-existing decision or a debug bypass.
+Preparation must use the existing safe fresh-world exporter and current
+client/bridge/helper native package, exact terminal source/dependency inventory
+and owning build pins. This source checkpoint does not contain a launch package.
+
+The independent acting GM chooses Grant/Deny/Defer from the current request and
+accepted game facts. Record the decision/reason before authoring the answer.
+A separate local observer joins its real decision to the exact actual request
+and final consumed reply in `gm-storage-decision.json` at the new phase directory:
+`Decision`, `Rationale`, `sessionId`, `requestId`, `turnNumber`,
+`RequestSHA256` and `ResponseSHA256`. This file must be absent before launch.
+The driver verifies binding but cannot certify independence; preflight review
+must establish the acting GM and observer are providing genuine evidence, not
+a scripted fixture decision. Exact relay reply/typed client acceptance and
+daemon consumer return remain mandatory. A repair/foreign reply, changed
+evidence or insufficient normal reserve stops; do not guess, replay or force
+an affirmative result.
+
+A real grant must use the existing world-map metadata command for the exact
+storage, paired authorization and access fields, and no substitute pending
+grant. The canonical map, access projection and current scene agree; the
+offscreen target coordinate is absent while current. Check active identity,
+exact canonical count=1, itemId=existedId, immutable birth row and joined
+item receipt before ordinary menu input. Reuse the exact existing Retrieve
+selector and ordinary Save UI once; no parallel terminal driver. After the
+transfer require one new local storage-to-player item-history row, at the
+preceding item-transition turn, count-one and the prior history and receipts
+unchanged. Verify exact scoped Save bytes including both storage companions,
+actual Save ACK/fresh prompt and normal cleanup. Deny/defer must leave the
+target and inventory unchanged and runs neither Retrieve nor Save; clean
+stop is a separate result, not a positive transfer PASS.
+
+Optimization: the route reuses the existing complete typed acceptance and
+verified relay correlation, finite selector, local mutation owner and ordinary
+Save. Takes detached scoped observations once at each relevant state boundary;
+live item, access, source and selector evidence is refreshed after each
+mutation, never cached as permission. No extra native build or game fixture
+was started for DATA checks, no claimed performance gain.
+
+Verification at this source checkpoint on Debian 13 Linux x64:
+`PYTHONDONTWRITEBYTECODE=1 python tests/fixtures/ProductionMain/test-mortal-storage-retrieve-save.py`
+33/33 PASS. This includes the previously reviewed 26 detached controls plus
+7 birth/receipt/source-orchestration tests; actual terminal input/runtime is
+not qualified. Existing Python focused suites: console DATA 28/28, self-save
+route DATA 20/20, retained daemon Load evidence DATA 23/23 (no Load launched).
+The existing ordinary-save AST suite on untouched base returned 6 PASS, 1
+FAIL on counting the two target assignments, 1 ERROR on unsupplied
+`continuation_spec`; not counted as acceptance. Phase evidence requires
+`BOE_TERMINAL_PREFIX` and `BOE_TERMINAL_NODE`, absent here; 18 setup errors in
+its optional direct invocation, not gameplay results. Exact selected official
+C# category `mortal-storage-retrieve-save-data`, owning SDK 10.0.404 / .NET 8
+runtime / PowerShell 7, pinned terminal package, independent source/outcome
+review and actual live launch still pending at this checkpoint. No hosted CI.

@@ -4,6 +4,8 @@ Inputs are fresh observed UI/canonical DATA, not permission to mutate. The drive
 must still use the ordinary console action and independently check its result.
 """
 import re
+import json
+import hashlib
 import unicodedata
 
 def checked_route(value):
@@ -12,11 +14,14 @@ def checked_route(value):
     route=value.get('Route')
     fields={'birth':{'Route'},'ordinary-save':{'Route'},'self-save-load-turn':{'Route'},
             'permission-with-denial':{'Route','StorageId','ItemId'},
-            'storage-local-proof':{'Route','StorageId','ItemId'}}.get(route)
+            'storage-local-proof':{'Route','StorageId','ItemId'},
+            'ordinary-save-with-storage-retrieve':{'Route','LocationId','StorageId','ItemId'}}.get(route)
     if fields is None or set(value)!=fields:raise ValueError('Unknown route or extra input program')
     for key in fields-{'Route'}:
         if type(value[key]) is not str or not value[key].strip() or any(ord(c)<32 for c in value[key]):
             raise ValueError('Exact canonical target identity required')
+    if route=='ordinary-save-with-storage-retrieve' and any(value[key]!=value[key].strip() for key in fields-{'Route'}):
+        raise ValueError('Exact storage retrieve identity required')
     return dict(value)
 
 def storage_target(location,storage_id,item_id,accessible):
@@ -304,3 +309,210 @@ def clean_save_result(text):
     if text.count(success)!=1 or warning in text:return False
     saved=text.index(success);heading=text.rfind('Ваш ход');prompt=text.rfind('\n >  ')
     return saved<heading<prompt
+
+
+# #1515 T016, finite positive access and local Retrieve evidence.
+_ROUTE='ordinary-save-with-storage-retrieve'
+_ID_FIELDS=('LocationId','StorageId','ItemId')
+_TURN_FIELDS=('sessionId','requestId','turnNumber')
+_MAP='game_state/world/world_map.json'
+
+def _unique(pairs):
+    value={}
+    for key,item in pairs:
+        if any(key.casefold()==existing.casefold() for existing in value):raise ValueError('duplicate consumed response field')
+        value[key]=item
+    return value
+
+def after_grant(route, request, accepted, decision, response, before, current, access, inventory, player_name, *, verified_birth):
+    """Return the exact selector, or None for denial/defer; caller owns all evidence joins."""
+    route=checked_route(route)
+    if route['Route']!=_ROUTE:raise ValueError('Exact storage retrieve route required')
+    loc,locker,item=(route[key] for key in _ID_FIELDS)
+    if type(verified_birth) is not dict or any(verified_birth.get(key)!=route[key] for key in _ID_FIELDS):
+        raise ValueError('route differs from independently verified birth identity')
+    turn=request.get('turnNumber')
+    if type(turn) is not int or turn<1 or any(type(request.get(k)) is not str or not request[k] for k in _TURN_FIELDS[:2]):
+        raise ValueError('actual request identity absent')
+    for witness in accepted,decision:
+        if type(witness.get('turnNumber')) is not int or any(witness.get(k)!=request[k] for k in _TURN_FIELDS):
+            raise ValueError('decision/acceptance differs from actual turn')
+    if type(accepted.get('AcceptedGameTurns')) is not int or accepted['AcceptedGameTurns']!=1:
+        raise ValueError('one client-accepted turn required')
+    if type(response) is not bytes or hashlib.sha256(response).hexdigest()!=accepted.get('ResponseSHA256'):
+        raise ValueError('consumed response differs from verified relay evidence')
+    packet=json.loads(response,object_pairs_hook=_unique)
+    writes=packet['Writes']
+    map_updates=[w['Data'].get('worldMapUpdates',{}) for w in writes if w['Path']==_MAP]
+    if len(map_updates)>1:raise ValueError('ambiguous world map write')
+    updates=map_updates[0].get('storageUpdates',[]) if map_updates else []
+    if type(updates) is not list:raise ValueError('governed storage updates required')
+    outcome=decision.get('Decision')
+    if outcome in ('Deny','Defer'):
+        if updates:raise ValueError('non-grant decision has storage updates')
+        return None
+    if outcome!='Grant' or type(player_name) is not str or not player_name.strip():
+        raise ValueError('affirmative GM decision/recipient absent')
+    recipient=[{'playerId':'player_current','playerName':player_name}]
+    if len(updates)!=1:raise ValueError('one governed grant update required')
+    patch=updates[0]
+    fields=patch.get('update')
+    if (set(patch)!={'targetLocationId','storageId','update'} or patch['targetLocationId']!=loc or patch['storageId']!=locker
+        or type(fields) is not dict or set(fields)!={'newAuthorizedUsers','newHasFullAccess'}
+        or fields['newAuthorizedUsers']!=recipient or fields['newHasFullAccess'] is not True):
+        raise ValueError('exact governed grant pair required')
+    if (before.get('locationId')!=loc or before.get('storageId')!=locker or before.get('hasFullAccess') is not False
+        or before.get('authorizedUsers')!=[]):
+        raise ValueError('signed original locked coordinate required')
+    owner=before.get('owner')
+    if type(owner) is not dict or owner.get('ownerType')!='Faction' or not owner.get('ownerId'):
+        raise ValueError('original faction owner absent')
+    if current.get('locationId')!=loc:raise ValueError('courtyard is not current')
+    target=storage_target(current,locker,item,True)
+    current_storage=next(s for s in current['locationStorages'] if s.get('storageId')==locker)
+    entries=[e for e in access['entries'] if e.get('locationId')==loc and e.get('storageId')==locker]
+    if len(entries)!=1:raise ValueError('exact effective entry absent or ambiguous')
+    for observed in entries[0],current_storage:
+        if observed.get('owner')!=owner or observed.get('hasFullAccess') is not True or observed.get('authorizedUsers')!=recipient:
+            raise ValueError('current accepted access projections disagree')
+    _require_canonical_stack(current_storage['contents'],item)
+    if item_position(current,inventory,locker,item)!='storage':
+        raise ValueError('one exact chalk stack in locker only required')
+    return target
+
+def _exact_row(rows, predicate, message):
+    matches=[row for row in rows if type(row) is dict and predicate(row)]
+    if len(matches)!=1:raise ValueError(message)
+    return matches[0]
+
+def _require_canonical_stack(rows, item):
+    chalk=_exact_row(rows,lambda row:row.get('itemId')==item,'one exact chalk stack required')
+    if chalk.get('existedId')!=item:raise ValueError('canonical chalk existedId differs from itemId')
+    if type(chalk.get('count')) is not int or chalk['count']!=1:
+        raise ValueError('canonical chalk count must be integer one')
+    return chalk
+
+def _same_data(a,b):
+    return json.dumps(a,sort_keys=True)==json.dumps(b,sort_keys=True)
+
+def require_retrieve_start(route, world_map, offscreen, birth_index,
+                           live_index, current, inventory, item_index):
+    """Check current canonical location, birth and source carrier before any console input."""
+    route=checked_route(route)
+    loc,locker,item=(route[key] for key in _ID_FIELDS)
+    if world_map.get('realm')!='mortal_world' or current.get('locationId')!=loc:
+        raise ValueError('The exact Mortal courtyard is not current')
+    mapped=_exact_row(world_map['locations'],lambda row:row.get('locationId')==loc,'exact canonical map courtyard required')
+    select=lambda obj:_exact_row(obj['locationStorages'],lambda row:row.get('storageId')==locker,'exact courtyard storage required')
+    metadata=select(mapped);holding=select(current)
+    if (metadata.get('hasFullAccess') is not True or holding.get('hasFullAccess') is not True or
+        any(metadata.get(k)!=holding.get(k) for k in ('owner','authorizedUsers'))):
+        raise ValueError('canonical map metadata and current storage disagree')
+    if any((entry.get('locationId'),entry.get('storageId'))==(loc,locker) for entry in offscreen['entries']):
+        raise ValueError('current locker is duplicated in offscreen contents')
+    stack=_require_canonical_stack(holding['contents'],item)
+    if item_position(current,inventory,locker,item)!='storage':
+        raise ValueError('one exact chalk stack in locker only required')
+    born=storage_birth_row(route,birth_index)
+    if not _same_data(born,storage_birth_row(route,live_index)):
+        raise ValueError('immutable storage birth transition changed before Retrieve')
+    entry=_exact_row(item_index['entries'],lambda row:row.get('itemId')==item,'one item identity entry required')
+    source={'kind':'location_storage','ownerId':loc,'containerId':locker,'containerPath':[]}
+    if (entry.get('state')!='active' or entry.get('currentCarrier')!=source or
+        not entry['transitions'] or entry['transitions'][-1].get('destinationCarrier')!=source or
+        not isinstance(stack.get('materialization'),dict) or
+        not isinstance(stack.get('materializationReceipt'),dict) or
+        entry.get('receiptId')!=stack['materializationReceipt'].get('receiptId') or not entry.get('receiptId')):
+        raise ValueError('exact accepted source carrier and chalk receipt required before Retrieve')
+
+def storage_birth_row(route, index):
+    entry=_exact_row(index['locationEntries'],lambda row:row.get('locationId')==route['LocationId'],'exact birth location history required')
+    return _exact_row(entry['transitions'],lambda row:row.get('kind')=='storage_addition' and row.get('childId')==route['StorageId'],
+                      'one exact storage birth transition required')
+
+
+def require_retrieve_evidence(route, world_map, offscreen_before, offscreen_after,
+                              location_before, location_after, current_before, current_after,
+                              inventory_before, inventory_after, index_before, index_after):
+    """Compare detached fields from authenticated pre-/post-Retrieve observations."""
+    route=checked_route(route)
+    if route['Route']!=_ROUTE:raise ValueError('Exact storage retrieve route required')
+    loc,locker,item=(route[key] for key in _ID_FIELDS)
+    def locker_at(root):
+        if root.get('locationId')!=loc:raise ValueError('courtyard is not current')
+        return _exact_row(root['locationStorages'],lambda row:row.get('storageId')==locker,'exact courtyard storage required')
+    metadata_location=_exact_row(world_map['locations'],lambda row:row.get('locationId')==loc,'exact canonical map courtyard required')
+    metadata=locker_at(metadata_location)
+    pre_locker=locker_at(current_before)
+    post_locker=locker_at(current_after)
+    for row in metadata,pre_locker,post_locker:
+        if (row.get('hasFullAccess') is not True or row.get('owner')!=metadata.get('owner') or
+            row.get('authorizedUsers')!=metadata.get('authorizedUsers')):
+            raise ValueError('canonical map metadata and current storage disagree')
+    for root in offscreen_before,offscreen_after:
+        if any((entry.get('locationId'),entry.get('storageId'))==(loc,locker) for entry in root['entries']):
+            raise ValueError('current locker is duplicated in offscreen contents')
+    if (item_position(current_before,inventory_before,locker,item)!='storage' or
+        item_position(current_after,inventory_after,locker,item)!='inventory'):
+        raise ValueError('exact chalk did not leave storage for player inventory')
+    before_stack=_require_canonical_stack(pre_locker['contents'],item)
+    after_stack=_require_canonical_stack(inventory_after['items'],item)
+    if any(not _same_data(before_stack.get(key),after_stack.get(key))
+           for key in ('materialization','materializationReceipt')):
+        raise ValueError('immutable item birth evidence changed')
+
+    original_birth=storage_birth_row(route,location_before)
+    if not original_birth.get('transitionId') or not _same_data(original_birth,storage_birth_row(route,location_after)):
+        raise ValueError('immutable storage birth transition changed')
+
+    old,new=(_exact_row(root['entries'],lambda row:row.get('itemId')==item,'one item identity entry required')
+             for root in (index_before,index_after))
+    source={'kind':'location_storage','ownerId':loc,'containerId':locker,'containerPath':[]}
+    target={'kind':'player_inventory','ownerId':'player','containerId':None,'containerPath':[]}
+    if old.get('state')!='active' or new.get('state')!='active' or old.get('currentCarrier')!=source or new.get('currentCarrier')!=target:
+        raise ValueError('active carrier transition differs from storage-to-player')
+    if not _same_data({k:v for k,v in old.items() if k not in ('currentCarrier','transitions')},
+                      {k:v for k,v in new.items() if k not in ('currentCarrier','transitions')}):
+        raise ValueError('item identity fields changed beyond carrier and history')
+    prior=old['transitions'];after=new['transitions']
+    if not prior or len(after)!=len(prior)+1 or not _same_data(after[:-1],prior):
+        raise ValueError('exact history prefix plus one transition required')
+    row=after[-1]
+    expected={'kind':'transfer','turn':prior[-1]['turn'],'sourceItemIds':[item],
+              'sourceCarrier':source,'destinationCarrier':target,'quantityBefore':1,
+              'quantityAfter':1,'authorityKind':'local_storage_move'}
+    transition_id=row.get('transitionId')
+    authority_id=row.get('authorityId')
+    if (set(row)!=set(expected)|{'transitionId','authorityId'} or
+        not _same_data({key:row[key] for key in expected},expected) or
+        not isinstance(transition_id,str) or re.fullmatch(r'mitrn_[0-9a-f]{32}',transition_id) is None or
+        not isinstance(authority_id,str) or re.fullmatch(r'local_storage_move_[0-9a-f]{32}',authority_id) is None or
+        any(row.get('transitionId')==transition_id or row.get('authorityId')==authority_id for row in prior)):
+        raise ValueError('one new exact local storage transfer required')
+    return {'BirthTransitionId':original_birth['transitionId'],'ItemTransitionId':transition_id}
+
+def storage_birth_witness(route, index, prior_request):
+    """Require the storage/item to be the actual earlier same-world birth."""
+    route=checked_route(route)
+    loc,locker,item=(route[key] for key in _ID_FIELDS)
+    birth=storage_birth_row(route,index)
+    cargo=birth['afterState']['cargoBirthEvidence']
+    authority=cargo['sourceAuthority']
+    if (type(birth.get('turn')) is not int or birth['turn']!=prior_request['turnNumber'] or
+        birth.get('entityId')!=loc or cargo.get('locationId')!=loc or cargo.get('storageId')!=locker or
+        cargo.get('carrierKind')!='location_storage' or cargo.get('sourceTurn')!=birth['turn'] or
+        any(authority.get(k)!=prior_request.get(k) or not authority.get(k) for k in _TURN_FIELDS[:2])):
+        raise ValueError('storage birth differs from accepted predecessor')
+    row=_exact_row(cargo['cargoMeasurements'],lambda row:row.get('itemId')==item,'one exact born chalk cargo identity required')
+    if type(row.get('count')) is not int or row['count']!=1:
+        raise ValueError('canonical chalk birth count must be integer one')
+    return {key:route[key] for key in _ID_FIELDS}
+
+def storage_retrieve_save_proved(result):
+    """A no-grant stop is deliberately not successful transfer evidence."""
+    try:
+        witness=result['StorageRetrieveProof']
+        return (result['StorageDecision']=='Grant' and witness['Retrieved'] is True and
+                all(type(witness[k]) is str and bool(witness[k]) for k in ('BirthTransitionId','ItemTransitionId')) and
+                result['OrdinarySaveProof']['Turn']==result['AcceptedTurnNumber'])
+    except (KeyError,TypeError):return False

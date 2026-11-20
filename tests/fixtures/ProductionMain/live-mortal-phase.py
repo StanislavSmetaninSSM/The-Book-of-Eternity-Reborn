@@ -1248,6 +1248,54 @@ def save_current_turn(expected_saved_turn):
     return {'ArchivePath':str(archive),'ArchiveBytes':archive_bytes,'Metadata':metadata,
         'RawHex':outcome.hex(),'CleanOutcomeBeforeFirstPlayerClear':clean}
 
+def storage_ui_move(target,retrieve):
+    location_path=session/'game_state/world/current_location.json'
+    inventory_path=session/'game_state/inventory/items.json'
+    global client_prompt,inventory_cleanup_required
+    current=strict_settings(location_path.read_bytes());items=strict_settings(inventory_path.read_bytes())
+    expected='storage' if retrieve else 'inventory'
+    if console_routes.item_position(current,items,target['StorageId'],target['ItemId'])!=expected:
+        raise RuntimeError('Current item position changed before local move')
+    storage=[s for s in current['locationStorages'] if s.get('storageId')==target['StorageId']]
+    if len(storage)!=1 or storage[0]['name']!=target['StorageName']:raise RuntimeError('Current exact storage changed')
+    if sum(s.get('name')==target['StorageName'] for s in current['locationStorages'])!=1:raise RuntimeError('Current storage label ambiguous')
+    contents=[i for i in storage[0]['contents'] if type(i) is dict and i.get('itemId')]
+    inventory_items=[i for i in items['items'] if type(i) is dict and i.get('itemId')]
+    label=f"📦 {target['StorageName']} ({len(contents)} пр.) → управление"
+    inventory_menu=console_routes.entry_menu(current_inventory_menu(),command='/storage_move')
+    actions=[]
+    if inventory_items:actions.append(f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
+    if contents:actions.append(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)')
+    action_menu=console_routes.fixed_menu('📦 '+target['StorageName']+'\n  Предметов внутри: '+str(len(contents)),actions+['← Назад к инвентарю'],10)
+    title='Выберите предмет для извлечения из хранилища:' if retrieve else 'Выберите предмет для перемещения в хранилище:'
+    options=contents if retrieve else inventory_items
+    labels=[str(i.get('name',i.get('itemName','')))+((' ×'+str(i.get('quantity',i.get('count',1)))) if str(i.get('quantity',i.get('count',1)))!='1' else '') for i in options]
+    if labels.count(target['ItemLabel'])!=1:raise RuntimeError('Current exact item label unavailable/ambiguous')
+    picker_menu=console_routes.fixed_menu(title,labels+['← Отмена'],20)
+    cut=len(client.capture);client_prompt=False
+    register_inventory_cleanup(inventory_menu,cut)
+    inventory_context['send_confirmed']=False
+    cut=client.send(b'/storage_move\r','fixed local storage move',lambda:client.console.player(0))
+    inventory_context.update(cut=cut,send_confirmed=True)
+    cut,_=finite_select(inventory_menu,label,cut,20)
+    action_label=(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)' if retrieve else
+                  f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
+    cut,_=finite_select(console_routes.after_menu(action_menu,inventory_menu,label),action_label,cut,10)
+    cut,_=finite_select(console_routes.after_menu(picker_menu,action_menu,action_label),target['ItemLabel'],cut,20)
+    until(lambda:'✅ ' in client.text(cut),10,'actual local move result')
+    if '❌' in client.text(cut):raise RuntimeError('Actual local move refused')
+    post_location=strict_settings(location_path.read_bytes());post_items=strict_settings(inventory_path.read_bytes())
+    post_storage=next(st for st in post_location['locationStorages'] if st['storageId']==target['StorageId'])
+    post_actions=[]
+    if post_items['items']:post_actions.append(f"📥 Положить предмет в хранилище ({len(post_items['items'])} в инвентаре)")
+    if post_storage['contents']:post_actions.append(f"📤 Забрать предмет из хранилища ({len(post_storage['contents'])} внутри)")
+    post_menu=console_routes.fixed_menu('📦 '+target['StorageName']+'\n  Предметов внутри: '+str(len(post_storage['contents'])),post_actions+['← Назад к инвентарю'],10)
+    cut,_=finite_select(console_routes.after_menu(post_menu,picker_menu,target['ItemLabel']),'← Назад к инвентарю',cut,10)
+    returned_inventory=console_routes.after_menu(current_inventory_menu(),post_menu,'← Назад к инвентарю')
+    register_inventory_cleanup(returned_inventory,cut)
+    cut,_=finite_select(returned_inventory,'← Назад',cut,20)
+    fresh_player(client,cut,10);client_prompt=True;inventory_cleanup_required=False
+
 def storage_local_route():
     global client_prompt,original,original_record,load_cut,load_expected
     # This fixed local proof creates its sole Save; refuse a broader Load menu before any local action.
@@ -1265,51 +1313,7 @@ def storage_local_route():
         stages.append({'Stage':name,'ItemPosition':expected,'LocationSHA256':sha(current),'InventorySHA256':sha(items)})
         console_routes.require_local_unchanged(before,local_observation())
         return current,items
-    def move(retrieve):
-        global client_prompt,inventory_cleanup_required
-        current=strict_settings(location_path.read_bytes());items=strict_settings(inventory_path.read_bytes())
-        expected='storage' if retrieve else 'inventory'
-        if console_routes.item_position(current,items,route['StorageId'],route['ItemId'])!=expected:
-            raise RuntimeError('Current item position changed before local move')
-        storage=[s for s in current['locationStorages'] if s.get('storageId')==route['StorageId']]
-        if len(storage)!=1 or storage[0]['name']!=target['StorageName']:raise RuntimeError('Current exact storage changed')
-        if sum(s.get('name')==target['StorageName'] for s in current['locationStorages'])!=1:raise RuntimeError('Current storage label ambiguous')
-        contents=[i for i in storage[0]['contents'] if type(i) is dict and i.get('itemId')]
-        inventory_items=[i for i in items['items'] if type(i) is dict and i.get('itemId')]
-        label=f"📦 {target['StorageName']} ({len(contents)} пр.) → управление"
-        inventory_menu=console_routes.entry_menu(current_inventory_menu(),command='/storage_move')
-        actions=[]
-        if inventory_items:actions.append(f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
-        if contents:actions.append(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)')
-        action_menu=console_routes.fixed_menu('📦 '+target['StorageName']+'\n  Предметов внутри: '+str(len(contents)),actions+['← Назад к инвентарю'],10)
-        title='Выберите предмет для извлечения из хранилища:' if retrieve else 'Выберите предмет для перемещения в хранилище:'
-        options=contents if retrieve else inventory_items
-        labels=[str(i.get('name',i.get('itemName','')))+((' ×'+str(i.get('quantity',i.get('count',1)))) if str(i.get('quantity',i.get('count',1)))!='1' else '') for i in options]
-        if labels.count(target['ItemLabel'])!=1:raise RuntimeError('Current exact item label unavailable/ambiguous')
-        picker_menu=console_routes.fixed_menu(title,labels+['← Отмена'],20)
-        cut=len(client.capture);client_prompt=False
-        register_inventory_cleanup(inventory_menu,cut)
-        inventory_context['send_confirmed']=False
-        cut=client.send(b'/storage_move\r','fixed local storage move',lambda:client.console.player(0))
-        inventory_context.update(cut=cut,send_confirmed=True)
-        cut,_=finite_select(inventory_menu,label,cut,20)
-        action_label=(f'📤 Забрать предмет из хранилища ({len(contents)} внутри)' if retrieve else
-                      f'📥 Положить предмет в хранилище ({len(inventory_items)} в инвентаре)')
-        cut,_=finite_select(console_routes.after_menu(action_menu,inventory_menu,label),action_label,cut,10)
-        cut,_=finite_select(console_routes.after_menu(picker_menu,action_menu,action_label),target['ItemLabel'],cut,20)
-        until(lambda:'✅ ' in client.text(cut),10,'actual local move result')
-        if '❌' in client.text(cut):raise RuntimeError('Actual local move refused')
-        post_location=strict_settings(location_path.read_bytes());post_items=strict_settings(inventory_path.read_bytes())
-        post_storage=next(st for st in post_location['locationStorages'] if st['storageId']==target['StorageId'])
-        post_actions=[]
-        if post_items['items']:post_actions.append(f"📥 Положить предмет в хранилище ({len(post_items['items'])} в инвентаре)")
-        if post_storage['contents']:post_actions.append(f"📤 Забрать предмет из хранилища ({len(post_storage['contents'])} внутри)")
-        post_menu=console_routes.fixed_menu('📦 '+target['StorageName']+'\n  Предметов внутри: '+str(len(post_storage['contents'])),post_actions+['← Назад к инвентарю'],10)
-        cut,_=finite_select(console_routes.after_menu(post_menu,picker_menu,target['ItemLabel']),'← Назад к инвентарю',cut,10)
-        returned_inventory=console_routes.after_menu(current_inventory_menu(),post_menu,'← Назад к инвентарю')
-        register_inventory_cleanup(returned_inventory,cut)
-        cut,_=finite_select(returned_inventory,'← Назад',cut,20)
-        fresh_player(client,cut,10);client_prompt=True;inventory_cleanup_required=False
+    def move(retrieve):return storage_ui_move(target,retrieve)
     move(True);saved_location,saved_inventory=stage('Retrieve','inventory')
     saved=save_current_turn(expected_turn-1)
     archive=Path(saved['ArchivePath']);archive_bytes=saved['ArchiveBytes'];metadata=saved['Metadata']
@@ -1432,15 +1436,102 @@ def self_save_load_pre_action():
         'BInputBindingId':current_status['status']['inputBindingId']})
 
 
+STORAGE_RETRIEVE_ROUTE='ordinary-save-with-storage-retrieve'
+STORAGE_RETRIEVE_PATHS={
+    'current':'game_state/world/current_location.json',
+    'map':'game_state/world/world_map.json',
+    'contents':'game_state/world/location_storage_contents.json',
+    'access':'game_state/misc/storage_access.json',
+    'location_index':'game_state/world/location_identity_index.json',
+    'inventory':'game_state/inventory/items.json',
+    'item_index':'game_state/inventory/item_identity_index.json',
+    'soul':'game_state/meta/soul_state.json',
+}
+
+def storage_retrieve_data(root):
+    return {key:strict_settings(phase_evidence._restored_plain_path(root/path).read_bytes())
+            for key,path in STORAGE_RETRIEVE_PATHS.items()}
+
+def storage_access_row(data):
+    rows=[row for row in data['access']['entries']
+          if row.get('locationId')==route['LocationId'] and row.get('storageId')==route['StorageId']]
+    if len(rows)!=1:raise ValueError('Exact storage access row absent or ambiguous')
+    return rows[0]
+
+def prepare_storage_retrieve():
+    if expected_turn!=43 or not previous or previous.get('AcceptedTurnNumber')!=42:
+        raise ValueError('Retrieve-save requires the fresh same-world accepted birth42 predecessor')
+    path=out/'gm-storage-decision.json'
+    if path.exists() or path.is_symlink():raise ValueError('Pre-existing GM decision is not current-turn evidence')
+    data=storage_retrieve_data(baseline)
+    prior=previous['ActualRequest']
+    birth=console_routes.storage_birth_witness(route,data['location_index'],prior)
+    target=console_routes.storage_target(data['current'],route['StorageId'],route['ItemId'],False)
+    if target['LocationId']!=route['LocationId'] or storage_access_row(data).get('hasFullAccess') is not False:
+        raise ValueError('Initial exact courtyard/locker is not canonically locked')
+    return data,birth
+
+def accepted_storage_retrieve(deadline):
+    original_data,birth=storage_retrieve_preflight
+    request=result['ActualRequest']
+    responses=result['RelayResponseEvidence']
+    if len(responses)!=1 or responses[0]['Kind']!='turn':
+        raise ValueError('Retrieve-save requires exactly one verified original GM reply, without repair')
+    row=responses[0]
+    response=phase_evidence._restored_plain_path(relay_queue/row['QueueId']/'executing-response.json').read_bytes()
+    path=phase_evidence._restored_plain_path(out/'gm-storage-decision.json')
+    decision_raw=path.read_bytes()
+    decision=strict_settings(decision_raw)
+    if (set(decision)!={'Decision','Rationale','sessionId','requestId','turnNumber','RequestSHA256','ResponseSHA256'}
+        or type(decision.get('Rationale')) is not str or not decision['Rationale'].strip()
+        or decision['RequestSHA256']!=result['ActualRequestSHA256'] or decision['ResponseSHA256']!=row['ResponseSHA256']):
+        raise ValueError('Independent GM decision does not match the actual request and consumed reply')
+    accepted={key:request[key] for key in ('sessionId','requestId','turnNumber')}
+    if result['AcceptedTurnNumber']!=request['turnNumber']:
+        raise ValueError('Client accepted another turn')
+    accepted.update(AcceptedGameTurns=result['AcceptedGameTurns'],ResponseSHA256=row['ResponseSHA256'])
+    live=storage_retrieve_data(session)
+    target=console_routes.after_grant(route,request,accepted,decision,response,storage_access_row(original_data),
+        live['current'],live['access'],live['inventory'],original_data['soul']['soulName'],verified_birth=birth)
+    result['StorageDecision']=decision['Decision']
+    result['StorageDecisionSHA256']=sha(decision_raw)
+    if target is None:
+        if (storage_access_row(live)!=storage_access_row(original_data) or live['inventory']!=original_data['inventory']
+            or console_routes.storage_target(live['current'],route['StorageId'],route['ItemId'],False)!=
+               console_routes.storage_target(original_data['current'],route['StorageId'],route['ItemId'],False)):
+            raise ValueError('No-grant decision did not preserve the locked storage and inventory')
+        return False
+    if time.monotonic()>=deadline:raise TimeoutError('Original work budget exhausted before Retrieve')
+    if path.read_bytes()!=decision_raw:raise ValueError('Independent decision changed before Retrieve')
+    # Validate accepted map/birth/carrier before any inventory key; a post-check alone could act on a wrong target.
+    console_routes.require_retrieve_start(route,live['map'],live['contents'],original_data['location_index'],
+        live['location_index'],live['current'],live['inventory'],live['item_index'])
+    before=local_observation()
+    storage_ui_move(target,True)
+    after=storage_retrieve_data(session)
+    if live['map']!=after['map'] or storage_access_row(live)!=storage_access_row(after):
+        raise ValueError('Accepted map/access changed during local Retrieve')
+    proof=console_routes.require_retrieve_evidence(route,after['map'],live['contents'],after['contents'],
+        original_data['location_index'],after['location_index'],live['current'],after['current'],
+        live['inventory'],after['inventory'],live['item_index'],after['item_index'])
+    console_routes.require_local_unchanged(before,local_observation())
+    result['StorageRetrieveProof']={**proof,'Retrieved':True}
+    return True
+
+
 def ordinary_save_after_acceptance():
-    if route['Route']!='ordinary-save':return
+    retrieve=route['Route']=='ordinary-save-with-storage-retrieve'
+    if route['Route']!='ordinary-save' and not retrieve:return
     deadline=start+work_seconds
     wait_daemon_consumer_returned(deadline)
     if time.monotonic()>=deadline:raise TimeoutError('Original work bound exhausted before Save')
-    before=phase_evidence.ordinary_save_snapshot(session,story,relay_queue,result)
+    if retrieve and not accepted_storage_retrieve(deadline):return
+    if time.monotonic()>=deadline:raise TimeoutError('Original work bound exhausted before Save')
+    snapshot_options={'storage_retrieve':True} if retrieve else {}
+    before=phase_evidence.ordinary_save_snapshot(session,story,relay_queue,result,**snapshot_options)
     saved=save_current_turn(expected_turn)
     phase_evidence.verify_ordinary_save_archive(saved['ArchiveBytes'],before,expected_turn)
-    after=phase_evidence.ordinary_save_snapshot(session,story,relay_queue,result)
+    after=phase_evidence.ordinary_save_snapshot(session,story,relay_queue,result,**snapshot_options)
     if before!=after:raise ValueError('Save changed accepted scoped DATA or queue')
     if time.monotonic()>=deadline:raise TimeoutError('Original work bound exhausted during Save')
     result['OrdinarySaveProof']={'Turn':expected_turn,'Before':before,'After':after,
@@ -1464,6 +1555,7 @@ if route['Route'] in ('permission-with-denial','storage-local-proof'):
             route['StorageId'],route['ItemId'],expected_turn-1,profile=console_routes.OWNED_PTY_LOAD_PROFILE)
     if route['Route']=='storage-local-proof' and any(p for directory in ('manual_saves','autosaves','checkpoint_saves') for p in (session/'saves'/directory).glob('*.zip')):
         raise RuntimeError('Finite local proof requires no pre-existing Save choices')
+storage_retrieve_preflight=prepare_storage_retrieve() if route['Route']==STORAGE_RETRIEVE_ROUTE else None
 inventory_context=None;inventory_cleanup_required=False
 client=bridge=daemon=None;client_wait=False;client_prompt=False
 ledger_witness=ledger_binding=None
@@ -1768,10 +1860,17 @@ finally:
         joined=(phase_evidence.relay_self_save_load_turn_cleanup_proved if route['Route']=='self-save-load-turn' else phase_evidence.relay_load_phase_cleanup_proved)
         result['Success']=bool(client is not None and load_cut is not None and load_expected is not None and joined(result,bytes(client.capture),load_cut,load_expected))
     else:
-        result['Success']=phase_cleanup_proved(result) and (route['Route']!='ordinary-save' or phase_evidence.ordinary_save_proved(result))
+        route_name=route['Route']
+        result['Success']=phase_cleanup_proved(result) and (
+            route_name not in ('ordinary-save','ordinary-save-with-storage-retrieve') or
+            phase_evidence.ordinary_save_proved(result) and
+            (route_name=='ordinary-save' or console_routes.storage_retrieve_save_proved(result)))
+        if route_name=='ordinary-save-with-storage-retrieve':
+            result['StorageDecisionSettled']=(result.get('StorageDecision') in ('Deny','Defer') and
+                'StorageRetrieveProof' not in result and 'OrdinarySaveProof' not in result and phase_cleanup_proved(result))
     if controlled_refusal:
         result['ControlledCleanupVerified']=daemon_settlement_proved(result.get('DaemonSettlement')) and rpc_helper_closed(result) and bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     (out/'rpc-journal.json').write_text(json.dumps(journal,indent=2,ensure_ascii=False)+'\n')
     (out/'probe-result.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n')
-    print(json.dumps({k:result.get(k) for k in ['Success','AcceptedGameTurns','GenuineActionsSent','Failure','CleanupFailure','ElapsedSeconds']}))
-sys.exit(0 if result['Success'] or result.get('ControlledCleanupVerified',False) else 1)
+    print(json.dumps({k:result.get(k) for k in ['Success','AcceptedGameTurns','GenuineActionsSent','Failure','CleanupFailure','ElapsedSeconds','StorageDecision','StorageDecisionSettled']}))
+sys.exit(0 if result['Success'] or result.get('StorageDecisionSettled') is True or result.get('ControlledCleanupVerified',False) else 1)

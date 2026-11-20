@@ -1401,6 +1401,34 @@
       ]
     },
     {
+      "id": "mortal-storage-retrieve-save-data",
+      "responsibility": "#1515 T016 finite grant-to-Retrieve-to-Save fixture DATA, canonical carrier and immutable birth witness, deny/defer and exact ordinary Save ordering.",
+      "excludes": "No live GM acceptance, terminal/native runtime qualification, Deposit/Load or production access policy change.",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/mortal_console_routes.py",
+        "tests/fixtures/ProductionMain/live-mortal-phase.py",
+        "tests/fixtures/ProductionMain/relay_phase_evidence.py",
+        "tests/fixtures/ProductionMain/test-mortal-storage-retrieve-save.py",
+        "BookOfEternityClient.Tests/MortalConsoleRouteTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalConsoleRouteTests.MortalStorageRetrieveSaveDataContracts"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-console-route-data",
       "responsibility": "#1515 T024 finite captured-console route DATA and exact Load A-to-B observation with retained original daemon and separate local-zero-GM cleanup. T029 exact ordered transitions tolerate duplicate redraws without extra keys; skip/backward/cycle and incomplete newest frames fail closed.",
       "excludes": "No actual menu, native owner, save/load or gameplay acceptance; no generic input script or daemon restart qualification.",

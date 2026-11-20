@@ -943,7 +943,7 @@ ORDINARY_SAVE_PATHS = (
     'game_state/npcs/item_journals.json',
 )
 
-def ordinary_save_snapshot(session, story, queue, result):
+def ordinary_save_snapshot(session, story, queue, result, *, storage_retrieve=False):
     """One immutable scoped snapshot per boundary; no ownership or permission."""
     session=_restored_plain_path(Path(session),True)
     story=_restored_plain_path(Path(story));story_name=story.relative_to(session).as_posix()
@@ -957,7 +957,9 @@ def ordinary_save_snapshot(session, story, queue, result):
         'ready/turn_complete.json','ready/turn_error.json'):
         path=session/name
         if path.exists() or path.is_symlink():raise ValueError('Pending turn at Save boundary: '+name)
-    files={name:_restored_plain_path(session/name).read_bytes().hex() for name in (*ORDINARY_SAVE_PATHS,story_name)}
+    storage_paths=('game_state/misc/storage_access.json','game_state/world/location_storage_contents.json') if storage_retrieve else ()
+    files={name:_restored_plain_path(session/name).read_bytes().hex()
+           for name in (*ORDINARY_SAVE_PATHS,*storage_paths,story_name)}
     if sha(bytes.fromhex(files[story_name]))!=result.get('StoryAfterSHA256'):
         raise ValueError('Accepted story changed before Save')
     history='game_state/world/mortal_living_world_history.json';p=session/history
