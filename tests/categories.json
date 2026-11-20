@@ -390,6 +390,17 @@
       ]
     },
     {
+      "id": "mortal-mira-movement-oracle-data",
+      "responsibility": "#1515 typed planner DATA check for exact canonical movement ordering and preservation of prior map and identity evidence.",
+      "excludes": "No real game engine, live request, save, transfer or grant.",
+      "changeHints": ["BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CombinedMortalOrdinary.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.MiraMovementProjectionOracleDataTests.MiraMovementProjectionOracleKeepsExactCanonicalOrderAndHistory"]}]
+    },
+    {
       "id": "mortal-author-mira-inspection",
       "responsibility": "#1515 offline real-engine author format for an ordinary move along an existing link and a bounded first-person scout observation.",
       "excludes": "No live request, provider, vote, completed inspection or grant.",
