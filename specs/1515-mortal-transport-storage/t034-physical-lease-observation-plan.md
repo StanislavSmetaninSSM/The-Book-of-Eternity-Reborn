@@ -1567,3 +1567,30 @@ the later namespace inventory, rather than admitting it as an ordinary file
 to be removed. It verifies original absence again during prepublication
 admission without requiring an otherwise missing control directory to be an
 immutable ancestor. A controlled local fixture tests preserved new evidence.
+
+**Bounded GREEN (Linux x64, 2026-11-20), source `ea7423228f9de403dad299ceb2dde1449790ccf8`.**
+Fresh owning Integration build 117.94s, 191 warnings, zero errors.
+`portable-save-load-linux-daemon-status` planned/executed 29/29 PASS (15.030s
+runner). Valid legacy archive bytes remain archived but the foreign host
+status is absent after load; a real native fresh guard then admits. Exact
+same-root running/processing/stopped pairs keep validated status bytes, mtime,
+and inode, including controlled rollback. Rejection cases cover old integrity,
+reserved aliases by topology (exact directory/descendant), malformed/orphaned
+or changed local evidence, and the witnessed initially-absent status race.
+An unrelated sibling does not count as guard replacement. Unsettled retained
+evidence still cannot authorize later adoption. The narrow source does not
+alter GM instructions, examples, gameplay state, provider or transport; this
+is client-owned local Save/Load metadata only.
+
+The original wrapper ended 1 after the passing 29 because it expected five
+in the existing neighbor category and the official plan enumerated six
+(1+4+1). No neighbor executed in that attempt. Reused the exact owning build
+and accepted Plan6 for one run-only continuation: `portable-load-native-boundaries`
+6/6 PASS in 11.382s, no replan/rebuild or target repeat. Both runs have zero
+skips, duplicates, timeouts or owned cleanup debt. Source inventory (32,084)
+and Unit baseline eight remained exact, as did the new owning Integration eight.
+Local immutable outcome indexes: target
+`f3315906e85d9dcc72adba0dcf7067466e7e914ea76ce5234b2f022b005c2885`, neighbor
+`5b1bf7684a022aebf3f644dfb9a8e68f5c8939d1494b41a8138aa07bd05e638d`.
+No hosted CI, full suite, Windows runtime, actual Save43 repeat, or live
+Mira turn implied; mm30 remains frozen and will not be reused.
