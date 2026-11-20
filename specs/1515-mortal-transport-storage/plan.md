@@ -5337,3 +5337,40 @@ confirming they predate this block; they remain untouched. Compiled/category
 execution, actual active Load/GM and formal re-review are still UNRUN/pending.
 Full final Python output stays outside checkout under
 `/tmp/self-save-fixture-diagnostics/final-*.out`.
+
+### T035 original live run: Save41 proven; active save listing refused (2026-11-20)
+
+Source `536d07173ceb685f6391e67bd083a1285a9cbfee` recovered from GitHub into a
+clean directory (14/14 files identical). Fresh Unit build 31.77 s, 45 warnings,
+0 errors; official exact Plan1/run1 and Plan2/run2 both passed, no skips,
+duplicates or timeouts and owned cleanup complete. These are three wrapper
+tests (new self-save DATA20 and shared menu/Load controls); preparation DATA
+40/40 passed separately. An older rejected-cleanup DATA suite has 3 outdated
+ESC AST failures reproduced at the exact pre-T035 base `f8bdd69d` (15 cases);
+not a change in this block. Local publish checks matched all 239/244/249
+Client/Bridge/TestSupport entries with zero overlays. One fresh validated
+setup41 world was exported without using any prior archive.
+
+The real original reported Ready and the ordinary manual Save succeeded.
+`s_20261120_030436.zip` SHA-256
+`45651cd3ca80eb566313323300de1898c8f54f0b2d7009fdaa7447a7e2002fe4`:
+99 integrity-manifest entries verified, exact current config, exact scoped
+setup DATA, no transient runtime/daemon/bridge/pending files. The source
+setup41 line is not an accepted game turn. The actual client displayed the
+in-game Load title but no archive-selection list. Its nonce-bound exception was
+`System.IO.IOException: Main run metadata or original owner admission is unavailable.`
+The stack joins `LoadGameFlow` to `SaveLoadService.GetAvailableSavesAsync` and
+ordinary `FileSystemManager.MainAdmission.AcquireAsync`, which refused an
+active nonparticipating lease. The fixture timed out waiting for the expected
+ordered list; it did not send archive Enter. This is real active-save
+**listing** refusal, not evidence about archive replacement or A→B itself.
+
+One launch only, wrapper/driver exit 1, 37.11 s. No request, GM action,
+accepted42 or shutdown attempt. Guardian positively reaped the physical scope
+without emergency action or deadline; normal logical closure was not confirmed:
+durable A remained recorded Running and the daemon pair was unsettled. Do not
+reuse or repair this isolated world. Outcome `f9943e140f14c24817949ffa92e96b72ce38260230d5a0d0c7cb2f033e84bdf0`
+verified the exception and archive and pins 2,706 regular artifacts; all raw
+material remains local. No hosted CI, merge, closure or production change in
+this checkpoint. Next bounded step is causal RED/GREEN for the active enumeration
+path, separately from save selection and the Load replacement operation.
