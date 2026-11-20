@@ -1460,3 +1460,22 @@ Mira dry source independently reviewed: one additional actual ProcessPlayerTurn
 case for an existing open link and initial observation, explicit first-person
 journal, unchanged chalk/access/faction/progression; not a live decision or grant.
 One fresh owning Integration build/official Plan1/run1 awaits exact command gate.
+
+### Mira ordinary movement author-format dry proof (not live)
+The original build interruption left no test result. The resumed engine case
+accepted movement and authored output, then failed two overly restrictive test
+oracles: location map/index must reflect the accepted selection, and the
+canonical index sorts both top-level ID arrays before appending selection history.
+Both failed outcomes are preserved (a6c9bb2c, c9e816d5); their tails were unrun.
+
+Test-only correction at 608f831d verifies exact target discovery, one typed
+current-selection transition, the prior identity rows and ordered history with
+only canonical ID sorting, and unchanged access, items, vehicles and faction
+state. Typed planner DATA test passed 1/1 (12fa14ae, 20 pinned artifacts), including
+five corruption refusals. The same exact owning Integration build then passed
+the full actual-engine Mira case 1/1 (52f89a1e, 86 independently verified artifact
+hashes) with no rebuild: signed request and explicit first-person journal,
+accepted movement and story, retained storage contents, actual late idle and
+ordinary pre-send, retirement, unchanged protected bytes and no pending cycles.
+Raw artifacts remain local. This qualifies an offline authored sample only,
+not a live decision, actual report, grant, transfer, or hosted A-to-B Load.
