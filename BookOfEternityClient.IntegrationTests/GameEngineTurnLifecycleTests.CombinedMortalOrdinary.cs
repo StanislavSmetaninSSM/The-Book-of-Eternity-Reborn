@@ -201,8 +201,66 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(JsonNode.DeepEquals(storage["contents"], matching["contents"]));
         }
         Assert.Equal(505, (await ReadCombinedJsonAsync(MortalLivingWorldSource.WorldTimePath))["currentTimeInMinutes"]!.GetValue<int>());
-        foreach (var pair in retained.Where(pair => !inspectWithMira || pair.Key != currentPath))
-            Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+        var retainedAfterMove = new Dictionary<string, byte[]>();
+        foreach (var (path, before) in retained)
+        {
+            var after = (await _fs.ReadFileBytesAsync(path))!;
+            retainedAfterMove.Add(path, after);
+            if (!inspectWithMira || (path != currentPath && path != MortalLocationMaterializationContract.WorldMapPath &&
+                                     path != MortalLocationIdentityState.StatePath))
+                Assert.True(before.AsSpan().SequenceEqual(after), $"Unexpected accepted-turn change: {path}");
+        }
+        if (inspectWithMira)
+        {
+            var mapPath = MortalLocationMaterializationContract.WorldMapPath;
+            var expectedMap = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(retained[mapPath]))!;
+            var destination = Assert.Single(expectedMap["locations"]!.AsArray(), row =>
+                row!["locationId"]!.GetValue<string>() == JourneyLocationId)!;
+            var beforeDiscovery = destination["discovery"]!.DeepClone();
+            destination["discovery"] = new JsonObject
+            {
+                ["tier"] = "visited", ["audience"] = "player_known", ["rumorSummary"] = null
+            };
+            Assert.True(JsonNode.DeepEquals(expectedMap,
+                JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(retainedAfterMove[mapPath]))),
+                "Only the selected destination discovery may change.");
+            var indexPath = MortalLocationIdentityState.StatePath;
+            var priorIndex = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(retained[indexPath]))!;
+            var actualIndex = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(retainedAfterMove[indexPath]))!;
+            var actualRow = Assert.Single(actualIndex["locationEntries"]!.AsArray(), row =>
+                row!["locationId"]!.GetValue<string>() == JourneyLocationId)!;
+            var priorRow = Assert.Single(priorIndex["locationEntries"]!.AsArray(), row =>
+                row!["locationId"]!.GetValue<string>() == JourneyLocationId)!;
+            var actualTransitions = actualRow["transitions"]!.AsArray();
+            var priorTransitions = priorRow["transitions"]!.AsArray();
+            Assert.Equal(priorTransitions.Count + 1, actualTransitions.Count);
+            var appended = actualTransitions[^1]!.AsObject();
+            var transitionId = appended["transitionId"]!.GetValue<string>();
+            Assert.Matches("^mltrn_[0-9a-f]{32}$", transitionId);
+            Assert.DoesNotContain(priorIndex["locationEntries"]!.AsArray().Concat(priorIndex["linkEntries"]!.AsArray())
+                .SelectMany(row => row!["transitions"]!.AsArray()), row => row!["transitionId"]!.GetValue<string>() == transitionId);
+            var expectedTransition = new JsonObject
+            {
+                ["transitionId"] = transitionId, ["kind"] = "current_selection", ["turn"] = 43,
+                ["entityId"] = JourneyLocationId,
+                ["beforeState"] = new JsonObject
+                {
+                    ["discovery"] = beforeDiscovery,
+                    ["lastEventsDescription"] = destination["lastEventsDescription"]?.DeepClone()
+                },
+                ["afterState"] = new JsonObject
+                {
+                    ["discovery"] = destination["discovery"]!.DeepClone(),
+                    ["lastEventsDescription"] = destination["lastEventsDescription"]?.DeepClone()
+                },
+                ["sourceAuthorityKind"] = "turn_outcome", ["sourceAuthorityId"] = "turn_43",
+                ["operationRef"] = "currentLocationData", ["sourceLocationId"] = null, ["targetLocationId"] = null
+            };
+            Assert.True(JsonNode.DeepEquals(expectedTransition, appended),
+                "Only the exact current_selection evidence for turn 43 may append.");
+            actualTransitions.RemoveAt(actualTransitions.Count - 1);
+            Assert.True(JsonNode.DeepEquals(priorIndex, actualIndex), "Prior location/link identity evidence changed.");
+        }
         foreach (var path in new[] { LiveTurnPreparationService.TurnRequestPath,
             LiveTurnPreparationService.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,
             "game_state/control/validation_repair_request.json", "game_state/control/validation_repair_ready.json",
@@ -213,8 +271,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(await runtime.Engine.ValidateBeforeOrdinaryPlayerTurnAsync(), _journeyLogger.Describe());
         Assert.Equal(43, runtime.GameLoop.TurnNumber);
         Assert.Equal(2, calls());
-        foreach (var pair in retained.Where(pair => !inspectWithMira || pair.Key != currentPath))
-            Assert.Equal(pair.Value, await _fs.ReadFileBytesAsync(pair.Key));
+        foreach (var (path, accepted) in retainedAfterMove)
+        {
+            var afterPreSend = (await _fs.ReadFileBytesAsync(path))!;
+            Assert.True(accepted.AsSpan().SequenceEqual(afterPreSend), $"Unexpected after-acceptance change: {path}");
+        }
         var scheduleAfter = JsonSerializer.Deserialize<ProgressionScheduleState>(
             (await _fs.ReadFileAsync(ProgressionScheduleService.SchedulePath))!, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!;
         Assert.Equal(505, scheduleAfter.CurrentWorldTimeInMinutes);
