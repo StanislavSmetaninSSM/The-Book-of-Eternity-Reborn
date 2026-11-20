@@ -573,3 +573,28 @@ def require_initial_storage_decision(note, request, request_sha, canonical_pins,
         type(note.get('turnNumber')) is not int or any(note.get(key)!=request[key] for key in _TURN_FIELDS) or
         note['RequestSHA256']!=request_sha or note['CanonicalPins']!=canonical_pins):
         raise ValueError('Independent decision must match exact current request and canonical originals before reply')
+
+
+def require_scoped_chalk_occurrence(route,data):
+    """One physical occurrence across player and current/offscreen storage arrays."""
+    item=route['ItemId']
+    groups=[data['inventory']['items']]
+    groups.extend(row.get('contents',[]) for row in data['current']['locationStorages'])
+    groups.extend(row['contents'] for row in _offscreen_entries(data['contents']))
+    if sum(type(row) is dict and row.get('itemId')==item for group in groups for row in group)!=1:
+        raise ValueError('Exact chalk must occur once across the observed storage/inventory carriers')
+
+def require_grant_chalk_continuity(route,before,after):
+    """Permission is not item acquisition or replacement."""
+    def read(data):
+        current=data['current']
+        if current.get('locationId')!=route['LocationId']:raise ValueError('Exact chalk courtyard required')
+        locker=_exact_row(current['locationStorages'],lambda row:row.get('storageId')==route['StorageId'],
+                          'Exact chalk storage required')
+        stack=_require_canonical_stack(locker['contents'],route['ItemId'])
+        index=_exact_row(data['item_index']['entries'],lambda row:row.get('itemId')==route['ItemId'],
+                         'Exact chalk identity required')
+        require_scoped_chalk_occurrence(route,data)
+        return stack,index
+    if not _same_data(read(before),read(after)):
+        raise ValueError('Grant changed exact chalk or its canonical identity history')

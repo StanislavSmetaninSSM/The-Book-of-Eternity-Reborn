@@ -1484,19 +1484,24 @@ def prepare_storage_retrieve():
           if (baseline/relative).exists() or (baseline/relative).is_symlink() else None) for relative in pin_paths}
     return data,birth,pins
 
+def storage_reply_visible(phase,queue):
+    """Decline late evidence even when packet staging was interrupted before reply."""
+    def exists(path):return path.exists() or path.is_symlink()
+    return (any(exists(phase/name) for name in ('submission-attempt.json','submission-packet.json','submission-result.json')) or
+        any(any(exists(folder/name) for name in ('response.json','reply.json','started.json','executing-response.json','execution.json'))
+            for folder in queue.glob('request-*')))
+
 def observe_initial_storage_decision(provider_deadline):
     if 'StorageDecisionObserved' in result:return
     candidate=out/'gm-storage-decision-before-reply.json'
     if not (candidate.exists() or candidate.is_symlink()):return
     candidate=phase_evidence._restored_plain_path(candidate)
     raw=candidate.read_bytes();note=strict_settings(raw)
-    replied=any(any((folder/name).exists() or (folder/name).is_symlink()
-                    for name in ('reply.json','started.json','executing-response.json','execution.json'))
-                for folder in relay_queue.glob('request-*'))
+    replied=storage_reply_visible(out,relay_queue)
     console_routes.require_initial_storage_decision(note,result['ActualRequest'],result['ActualRequestSHA256'],
         storage_retrieve_preflight[2],replied)
     remaining=provider_deadline-time.monotonic()
-    if remaining<=0:raise TimeoutError('GM decision outside original reply reserve')
+    if remaining<60:raise TimeoutError('GM decision outside original 60s reply reserve')
     witness={'DecisionSHA256':sha(raw),'RequestSHA256':result['ActualRequestSHA256'],'RemainingSeconds':remaining,
         'ObservedAtUtc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
     with (out/'gm-storage-decision-observed.json').open('x',encoding='utf-8') as stream:
@@ -1539,6 +1544,7 @@ def accepted_storage_retrieve(deadline):
     if time.monotonic()>=deadline:raise TimeoutError('Original work budget exhausted before Retrieve')
     if path.read_bytes()!=decision_raw or original_path.read_bytes()!=original_raw:
         raise ValueError('Independent decision changed before Retrieve')
+    console_routes.require_grant_chalk_continuity(route,original_data,live)
     # Validate accepted map/birth/carrier before any inventory key; a post-check alone could act on a wrong target.
     console_routes.require_retrieve_start(route,live['map'],live['contents'],original_data['location_index'],
         live['location_index'],live['current'],live['inventory'],live['item_index'])
@@ -1548,6 +1554,7 @@ def accepted_storage_retrieve(deadline):
     if (live['map']!=after['map'] or live['contents']!=after['contents'] or
         storage_access_row(live)!=storage_access_row(after)):
         raise ValueError('Accepted map/access changed during local Retrieve')
+    console_routes.require_scoped_chalk_occurrence(route,after)
     proof=console_routes.require_retrieve_evidence(route,after['map'],live['contents'],after['contents'],
         original_data['location_index'],after['location_index'],live['current'],after['current'],
         live['inventory'],after['inventory'],live['item_index'],after['item_index'])

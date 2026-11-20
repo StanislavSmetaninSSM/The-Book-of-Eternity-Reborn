@@ -341,6 +341,68 @@ class DriverStorageRoute(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'absent scoped DATA'):
             evidence.verify_ordinary_save_archive(archive(True),snapshot,43)
 
+    def test_grant_does_not_change_exact_chalk_or_its_identity(self):
+        self.assertTrue(hasattr(routes,'require_grant_chalk_continuity'),'grant carrier continuity missing')
+        route={'LocationId':'yard','StorageId':'locker','ItemId':'chalk'}
+        old={'current':{'locationId':'yard','locationStorages':[{'storageId':'locker',
+               'contents':[{'itemId':'chalk','existedId':'chalk','count':1,'materializationReceipt':{'receiptId':'receipt'}}]}]},
+             'item_index':{'entries':[{'itemId':'chalk','receiptId':'receipt'}]},
+             'contents':None,'inventory':{'items':[]}}
+        routes.require_grant_chalk_continuity(route,old,copy.deepcopy(old))
+        for mode in ('receipt','index','duplicate-other-locker'):
+            new=copy.deepcopy(old)
+            if mode=='receipt':new['current']['locationStorages'][0]['contents'][0]['materializationReceipt']['receiptId']='other'
+            if mode=='index':new['item_index']['entries'][0]['receiptId']='other'
+            if mode=='duplicate-other-locker':
+                new['current']['locationStorages'].append({'storageId':'another',
+                    'contents':[copy.deepcopy(new['current']['locationStorages'][0]['contents'][0])]})
+            with self.assertRaisesRegex(ValueError,'chalk'):routes.require_grant_chalk_continuity(route,old,new)
+
+    def test_staged_response_or_submission_blocks_pre_reply_observation(self):
+        import pathlib,tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            phase=pathlib.Path(tmp);queue=phase/'queue';(queue/'request-1').mkdir(parents=True)
+            probe=self.driver('storage_reply_visible',{})
+            self.assertFalse(probe(phase,queue))
+            for marker in (phase/'submission-attempt.json',phase/'submission-packet.json',queue/'request-1/response.json'):
+                marker.write_text('{}');self.assertTrue(probe(phase,queue));marker.unlink()
+
+    def test_submit_gate_checks_ack_and_rejects_consume_packet_drift(self):
+        import ast, pathlib, hashlib, tempfile
+        root=pathlib.Path(__file__).resolve().parents[3]
+        source=root/'specs/1515-mortal-transport-storage/manual-mm21/submit-mm21-once.py'
+        members={'sha','member','require_storage_submission_ack'}
+        ns={'json':json,'hashlib':hashlib,'pathlib':pathlib}
+        funcs=[n for n in ast.parse(source.read_text()).body if isinstance(n,ast.FunctionDef) and n.name in members]
+        exec(compile(ast.Module(body=funcs,type_ignores=[]),str(source),'exec'),ns)
+        self.assertIn('require_storage_submission_ack',ns)
+        main=next(n for n in ast.parse(source.read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='main')
+        statements=ast.unparse(main)
+        self.assertLess(statements.index('require_storage_submission_ack('),statements.index("marker.open('x')"))
+        with tempfile.TemporaryDirectory() as tmp:
+            phase=pathlib.Path(tmp)/'p02';phase.mkdir()
+            req=b'{"sessionId":"world","requestId":"turn","turnNumber":43}';packet=b'{"Completion":"turn","Writes":[]}'
+            identity=json.loads(req);digest=ns['sha']
+            route=json.dumps({'Route':'ordinary-save-with-storage-retrieve'}).encode()
+            (phase/'console-route.json').write_bytes(route)
+            (phase/'launch-profile.json').write_text(json.dumps({'Route':'ordinary-save-with-storage-retrieve',
+                 'ConsoleRouteSHA256':digest(route)}))
+            note={**identity,'Decision':'Deny','Rationale':'No real consent','CanonicalPins':{},'RequestSHA256':digest(req)}
+            before=json.dumps(note).encode();(phase/'gm-storage-decision-before-reply.json').write_bytes(before)
+            final={k:v for k,v in note.items() if k!='CanonicalPins'}
+            final.update(DecisionRecordSHA256=digest(before),ResponseSHA256=digest(packet))
+            (phase/'gm-storage-decision.json').write_text(json.dumps(final))
+            ack={'DecisionSHA256':digest(before),'RequestSHA256':digest(req),'RemainingSeconds':80.,
+                 'ObservedAtUtc':'2026-11-20T00:00:00+00:00'}
+            frozen=json.dumps(ack).encode();(phase/'gm-storage-decision-observed.json').write_bytes(frozen)
+            expected={'StorageDecisionObservedSHA256':digest(frozen)}
+            check=ns['require_storage_submission_ack']
+            check(phase,req,identity,packet,expected)
+            for bad_packet,bad_expected in ((packet+b' ',expected),(packet,{})):
+                with self.assertRaises(ValueError):check(phase,req,identity,bad_packet,bad_expected)
+            (phase/'console-route.json').unlink()
+            with self.assertRaisesRegex(ValueError,'prepared P02'):check(phase,req,identity,packet,expected)
+
     def test_final_result_does_not_confuse_denial_with_success(self):
         self.assertTrue(hasattr(routes,'storage_retrieve_save_proved'),'outcome proof missing')
         for decision in ('Deny','Defer','Grant'):

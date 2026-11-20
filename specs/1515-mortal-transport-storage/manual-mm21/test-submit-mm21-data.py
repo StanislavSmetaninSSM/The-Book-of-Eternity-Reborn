@@ -22,7 +22,7 @@ class MainPath(unittest.TestCase):
   import shutil,datetime
   self.t=tempfile.TemporaryDirectory();self.addCleanup(self.t.cleanup);self.root=pathlib.Path(self.t.name).resolve();self.phase=self.root/'p01';self.session=self.root/'play/game_session';self.q=self.phase/'queue/request-data'
   self.q.mkdir(parents=True);relay=self.phase/'relay';relay.mkdir()
-  source=pathlib.Path('/workspace/shared/mortal-isolated-20261119/tools/gm-relay')
+  source=pathlib.Path(__file__).resolve().parents[3]/'tools/gm-relay'
   for name in ['relay_contract.py','relay_worker.py']:shutil.copyfile(source/name,relay/name)
   self.pins={p.name:g.sha(p.read_bytes()) for p in relay.iterdir()};(self.phase/'relay-phase-package.json').write_text(json.dumps({'RelayPins':self.pins}))
   self.identity={'sessionId':'data-session','requestId':'data-request','turnNumber':42};now=datetime.datetime.now(datetime.timezone.utc);self.turn=dict(self.identity,timestamp=now.isoformat())
@@ -252,7 +252,7 @@ class PhysicalTraceProfile(unittest.TestCase):
     actual,digest=write(base,folder,launcher,authored)
     raw=(folder/'launch-profile.json').read_bytes();self.assertEqual(json.loads(raw),actual);self.assertEqual(hashlib.sha256(raw).hexdigest(),digest);self.assertNotIn('PhysicalTrace',authored)
     self.assertEqual(stat.S_IMODE((folder/'launch-profile.json').stat().st_mode),0o600)
-    ns.update(D=root,phase=phase,previous_path=None if phase=='p01' else root/'p01/probe-result.json',failure='b'*32,stop='a'*32,profile_sha=digest,load_nonce=None)
+    ns.update(D=root,phase=phase,previous_path=None if phase=='p01' else root/'p01/probe-result.json',failure='b'*32,stop='a'*32,profile_sha=digest,load_nonce=None,fresh_p02_paths=None)
     exec(compile(ast.Module(body=nodes,type_ignores=[]),'<actual-generated-launcher>','exec'),ns);script=ns['script'];lines=script.splitlines()
     expected=['export BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE=external','export BOE_TEST_CANONICAL_LEASE_TRACE_DIR="$P/physical-trace"','export BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256='+digest,'export BOE_MAIN_STOP_DIAGNOSTIC_NONCE='+'a'*32]
     for line in expected:self.assertEqual(lines.count(line),1);self.assertLess(script.index(line),script.index('"$ROOT/native/host-guardian"'))
@@ -330,7 +330,7 @@ class P03Continuation(unittest.TestCase):
  def test_actual_generated_p03_turn_and_previous(self):
   import ast
   tree,ns=self.actual();root=pathlib.Path('/tmp/authored-p03')
-  ns.update(D=root,phase='p03',previous_path=root/'p02/probe-result.json',previous={'AcceptedTurnNumber':43},failure='b'*32,stop='a'*32,profile_sha='c'*64,load_nonce=None)
+  ns.update(D=root,phase='p03',previous_path=root/'p02/probe-result.json',previous={'AcceptedTurnNumber':43},failure='b'*32,stop='a'*32,profile_sha='c'*64,load_nonce=None,fresh_p02_paths=None)
   script=next(n for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='script' for t in n.targets))
   exec(compile(ast.Module(body=[script],type_ignores=[]),'<actual-p03-launcher>','exec'),ns)
   self.assertIn('"$ROOT/p02/probe-result.json"',ns['script']);self.assertNotIn('"$ROOT/p01/probe-result.json"',ns['script'])

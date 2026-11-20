@@ -24,6 +24,34 @@ def validate_packet(session,raw,expected_sha):
     for w in writes:
         if not matches(member(session,w['Path']),w['ExpectedSHA256']):raise ValueError('Current baseline differs: '+w['Path'])
 
+def require_storage_submission_ack(phase,request_bytes,identity,packet,expected):
+    """Only the new P02 fixture requires the driver's witnessed pre-reply choice."""
+    route_path=member(phase,'console-route.json');profile_path=member(phase,'launch-profile.json')
+    route_bytes=route_path.read_bytes() if route_path.exists() else b'{}'
+    route=json.loads(route_bytes)
+    profile=json.loads(profile_path.read_bytes()) if profile_path.exists() else {}
+    expected_route='ordinary-save-with-storage-retrieve'
+    if expected_route not in (route.get('Route'),profile.get('Route')) and 'StorageDecisionObservedSHA256' not in expected:return
+    if (phase.name!='p02' or route.get('Route')!=expected_route or profile.get('Route')!=expected_route
+        or profile.get('ConsoleRouteSHA256')!=sha(route_bytes)):
+        raise ValueError('Exact prepared P02 storage profile required')
+    paths=[member(phase,name) for name in ('gm-storage-decision-before-reply.json',
+        'gm-storage-decision-observed.json','gm-storage-decision.json')]
+    if any(not path.is_file() for path in paths):raise ValueError('Exact driver pre-reply decision observation required')
+    before,ack,after=[path.read_bytes() for path in paths]
+    first,observed,final=map(json.loads,(before,ack,after))
+    if (set(first)!={'Decision','Rationale','RequestSHA256','CanonicalPins','sessionId','requestId','turnNumber'} or
+        first.get('Decision') not in ('Grant','Deny','Defer') or
+        first.get('RequestSHA256')!=sha(request_bytes) or
+        any(first.get(k)!=identity[k] for k in ('sessionId','requestId','turnNumber')) or
+        observed.get('RequestSHA256')!=sha(request_bytes) or observed.get('DecisionSHA256')!=sha(before) or
+        type(observed.get('RemainingSeconds')) not in (int,float) or not observed['RemainingSeconds']>=60 or
+        expected.get('StorageDecisionObservedSHA256')!=sha(ack)):
+        raise ValueError('Storage decision is not the exact observed original')
+    exact={k:v for k,v in first.items() if k!='CanonicalPins'}
+    exact.update(DecisionRecordSHA256=sha(before),ResponseSHA256=sha(packet))
+    if final!=exact:raise ValueError('Reviewed storage decision/response join differs')
+
 def main():
     a=argparse.ArgumentParser();a.add_argument('--root',required=True,type=pathlib.Path);a.add_argument('--phase',choices=['p01','p02','p03','recovered-live'],default='p01');a.add_argument('--request-dir',required=True,type=pathlib.Path);a.add_argument('--candidate',required=True,type=pathlib.Path);a.add_argument('--candidate-sha',required=True);a.add_argument('--expectations',required=True,type=pathlib.Path);a.add_argument('--expectations-sha',required=True);args=a.parse_args()
     ROOT=args.root
@@ -59,6 +87,7 @@ def main():
     validate_packet(session,packet,args.candidate_sha)
     req=json.loads(current.game_request);now=datetime.datetime.now(datetime.timezone.utc);stamp=datetime.datetime.fromisoformat(req['timestamp'].replace('Z','+00:00'));driver_stamp=datetime.datetime.fromisoformat(expected['OriginalDriverStartedAtUtc'].replace('Z','+00:00'));remaining=min(600-(now-stamp).total_seconds(),660-(now-driver_stamp).total_seconds(),660-(time.monotonic()-origin['MonotonicSeconds']))
     if driver_stamp>stamp or stamp>now or not 60<=remaining<=600:raise ValueError('Less than 60s conservative provider reserve')
+    require_storage_submission_ack(phase,current.game_request,dict(current.turn_identity),packet,expected)
     # Exclusive attempt marker precedes the ONLY worker invocation. Any uncertainty
     # leaves it in place; a second call refuses, including failed/partial answer.
     marker=phase/'submission-attempt.json'

@@ -14,7 +14,7 @@ public sealed class MortalConsoleRouteTests
     [Fact]
     public Task SelfSaveLoadTurnDataContracts() => RunAsync("test-self-save-load-turn.py", 20);
     [Fact]
-    public Task MortalStorageRetrieveSaveDataContracts() => RunAsync("test-mortal-storage-retrieve-save.py", 39);
+    public Task MortalStorageRetrieveSaveDataContracts() => RunAsync("test-mortal-storage-retrieve-save.py", 42);
     /// <summary>Runs one bounded Python DATA consumer with retained output and complete owned cleanup.</summary>
     internal static async Task RunAsync(string script, int expectedMethods, params string[] arguments)
     {

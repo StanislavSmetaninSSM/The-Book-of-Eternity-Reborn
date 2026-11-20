@@ -5677,3 +5677,39 @@ With that exact local prefix, the existing phase-evidence DATA suite is 38/38
 PASS. New 39/39, console 28/28, self-save DATA 20/20 and retained-load DATA
 23/23 also pass. The initial missing-environment run remains setup-only.
 No runtime package, Windows result, or causal T037 outcome is claimed.
+
+#### T038 enforced pre-reply ordering and grant cargo continuity
+
+Second independent SOURCE review of `ce52d241` reproduced the 39 DATA
+controls and kept launch HOLD: a staged `response.json` or one-shot attempt
+could precede driver observation, and local Retrieve preserved the item
+from post-grant onward but did not join it back through the permission turn.
+
+This correction refuses any already staged packet/response, attempt,
+receipt or execution before first decision observation. Actual one-shot
+submit for this exact prepared P02 route requires the observed decision
+ack digest in the independently frozen expectations before packet staging
+or worker invocation. It independently joins the actual request, exact
+pre-reply note and observed digest, a full original reserve (at least 60s)
+and the exact reviewed candidate hash. The final decision/response binding
+can be written for this candidate before submit and is independently checked
+again after actual consumption. No retry or renewal; old routes do not
+acquire any new submit behavior. The test-only scope performs no actual
+request transport, publication, or production security change.
+
+Permission-only grant now preserves the complete canonical chalk stack and
+its exact index entry from accepted birth42 through accepted grant43.
+Scoped current/offscreen locker and player arrays must see the same item
+once both before and after Retrieve; the normal production carrier catalog
+still owns full-graph validation and actual move. Existing source DATA
+controls passed 42/42 (the three new ordering/continuity controls first
+failed), 28/28 console, 38/38 package-pinned phase evidence, 20/20 self-save
+DATA and 23/23 retained-load DATA. The affected manual launcher/preparer
+selectors pass 25 cases plus one existing P03 renderer check using no
+historical archive. The historical P03 prior-save archive test is not
+qualified here; its separately pinned artifacts are absent and not recreated.
+No game/relay launched. Microsoft SDK/PowerShell distribution URLs did not
+answer within local connection bounds; this environment still lacks the
+owning .NET 10.0.404 SDK, .NET 8 runtime and PowerShell 7. Running the
+official category, compiling the runtime package, confirming exact live
+menu shapes and independent final launch review remain HOLD/UNRUN.
