@@ -390,6 +390,17 @@
       ]
     },
     {
+      "id": "portable-save-load-linux-daemon-status",
+      "responsibility": "#1515 Linux Save/Load boundary around nonportable daemon status and its genuine local guard pair.",
+      "excludes": "No bridge or daemon launch, hosted A-to-B qualification, live gameplay or change to non-Linux behavior.",
+      "changeHints": ["BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.DaemonStatus.cs", "BookOfEternityClient/Services/SaveLoadService.Loading.cs", "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs"],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": false, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.PortableLoadReplacementTests.DaemonArchiveStatus_*"]}]
+    },
+    {
       "id": "mortal-mira-movement-oracle-data",
       "responsibility": "#1515 typed planner DATA check for exact canonical movement ordering and preservation of prior map and identity evidence.",
       "excludes": "No real game engine, live request, save, transfer or grant.",

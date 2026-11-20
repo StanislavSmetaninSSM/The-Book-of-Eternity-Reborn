@@ -1503,3 +1503,33 @@ A future product-level portability correction must preserve original legacy
 archive integrity, distinguish archived passive bytes from local runtime
 state, and not remove/adopt a valid local guarded pair. This was neither
 a live Mira turn nor a hosted A-to-B Load.
+
+### Test-first Linux portable daemon-status boundary, no guard relaxation
+Tracked in #1515 only for the demonstrated fresh-host prerequisite; no expansion
+into #1559. Source and native guard authority stay distinct. New Linux x64 saves
+must omit exactly the host-local daemon status. Existing manifested Save43 must
+still validate its original full ZIP bytes and member hash/length; a detached
+load must not materialize that member, and must reject its path descendants.
+The original historical Save43 is evidence, not a new compatibility tier.
+Non-Linux behavior was not implicated and is not changed in this block.
+
+At a replacement lease, preserve an exact local regular status as a protected
+namespace boundary only with matching same-root private Linux guard, owner and
+settled state. Consistent running/processing evidence is retained, not treated as
+proof of a live PID and never adopted; actual restart still uses the unchanged
+strict guard. Both absent is fresh. Partial, malformed, aliased, foreign,
+mismatched or changed local evidence refuses; do not delete/repair it. Use the
+existing publication guard and journal rollback mechanisms, not a second
+transaction. Existing source/member/status images are reused under one operation;
+tiny bounded native guard reads and ordinary path/topology+publish revalidation
+are deliberately fresh. No parallel cache and no speedup claim.
+
+Test-only WIP, currently UNRUN: one narrow official Integration category
+`portable-save-load-linux-daemon-status` (26 cases, independent temporary roots).
+Uses real current archive producer and adds one integrity-covered historical
+status to the fixture, with fresh admission, manifest corruption and path
+controls; genuine original guard remains held across active load/rollback,
+losing contender can't reach status reader, real settled restart and unsettled
+adoption still fail/pass as specified. Local stale/mismatch/link/mode/drift tests
+must refuse without reconstructing or deleting a guard. No hosted relay or
+game-world changes during this source block.
