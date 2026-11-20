@@ -1479,3 +1479,27 @@ accepted movement and story, retained storage contents, actual late idle and
 ordinary pre-send, retirement, unchanged protected bytes and no pending cycles.
 Raw artifacts remain local. This qualifies an offline authored sample only,
 not a live decision, actual report, grant, transfer, or hosted A-to-B Load.
+
+### mm30 fresh-host attempt after accepted cold Load: daemon refused before turn
+Reviewed external package preparation completed once; all 114 restored play
+rows, original Save43 ZIP, cold runtime and quarantined source stayed exact.
+The original launcher reached a genuinely new Linux main Running/Ready on the
+restored generation, but the daemon exited during bootstrap before Continue
+or any player action, GM request, submission, accepted turn or new save.
+
+The native daemon guard correctly rejected the preexisting daemon status:
+the original Save43 includes a running status under the old session path.
+Cold Load imported it unchanged; the new instance had no daemon guard.
+The guard created an empty record and refused adoption before status publication.
+Owner still records the exact new original Running identity, without a Stop
+receipt; no shutdown call or normal console/daemon settlement was proved.
+Guardian ECHILD/driver1/reaped5 proves only physical containment. The queue was
+closed with no request. Outcome 0d381c75 (534 pinned artifacts) and raw evidence
+remain local. This failed instance is not a predecessor and was not retried.
+
+Save/load currently excludes bridge status but not daemon status, unlike the
+turn snapshot. Do not delete the restored status or relax the singleton guard.
+A future product-level portability correction must preserve original legacy
+archive integrity, distinguish archived passive bytes from local runtime
+state, and not remove/adopt a valid local guarded pair. This was neither
+a live Mira turn nor a hosted A-to-B Load.
