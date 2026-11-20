@@ -85,6 +85,7 @@ public partial class FileSystemManager
             LinuxDaemonInstanceGuard.ValidateLocalLoadPair(root, daemonGuard, status);
             if (status != null)
                 boundaries.Add(new(daemonPath, TrustedLocalNamespaceKind.File, status.Length, status.Sha256));
+            ObserveLoadOperation("DaemonStatusCaptureCompleted");
         }
         if (source.StartsWith(root + Path.DirectorySeparatorChar, comparison))
         {
@@ -103,6 +104,9 @@ public partial class FileSystemManager
                 if (protectedNames.Contains(path)) continue;
                 var actual = scope.ObserveNamespace(path);
                 var relative = GetLocalRelativePath(root, path, OperatingSystem.IsWindows());
+                // A status which appeared after an absent observation is not ordinary replacement data.
+                if (LinuxDaemonInstanceGuard.IsLocalStatusPath(relative))
+                    throw new InvalidDataException("The local daemon status appeared during Load inventory capture.");
                 if (actual.BlockingFileAncestor != null || actual.Kind == TrustedLocalNamespaceKind.Missing)
                     throw new InvalidDataException("The live namespace changed during capture.");
                 if (actual.Kind == TrustedLocalNamespaceKind.Directory)
@@ -114,6 +118,20 @@ public partial class FileSystemManager
             }
         }
         return new(nodes, boundaries, daemonGuard);
+    }
+
+    internal void RevalidateLoadDaemonEvidence(CanonicalLoadNamespaceSnapshot snapshot)
+    {
+        if (!LinuxDaemonInstanceGuard.HasLocalStatusBoundary) return;
+        if (LinuxDaemonInstanceGuard.ObserveLoadGuard(BasePath) != snapshot.DaemonGuard)
+            throw new InvalidDataException("The local daemon guard changed during Load preparation.");
+        // For a present pair the publisher revalidates the immutable status hash.
+        // When originally absent, keep absence explicit without requiring an immutable parent directory.
+        if (snapshot.DaemonGuard != null) return;
+        var path = ResolveLoadNamespacePath(LinuxDaemonInstanceGuard.LocalStatusPath);
+        var observation = new TrustedLocalFileScope([BasePath]).ObserveNamespace(path);
+        if (observation.BlockingFileAncestor != null || observation.Kind != TrustedLocalNamespaceKind.Missing)
+            throw new InvalidDataException("The local daemon status appeared during Load preparation.");
     }
 
     /// <summary>

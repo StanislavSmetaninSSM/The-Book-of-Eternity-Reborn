@@ -1561,3 +1561,9 @@ namespace publisher still validates its live hash. An unrelated directory may
 change link counts of guard ancestors without replacing the ancestors.
 The added exact reserved-directory and benign-sibling cases have no prior RED
 claim. Product and the nearest existing integration controls remain UNRUN here.
+
+The absent-pair fence also refuses a new exact daemon status observed during
+the later namespace inventory, rather than admitting it as an ordinary file
+to be removed. It verifies original absence again during prepublication
+admission without requiring an otherwise missing control directory to be an
+immutable ancestor. A controlled local fixture tests preserved new evidence.

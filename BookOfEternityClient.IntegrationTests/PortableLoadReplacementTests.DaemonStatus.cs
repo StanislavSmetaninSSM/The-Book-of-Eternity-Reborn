@@ -335,6 +335,50 @@ public sealed partial class PortableLoadReplacementTests
         AssertOwnedScratchEmpty();
     }
 
+    [Fact]
+    public async Task DaemonArchiveStatus_NewOrphanDuringInventoryIsNeverAnOrdinaryReplacementMember()
+    {
+        if (!LinuxDaemonArchiveContract) return;
+        var source = await PrepareDaemonArchiveAsync();
+        var before = Snapshot(_files.GameSessionPath);
+        var generation = File.ReadAllBytes(_files.SessionGenerationPath);
+        var statusPath = _files.ResolvePath(DaemonArchiveStatus);
+        var orphan = DaemonStatusBytes(_files.GameSessionPath, "0123456789abcdef0123456789abcdef", "running", false);
+        var inserted = false;
+        var phases = new List<TrustedLocalPublicationPhase>();
+        var files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                LoadOperationObserver = stage =>
+                {
+                    if (stage != "DaemonStatusCaptureCompleted") return;
+                    Assert.False(File.Exists(statusPath));
+                    Assert.False(File.Exists(DaemonGuardPath));
+                    File.WriteAllBytes(statusPath, orphan);
+                    inserted = true;
+                },
+                LocalPublicationObserver = (phase, _) => phases.Add(phase)
+            });
+        var state = new StateManager(files, new(), NullLogger<StateManager>.Instance);
+        await state.RefreshGameStateAsync();
+        phases.Clear();
+        var service = new SaveLoadService(files, state, _logger);
+
+        var result = await service.LoadGameWithOutcomeAsync(source);
+
+        Assert.True(inserted);
+        Assert.Equal(LoadReplacementDisposition.NotLoaded, result.Disposition);
+        Assert.Contains("daemon status appeared during Load inventory", Assert.IsType<InvalidDataException>(result.Failure).Message,
+            StringComparison.Ordinal);
+        Assert.Empty(phases);
+        Assert.Equal(generation, File.ReadAllBytes(_files.SessionGenerationPath));
+        Assert.Equal(before.Keys.Append(statusPath).Order(), Snapshot(_files.GameSessionPath).Keys.Order());
+        AssertPreserved(before);
+        Assert.Equal(orphan, File.ReadAllBytes(statusPath));
+        Assert.False(File.Exists(DaemonGuardPath));
+        AssertOwnedScratchEmpty();
+    }
+
     private static byte[] DaemonStatusBytes(string session, string owner, string state, bool settled) =>
         JsonSerializer.SerializeToUtf8Bytes(new { status = state, sessionPath = session, daemonGuardVersion = 1,
             daemonGuardOwnerId = owner, terminalSettled = settled });

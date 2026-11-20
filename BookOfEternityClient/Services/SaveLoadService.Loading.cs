@@ -220,9 +220,7 @@ public partial class SaveLoadService
                 () =>
                 {
                     candidate.Revalidate();
-                    if (LinuxDaemonInstanceGuard.HasLocalStatusBoundary &&
-                        LinuxDaemonInstanceGuard.ObserveLoadGuard(_fs.BasePath) != live.DaemonGuard)
-                        throw new InvalidDataException("The local daemon guard changed during Load preparation.");
+                    _fs.RevalidateLoadDaemonEvidence(live);
                 }, cancellationToken);
             result = new(outcome.Disposition switch
             {
