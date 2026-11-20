@@ -10,7 +10,7 @@ def checked_route(value):
     if value is None:return {'Route':'birth'}
     if type(value) is not dict:raise ValueError('Finite route object required')
     route=value.get('Route')
-    fields={'birth':{'Route'},'ordinary-save':{'Route'},
+    fields={'birth':{'Route'},'ordinary-save':{'Route'},'self-save-load-turn':{'Route'},
             'permission-with-denial':{'Route','StorageId','ItemId'},
             'storage-local-proof':{'Route','StorageId','ItemId'}}.get(route)
     if fields is None or set(value)!=fields:raise ValueError('Unknown route or extra input program')

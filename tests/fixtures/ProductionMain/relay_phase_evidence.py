@@ -716,28 +716,87 @@ def validated_load_observation(client_output, action_cut, expected, installed_re
     return document
 
 
+def load_phase_owner_join(value, client_output, action_cut, expected):
+    """Exact A→B and retained-daemon DATA join, shared by two fixed routes only."""
+    observed=validated_load_observation(client_output,action_cut,expected,value['LoadRunningRecord'])['observation']
+    a=observed['OriginalStop']['MainIdentity'];b=observed['ReplacementFinish']['MainIdentity']
+    if _load_durable_identity(value['StartupIdentityA'])!=a or value['ShutdownIdentityB']!=b:raise ValueError('Load owner/daemon join refused')
+    if _load_durable_identity(value['OriginalRunningRecord']['Identity'])!=a or value['OriginalRunningRecord']['Disposition']!='Running':raise ValueError('Load owner/daemon join refused')
+    if value['OriginalRunningStatus']['ok'] is not True or value['OriginalRunningStatus']['status']['terminalRunId']!=a['RunId']:raise ValueError('Load owner/daemon join refused')
+    # Load replaces main A with B, not the retained root/session daemon.
+    if not retained_daemon_load_continuity_proved(value['DaemonSettlement'],value['PostLoadDaemonContinuity']):raise ValueError('Load owner/daemon join refused')
+    terminal=observed['ReplacementFinish']['TerminalIdentity']
+    if value['ShutdownReceipt']['status']['terminalStop']['identity']!={
+        'runId':terminal['RunId'],'backend':terminal['Backend'],'guarantee':terminal['Guarantee'],'rootPid':terminal['RootPid']}:raise ValueError('Load owner/daemon join refused')
+    running=value['LoadRunningRecord'];status=value['LoadRunningStatus']
+    if _load_durable_identity(running['Identity'])!=b or running['Disposition']!='Running':raise ValueError('Load owner/daemon join refused')
+    if status['ok'] is not True or status['status']['terminalRunId']!=b['RunId']:raise ValueError('Load owner/daemon join refused')
+    return running,status
+
+
 def relay_load_phase_cleanup_proved(value, client_output, action_cut, expected):
     """Separate Load-only cleanup join. Never overwrites startup A or adopts B from status."""
     try:
-        observed=validated_load_observation(client_output,action_cut,expected,value['LoadRunningRecord'])['observation']
-        a=observed['OriginalStop']['MainIdentity'];b=observed['ReplacementFinish']['MainIdentity']
-        if _load_durable_identity(value['StartupIdentityA'])!=a or value['ShutdownIdentityB']!=b:return False
-        if _load_durable_identity(value['OriginalRunningRecord']['Identity'])!=a or value['OriginalRunningRecord']['Disposition']!='Running':return False
-        if value['OriginalRunningStatus']['ok'] is not True or value['OriginalRunningStatus']['status']['terminalRunId']!=a['RunId']:return False
-        # Load replaces main A with B, not the retained root/session daemon.
-        if not retained_daemon_load_continuity_proved(value['DaemonSettlement'],value['PostLoadDaemonContinuity']):return False
-        terminal=observed['ReplacementFinish']['TerminalIdentity']
-        if value['ShutdownReceipt']['status']['terminalStop']['identity']!={
-            'runId':terminal['RunId'],'backend':terminal['Backend'],'guarantee':terminal['Guarantee'],'rootPid':terminal['RootPid']}:return False
-        running=value['LoadRunningRecord'];status=value['LoadRunningStatus']
-        if _load_durable_identity(running['Identity'])!=b or running['Disposition']!='Running':return False
-        if status['ok'] is not True or status['status']['terminalRunId']!=b['RunId']:return False
-        # The existing fixed stop proof is reused only against observed B. Original
-        # caller evidence remains untouched; no process action occurs in this module.
+        running,status=load_phase_owner_join(value,client_output,action_cut,expected)
         if any(type(value[k]) is not int or value[k]!=0 for k in ('AcceptedGameTurns','GenuineActionsSent')):return False
         if not local_load_route_proved(value['LocalRouteProof'],value['FinalQueuePins']):return False
         if value['LocalRouteProof']['SaveArchivePath']!=expected['SourceKey']:return False
         if not history_witness_matches_pins(value['LocalRouteProof']['After']['History'],value['FinalWorldPins']):return False
+        return relay_owned_cleanup_proved(value,running,status)
+    except (KeyError,TypeError,ValueError,UnicodeError):return False
+
+
+def relay_self_save_load_turn_cleanup_proved(value, client_output, action_cut, expected):
+    """Initial setup's own Save, real A→B, one B-bound GM turn and normal B close."""
+    try:
+        running,status=load_phase_owner_join(value,client_output,action_cut,expected)
+        if value['ConsoleRoute']!={'Route':'self-save-load-turn'} or type(value['AcceptedTurnNumber']) is not int or value['AcceptedTurnNumber']!=42:return False
+        if value['LoadObservation']!=validated_load_observation(client_output,action_cut,expected,running):return False
+        if value['PostLoadDaemonContinuity']['OriginalGuardRawHex']!=value['PostLoadDaemonContinuity']['PostLoadGuardRawHex']:return False
+        if any(type(value[k]) is not int or value[k]!=1 for k in ('AcceptedGameTurns','GenuineActionsSent')):return False
+        if value['InputQualified'] is not True or value['TurnRunningRecord']!=running or value['TurnRunningStatus']!=status:return False
+        require_self_save_turn_status(value,status,True)
+        require_self_save_turn_status(value,value['PostLoadPreActionStatus'],True)
+        current=status['status'];binding=current['inputBindingId']
+        fresh=value['PostLoadPreActionStatus']
+        if (value['PostLoadPreActionRecord']!=running or fresh['ok'] is not True or fresh['status']['terminalRunId']!=current['terminalRunId']
+            or fresh['status']['inputBindingId']!=binding or fresh['status']['terminalOwnerRetained'] is not True
+            or fresh['status']['terminalUncertain'] is not False or fresh['status']['ready'] is not True):return False
+        if (type(binding) is not str or not binding or binding==value['OriginalRunningStatus']['status']['inputBindingId']
+            or current['terminalOwnerRetained'] is not True or current['terminalUncertain'] is not False or current['ready'] is not True):return False
+        delivery=value['OriginalTurnDelivery']
+        if (delivery['inputBindingId']!=binding or delivery['disposition']!='submission-observed'
+            or delivery['operationKind']!='turn' or delivery['operationRevision']!='live'):return False
+        replies=value['RelayResponseEvidence']
+        if type(replies) is not list or len(replies)!=1 or replies[0]['Kind']!='turn' or replies[0]['Dispatch']['inputBindingId']!=binding:return False
+        proof=value['SelfSaveLoadProof'];before=proof['Before'];pin=proof['Archive']
+        if (before['Turn']!=41 or before['Queue']!={} or before!=proof['AfterSave'] or before!=proof['AfterLoad'] or before!=proof['PreActionReadback']
+            or any(proof[k] is not True for k in ('ArchiveVerified','RestoreBytesExact','CleanOutcomeBeforeFirstPlayerClear'))):return False
+        if (set(pin)!={'Path','Name','SHA256','Mode'} or type(pin['Mode']) is not int or not 0<=pin['Mode']<=0o777 or pin['Path']!=expected['SourceKey'] or Path(pin['Path']).name!=pin['Name']
+            or re.fullmatch('[0-9a-f]{64}',pin['SHA256']) is None or pin['SHA256']!=value['LoadArchiveSHA256']
+            or proof['FinalArchiveReadback']!=pin or value['FinalConfigSHA256']!=before['ConfigSHA256']):return False
+        content=proof['ArchiveContentProof'];manifest_raw=bytes.fromhex(content['ManifestRawHex'])
+        if (any(content[k] is not True for k in ('ManifestVerified','ConfigBytesExact','RuntimeAbsent'))
+            or content['ConfigSHA256']!=before['ConfigSHA256'] or content['ManifestSHA256']!=sha(manifest_raw)
+            or type(content['ManifestLength']) is not int or content['ManifestLength']!=len(manifest_raw)
+            or type(content['ManifestEntries']) is not int or content['ManifestEntries']<=0):return False
+        request=value['ActualRequest'];request_raw=bytes.fromhex(value['ActualRequestRawHex'])
+        if (strict_settings(request_raw)!=request or sha(request_raw)!=value['ActualRequestSHA256']
+            or request['sessionId']!=value['SeedSessionId'] or type(request['turnNumber']) is not int or request['turnNumber']!=42):return False
+        queue=value['SelfSaveQueue']
+        if (type(queue) is not list or len(queue)!=1 or queue!=value['FinalSelfSaveQueue'] or queue[0]['Kind']!='turn'
+            or queue[0]['QueueId']!=replies[0]['QueueId'] or queue[0]['TurnRequestSHA256']!=sha(request_raw)):return False
+        checked_mortal_outcome(value['TypedReceiptEvidence'],request)
+        original=bytes.fromhex(before['Files'][before['StoryPath']]);after=bytes.fromhex(value['AcceptedStoryAfterRawHex'])
+        if (checked_mortal_story_append(original,after,request)!=value['AcceptedStory']
+            or sha(original)!=value['StoryBeforeSHA256'] or sha(after)!=value['StoryAfterSHA256']
+            or value['FinalWorldPins'][before['StoryPath']]!=sha(after)
+            or not history_witness_matches_pins(value['TypedReceiptEvidence']['historyAfter'],value['FinalWorldPins'])):return False
+        closure=value['ClientTerminalClosure'];helper=value['ReceiptHelper']
+        if (any(closure[k] is not True for k in ('ChildRestoredConfiguredBaseline','OwnerRestoredOriginal','TerminalNormalClose','EOF'))
+            or type(closure['ExitCode']) is not int or closure['ExitCode']!=0
+            or any(helper[k] is not True for k in ('Completed','StdoutEOF','StderrEOF'))
+            or type(helper['ExitCode']) is not int or helper['ExitCode']!=0):return False
         return relay_owned_cleanup_proved(value,running,status)
     except (KeyError,TypeError,ValueError,UnicodeError):return False
 
@@ -1079,3 +1138,173 @@ def require_cold_loaded_host(descriptor,out,*,previous,route,current_max):
     historical_owner=require_portable_cold_daemon_witness(base,archive)
     return {'ForbiddenRunIds':forbidden,'ArchivedDaemonOwnerId':historical_owner,'ExpectedTurn':44,'SessionId':descriptor['SessionId'],'BasePath':str(base),'RuntimeRoot':descriptor['RuntimeRoot'],
         'TemporaryRoot':str(temp),'ConfigBytes':config_bytes,'Command':command,'Pipe':settings['GmBridgePipeNameOverride'],'GenerationId':generation}
+
+
+def require_route_load_nonce(route, profile, environment):
+    """Opt-in observation only. Default routes cannot accidentally enable active Load."""
+    nonce=environment.get('BOE_TEST_LOAD_OBSERVATION_NONCE')
+    if route not in ('storage-local-proof','self-save-load-turn'):
+        if 'BOE_TEST_LOAD_OBSERVATION_NONCE' in environment or 'LoadObservationNonce' in profile:
+            raise ValueError('Unexpected active Load observation nonce')
+        return None
+    if type(nonce) is not str or re.fullmatch('[0-9a-f]{32}',nonce) is None:
+        raise ValueError('Local Load requires a fresh prepared diagnostic nonce')
+    if route=='self-save-load-turn' and (profile.get('LoadObservationNonce')!=nonce or profile.get('GMDecisionDeferred') is not True):
+        raise ValueError('Self-Save Load nonce/GM decision differs from pinned launch profile')
+    return nonce
+
+
+def require_self_save_initial(session, previous, restored, cold, expected_turn):
+    """New setup41 only, no predecessor, restored/cold host or pre-existing ZIP menu."""
+    session=_restored_plain_path(Path(session),True)
+    if previous is not None or restored is not False or cold is not False or type(expected_turn) is not int or expected_turn!=42:
+        raise ValueError('Self-Save route requires fresh initial setup41')
+    if any(p for folder in ('manual_saves','autosaves','checkpoint_saves') for p in (session/'saves'/folder).glob('*.zip')):
+        raise ValueError('Self-Save route refuses pre-existing ZIP choices')
+
+
+def self_save_archive_pin(session, archive, raw, *, final=False):
+    """Fresh exact sole ZIP readback; never selects by friendly name or latest file."""
+    session=_restored_plain_path(Path(session),True);archive=_restored_plain_path(Path(archive))
+    if archive.parent!=session/'saves/manual_saves' or type(raw) is not bytes:
+        raise ValueError('Self-Save archive path differs')
+    folders=('manual_saves',) if final else ('manual_saves','autosaves','checkpoint_saves')
+    files=[p for folder in folders for p in (session/'saves'/folder).glob('*.zip')]
+    if files!=[archive] or archive.read_bytes()!=raw:raise ValueError('Self-Save exact manual ZIP/menu changed')
+    return {'Path':str(archive),'Name':archive.name,'SHA256':sha(raw),'Mode':stat.S_IMODE(archive.stat().st_mode)}
+
+
+def self_save_load_snapshot(session, story, queue):
+    """Actual initial scoped DATA, never a fabricated accepted-turn result/authority."""
+    session=_restored_plain_path(Path(session),True);story=_restored_plain_path(Path(story));queue=_restored_plain_path(Path(queue),True)
+    if story!=session/'stories/mortal_life_2.jsonl' or list((session/'stories').glob('*.jsonl'))!=[story]:
+        raise ValueError('Self-Save initial story inventory differs')
+    raw=story.read_bytes();rows=[strict_settings(line) for line in raw.decode('utf-8-sig').splitlines() if line.strip()]
+    if len(rows)!=1 or type(rows[0].get('turn')) is not int or rows[0]['turn']!=41:
+        raise ValueError('Self-Save requires only setup41, not accepted gameplay')
+    for relative in ('input/turn_request.json','game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json',
+        'game_state/control/pending_turn_snapshot','game_state/control/validation_repair_request.json','ready/turn_complete.json','ready/turn_error.json'):
+        path=session/relative
+        if path.exists() or path.is_symlink():raise ValueError('Pending self-Save boundary: '+relative)
+    if any(queue.iterdir()):raise ValueError('Self-Save/Load must precede every GM request')
+    files={}
+    for relative in ORDINARY_SAVE_PATHS:
+        path=session/relative
+        files[relative]=_restored_plain_path(path).read_bytes().hex() if path.exists() or path.is_symlink() else None
+    history='game_state/world/mortal_living_world_history.json';path=session/history
+    files[history]=_restored_plain_path(path).read_bytes().hex() if path.exists() or path.is_symlink() else None
+    story_name=story.relative_to(session).as_posix();files[story_name]=raw.hex()
+    config=_restored_plain_path(session/'config.json').read_bytes()
+    return {'Turn':41,'StoryPath':story_name,'Files':files,'Queue':{},'ConfigSHA256':sha(config),'ConfigRawHex':config.hex()}
+
+
+def self_save_runtime_root(base):
+    """Only the new route's independently packaged sibling survives exact Load replacement."""
+    base=_restored_plain_path(Path(base),True);session=_restored_plain_path(base/'game_session',True)
+    nested=session/'_runtime'
+    if nested.exists() or nested.is_symlink():raise ValueError('Self-Save active Load refuses canonical _runtime')
+    return _restored_plain_path(base.parent/'package',True)
+
+
+def verify_self_save_archive(raw, snapshot):
+    """Detached own-archive check reusing scoped ZIP checks plus its full integrity manifest."""
+    import io,zipfile
+    verify_ordinary_save_archive(raw,snapshot,41)
+    config=bytes.fromhex(snapshot['ConfigRawHex'])
+    if sha(config)!=snapshot['ConfigSHA256']:raise ValueError('Self-Save config snapshot differs')
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        names=archive.namelist()
+        control='game_state/control/'
+        host_nodes=('_runtime','.boe_runtime',control+'gm_daemon_status.json',control+'gm_bridge_status.json',
+                    control+'pending_turn_snapshot',control+'pending_turn_snapshot.json',
+                    control+'pending_turn_snapshot.authority.json')
+        if any(name.casefold()==node or name.casefold().startswith(node+'/') for name in names for node in host_nodes):
+            raise ValueError('Own Save must not contain runtime payload')
+        if names.count('save_manifest.json')!=1 or names.count('config.json')!=1 or archive.read('config.json')!=config:
+            raise ValueError('Own Save manifest/config absent or changed')
+        manifest_raw=archive.read('save_manifest.json');manifest=strict_settings(manifest_raw)
+        if (set(manifest)!={'schemaVersion','algorithm','entries'} or type(manifest['schemaVersion']) is not int
+            or manifest['schemaVersion']!=1 or manifest['algorithm']!='SHA-256' or type(manifest['entries']) is not list):
+            raise ValueError('Own Save full manifest schema differs')
+        seen=set()
+        for row in manifest['entries']:
+            if type(row) is not dict or set(row)!={'path','length','sha256'}:raise ValueError('Own Save manifest entry differs')
+            path=row['path']
+            if (type(path) is not str or path=='save_manifest.json' or path.casefold() in seen or names.count(path)!=1
+                or type(row['length']) is not int or row['length']<0 or type(row['sha256']) is not str
+                or re.fullmatch('[0-9a-fA-F]{64}',row['sha256']) is None):raise ValueError('Own Save manifest path/value differs')
+            seen.add(path.casefold());payload=archive.read(path)
+            if len(payload)!=row['length'] or sha(payload)!=row['sha256'].lower():raise ValueError('Own Save payload length/hash differs')
+        if seen!={name.casefold() for name in names if name!='save_manifest.json'}:
+            raise ValueError('Own Save manifest coverage differs')
+    return {'ManifestVerified':True,'ConfigBytesExact':True,'RuntimeAbsent':True,'ConfigSHA256':sha(config),
+        'ManifestRawHex':manifest_raw.hex(),'ManifestLength':len(manifest_raw),'ManifestSHA256':sha(manifest_raw),'ManifestEntries':len(seen)}
+
+
+def require_self_save_launch(out, seed_path, seed_raw, action_raw, receipt_helper, profile, previous, optimized):
+    """Independent binding of the closed initial route before operational side effects."""
+    out=_restored_plain_path(Path(out),True);root=out.parent
+    if (out.name!='p01' or Path(seed_path)!=root/'seed-manifest.json' or Path(receipt_helper)!=root/'receipt-helper/BookOfEternityClient.TestSupport.dll'
+        or previous is not None or type(optimized) is not int or optimized!=0):raise ValueError('Self-Save initial phase/helper/optimization differs')
+    if (profile.get('Route')!='self-save-load-turn' or type(profile.get('ExpectedTurn')) is not int or profile['ExpectedTurn']!=42
+        or profile.get('PreviousResult','missing') is not None or profile.get('PreviousSHA256','missing') is not None
+        or profile.get('SeedSHA256')!=sha(seed_raw) or profile.get('ActionSHA256')!=sha(action_raw)):
+        raise ValueError('Self-Save launch profile does not bind this seed/action')
+    seed=strict_settings(seed_raw)
+    if seed.get('kind')!='seeded-live-mortal' or seed.get('basePath')!=str(root/'play'):
+        raise ValueError('Self-Save seed is not this fresh initial root')
+
+
+def require_self_save_turn_status(value, status, require_ready=False):
+    """Fresh B main, full terminal tuple and nonempty input binding before any dispatch."""
+    expected=value['LoadObservation']['observation']['ReplacementFinish'];terminal=expected['TerminalIdentity']
+    current=status.get('status');wanted=value['TurnRunningStatus']['status']
+    if (status.get('ok') is not True or type(current) is not dict or current.get('terminalRunId')!=expected['MainIdentity']['RunId']
+        or type(current.get('inputBindingId')) is not str or not current['inputBindingId']
+        or current['inputBindingId']!=wanted.get('inputBindingId') or current['inputBindingId']==value['OriginalRunningStatus']['status'].get('inputBindingId')
+        or type(current.get('backend')) is not str or current['backend']!=terminal['Backend']
+        or type(current.get('terminalGuarantee')) is not str or current['terminalGuarantee']!=terminal['Guarantee']
+        or type(current.get('shellPid')) is not int or current['shellPid']!=terminal['RootPid']
+        or current.get('terminalUncertain') is not False or current.get('terminalOwnerRetained') is not True
+        or (require_ready and current.get('ready') is not True)):
+        raise ValueError('Fresh self-Save B terminal/input tuple differs')
+    delivery=current.get('promptDelivery')
+    if delivery is not None and (type(delivery) is not dict or delivery.get('inputBindingId')!=current['inputBindingId']):
+        raise ValueError('Self-Save B status carries foreign dispatch binding')
+
+
+def checked_mortal_story_append(before,after,request):
+    if not after.startswith(before):raise ValueError('Prior story bytes changed')
+    rows=[json.loads(row) for row in after[len(before):].decode('utf-8-sig').splitlines() if row.strip()]
+    if len(rows)!=1:raise ValueError('Expected exactly one appended story row')
+    row=rows[0]
+    if row.get('turn')!=request['turnNumber'] or row.get('realm')!='Mortal World' or row.get('player')!=request['playerAction'] or not row.get('narrative','').strip():
+        raise ValueError('Story does not match actual request')
+    if 'requestId' in row and row['requestId']!=request['requestId']:raise ValueError('Conflicting optional story identity')
+    return row
+
+
+def require_self_save_queue(queue, request_bytes, *, complete=False, closed=False):
+    """Exactly one original turn queue, never a repair program or extra directory."""
+    queue=_restored_plain_path(Path(queue),True);request=strict_settings(request_bytes)
+    identity={key:request[key] for key in ('sessionId','requestId','turnNumber')}
+    directories=[];allowed={'.execution.lock'}|({'close-request.json','closed.json'} if closed else set())
+    for path in queue.iterdir():
+        if path.is_symlink():raise ValueError('Linked self-Save queue entry')
+        if path.is_dir():
+            if re.fullmatch('request-[1-9][0-9]*-[0-9a-f]{32}',path.name) is None:raise ValueError('Unexpected self-Save queue directory')
+            directories.append(_restored_plain_path(path,True))
+        elif path.name not in allowed:raise ValueError('Unexpected self-Save queue file')
+        else:_restored_plain_path(path)
+    if len(directories)>1 or (complete and len(directories)!=1):raise ValueError('Self-Save route requires exactly one turn request, no repair')
+    rows=[]
+    for path in directories:
+        metadata=path/'request.json'
+        if not metadata.exists() and not metadata.is_symlink():
+            if complete:raise ValueError('Self-Save turn metadata incomplete')
+            continue
+        value=strict_settings(_restored_plain_path(metadata).read_bytes())
+        if value.get('Kind')!='turn' or value.get('TurnIdentity')!=identity or value.get('TurnRequestSHA256')!=sha(request_bytes):
+            raise ValueError('Self-Save queue is repair/foreign turn')
+        rows.append({'QueueId':path.name,'Kind':'turn','TurnRequestSHA256':sha(request_bytes)})
+    return rows

@@ -95,7 +95,51 @@ def write_physical_launch_profile(base,phase,launcher,profile):
     write_profile_artifact(phase/'launch-profile.json',raw,0o600)
     return profile,hashlib.sha256(raw).hexdigest()
 
-def render_launch_script(D,phase,previous_path,failure,stop,profile_sha,cold=False):
+def require_standalone_seed(root,phase,seed):
+    play=root/'play';session=play/'game_session'
+    if phase!=root/'p01' or phase!=plain_path(phase,True):
+        raise ValueError('Exact standalone phase required')
+    if (seed.get('kind')!='seeded-live-mortal' or seed.get('basePath')!=str(play)
+        or seed.get('acceptedGmTurn') is not False or type(seed.get('setupTurn')) is not int or seed['setupTurn']!=41
+        or type(seed.get('validationIssues')) is not int or seed['validationIssues']!=0
+        or any((session/'saves').rglob('*.zip'))):
+        raise ValueError('Standalone Load requires a fresh validated setup41 export without prior archives')
+    for path in (phase/'queue',phase/'action.txt',phase/'console-route.json',phase/'launch-env',
+                 session/'_runtime',play/'.boe_runtime/gm-runs',play/'.boe_runtime/locks/gm-daemon-instance.lock',
+                 *(session/'game_state/control'/name for name in (
+                     'gm_bridge_status.json','gm_daemon_status.json','pending_turn_snapshot',
+                     'pending_turn_snapshot.json','pending_turn_snapshot.authority.json','validation_repair_request.json'))):
+        if os.path.lexists(path):raise ValueError('Standalone seed or phase contains old state or output: '+str(path))
+    for name in ('input','output','ready'):
+        path=session/name
+        if os.path.lexists(path) and any(plain_path(path,True).iterdir()):
+            raise ValueError('Standalone seed contains prior action material: '+name)
+
+def require_standalone_preparation(root,phase):
+    raw=lambda path:plain_path(path).read_bytes()
+    sha=lambda value:hashlib.sha256(value).hexdigest()
+    receipt=json.loads(raw(root/'preparation-manifest.json'))
+    inputs=raw(root/'preparation-inputs.json')
+    seed_bytes=raw(root/'seed-manifest.json');seed=json.loads(seed_bytes)
+    if (receipt.get('prepared') is not True or receipt.get('acceptedGmTurn') is not False
+        or receipt.get('NoGameOrRelayLaunched') is not True or json.loads(inputs).get('Route')!='self-save-load-turn'
+        or receipt.get('inputSHA256')!=sha(inputs) or receipt.get('seedManifestSHA256')!=sha(seed_bytes)
+        or receipt.get('packageSHA256')!=sha(raw(phase/'relay-phase-package.json')) or receipt.get('seed')!=seed):
+        raise ValueError('Completed standalone preparation and current inputs differ')
+    session=root/'play/game_session';story='stories/mortal_life_2.jsonl'
+    if (seed.get('storyPath')!=story or list(plain_path(session/'stories',True).iterdir())!=[session/story]
+        or seed.get('storyFiles')!=[{'path':story,'sha256':sha(raw(session/story))}]):
+        raise ValueError('Standalone setup story differs')
+    session_id=seed.get('sessionId')
+    if (type(session_id) is not str or not session_id
+        or json.loads(raw(session/'game_state/history/chat_log.json'))!={'sessionId':session_id,'entries':[]}):
+        raise ValueError('Standalone setup chat/session differs')
+    return seed
+
+def render_launch_script(D,phase,previous_path,failure,stop,profile_sha,cold=False,*,load_nonce=None):
+    if load_nonce is not None and (cold or phase!='p01' or previous_path is not None
+            or type(load_nonce) is not str or re.fullmatch('[0-9a-f]{32}',load_nonce) is None):
+        raise ValueError('A Load observation nonce requires the exact standalone Load route')
     script='''#!/bin/bash
 set -euo pipefail
 umask 077
@@ -161,17 +205,23 @@ exit $?
         script=script.replace('guardian.json probe-result.json queue;', 'guardian.json probe-result.json;')
         script=script.replace('exec > "$P/launch.log" 2>&1', '/usr/bin/python3 - "$ROOT" "$P" <<\'COLD_QUEUE\'\nimport pathlib,stat,sys\nroot=pathlib.Path(sys.argv[1]);phase=pathlib.Path(sys.argv[2]);queue=phase/\'queue\'\nif phase!=root/\'recovered-live\' or phase!=phase.resolve():raise ValueError(\'Cold phase alias\')\nif any(p.is_symlink() for p in [queue,*queue.parents]):raise ValueError(\'Linked cold queue\')\nif not queue.is_dir() or stat.S_IMODE(queue.stat().st_mode)!=0o700 or any(queue.iterdir()):raise ValueError(\'Cold queue must be private and empty\')\nif stat.S_IMODE(phase.stat().st_mode)!=0o700:raise ValueError(\'Cold phase must be private\')\ntmp=root/\'rt\'\nif tmp.exists() or tmp.is_symlink():raise ValueError(\'Cold short temp must be absent\')\nCOLD_QUEUE\n'+'exec > "$P/launch.log" 2>&1')
         script=script.replace('"$ROOT/seed-manifest.json"','"$ROOT/cold-host-descriptor.json"').replace('TMPDIR="$P/launch-env/tmp"','TMPDIR="$ROOT/rt"')
+    if load_nonce is not None:
+        script=script.replace('unset BOE_TEST_LOAD_OBSERVATION_NONCE\n',
+                              'export BOE_TEST_LOAD_OBSERVATION_NONCE='+load_nonce+'\n')
     return script
 
 def main():
-    if len(sys.argv) not in (2,3):raise ValueError('Destination and optional reviewed continuation binding required')
+    if len(sys.argv) not in (2,3):raise ValueError('Destination and optional reviewed continuation binding or standalone Load route required')
     D=pathlib.Path(sys.argv[1])
     if not D.is_absolute() or D!=D.resolve() or any(x.is_symlink() for x in [D,*D.parents]) or D.parent!=pathlib.Path('/workspace/shared') or re.fullmatch(r'mm[0-9]{2}-[0-9]{8}',D.name) is None:raise ValueError('Invalid prepared destination')
     prepared=json.loads(plain_path(D/'preparation-inputs.json').read_text())
     regular_tree(D/'play')
     assert prepared['destination']==str(D) and prepared['owningBuildManifestSHA256']==os.environ['MM_REVIEWED_INPUT_SHA256']
     binding_bytes=None;binding=None
-    if len(sys.argv)==3:
+    self_save_load=len(sys.argv)==3 and sys.argv[2]=='--self-save-load-turn'
+    if (self_save_load and prepared.get('Route')!='self-save-load-turn') or (not self_save_load and 'Route' in prepared):
+        raise ValueError('Profile does not match prepared seed route')
+    if len(sys.argv)==3 and not self_save_load:
         binding_path=pathlib.Path(sys.argv[2])
         if not binding_path.is_absolute() or binding_path!=binding_path.resolve() or any(x.is_symlink() for x in [binding_path,*binding_path.parents]):raise ValueError('Aliased continuation binding')
         binding_bytes=plain_path(binding_path).read_bytes()
@@ -182,6 +232,11 @@ def main():
     require_profile_outputs_absent(P,D/('launch-'+phase+'.sh'))
     a='Выхожу из покоев, ищу представителя совета и прошу проводить меня к его хозяйственному двору, показать припаркованную грузовую повозку и закрытую кладовую с разметочным мелом, объяснить владельца и порядок выдачи. Ничего не беру и не перемещаю'
     previous_path=None;route={'Route':'birth'}
+    if self_save_load:
+        seed=require_standalone_preparation(D,P)
+        require_standalone_seed(D,P,seed)
+        route={'Route':'self-save-load-turn'}
+        a='Осматриваю комнату, в которой нахожусь, и прислушиваюсь. Ничего не беру, не перемещаю и не покидаю комнату.'
     if binding is not None:
         required_sources=[pathlib.Path(__file__),pathlib.Path(__file__).with_name('submit-mm21-once.py'),R/'tests/fixtures/ProductionMain/live-mortal-phase.py',R/'tests/fixtures/ProductionMain/relay_phase_evidence.py',R/'tests/fixtures/ProductionMain/mortal_console_routes.py']
         for f in required_sources:plain_path(f)
@@ -224,12 +279,22 @@ def main():
         pe.terminal_package_preflight(P,package)
         exact_tree(P/'relay',package['RelayPins'])
         if pe.relay_package_preflight(P,D/'play/game_session/_runtime',R/'tests/fixtures/ProductionMain/live-mortal-phase.py')[0]!=package:raise ValueError('Copied phase package changed')
-    assert not(P/'action.txt').exists();(P/'action.txt').write_bytes(a.encode());(P/'console-route.json').write_text(json.dumps(route)+'\n')
-    for n in ['config','data','state','cache','tmp','home']:(P/'launch-env'/n).mkdir(parents=True,mode=0o700)
+    if self_save_load:
+        write_profile_artifact(P/'action.txt',a.encode(),0o600)
+        write_profile_artifact(P/'console-route.json',(json.dumps(route)+'\n').encode(),0o600)
+        (P/'launch-env').mkdir(mode=0o700)
+    else:
+        assert not(P/'action.txt').exists();(P/'action.txt').write_bytes(a.encode());(P/'console-route.json').write_text(json.dumps(route)+'\n')
+    for n in ['config','data','state','cache','tmp','home']:(P/'launch-env'/n).mkdir(parents=not self_save_load,mode=0o700)
     failure=uuid.uuid4().hex;stop=uuid.uuid4().hex
     profile={'Route':route['Route'],'ExpectedTurn':continuation_spec(phase,previous)[2] if previous_path else 42,'PreviousResult':str(previous_path) if previous_path else None,'PreviousSHA256':h(previous_path) if previous_path else None,'GMDecisionDeferred':bool(previous_path),'SeedSHA256':h(D/'seed-manifest.json'),'FailureNonce':failure,'StopNonce':stop,'Budgets':{'provider':600,'work':660,'clientCleanup':680,'driver':720,'guardian':750},'Driver':str(R/'tests/fixtures/ProductionMain/live-mortal-phase.py'),'ReceiptHelper':str(D/'receipt-helper/BookOfEternityClient.TestSupport.dll'),'ActionSHA256':h(P/'action.txt'),'RuntimeCount':len(inv(D/'play/game_session/_runtime')),'HelperCount':len(inv(D/'receipt-helper')),'PrivateDirectoriesCreated':phase+'/launch-env/*; driver creates own phase config,data,state,cache,tmp exactly once','OperationalConfigWritten':False}
+    load_nonce=uuid.uuid4().hex if self_save_load else None
+    if self_save_load:
+        profile['GMDecisionDeferred']=True
+        profile['LoadObservationNonce']=load_nonce
+        profile['RuntimeCount']=len(inv(D/'package'))
     profile,profile_sha=write_physical_launch_profile(D/'play',P,D/('launch-'+phase+'.sh'),profile)
-    script=render_launch_script(D,phase,previous_path,failure,stop,profile_sha)
+    script=render_launch_script(D,phase,previous_path,failure,stop,profile_sha,load_nonce=load_nonce)
     write_profile_artifact(D/('launch-'+phase+'.sh'),script.encode('utf-8'),0o700)
     regular_tree(D/'play')
     assert inv(D/'play')==before

@@ -252,7 +252,7 @@ class PhysicalTraceProfile(unittest.TestCase):
     actual,digest=write(base,folder,launcher,authored)
     raw=(folder/'launch-profile.json').read_bytes();self.assertEqual(json.loads(raw),actual);self.assertEqual(hashlib.sha256(raw).hexdigest(),digest);self.assertNotIn('PhysicalTrace',authored)
     self.assertEqual(stat.S_IMODE((folder/'launch-profile.json').stat().st_mode),0o600)
-    ns.update(D=root,phase=phase,previous_path=None if phase=='p01' else root/'p01/probe-result.json',failure='b'*32,stop='a'*32,profile_sha=digest)
+    ns.update(D=root,phase=phase,previous_path=None if phase=='p01' else root/'p01/probe-result.json',failure='b'*32,stop='a'*32,profile_sha=digest,load_nonce=None)
     exec(compile(ast.Module(body=nodes,type_ignores=[]),'<actual-generated-launcher>','exec'),ns);script=ns['script'];lines=script.splitlines()
     expected=['export BOE_TEST_CANONICAL_LEASE_TRACE_ROUTE=external','export BOE_TEST_CANONICAL_LEASE_TRACE_DIR="$P/physical-trace"','export BOE_TEST_PHYSICAL_TRACE_PROFILE_SHA256='+digest,'export BOE_MAIN_STOP_DIAGNOSTIC_NONCE='+'a'*32]
     for line in expected:self.assertEqual(lines.count(line),1);self.assertLess(script.index(line),script.index('"$ROOT/native/host-guardian"'))
@@ -273,7 +273,10 @@ class PhysicalTraceProfile(unittest.TestCase):
     else:self.assertEqual(target.read_bytes(),b'keep')
   gates=[n for n in tree.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Name) and n.value.func.id=='require_profile_outputs_absent']
   self.assertEqual(len(gates),1)
-  action_write=[n for n in tree.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Attribute) and n.value.func.attr=='write_bytes']
+  action_write=[n for top in tree.body if not isinstance(top,ast.FunctionDef) for n in ast.walk(top)
+                 if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call)
+                 and any(isinstance(x,ast.Constant) and x.value=='action.txt' for x in ast.walk(n))
+                 and (getattr(n.value.func,'attr',None)=='write_bytes' or getattr(n.value.func,'id',None)=='write_profile_artifact')]
   self.assertTrue(action_write);self.assertLess(gates[0].lineno,min(n.lineno for n in action_write))
 
 class P03Continuation(unittest.TestCase):
@@ -327,7 +330,7 @@ class P03Continuation(unittest.TestCase):
  def test_actual_generated_p03_turn_and_previous(self):
   import ast
   tree,ns=self.actual();root=pathlib.Path('/tmp/authored-p03')
-  ns.update(D=root,phase='p03',previous_path=root/'p02/probe-result.json',previous={'AcceptedTurnNumber':43},failure='b'*32,stop='a'*32,profile_sha='c'*64)
+  ns.update(D=root,phase='p03',previous_path=root/'p02/probe-result.json',previous={'AcceptedTurnNumber':43},failure='b'*32,stop='a'*32,profile_sha='c'*64,load_nonce=None)
   script=next(n for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='script' for t in n.targets))
   exec(compile(ast.Module(body=[script],type_ignores=[]),'<actual-p03-launcher>','exec'),ns)
   self.assertIn('"$ROOT/p02/probe-result.json"',ns['script']);self.assertNotIn('"$ROOT/p01/probe-result.json"',ns['script'])
@@ -336,12 +339,59 @@ class P03Continuation(unittest.TestCase):
   self.assertEqual(eval(compile(ast.Expression(value),'<actual-p03-turn>','eval'),ns),44)
 
 class ColdProfileRendering(unittest.TestCase):
+ def test_standalone_profile_requires_frozen_preparation_and_current_story(self):
+  import importlib.util
+  path=pathlib.Path(__file__).with_name('prepare-mm21-profile.py')
+  spec=importlib.util.spec_from_file_location('standalone-profile-join-test',path)
+  module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+  self.assertTrue(callable(getattr(module,'require_standalone_preparation',None)))
+  for drift in (None,'receipt','inputs','seed','package','story','chat','extra-story'):
+   with self.subTest(drift=drift),tempfile.TemporaryDirectory() as tmp:
+    root=pathlib.Path(tmp).resolve();phase=root/'p01';phase.mkdir();session=root/'play/game_session'
+    story=session/'stories/mortal_life_2.jsonl';story.parent.mkdir(parents=True);story.write_bytes(b'setup-story')
+    chat=session/'game_state/history/chat_log.json';chat.parent.mkdir(parents=True);chat.write_text(json.dumps({'sessionId':'bound','entries':[]}))
+    seed={'storyPath':'stories/mortal_life_2.jsonl','sessionId':'bound',
+          'storyFiles':[{'path':'stories/mortal_life_2.jsonl','sha256':g.sha(story.read_bytes())}]}
+    inputs=root/'preparation-inputs.json';inputs.write_text(json.dumps({'Route':'self-save-load-turn'}))
+    source=root/'seed-manifest.json';source.write_text(json.dumps(seed))
+    package=phase/'relay-phase-package.json';package.write_bytes(b'package')
+    receipt=root/'preparation-manifest.json';receipt.write_text(json.dumps({
+     'prepared':True,'acceptedGmTurn':False,'NoGameOrRelayLaunched':True,
+     'inputSHA256':g.sha(inputs.read_bytes()),'seedManifestSHA256':g.sha(source.read_bytes()),
+     'packageSHA256':g.sha(package.read_bytes()),'seed':seed}))
+    changed={'receipt':receipt,'inputs':inputs,'seed':source,'package':package,'story':story,'chat':chat,
+             'extra-story':story.with_name('unexpected.jsonl')}.get(drift)
+    if not drift:self.assertEqual(module.require_standalone_preparation(root,phase),seed);continue
+    changed.write_bytes(b'changed')
+    with self.assertRaises(ValueError):module.require_standalone_preparation(root,phase)
+
+ def test_preparation_seed_fences_reject_saved_or_partly_prepared_root(self):
+  import importlib.util
+  path=pathlib.Path(__file__).with_name('prepare-mm21-profile.py')
+  spec=importlib.util.spec_from_file_location('standalone-profile-data-test',path)
+  module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+  self.assertTrue(callable(getattr(module,'require_standalone_seed',None)))
+  for name in ['','p01/queue','p01/action.txt','p01/console-route.json','p01/launch-env',
+               'play/game_session/saves/manual_saves/old.zip','play/game_session/_runtime',
+               'play/game_session/input/turn_request.json','play/game_session/output/output.json',
+               'play/game_session/game_state/control/gm_daemon_status.json',
+               'play/.boe_runtime/locks/gm-daemon-instance.lock']:
+   with self.subTest(name=name),tempfile.TemporaryDirectory() as tmp:
+    root=pathlib.Path(tmp).resolve();phase=root/'p01';phase.mkdir();(root/'play/game_session').mkdir(parents=True)
+    seed={'kind':'seeded-live-mortal','basePath':str(root/'play'),'acceptedGmTurn':False,'setupTurn':41,'validationIssues':0}
+    if not name:
+     module.require_standalone_seed(root,phase,seed);continue
+    path=root/name;path.parent.mkdir(parents=True,exist_ok=True)
+    path.symlink_to(root/'missing') if name=='p01/action.txt' else path.write_bytes(b'existing')
+    with self.assertRaises((ValueError,NotADirectoryError)):module.require_standalone_seed(root,phase,seed)
+
  def renderer(self):
   import ast
   path=pathlib.Path(__file__).with_name('prepare-mm21-profile.py');tree=ast.parse(path.read_text())
   nodes=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='render_launch_script']
   self.assertEqual(len(nodes),1,'Missing reusable actual launch renderer')
-  scope={'pathlib':pathlib};exec(compile(ast.Module(body=nodes,type_ignores=[]),str(path),'exec'),scope)
+  import re
+  scope={'pathlib':pathlib,'re':re};exec(compile(ast.Module(body=nodes,type_ignores=[]),str(path),'exec'),scope)
   return scope['render_launch_script']
  def test_existing_three_launcher_bytes_unchanged(self):
   import hashlib
@@ -375,7 +425,34 @@ class ColdProfileRendering(unittest.TestCase):
   for phase,prior in [('p01',None),('recovered-live',root/'p02/probe-result.json')]:
    with self.assertRaises(ValueError):render(root,phase,prior,'b'*32,'a'*32,'c'*64,cold=True)
 
+ def test_new_standalone_load_export_is_pinned_and_cannot_enter_continuation(self):
+  render=self.renderer();root=pathlib.Path('/workspace/shared/mm32-20261120')
+  text=render(root,'p01',None,'b'*32,'a'*32,'c'*64,load_nonce='d'*32)
+  self.assertIn('export BOE_TEST_LOAD_OBSERVATION_NONCE='+'d'*32+'\n',text)
+  self.assertNotIn('unset BOE_TEST_LOAD_OBSERVATION_NONCE',text)
+  self.assertIn('guardian.json probe-result.json queue;',text)
+  self.assertIn('"$ROOT/seed-manifest.json"',text)
+  cases=[('p02',None,False,'d'*32),('p01',root/'prior/probe-result.json',False,'d'*32),
+         ('p01',None,True,'d'*32),('p01',None,False,'\ncommand'),('p01',None,False,'D'*32)]
+  for phase,previous,cold,nonce in cases:
+   with self.subTest(phase=phase,nonce=nonce),self.assertRaisesRegex(ValueError,'standalone Load'):
+    render(root,phase,previous,'b'*32,'a'*32,'c'*64,cold=cold,load_nonce=nonce)
+
 class CurrentProducer(unittest.TestCase):
+ def test_standalone_load_uses_existing_external_package_not_canonical_copy(self):
+  import ast
+  source=pathlib.Path(__file__).with_name('manual-mm21.py')
+  nodes=[node for node in ast.parse(source.read_text()).body
+         if isinstance(node,ast.FunctionDef) and node.name=='runtime_for_fresh_seed']
+  self.assertEqual(len(nodes),1,'Missing bounded seed/runtime layout split')
+  namespace={};exec(compile(ast.Module(body=nodes,type_ignores=[]),str(source),'exec'),namespace)
+  fn=namespace['runtime_for_fresh_seed']
+  root=pathlib.Path('/workspace/shared/mm32-20261120')
+  self.assertEqual(fn(root,False),(root/'play/game_session/_runtime',True))
+  self.assertEqual(fn(root,True),(root/'package',False))
+  for invalid in ('--other',1,None):
+   with self.assertRaises(ValueError):fn(root,invalid)
+
  def test_exact_current_producer_zero_overlays_and_source_additions(self):
   import ast,copy,hashlib,types
   source=pathlib.Path(__file__).with_name('manual-mm21.py');tree=ast.parse(source.read_text())

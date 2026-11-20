@@ -35,9 +35,19 @@ def require_published_rows(rows,expected):
  actual={row['path']:{'sha256':row['sha256'],'mode':row['mode']} for row in rows}
  if len(actual)!=len(rows) or actual!=expected:raise ValueError('Published hash/mode membership drift')
 
+def runtime_for_fresh_seed(destination,standalone_load):
+ if type(standalone_load) is not bool:raise ValueError('Exact fresh seed runtime mode required')
+ # Hosted Load replaces canonical files. Reuse the verified sibling package;
+ # never re-deploy a missing runtime after changing the session generation.
+ return (destination/'package',False) if standalone_load else (destination/'play/game_session/_runtime',True)
+
 os.environ.update(POWERSHELL_TELEMETRY_OPTOUT='1',POWERSHELL_UPDATECHECK='Off',DOTNET_CLI_TELEMETRY_OPTOUT='1')
 R=pathlib.Path('/workspace/shared/mortal-isolated-20261119');h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
-if len(sys.argv)!=3:raise ValueError('Reviewed input manifest and new destination required')
+if len(sys.argv) not in (3,4) or (len(sys.argv)==4 and sys.argv[3]!='--self-save-load-turn'):
+ raise ValueError('Reviewed input manifest and new destination required')
+standalone_load=len(sys.argv)==4
+if standalone_load and (not __debug__ or any(k.startswith(('BOE_TEST_','BOE_MAIN_')) for k in os.environ)):
+ raise ValueError('Standalone preparation requires assertion checks and no inherited diagnostic routes')
 input_path=pathlib.Path(sys.argv[1]);D=pathlib.Path(sys.argv[2])
 for path in (input_path,D):
  if not path.is_absolute() or path!=path.resolve() or any(x.is_symlink() for x in [path,*path.parents]):raise ValueError('Canonical unlinked input/destination required')
@@ -46,6 +56,8 @@ if D.parent!=pathlib.Path('/workspace/shared') or re.fullmatch(r'mm[0-9]{2}-[0-9
 input_bytes=input_path.read_bytes()
 if hashlib.sha256(input_bytes).hexdigest()!=os.environ['MM_REVIEWED_INPUT_SHA256']:raise ValueError('Reviewed input hash differs')
 b=json.loads(input_bytes);assert b['destination']==str(D)
+if (standalone_load and b.get('Route')!='self-save-load-turn') or (not standalone_load and 'Route' in b):
+ raise ValueError('Prepared manifest route and invocation differ')
 E=input_path.parent;serial=E;producer=pathlib.Path(b['immutableProducerRoot']);old=pathlib.Path(b['nativeDirectory'])
 for path in (producer,old):
  assert path.is_absolute() and path==path.resolve() and not any(x.is_symlink() for x in [path,*path.parents]) and path.is_dir()
@@ -141,14 +153,17 @@ copy_exact(R/'tools/gm-relay',D/'p01/relay',relay)
 copy_exact(R/'tests/fixtures',D/'p01/terminal-fixture',terminal_rows)
 copy_exact(deps,D/'p01/terminal-deps',dep_rows)
 inputrecord={'kind':'manual-standard-preparation-not-T028-helper','sourceCommit':b['sourceCommit'],'publishedCheckpoint':os.environ['MM21_REVIEWED_CHECKPOINT'],'sourcePins':src,'outputPins':b['outputPins'],'unitOutputsCorroboration':b['unitOutputsCorroboration'],'owningBuildManifestSHA256':hashlib.sha256(input_bytes).hexdigest(),'nativeSourceRows':native,'publishedSourceRows':verified,'contentOverlays':overlays,'destination':str(D),'exportInput':exportinput,'publishOnlyDependency':{'path':extra,'source':str(nuget),'sha256':h(nuget),'projectAssetsSHA256':h(assets),'runtimeTarget':targets,'actualPublishOutcomeSHA256':h(producer/'logs/publish-BookOfEternityClient.TestSupport.outcome.json'),'currentProducerPublishedSHA256':b['currentProducerPublishedSHA256'],'depsPins':{p.name:h(p) for p in packages['BookOfEternityClient.TestSupport'].glob('*.deps.json')},'depsNote':'Exact deps files retained; EventLog.Messages is a win runtimeTarget in restore assets, not separately named in these deps.'},'bootstrap':b['guardianTool']}
+if standalone_load:inputrecord['Route']='self-save-load-turn'
 (D/'preparation-inputs.json').write_text(json.dumps(inputrecord,indent=2)+'\n')
 argv=[shutil.which('dotnet'),str(D/'receipt-helper/BookOfEternityClient.TestSupport.dll'),'mortal-live-seed-export',str(D/'play'),str(R/'FileSystemExample/game_session'),str(D/'seed-manifest.json')]
 result=m.run_owned(argv,R,D/'logs','seed-export',guardian,180);assert result['exitCode']==0,result
 seed=json.loads((D/'seed-manifest.json').read_text());assert seed['acceptedGmTurn'] is False and seed['setupTurn']==41 and seed['validationIssues']==0,seed
 assert m.inventory(R/'FileSystemExample/game_session')==exportinput
-session=D/'play/game_session';assert not(session/'_runtime').exists();copy_exact(D/'package',session/'_runtime',m.inventory(D/'package'))
+session=D/'play/game_session';assert not os.path.lexists(session/'_runtime')
+runtime,copy_local=runtime_for_fresh_seed(D,standalone_load)
+if copy_local:copy_exact(D/'package',runtime,m.inventory(D/'package'))
 for n in ('empty-user.npmrc','empty-global.npmrc'):(D/'p01'/n).write_bytes(b'')
-m.private_tree(D);driver=R/'tests/fixtures/ProductionMain/live-mortal-phase.py';pins={'RuntimePins':m.relay_inventory(session/'_runtime'),'RelayPins':m.relay_inventory(D/'p01/relay'),'ReceiptHelperPins':m.relay_inventory(D/'receipt-helper'),'DriverSHA256':h(driver),'EvidenceModuleSHA256':h(driver.with_name('relay_phase_evidence.py')),'ConsoleRouteModuleSHA256':h(driver.with_name('mortal_console_routes.py'))};pins.update(TerminalFixturePins=m.relay_inventory(D/'p01/terminal-fixture'),TerminalFixtureModes={r['path']:r['mode'] for r in m.inventory(D/'p01/terminal-fixture')},TerminalDependencyPins=m.relay_inventory(D/'p01/terminal-deps'),TerminalDependencyModes={r['path']:r['mode'] for r in m.inventory(D/'p01/terminal-deps')},TerminalNodePath=str(node),TerminalNodeSHA256=h(node));pe.terminal_package_preflight(D/'p01',pins);(D/'p01/relay-phase-package.json').write_text(json.dumps(pins,indent=2)+'\n');m.relay_package_preflight(D/'p01',session/'_runtime',driver);m.require_native_bootstrap_path_budget(D/'p01/tmp')
+m.private_tree(D);driver=R/'tests/fixtures/ProductionMain/live-mortal-phase.py';pins={'RuntimePins':m.relay_inventory(runtime),'RelayPins':m.relay_inventory(D/'p01/relay'),'ReceiptHelperPins':m.relay_inventory(D/'receipt-helper'),'DriverSHA256':h(driver),'EvidenceModuleSHA256':h(driver.with_name('relay_phase_evidence.py')),'ConsoleRouteModuleSHA256':h(driver.with_name('mortal_console_routes.py'))};pins.update(TerminalFixturePins=m.relay_inventory(D/'p01/terminal-fixture'),TerminalFixtureModes={r['path']:r['mode'] for r in m.inventory(D/'p01/terminal-fixture')},TerminalDependencyPins=m.relay_inventory(D/'p01/terminal-deps'),TerminalDependencyModes={r['path']:r['mode'] for r in m.inventory(D/'p01/terminal-deps')},TerminalNodePath=str(node),TerminalNodeSHA256=h(node));pe.terminal_package_preflight(D/'p01',pins);(D/'p01/relay-phase-package.json').write_text(json.dumps(pins,indent=2)+'\n');m.relay_package_preflight(D/'p01',runtime,driver);m.require_native_bootstrap_path_budget(D/'p01/tmp')
 assert not(D/'play/.boe_runtime/gm-runs').exists() and not(D/'p01/queue').exists()
 for n in ('input','output','ready'):assert not any((session/n).iterdir()) if (session/n).exists() else True
 for n in ('pending_turn_snapshot','pending_turn_snapshot.json','pending_turn_snapshot.authority.json','gm_bridge_status.json','validation_repair_request.json'):assert not(session/'game_state/control'/n).exists()
@@ -162,5 +177,5 @@ checked_tools()
 for project,path in packages.items():require_published_rows(m.inventory(path),current_producer['packages'][project]['files'])
 for name,digest in b['outputPins'].items():checked_output(name,digest)
 for name,digest in b['unitOutputsCorroboration'].items():checked_output(name,digest)
-manifest={'kind':'manual-standard-preparation','prepared':True,'acceptedGmTurn':False,'elapsedSeconds':time.monotonic()-start,'inputSHA256':h(D/'preparation-inputs.json'),'seedManifestSHA256':h(D/'seed-manifest.json'),'packageSHA256':h(D/'p01/relay-phase-package.json'),'seed':seed,'inventories':{n:m.inventory(p) for n,p in {'native':D/'native','runtime':D/'package','deployed':session/'_runtime','helper':D/'receipt-helper','relay':D/'p01/relay','world':session,'terminal':D/'p01/terminal-fixture','terminalDeps':D/'p01/terminal-deps'}.items()},'exportOutcome':result,'sourceOutputUnchanged':True,'OldWorldReadOrCopied':False,'NoGameOrRelayLaunched':True}
+manifest={'kind':'manual-standard-preparation','prepared':True,'acceptedGmTurn':False,'elapsedSeconds':time.monotonic()-start,'inputSHA256':h(D/'preparation-inputs.json'),'seedManifestSHA256':h(D/'seed-manifest.json'),'packageSHA256':h(D/'p01/relay-phase-package.json'),'seed':seed,'inventories':{n:m.inventory(p) for n,p in {'native':D/'native','runtime':D/'package','deployed':runtime,'helper':D/'receipt-helper','relay':D/'p01/relay','world':session,'terminal':D/'p01/terminal-fixture','terminalDeps':D/'p01/terminal-deps'}.items()},'exportOutcome':result,'sourceOutputUnchanged':True,'OldWorldReadOrCopied':False,'NoGameOrRelayLaunched':True}
 (D/'preparation-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');print(json.dumps({'manifest':str(D/'preparation-manifest.json'),'sha256':h(D/'preparation-manifest.json'),'counts':{n:len(v) for n,v in manifest['inventories'].items()},'seconds':manifest['elapsedSeconds']},indent=2))

@@ -2,6 +2,38 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-self-save-load-turn-data",
+      "responsibility": "#1515 T035 initial setup41 self-created exact manual ZIP, active Load A-to-B, retained daemon, B-bound single GM turn and B-only normal cleanup DATA.",
+      "excludes": "No live game/GM or OS owner qualification; no cold Save43, existing archive reuse, generic input program or production contract changes.",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/test-self-save-load-turn.py",
+        "tests/fixtures/ProductionMain/live-mortal-phase.py",
+        "tests/fixtures/ProductionMain/relay_phase_evidence.py",
+        "BookOfEternityClient.Tests/MortalConsoleRouteTests.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-console-route-data",
+          "when": "Shared sole-Save active Load extraction, input binding or A/B cleanup join changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalConsoleRouteTests.SelfSaveLoadTurnDataContracts"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-author-debug-contract",
       "responsibility": "#1515 exact authored debug contract and retained historical NPC carrier under actual original snapshot, test-only.",
       "excludes": "No live game, repair publication, new world, production fix, grant, transfer or Save qualification.",

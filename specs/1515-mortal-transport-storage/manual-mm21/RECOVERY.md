@@ -9,6 +9,24 @@ The generated launcher contains the explicit new destination. Submission require
 `--root <that exact root>` and still independently joins original owner/queue/origin.
 No old accepted runtime is edited. No automatic fallback publication.
 
+## Standalone self-Save → active Load → one GM turn (#1515, T035)
+
+For the new bounded scenario, invoke the same preparer with the explicit final
+argument `--self-save-load-turn` and a hash-reviewed input manifest with
+`"Route":"self-save-load-turn"`. Use a new, absent destination and a current
+owning build/producer that includes the exact approved fixture sources. Do not
+point it at a prior world, queue or archive. Hosted CI is not needed.
+
+The state-only exporter validates fresh setup41 (not an accepted GM turn).
+The scenario uses the verified package beside the game root, since hosted Load
+replaces ordinary files inside the game root. No executable package is copied
+back after Load. The generated P01 profile binds one observation action, the
+exact setup manifest, and its active Load observation. Send no answer until the
+actual request from the independently verified replacement owner B; derive the
+GM decision from those fresh facts and the then-current game contract. A live
+result requires the exact own Save41, confirmed A stop and B readiness, fresh
+heartbeat from the same daemon, accepted turn42, and normal B closure.
+
 Current input additions: producerOutputPins (old immutable published owning inputs),
 owningBuildSourcePins (accepted current build), allowedNonCompilerSourceChanges
 (exact reviewed PS/Python/doc deltas), current complete outputPins and8 Unit outputs,

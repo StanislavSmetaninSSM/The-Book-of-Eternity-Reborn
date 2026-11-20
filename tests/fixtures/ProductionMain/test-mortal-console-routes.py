@@ -215,7 +215,7 @@ class RouteTests(unittest.TestCase):
             namespace={'client':FreshPeer(),'inventory_context':context,'cut':1}
             exec(compile(ast.Module(body=[call,update],type_ignores=[]),'actual storage command cut','exec'),namespace)
             self.assertEqual(namespace['cut'],len(capture));self.assertEqual(context['cut'],len(capture));self.assertTrue(context['send_confirmed'])
-        load=next(n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name=='storage_local_route')
+        load=next(n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name=='load_created_save')
         call=next(n for n in load.body if isinstance(n,ast.Assign) and isinstance(n.value,ast.Call) and len(n.value.args)>1 and isinstance(n.value.args[1],ast.Constant) and n.value.args[1].value=='one actual Load of original unique archive')
         update=load.body[load.body.index(call)+1]
         capture=bytearray(b'old');result={}
@@ -284,7 +284,7 @@ class RouteTests(unittest.TestCase):
         self.assertIn('one genuine game action',ast.unparse(ast.Module(body=branch.orelse,type_ignores=[])))
     def test_load_owner_is_installed_only_after_original_observation_validation(self):
         tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
-        fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='storage_local_route')
+        fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='load_created_save')
         text=ast.unparse(fn)
         self.assertLess(text.index('original = None'),text.index('one actual Load'))
         self.assertLess(text.index('validated_load_observation'),text.index('original_record =',text.index('validated_load_observation')))
@@ -295,7 +295,7 @@ class RouteTests(unittest.TestCase):
         # Execute the shipped assignments and exact closing assertion, not a
         # duplicate comparison helper. This is DATA after the separate receipt join.
         tree=ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text())
-        fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='storage_local_route')
+        fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='load_created_save')
         bind=next(n for n in fn.body if isinstance(n,ast.Assign) and
             any(isinstance(t,ast.Name) and t.id=='original_record' for t in n.targets) and
             not isinstance(n.value,ast.Constant))

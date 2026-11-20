@@ -399,14 +399,8 @@ def put_setting(settings,key,value):
     return phase_evidence.put_setting(settings,key,value)
 
 def checked_story_append(before,after,request):
-    if not after.startswith(before):raise ValueError('Prior story bytes changed')
-    rows=[json.loads(row) for row in after[len(before):].decode('utf-8-sig').splitlines() if row.strip()]
-    if len(rows)!=1:raise ValueError('Expected exactly one appended story row')
-    row=rows[0]
-    if row.get('turn')!=request['turnNumber'] or row.get('realm')!='Mortal World' or row.get('player')!=request['playerAction'] or not row.get('narrative','').strip():
-        raise ValueError('Story does not match actual request')
-    if 'requestId' in row and row['requestId']!=request['requestId']:raise ValueError('Conflicting optional story identity')
-    return row
+    return phase_evidence.checked_mortal_story_append(before,after,request)
+
 
 def relay_response_evidence(queue,request_bytes,binding,session_path,narrative,baseline=None):
     request=json.loads(request_bytes);identity={k:request[k] for k in ('sessionId','requestId','turnNumber')}
@@ -667,8 +661,10 @@ assert os.environ.get('TERM')=='dumb'
 route_path=out/'console-route.json'
 route_bytes=route_path.read_bytes() if route_path.exists() else None
 route=console_routes.checked_route(strict_settings(route_bytes) if route_bytes is not None else None)
-action=checked_action(Path(sys.argv[3]).read_bytes())
+action_bytes=Path(sys.argv[3]).read_bytes();action=checked_action(action_bytes)
 previous=strict_settings(Path(sys.argv[5]).read_bytes()) if len(sys.argv)==6 else None
+if route['Route']=='self-save-load-turn':
+    phase_evidence.require_self_save_launch(out,seed_path,seed_bytes,action_bytes,receipt_helper,trace_profile,previous,sys.flags.optimize)
 if restored_diagnostic and route['Route']!='birth':raise ValueError('Diagnostic import cannot run local storage routes')
 if cold_loaded:
     if trace_profile.get('SeedSHA256')!=sha(seed_bytes) or trace_profile.get('ActionSHA256')!=sha(Path(sys.argv[3]).read_bytes()):raise ValueError('Cold descriptor/action profile pin differs')
@@ -681,18 +677,17 @@ elif restored_diagnostic:
         seed,out,receipt_helper,__file__,os.environ.get('BOE_TEST_GAME_LOOP_FAILURE_NONCE'))
     historical_session=seed['SourceSessionId']
 else:
-    base=Path(seed['basePath']).resolve();session=base/'game_session';ship=session/'_runtime'
+    base=Path(seed['basePath']).resolve();session=base/'game_session'
+    ship=phase_evidence.self_save_runtime_root(base) if route['Route']=='self-save-load-turn' else session/'_runtime'
     assert str(base)==seed['basePath'] and session.is_dir() and ship.is_dir()
     package_manifest,package_sha=phase_evidence.relay_package_preflight(out,ship,__file__)
     phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
     historical_session=seed['sessionId']
 if package_manifest.get('ConsoleRouteModuleSHA256')!=sha(Path(console_routes.__file__).read_bytes()):
     raise ValueError('Finite console module differs from prepared package')
-if route['Route']!='birth' and not cold_loaded and (previous is None or restored_diagnostic):
+if route['Route'] not in ('birth','self-save-load-turn') and not cold_loaded and (previous is None or restored_diagnostic):
     raise ValueError('Finite storage routes require an ordinary accepted predecessor')
-load_nonce=os.environ.get('BOE_TEST_LOAD_OBSERVATION_NONCE')
-if route['Route']=='storage-local-proof' and (type(load_nonce) is not str or re.fullmatch('[0-9a-f]{32}',load_nonce) is None):
-    raise ValueError('Local Load requires a fresh prepared diagnostic nonce')
+load_nonce=phase_evidence.require_route_load_nonce(route['Route'],trace_profile,os.environ)
 story=session/'stories/mortal_life_2.jsonl'
 story_before=story.read_bytes()
 setup_line=story_before.splitlines()[0]
@@ -726,7 +721,8 @@ if cold_loaded:
 else:
     relay_queue=out/'queue';relay_queue.mkdir()
 baseline=out/'original-baseline';baseline.mkdir()
-shutil.copytree(session/'game_state',baseline/'game_state') # One pre-action DATA capture; no live authority reuse.
+if route['Route']!='self-save-load-turn':
+    shutil.copytree(session/'game_state',baseline/'game_state') # One pre-action DATA capture; no live authority reuse.
 if not cold_loaded:pipe='og-'+uuid.uuid4().hex[:12]
 quote=lambda v:"'"+str(v).replace("'","''")+"'"
 if not cold_loaded:command='& '+quote('/usr/bin/python3')+' '+quote(out/'relay/relay_cli.py')+' --session '+quote(session)+' --queue '+quote(relay_queue)+' --model dots-finish-relay'
@@ -1321,6 +1317,16 @@ def storage_local_route():
     save_location,save_inventory=stage('Save','inventory')
     if (save_location,save_inventory)!=(saved_location,saved_inventory):raise RuntimeError('Save changed local item bytes')
     move(False);stage('Deposit','storage')
+    load_created_save(saved)
+    restored_location,restored_inventory=stage('Load','inventory')
+    if (restored_location,restored_inventory)!=(save_location,save_inventory):raise RuntimeError('Load did not restore exact Save item bytes')
+    result['LocalRouteProof']={'Route':'storage-local-proof','Target':target,'Stages':stages,
+        'Before':before,'After':local_observation(),'SaveArchivePath':str(archive.resolve()),
+        'SaveArchiveSHA256':sha(archive_bytes),'RestoreBytesExact':True}
+
+def load_created_save(saved):
+    global client_prompt,original,original_record,load_cut,load_expected
+    archive=Path(saved['ArchivePath']);archive_bytes=saved['ArchiveBytes'];metadata=saved['Metadata']
     # The same live daemon is retained; nested daemon PID is not its pwsh launcher PID.
     continuity=daemon_pair_capture(session,{},'Original')
     status_raw=strict_settings(bytes.fromhex(continuity['OriginalStatusRawHex']))
@@ -1367,11 +1373,64 @@ def storage_local_route():
         return phase_evidence.retained_daemon_load_continuity_proved(result['DaemonSettlement'],continuity)
     until(retained_heartbeat,15,'same original daemon fresh post-Load heartbeat')
     result['PostLoadDaemonContinuity']=continuity
-    restored_location,restored_inventory=stage('Load','inventory')
-    if (restored_location,restored_inventory)!=(save_location,save_inventory):raise RuntimeError('Load did not restore exact Save item bytes')
-    result['LocalRouteProof']={'Route':'storage-local-proof','Target':target,'Stages':stages,
-        'Before':before,'After':local_observation(),'SaveArchivePath':str(archive.resolve()),
-        'SaveArchiveSHA256':sha(archive_bytes),'RestoreBytesExact':True}
+
+
+def self_save_load_before_turn():
+    global self_save_load_context
+    phase_evidence.require_self_save_initial(session,previous,restored_diagnostic,cold_loaded,expected_turn)
+    before=phase_evidence.self_save_load_snapshot(session,story,relay_queue)
+    saved=save_current_turn(41)
+    content_proof=phase_evidence.verify_self_save_archive(saved['ArchiveBytes'],before)
+    after_save=phase_evidence.self_save_load_snapshot(session,story,relay_queue)
+    if before!=after_save:raise ValueError('Own Save changed setup story/scoped DATA/settings/queue')
+    pin=phase_evidence.self_save_archive_pin(session,Path(saved['ArchivePath']),saved['ArchiveBytes'])
+    self_save_load_context=saved
+    load_created_save(saved)
+    after_load=phase_evidence.self_save_load_snapshot(session,story,relay_queue)
+    if before!=after_load:raise ValueError('Own Load did not restore exact setup scoped DATA/settings')
+    if phase_evidence.self_save_archive_pin(session,Path(saved['ArchivePath']),saved['ArchiveBytes'])!=pin:raise ValueError('Own Save mode/path changed across Load')
+    if result['PostLoadDaemonContinuity']['OriginalGuardRawHex']!=result['PostLoadDaemonContinuity']['PostLoadGuardRawHex']:
+        raise ValueError('Own Load changed retained daemon guard bytes')
+    result['SelfSaveLoadProof']={'Before':before,'AfterSave':after_save,'AfterLoad':after_load,
+        'Archive':pin,'ArchiveVerified':True,'RestoreBytesExact':True,'ArchiveContentProof':content_proof,
+        'CleanOutcomeBeforeFirstPlayerClear':saved['CleanOutcomeBeforeFirstPlayerClear']}
+    def ready_b():
+        current=rpc({'command':'status'})
+        if (current.get('ok') is not True or current['status']['terminalRunId']!=result['ShutdownIdentityB']['RunId']
+            or current['status']['terminalUncertain'] or not current['status']['terminalOwnerRetained']):
+            raise ValueError('Authenticated replacement B no longer retained')
+        result['LoadRunningStatus']=current
+        return current['status']['ready']
+    until(ready_b,15,'authenticated replacement B ready for sole turn')
+    result['TurnRunningRecord']=result['LoadRunningRecord'];result['TurnRunningStatus']=result['LoadRunningStatus']
+    phase_evidence.require_self_save_turn_status(result,result['TurnRunningStatus'],True)
+
+
+def self_save_load_pre_action():
+    global baseline
+    # Fresh source/runtime/physical admission, exact story/ZIP/settings and B ownership.
+    saved=self_save_load_context
+    closing,_=phase_evidence.relay_package_preflight(out,ship,__file__)
+    if closing!=package_manifest:raise ValueError('Self-Save package changed before B action')
+    phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
+    phase_evidence.require_physical_trace_admission(base,out,trace_profile,env)
+    current_record=read_json(record_path);current_status=rpc({'command':'status'})
+    if current_record!=result['TurnRunningRecord']:raise ValueError('Fresh B main record inconsistent before sole action')
+    phase_evidence.require_self_save_turn_status(result,current_status,True)
+    readback=phase_evidence.self_save_load_snapshot(session,story,relay_queue)
+    if readback!=result['SelfSaveLoadProof']['Before']:raise ValueError('Setup DATA/story/settings changed before B action')
+    if phase_evidence.self_save_archive_pin(session,Path(saved['ArchivePath']),saved['ArchiveBytes'])!=result['SelfSaveLoadProof']['Archive']:raise ValueError('Own Save path/hash/mode changed before B action')
+    if result['PostLoadDaemonContinuity']['OriginalGuardRawHex']!=result['PostLoadDaemonContinuity']['PostLoadGuardRawHex']:
+        raise ValueError('Own Load changed retained daemon guard bytes')
+    result['SelfSaveLoadProof']['PreActionReadback']=readback
+    result['PostLoadPreActionRecord']=current_record;result['PostLoadPreActionStatus']=current_status
+    # Do not reuse pre-Load owner/control bytes as the accepted turn's original.
+    baseline=out/'post-load-baseline';baseline.mkdir()
+    shutil.copytree(session/'game_state',baseline/'game_state')
+    journal.append({'At':elapsed(),'Phase':'StandaloneLoadReady','LoadObservation':result['LoadObservation'],
+        'Archive':dict(result['SelfSaveLoadProof']['Archive']),'BCurrentRecord':current_record,
+        'BInputBindingId':current_status['status']['inputBindingId']})
+
 
 def ordinary_save_after_acceptance():
     if route['Route']!='ordinary-save':return
@@ -1389,7 +1448,11 @@ def ordinary_save_after_acceptance():
         'CleanOutcomeBeforeFirstPlayerClear':saved['CleanOutcomeBeforeFirstPlayerClear'],
         'StorySHA256':sha(bytes.fromhex(before['Files'][before['StoryPath']]))}
 
-load_cut=None;load_expected=None
+load_cut=None;load_expected=None;self_save_load_context=None
+if route['Route']=='self-save-load-turn':
+    phase_evidence.require_self_save_initial(session,previous,restored_diagnostic,cold_loaded,expected_turn)
+    pre_location=strict_settings((session/'game_state/world/current_location.json').read_bytes())
+    console_routes.local_load_menu(pre_location['name'],41,99999,profile=console_routes.OWNED_PTY_LOAD_PROFILE)
 # Reject unsupported fixed UI layout before starting any owned process; refresh again at each action.
 if route['Route'] in ('permission-with-denial','storage-local-proof'):
     current_inventory_menu()
@@ -1425,6 +1488,7 @@ try:
     if record['Disposition']!='Running' or status['status']['terminalUncertain']:
         raise RuntimeError('Current original bootstrap failed; no model submission or replay')
     result['OriginalRunningRecord']=record
+    result['TurnRunningRecord']=record;result['TurnRunningStatus']=status
     assert status['status']['cliLaunchCommand']==command and status['status']['shellWorkingDirectory']==str(session)
     def ready():
         status=rpc({'command':'status'})['status'];result['LastStartupStatus']=status
@@ -1452,14 +1516,17 @@ try:
     if route['Route']=='storage-local-proof':
         storage_local_route()
     else:
+        if route['Route']=='self-save-load-turn':self_save_load_before_turn()
         provider_bridge_offset=len(bridge.capture)
         ledger_witness=phase_evidence.capture_terminal_ledger_witness(session)
         (out/'pre-action-terminal-ledger-witness.json').write_bytes(ledger_witness)
         daemon_return_cut=len(daemon.capture)
+        if route['Route']=='self-save-load-turn':self_save_load_pre_action()
         offset=client.send((action+'\r').encode(),'one genuine game action',lambda:client.console.player(0));action_cut=offset;result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
         current_request(offset)
         request_bytes=(session/'input/turn_request.json').read_bytes();request=json.loads(request_bytes);result['ActualRequest']=request;result['ActualRequestSHA256']=sha(request_bytes)
         assert request['playerAction']==action and request['turnNumber']==expected_turn
+        if route['Route']=='self-save-load-turn':result['ActualRequestRawHex']=request_bytes.hex()
         assert request['sessionId']==historical_session
         if restored_diagnostic and not phase_evidence.restored_diagnostic_request_proved(seed,request_bytes):raise ValueError('Diagnostic request identity refused')
         assert not any(row.get('requestId')==request['requestId'] for row in all_entries)
@@ -1493,7 +1560,7 @@ try:
             if current_player_prompt_at(client.text(action_cut))>=0:
                 try:
                     rejected=observed_rejected_cleanup(request_bytes,relay_queue,
-                        result['OriginalRunningStatus']['status']['inputBindingId'],session,baseline,
+                        result['TurnRunningStatus']['status']['inputBindingId'],session,baseline,
                         client.text(action_cut),story_before,story,ledger_witness,ledger_binding)
                 except (OSError,ValueError,KeyError,TypeError):rejected=False
                 if rejected:
@@ -1507,10 +1574,14 @@ try:
             for peer in [client,bridge,daemon]:
                 if peer is not None and peer.process.poll() is not None:
                     raise RuntimeError(peer.name+' exited during current provider wait')
-            current=rpc({'command':'status'})['status'];result['LastBridgeStatus']=current
+            current_response=rpc({'command':'status'})
+            if route['Route']=='self-save-load-turn':
+                phase_evidence.require_self_save_turn_status(result,current_response)
+                phase_evidence.require_self_save_queue(relay_queue,request_bytes)
+            current=current_response['status'];result['LastBridgeStatus']=current
             if current['terminalUncertain'] or not current['terminalOwnerRetained']:raise RuntimeError('Original owner uncertainty; acceptance remains blocked')
             refused=current.get('promptDelivery')
-            retain_turn_delivery(result,refused,result['OriginalRunningStatus']['status']['inputBindingId'])
+            retain_turn_delivery(result,refused,result['TurnRunningStatus']['status']['inputBindingId'])
             if relay_mode:
                 for queued in relay_queue.glob('request-*'):
                     if not (queued/'request.json').exists() or not (queued/'prompt.txt').exists():continue
@@ -1539,7 +1610,10 @@ try:
                     story_after=story.read_bytes();accepted_row=checked_story_append(story_before,story_after,request)
                     assert accepted_row==accepted[0]
                     until(lambda:all((q/'execution.json').exists() for q in relay_queue.glob('request-*')),10,'relay consumer settled evidence')
-                    result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['OriginalRunningStatus']['status']['inputBindingId'],session,accepted_row['narrative'],baseline)
+                    if route['Route']=='self-save-load-turn':
+                        phase_evidence.require_self_save_turn_status(result,rpc({'command':'status'}))
+                        result['SelfSaveQueue']=phase_evidence.require_self_save_queue(relay_queue,request_bytes,complete=True)
+                    result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['TurnRunningStatus']['status']['inputBindingId'],session,accepted_row['narrative'],baseline)
                     phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
                     phase_evidence.require_physical_trace_admission(base,out,trace_profile,env)
                     helper=subprocess.run(['dotnet',str(receipt_helper),'mortal-live-evidence',str(baseline),str(session),str(out/'actual-turn-request.json')],capture_output=True,timeout=receipt_check_budget(start+work_seconds,time.monotonic()),env=env)
@@ -1553,9 +1627,10 @@ try:
                     result.update(StoryPath=str(story),StoryBeforeSHA256=sha(story_before),StoryAfterSHA256=sha(story_after))
                     result['AcceptedTurnNumber']=expected_turn
                     result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0]
+                    if route['Route']=='self-save-load-turn':result['AcceptedStoryAfterRawHex']=story_after.hex()
                     delivery=result.get('OriginalTurnDelivery');result['OriginalPromptDelivery']=delivery
                     result['InputQualified']=bool(delivery and delivery.get('disposition')=='submission-observed' and
-                        delivery.get('inputBindingId')==result['OriginalRunningStatus']['status']['inputBindingId'] and
+                        delivery.get('inputBindingId')==result['TurnRunningStatus']['status']['inputBindingId'] and
                         delivery.get('operationKind')=='turn' and delivery.get('operationRevision')=='live')
                     break
             if any(marker in bridge.text()[-4000:].lower() for marker in ['permission required','allow this','trust this','sign in','authorize access']):
@@ -1575,12 +1650,17 @@ finally:
     # Settle participating client wait before original owner stop; never replay its action.
     relay_closed=True
     if relay_mode:
-        try:relay_closed=close_relay_execution(relay_queue,6)
-        except Exception as ex:relay_closed=False;result['RelayCloseFailure']=type(ex).__name__+': '+str(ex)
+        if route['Route']=='self-save-load-turn' and load_cut is not None and original is None:
+            relay_closed=False
+            result['RelayCloseFailure']='Active Load A/B unresolved; no relay close publication, guardian physical containment only'
+        else:
+            try:relay_closed=close_relay_execution(relay_queue,6)
+            except Exception as ex:relay_closed=False;result['RelayCloseFailure']=type(ex).__name__+': '+str(ex)
         result['RelayExecutionClosed']=relay_closed
-        if route['Route']=='storage-local-proof':
+        if route['Route'] in ('storage-local-proof','self-save-load-turn'):
             result['FinalQueuePins']=phase_evidence.relay_inventory(relay_queue)
-        if not relay_closed:result['RelayCloseFailure']='Execution/child/I-O closure unconfirmed; skip client cancellation/rollback'
+        if not relay_closed and 'RelayCloseFailure' not in result:
+            result['RelayCloseFailure']='Execution/child/I-O closure unconfirmed; skip client cancellation/rollback'
     if client is not None and client.process.poll() is None and relay_closed:
         # Reserve bounded cleanup room within the relay720s cap for the sole original shutdown12s,
         # bridge exit8s, daemon exit16s, EOF8s and connection/disposal margin.
@@ -1589,7 +1669,7 @@ finally:
             if result.get('ActualRequest') and result['AcceptedGameTurns']==0 and current_player_prompt_at(client.text(action_cut))>=0:
                 try:
                     rejected=observed_rejected_cleanup(request_bytes,relay_queue,
-                        result['OriginalRunningStatus']['status']['inputBindingId'],session,baseline,
+                        result['TurnRunningStatus']['status']['inputBindingId'],session,baseline,
                         client.text(action_cut),story_before,story,ledger_witness,ledger_binding)
                 except (OSError,ValueError,KeyError,TypeError):rejected=False
                 if rejected:
@@ -1677,11 +1757,18 @@ finally:
         result['FinalWorldPins']=phase_evidence.relay_world_inventory(session)
         if result.get('AcceptedGameTurns')==1:assert phase_evidence.history_witness_matches_pins(result['TypedReceiptEvidence']['historyAfter'],result['FinalWorldPins']), 'History changed after typed outcome'
         result['FinalConfigSHA256']=sha((session/'config.json').read_bytes())
+        if route['Route']=='self-save-load-turn' and self_save_load_context is not None:
+            saved=self_save_load_context
+            result['SelfSaveLoadProof']['FinalArchiveReadback']=phase_evidence.self_save_archive_pin(session,Path(saved['ArchivePath']),saved['ArchiveBytes'],final=True)
+            if result.get('ActualRequest'):
+                result['FinalSelfSaveQueue']=phase_evidence.require_self_save_queue(relay_queue,bytes.fromhex(result['ActualRequestRawHex']),complete=True,closed=True)
     except Exception as ex:result['PackageIntegrityFailure']=type(ex).__name__+': '+str(ex)
     result['ElapsedSeconds']=elapsed()
-    result['Success']=(phase_evidence.relay_load_phase_cleanup_proved(result,bytes(client.capture),load_cut,load_expected)
-        if route['Route']=='storage-local-proof' and client is not None and load_cut is not None and load_expected is not None
-        else (phase_cleanup_proved(result) and (route['Route']!='ordinary-save' or phase_evidence.ordinary_save_proved(result))) if route['Route']!='storage-local-proof' else False)
+    if route['Route'] in ('storage-local-proof','self-save-load-turn'):
+        joined=(phase_evidence.relay_self_save_load_turn_cleanup_proved if route['Route']=='self-save-load-turn' else phase_evidence.relay_load_phase_cleanup_proved)
+        result['Success']=bool(client is not None and load_cut is not None and load_expected is not None and joined(result,bytes(client.capture),load_cut,load_expected))
+    else:
+        result['Success']=phase_cleanup_proved(result) and (route['Route']!='ordinary-save' or phase_evidence.ordinary_save_proved(result))
     if controlled_refusal:
         result['ControlledCleanupVerified']=daemon_settlement_proved(result.get('DaemonSettlement')) and rpc_helper_closed(result) and bool(result.get('ObservedProviderFailure')) and result['LogicalLifecycleVerified'] and result['ShutdownAttempts']==1 and result.get('ClientSettlement')=='actual cancellation and fresh screen with request absent' and not any(k in result for k in ['ClientCleanupFailure','CleanupFailure','DaemonCleanupFailure','IoCleanupFailure']) and all(v['ExitCode']==0 and v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     (out/'rpc-journal.json').write_text(json.dumps(journal,indent=2,ensure_ascii=False)+'\n')

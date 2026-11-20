@@ -5217,3 +5217,123 @@ Independent outcome d662a484:19artifact hashes,32064sources/8outputs exact; fres
 
 ### T034/#1589 actual remote physical observer accepted
 Independent outcome374126e6:36artifacts,source32064/8owning outputs/6actualproducer joins; freshUnit39.63s70warnings0errors, official3PASS15.3691565s. Nine real helper events share exact Active original pin: generation/write/finalization each open→grant→dispose; actual write cycle independently bounded. Same retained declared-endpoint helper later refuses snapshot-end after Stop, closes Failed cleanly, both reads joined; original durableStopped/OwnedScopeEmpty and guardian clean. Raw UTC vs derived local-offset timestamp distinction preserved. No local8 rerun, no live/world; mm23 holderUNKNOWN/nonpredecessor. Next package must contain freshly qualified compiled outputs; old immutable runtime is not current.
+
+### T035 distinct self-Save/Load/turn route SOURCE WIP, 2026-11-20
+
+Tracked #1515; task branch `1515-1516-1538-live-main-20261118`, remote base
+`f8bdd69d5b0a406ea80b928acb73981693242fa1` independently verified by coordinating
+parent. Work used the accepted dirty overlay at stale local HEAD `102f689b...`;
+no reset, commit, push, live launch or provider invocation was performed here.
+Formal combined independent source review, remote WIP save and owning Unit build
+remain the parent's next gates, not claimed complete.
+
+Closed opt-in `self-save-load-turn` admits only fresh initial setup41, no previous,
+restored or cold phase and no pre-existing ZIP choices. It uses the existing
+sole-save Load78 terminal profile unchanged. Its ordinary UI Save captures one
+new exact archive basename/path/hash, checks actual scoped setup DATA without
+fabricating an accepted-turn result, and uses extracted `load_created_save` for
+the existing real A→B receipt, fresh player prompt and same-daemon heartbeat.
+Startup A evidence remains immutable; separate TurnRunningRecord/Status use A
+for unchanged routes and authenticated B for this route's sole existing GM42
+path. All five acceptance/rejection/delivery consumers use that explicit binding.
+The final join requires the B-bound turn/reply, independently rechecked B before
+the action and existing normal B stop/daemon/terminal/RPC fences. Failure before
+a qualified request does not invent a daemon-consumer return or relax cleanup.
+
+Only this new route resolves the independently packaged sibling `package`
+outside canonical `game_session`; canonical `_runtime`, symlinks and absent
+package refuse. Exact active Load could otherwise remove canonical `_runtime`.
+The launch-pinned LoadObservationNonce must equal the environment nonce and
+GMDecisionDeferred must be true. Default birth/ordinary routes reject accidental
+active-Load nonce fields. Cold admission, old menus, production and owner guards
+are unchanged. Pre-action package/helper/physical checks remain fresh; exact
+setup story/scoped state/settings/sole ZIP/empty queue are read back after Load
+and before sending. The acceptance baseline is captured from post-Load state,
+not old owner/control bytes. Final Save hash and settings readback remain exact.
+No GM-facing prompt/example update is required: this is test-only orchestration,
+not a gameplay or authoring contract change.
+
+Optimization assessment: reuse the existing Save UI and one extracted Load/daemon
+operation rather than copy orchestration; reuse immutable new-archive bytes and
+one setup snapshot for comparisons only, bounded to this phase. They never grant
+permission or cleanup authority. Skip the unused pre-Load game_state baseline for
+this route and capture it once after authenticated replacement. Current owner,
+input binding, pending state, exact archive, settings and runtime/source checks
+remain fresh at their boundaries. No parallel cache/framework or speedup claim;
+full runtime inventory cost is unmeasured and intentionally not reused across Load
+because no independent filesystem stability/authority epoch proves safe reuse.
+
+Verification on Linux x86_64 / Python3.12.14: causal initial RED10/10 missing
+route/guards/B-binding, then external-runtime RED1/12 (other11 PASS). Final bounded
+`test-self-save-load-turn.py`12/12 PASS (0.138s); existing
+`test-relay-load-evidence.py`23/23 PASS (0.015s),
+`test-mortal-console-routes.py`28/28 PASS (0.764s),
+`test-mortal-menu-frame.py`20/20 PASS (0.017s),
+`test-live-terminal-fences.py`11/11 PASS (0.506s), and
+`test-mortal-phase-evidence.py`38/38 PASS (0.925s) after supplying its existing
+BOE_TERMINAL_PREFIX prerequisite (initial missing-env run had18 setup errors).
+Three existing console source guards were retargeted to the extracted shared
+Load helper without reducing assertions or method counts. New C# wrapper
+SelfSaveLoadTurnDataContracts expects12 methods under narrow category
+mortal-self-save-load-turn-data; related mortal-console-route-data covers shared
+Load extraction. tests/selection.json is not changed, and no hosted CI is run.
+
+Other verification limits are explicit: existing rejected-cleanup DATA15 produced
+12PASS/3FAIL because three AST tests require the already-removed cleanup ESC
+branch; cleanup code/tests were not changed or restored. A category PlanOnly
+attempt first refused a shell comma-array argument before workload. Correct
+PowerShell-array PlanOnly then invoked Build-unit and exited1 after restore
+started, zero warnings/errors and zero planned/executed tests, owned cleanup
+complete. No build/compiled-wrapper/catalog qualification is claimed and no build
+retry was made. Full raw category artifacts moved outside checkout to
+`/tmp/self-save-fixture-diagnostics/category-plan-failed`; Python evidence also
+remains local under `/tmp`. `git diff --check` for the affected source paths
+passed. No raw diagnostics, archives or game saves were staged/published.
+
+T035 independent SOURCE-HOLD corrections (still SOURCE WIP, no live launch):
+final archive readback now pins the unchanged sole manual path/basename/hash/mode
+without misclassifying ordinary post-GM autosave42 as an old Load choice. The
+selection/pre-action boundary remains exactly one ZIP across all Save folders.
+A detached own-archive verifier reuses scoped Save checks and checks exact config
+bytes, all manifest payload membership and each length/hash, full manifest raw
+bytes/hash/length, and `_runtime` absence. It does not change production Load.
+The setup snapshot retains exact config bytes as well as its digest.
+
+The new route independently validates initial p01/profile Route, typed42,
+absent predecessor, current seed/action hashes and root, exact receipt helper
+path and nonoptimized Python before operational effects. Strict fresh B status
+checks join run ID, backend/guarantee/shell PID and a nonempty B-only input binding
+before the action and on each provider status/dispatch before fixture queue
+writes. Same-daemon proof additionally requires byte-identical guard captures.
+New-route success also joins actual request raw bytes/hash, actual story append
+through the extracted existing checker, typed outcome/final history and story
+pins, completed helper and explicit normal ClientTerminalClosure. Exactly one
+turn-only queue and one reply are allowed; repair/foreign/extra directories refuse
+before dispatch observation publication and at final readback. Unresolved active
+Load with invalidated A and no authenticated B never publishes a relay close;
+logical cleanup stays UNKNOWN for original guardian physical containment only.
+No existing cleanup fence or old default-route behavior is broadened.
+
+After B pre-action checks and its post-Load baseline, incremental journal emits
+one `Phase=StandaloneLoadReady` DATA row before the sole player send: typed
+LoadObservation (nonce/operation/A/B), exact own Archive pin, BCurrentRecord and
+BInputBindingId. No game authority/snapshot is added to this row. This makes the
+live independent reply joinable to actual B without status-only adoption.
+
+Corrective causal controls: missing final manual/autosave boundary and full
+manifest/launch/B-status checks failed before implementation; an independent
+control confirmed the old predicate accepted all seven missing request/typed
+receipt/story/helper/terminal evidence variants before tightening. New queue
+shape control failed before its implementation. Executing the actual pre-action
+helper caught an undefined local pin introduced during correction; the bounded
+control failed causally and now validates the real B baseline/journal path.
+Final direct Python DATA results: new20/20(0.223s), existing Load23/23(0.021s),
+console28/28(0.865s), menu20/20(0.019s), terminal fences11/11(0.622s),
+phase38/38(1.012s), outcome7/7(0.001s), all zero skipped/errors/failures and
+normal test-process exits. Wrapper expected count is now20. Source AST and
+`git diff --check` pass. Parent independently restored checkpoint f8bdd69d in a
+clean directory and reproduced the same three inherited ESC AST failures,
+confirming they predate this block; they remain untouched. Compiled/category
+execution, actual active Load/GM and formal re-review are still UNRUN/pending.
+Full final Python output stays outside checkout under
+`/tmp/self-save-fixture-diagnostics/final-*.out`.
