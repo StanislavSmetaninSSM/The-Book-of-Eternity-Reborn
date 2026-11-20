@@ -147,6 +147,21 @@ class MainPath(unittest.TestCase):
   with self.assertRaisesRegex(ValueError,'already attempted'):self.call(worker,phase='p03')
   self.assertEqual(self.calls,0)
 
+ def test_cold_recovered_phase_uses_exact_queue_origin_and_once_marker(self):
+  import subprocess
+  old=self.phase;self.phase=self.root/'recovered-live';old.rename(self.phase)
+  self.q=self.phase/'queue/request-data';self.c=self.phase/'candidate.json';self.e=self.phase/'expected.json'
+  with self.assertRaisesRegex(ValueError,'exact original queue'):self.call(phase='p03')
+  self.assertEqual(self.calls,0)
+  def worker(argv,**kwargs):
+   self.assertEqual(argv[1],str(self.phase/'relay/relay_worker.py'));self.assertEqual(argv[3],str(self.q))
+   return subprocess.CompletedProcess(argv,0,'inert','')
+  try:result=self.call(worker,phase='recovered-live')
+  except SystemExit:self.fail('Missing closed recovered-live publisher phase')
+  self.assertEqual(result,0);self.assertEqual(self.calls,1)
+  with self.assertRaisesRegex(ValueError,'already attempted'):self.call(worker,phase='recovered-live')
+  self.assertEqual(self.calls,0)
+
 class ProfileBinding(unittest.TestCase):
  def test_actual_binding_shape_and_refusals(self):
   import ast,copy,re
@@ -317,6 +332,32 @@ class P03Continuation(unittest.TestCase):
   profile=next(n.value for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='profile' for t in n.targets) and isinstance(n.value,ast.Dict))
   value=next(v for k,v in zip(profile.keys,profile.values) if isinstance(k,ast.Constant) and k.value=='ExpectedTurn')
   self.assertEqual(eval(compile(ast.Expression(value),'<actual-p03-turn>','eval'),ns),44)
+
+class ColdProfileRendering(unittest.TestCase):
+ def renderer(self):
+  import ast
+  path=pathlib.Path(__file__).with_name('prepare-mm21-profile.py');tree=ast.parse(path.read_text())
+  nodes=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='render_launch_script']
+  self.assertEqual(len(nodes),1,'Missing reusable actual launch renderer')
+  scope={'pathlib':pathlib};exec(compile(ast.Module(body=nodes,type_ignores=[]),str(path),'exec'),scope)
+  return scope['render_launch_script']
+ def test_existing_three_launcher_bytes_unchanged(self):
+  import hashlib
+  render=self.renderer();root=pathlib.Path('/tmp/profile-byte-equivalence')
+  cases=[('p01',None,'c7d2773e9c0fbf19c0f340607fa33710c0a92d3f8896b1315218e5eb3e35c94c'),('p02','p01','6196ae787c58e8250ce02f521524b6b69ee4adb4b6e9ff1de0c4faf071088f4e'),('p03','p02','fe33f19b22195b64d4f528b79a8b6ece92485e0a5bfc6f5b64269610893c731e')]
+  for phase,previous,digest in cases:
+   text=render(root,phase,root/previous/'probe-result.json' if previous else None,'b'*32,'a'*32,'c'*64)
+   self.assertEqual(hashlib.sha256(text.encode()).hexdigest(),digest)
+ def test_cold_renderer_closed_root_descriptor_queue_and_temp(self):
+  render=self.renderer();root=pathlib.Path('/tmp/profile-byte-equivalence')
+  text=render(root,'recovered-live',None,'b'*32,'a'*32,'c'*64,cold=True)
+  self.assertIn('"$ROOT/cold-host-descriptor.json"',text);self.assertNotIn('"$ROOT/seed-manifest.json"',text)
+  self.assertIn('TMPDIR="$ROOT/rt"',text);self.assertNotIn('mkdir "$ROOT/rt"',text)
+  self.assertNotIn('guardian.json probe-result.json queue;',text)
+  self.assertIn("'queue'",text);self.assertIn('iterdir()',text);self.assertIn('0o700',text);self.assertIn('is_symlink()',text)
+  self.assertNotIn('"$ROOT/p01/probe-result.json"',text);self.assertNotIn('"$ROOT/p02/probe-result.json"',text)
+  for phase,prior in [('p01',None),('recovered-live',root/'p02/probe-result.json')]:
+   with self.assertRaises(ValueError):render(root,phase,prior,'b'*32,'a'*32,'c'*64,cold=True)
 
 class CurrentProducer(unittest.TestCase):
  def test_exact_current_producer_zero_overlays_and_source_additions(self):

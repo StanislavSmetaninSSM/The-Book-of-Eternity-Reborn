@@ -1443,3 +1443,10 @@ actual cold/rebind artifact chains and full retained file/mode/dir membership,
 scoped archive/history and no pending/main state; owner predicate uses exact real
 identity shape. Pure source review pending. These helpers are not yet wired to the
 live driver or a generated profile; no package preparation or hosted start performed.
+Cold helper GREEN9ba4eb5f and actual wiring GREEN31e5d799 independently accepted:
+new5 plus existing38 DATA/AST tests PASS; current32082+8 unchanged. Same ordinary
+pipeline now has explicit cold descriptor branch, short temp, no config rewrite or
+fake predecessor, actual fresh owner boot/root/generation and historical RunId
+exclusions, actual daemon owner distinct from archived passive DATA. No packages
+initialized or live start. Next closed profile renderer sharing and publisher
+allowlist are test-first; normal P01/P02/P03 launcher byte hashes frozen for equality.
