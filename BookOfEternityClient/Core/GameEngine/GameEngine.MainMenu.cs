@@ -3411,19 +3411,31 @@ public partial class GameEngine
         return result.NeedsFollowUp ? message + " Требуется служебная проверка завершения операции." : message;
     }
 
-    private async Task LoadGameFlow()
+    private async Task<List<SaveInfo>> ReadConsoleSaveCatalogAsync()
+    {
+        var saves = new List<SaveInfo>();
+        foreach (var directory in new[] { "saves/manual_saves", "saves/autosaves", "saves/checkpoint_saves" })
+            saves.AddRange(await _saveLoad.GetAvailableSavesAsync(directory));
+        return saves;
+    }
+
+    private async Task LoadGameFlow(bool fromInGameOptions = false)
     {
         SpectreConsoleSafe.Clear();
         AnsiConsole.Write(new Rule("[cyan]📂 Загрузка игры[/]").RuleStyle("cyan"));
         AnsiConsole.WriteLine();
 
-        var allSaves = new List<SaveInfo>();
-
-        // Collect from all save dirs
-        foreach (var dir in new[] { "saves/manual_saves", "saves/autosaves", "saves/checkpoint_saves" })
-        {
-            allSaves.AddRange(await _saveLoad.GetAvailableSavesAsync(dir));
-        }
+        // Only the active Options catalog joins the current main. Finish its
+        // operation before either menu input or the distinct Load lifecycle.
+        var allSaves = fromInGameOptions
+            ? await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, ReadConsoleSaveCatalogAsync,
+                beforeCurrentGeneration: lease =>
+                {
+                    if (_fs.ReadExistingSessionGeneration(lease) is null)
+                        throw new InvalidDataException("The in-game Save catalog requires an existing session generation.");
+                    return Task.CompletedTask;
+                })
+            : await ReadConsoleSaveCatalogAsync();
 
         if (allSaves.Count == 0)
         {

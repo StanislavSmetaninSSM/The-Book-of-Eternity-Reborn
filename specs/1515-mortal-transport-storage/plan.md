@@ -5413,3 +5413,36 @@ shared neutral runner and test console avoid duplicate expensive setup; no speed
 claim or production timing measurement. The defect is a console admission issue,
 not a GM schema, prompt or example contract change. Independent source review and
 exact C# execution remain pending; no hosted CI or raw artifacts published.
+
+### T036 exact catalog RED verified; minimal GREEN source WIP
+
+Remote RED source `c9e66c0e560a574718961e0ce9b65d218bb0da5b` had independent
+Astra source GO and the six input files matched before and after execution.
+Linux x86_64; .NET SDK 10.0.404/runtime 8.0.34, PowerShell 7.7.0. Fresh
+Integration `dotnet build --no-restore --disable-build-servers -m:1` completed
+122.59 s, 285 warnings, 0 errors. Official `scripts/test-csharp.ps1 -Category
+portable-active-load-catalog -NoBuild -PlanOnly`: exactly1 descriptor/case,
+7.27 s. Actual same category `-NoBuild`: 1/1 executed, 1 expected fail, 0 skipped,
+0 duplicate, 12.295 s, no deadline and owned-tree cleanup complete. Linux
+native guardian exited0 (ECHILD, reaped1, no failure/emergency). Actual test
+observed Load heading but no selector, zero key reads/close callbacks, the exact
+IOException from MainAdmission.AcquireAsync:178 via canonical lease completion,
+GetAvailableSavesAsync:391, LoadGameFlow:3425 and InGameOptionsMenu:1266. The
+separate direct ordinary refusal, exact A/generation/canonical/ZIP preservation,
+no Load stages/turn and normal StoppedOwnedScopeEmpty all held. The parent
+independently inspected the TRX and native result. Frozen raw diagnostics remain
+outside Git; native result `edc727da...`, guardian `fdafbbdc...`.
+
+Minimal GREEN is SOURCE WIP, UNRUN before remote save and independent review:
+only in-game Options passes `fromInGameOptions: true`; the existing sequential
+catalog reads are extracted and awaited within one participating current-session
+operation for that call. Its existing-generation check refuses absent authority
+without bootstrapping, under the existing admitted generation lease. The
+original scope finishes before menu/no-save input and before selected Load, while
+main-menu/default listing remains ordinary. No change to SaveLoadService, lease
+or guard semantics, daemon, archive/pending data contracts or selected Load.
+Detached catalog DATA is retained only for this menu, with no cache, new read
+pass or removal of source/owner checks; full production cost unmeasured. Only
+after exact-source review and checkpoint, rebuild without restore and execute
+the unchanged singleton category. No live launch, hosted CI, raw publication,
+main merge or issue closure.
