@@ -5446,3 +5446,57 @@ pass or removal of source/owner checks; full production cost unmeasured. Only
 after exact-source review and checkpoint, rebuild without restore and execute
 the unchanged singleton category. No live launch, hosted CI, raw publication,
 main merge or issue closure.
+
+### T035/T036 verified Linux live return after active Load, recovered daemon read error (2026-11-20)
+
+Source `f468482b7655454ec2879c590990f5787002a152` recovered clean (3/3 exact).
+Native causal RED on `c9e66c0e`: official plan1/run1 reached the same original
+MainAdmission refusal, no selector input and correct physical/logical fixture
+cleanup. Minimal reviewed production fix: only Options listing opens one
+existing participating scope, asks for an existing generation, keeps the
+three old per-directory leases/metadata checks and finishes before input.
+Cold/default listing and selected Load lifecycle unchanged. Exact official
+GREEN plan1/run1 passed with real original A, direct bare API still refusing,
+real Save + Back rows, one close before both key reads, no selected Load or
+request, invariant generation/archive/DATA, original Stopped/OwnedScopeEmpty
+and guardian normal. Independent outcome `0162bc1b` 20 exact artifacts; fresh
+Integration build 117.02 s, zero errors; runner 12.578 s, no skip/duplicate/
+timeout. Separate fresh Unit package corroboration matched all managed
+DLL/PDBs; six exact documentation-only XML copies were absent from packaging,
+all remaining GREEN package inputs byte/mode exact. Existing publisher
+verified each final 239/244/249 package entries with zero overlays.
+
+Exactly one new standalone launch from fresh setup41; no old world, queue
+or ZIP. Real ordinary Save created `s_20261120_032746.zip`, SHA-256
+`c4bfac61e3edd92c53c0155a507c35875f7508b736c6dada1f8a52adfb5f614d`, with
+99 manifest entries, exact configuration/scoped data, no runtime or pending
+members. Actual Load selected that exact archive through the fixed sole
+row. Typed observation authenticates original A Stop, committed generation
+change, B Running with a different run/generation and returned player prompt.
+The same daemon PID/start identity/guard survives Load and publishes a fresh
+heartbeat. The own manual ZIP is still byte/mode exact after the later ordinary
+autosave, which is a separate file.
+
+One genuine Mortal request42 was dispatched against B's fresh input binding.
+The acting GM chose the outcome after reviewing the actual prompt and 97
+signed original rows: short observation/listening in the existing room, no
+actor choice, movement, item or mechanical effect. Independent packet review,
+sole actual response consumer exit0/EOF, and exact accepted story append
+`41(setup),42(accepted)` verified. Typed `NotRequired` records 480→480 with no
+history/cycle writes. B normally stops to its exact `Stopped/OwnedScopeEmpty`;
+client/bridge/daemon and local RPC close with exit0 and EOF; all terminals
+restore. The same daemon guard/status pair is confirmed settled. Guardian
+reaped the original physical scope, no emergency actions/deadline.
+
+**Not a clean end-to-end PASS:** strict wrapper/driver exit 1 because daemon
+errorCount increased 0→1. One recovered idle heartbeat read failure occurred
+after Load Enter and before the post-Load heartbeat. Nonce-bound original helper
+diagnostic shows local MainOwnerGuard contention during admission (IOException,
+local-admission/AcquireAsync, no original pin or read body). It came from
+`Update-DaemonHeartbeat` → guarded existence observation of
+`game_state/control/gm_daemon_status.json`, not the ZIP or GM response. Subsequent
+B operation and actual turn succeeded; no counter suppressed or gate loosened.
+Exact physical lock phase mapping/fix is separate. Local audit
+`fd7bd407f85dd94b6697d706e6eff8fab7ff2c96a08064b2c53db99aaccafee6`
+pins 17,718 ordinary artifacts; raw stays local. No extra launch, hosted CI,
+merge/close, storage grant/transfer, portability claim or Windows qualification.
