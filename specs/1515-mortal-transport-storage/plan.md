@@ -5500,3 +5500,50 @@ Exact physical lock phase mapping/fix is separate. Local audit
 `fd7bd407f85dd94b6697d706e6eff8fab7ff2c96a08064b2c53db99aaccafee6`
 pins 17,718 ordinary artifacts; raw stays local. No extra launch, hosted CI,
 merge/close, storage grant/transfer, portability claim or Windows qualification.
+
+### T037 daemon existence helper across real Load guard: RED source WIP
+
+Base `be5caadc5` of `1515-1516-1538-live-main-20261118`: exact GitHub blob
+identity independently matched for 15 inputs (AGENTS/workflow/performance,
+plan/tasks/catalog, native host/selector/runner, MainAdmission, owner guard,
+Load storage/IPC/bridge handler and real participating helper). Stale local
+HEAD not reset. T036 is complete for catalog listing only. The one recorded
+mm33 heartbeat admission failure remains separate from the genuine accepted42.
+
+New `portable-active-load-daemon-guard-handoff` selects one Linux neutral native
+integration fact, not a live game or full daemon/console test. The fixture
+produces its own manual ZIP once, changes a detached test marker after Save,
+starts A and runs actual retained `GmLoadSessionOperation` Stop/Finish with the
+production SaveLoadService replacement and refresh. The existing
+`AfterLoadPublicationValidatedAsync` cut is after actual commit and while the
+real local outer/lifecycle/canonical guard remains held. Before releasing the
+cut, independently proves A's durable Stopped/OwnedScopeEmpty, restored marker
+and new installed generation. A single original helper calls the actual
+`GmMainParticipatingControl.RunAsync` in a fresh no-ambient context with the
+production snapshot framing for `game_state/control/gm_daemon_status.json`
+(exact physical Missing result in this fixture, no daemon or fake status).
+Its first actual `MainOwnerLockContendedAsync` callback parks the same waiter
+before any protocol frames. Release only Load, require genuine retained-channel
+Finish success and current Running B joining root, new generation, run/epoch
+and terminal; only then release that same authentic local-guard waiter.
+
+Positive oracle: a single B Ready projection, one hashed snapshot response
+with B generation and sole exact requested row, one matching actual Original
+Close acknowledgement confirmed independently by B's owner, exact frame count,
+no retry. Helper failures are captured separately from setup, true contention,
+backing storage invariants, helper joins and normal B stop/guardian closure;
+the verified positive assertion is intentionally red on old local-only retry.
+Expected causal RED: actual local guard IOException after B, no helper body or
+frames, with all setup and normal closure controls proven first. Compile/test
+remain UNRUN until exact source save and independent review. No product change,
+new live launch, CI, network provider, remote raw artifacts or old save access.
+Existing runner/default budgets unchanged; one fixture gets bounded separate
+logical/physical cleanup time to cover its real legacy guard retry window.
+
+Performance: reuse existing neutral build/guardian and one fresh small
+producer ZIP/generation rather than a seeded game, full daemon, or multiple
+native hosts. Reuse immutable own archive bytes and test marker only as phase
+comparison data; keep fresh actual guard, record, generation, original Load
+receipt and helper response/close observations at each boundary. No cache or
+change to lock attempts, no expectation of improved runtime yet. No GM prompt,
+mechanic, authoring or gameplay contract changes.

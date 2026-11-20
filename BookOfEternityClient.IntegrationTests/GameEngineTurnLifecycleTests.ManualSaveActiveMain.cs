@@ -21,7 +21,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Fact]
     public Task ManualSave_HealthyAdmissionTraceStaysOutsideMergedConsole() => RunManualSaveHostedProbeAsync(1);
 
-    private async Task<JsonNode> RunHostedSaveLoadProbeAsync(string scenario, string pathPrefix, int mode)
+    private async Task<JsonNode> RunHostedSaveLoadProbeAsync(string scenario, string pathPrefix, int mode, int guardianSeconds = 25)
     {
         Assert.True(OperatingSystem.IsLinux());
         var own = Path.Combine("/tmp", pathPrefix + Guid.NewGuid().ToString("N")[..12]);
@@ -35,10 +35,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         var support = Path.Combine(Path.GetDirectoryName(typeof(GameEngineTurnLifecycleTests).Assembly.Location)!,
             "BookOfEternityClient.TestSupport.dll");
         await RunBrowserColdChildAsync(Path.Combine(package, "host-guardian"), ["--live-turn",
-            Path.Combine(own, "guardian.json"), "25000",
+            Path.Combine(own, "guardian.json"), (guardianSeconds * 1000).ToString(System.Globalization.CultureInfo.InvariantCulture),
             Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"), support,
             scenario, typeof(GameEngineTurnLifecycleTests).Assembly.Location,
-            package, Path.Combine(own, "result.json"), mode.ToString(System.Globalization.CultureInfo.InvariantCulture), own], Path.Combine(own, "probe.log"), 30);
+            package, Path.Combine(own, "result.json"), mode.ToString(System.Globalization.CultureInfo.InvariantCulture), own], Path.Combine(own, "probe.log"), guardianSeconds + 5);
         var guardian = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "guardian.json")))!;
         Assert.True(guardian["echild"]!.GetValue<bool>());
         Assert.Equal(0, guardian["driverExitCode"]!.GetValue<int>());

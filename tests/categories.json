@@ -59519,6 +59519,21 @@
       "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActiveLoadCatalog_OptionsListsSaveAndBackWithoutReplacingOriginal"]}]
     },
     {
+      "id": "portable-active-load-daemon-guard-handoff",
+      "responsibility": "#1515 T037 one daemon status existence read physically contends during real committed Load and completes against authenticated replacement B with one original grant and close.",
+      "excludes": "No live gameplay, external provider, daemon loop, old archive, general mutator guard or platform parity claim.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.LoadDaemonGuardHandoff.cs",
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs"
+      ],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActiveLoadDaemonGuardHandoff_ContendedExistenceReadUsesReplacementOnce"]}]
+    },
+    {
       "id": "healthy-main-marker-routing",
       "responsibility": "#1515 healthy main marker explicit external routing preserves exact merged manual Save stream and failure diagnostics; authored controlled merged sink, not PTY.",
       "excludes": "No live/world, no parser weakening, no physical/failure suppression; mixed trace DATA admission remains separate.",
