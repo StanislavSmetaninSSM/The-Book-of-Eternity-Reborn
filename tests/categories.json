@@ -59504,6 +59504,21 @@
       ]
     },
     {
+      "id": "portable-active-load-catalog",
+      "responsibility": "#1515 T035 ordinary in-game Options Load catalog under a real retained hosted main, one participating listing scope closed before the selector, and Back without replacement.",
+      "excludes": "No game or GM turn, selected Load replacement, cold generation creation, or Win32/native parity claim.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ManualSaveActiveMain.cs"
+      ],
+      "related": [],
+      "requirements": {"frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04"},
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActiveLoadCatalog_OptionsListsSaveAndBackWithoutReplacingOriginal"]}]
+    },
+    {
       "id": "healthy-main-marker-routing",
       "responsibility": "#1515 healthy main marker explicit external routing preserves exact merged manual Save stream and failure diagnostics; authored controlled merged sink, not PTY.",
       "excludes": "No live/world, no parser weakening, no physical/failure suppression; mixed trace DATA admission remains separate.",

@@ -21,12 +21,12 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Fact]
     public Task ManualSave_HealthyAdmissionTraceStaysOutsideMergedConsole() => RunManualSaveHostedProbeAsync(1);
 
-    private async Task RunManualSaveHostedProbeAsync(int mode)
+    private async Task<JsonNode> RunHostedSaveLoadProbeAsync(string scenario, string pathPrefix, int mode)
     {
         Assert.True(OperatingSystem.IsLinux());
-        var own = Path.Combine("/tmp", "ms-" + Guid.NewGuid().ToString("N")[..12]);
+        var own = Path.Combine("/tmp", pathPrefix + Guid.NewGuid().ToString("N")[..12]);
         Directory.CreateDirectory(own);
-        _directGachaOutput?.WriteLine("Owned manual Save evidence: " + own);
+        _directGachaOutput?.WriteLine("Owned " + scenario + " evidence: " + own);
         var package = Path.Combine(own, "package");
         await RunBrowserColdChildAsync("pwsh", ["-NoLogo", "-NoProfile", "-File",
             Path.Combine(TestRepoPaths.RepoRoot, "scripts/build-linux-supervisor.ps1"),
@@ -37,7 +37,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await RunBrowserColdChildAsync(Path.Combine(package, "host-guardian"), ["--live-turn",
             Path.Combine(own, "guardian.json"), "25000",
             Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!, "dotnet"), support,
-            "engine-manual-save-active", typeof(GameEngineTurnLifecycleTests).Assembly.Location,
+            scenario, typeof(GameEngineTurnLifecycleTests).Assembly.Location,
             package, Path.Combine(own, "result.json"), mode.ToString(System.Globalization.CultureInfo.InvariantCulture), own], Path.Combine(own, "probe.log"), 30);
         var guardian = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "guardian.json")))!;
         Assert.True(guardian["echild"]!.GetValue<bool>());
@@ -45,7 +45,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(0, guardian["failures"]!.GetValue<int>());
         Assert.Equal(0, guardian["emergencySignals"]!.GetValue<int>());
         Assert.False(guardian["deadline"]!.GetValue<bool>());
-        var result = JsonNode.Parse(File.ReadAllText(Path.Combine(own, "result.json")))!;
+        return JsonNode.Parse(File.ReadAllText(Path.Combine(own, "result.json")))!;
+    }
+
+
+    private async Task RunManualSaveHostedProbeAsync(int mode)
+    {
+        var result = await RunHostedSaveLoadProbeAsync("engine-manual-save-active", "ms-", mode);
         Assert.True(result["DirectUnadmittedRefused"]!.GetValue<bool>(), result.ToJsonString());
         Assert.True(result["OriginalStopped"]!.GetValue<bool>(), result.ToJsonString());
         Assert.True(result["ProtectedBytesUnchanged"]!.GetValue<bool>(), result.ToJsonString());
@@ -56,6 +62,147 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             Assert.True(result["MergedSaveIntervalClean"]!.GetValue<bool>(), result.ToJsonString());
             Assert.True(result["ExternalActiveMarkerJoined"]!.GetValue<bool>(), result.ToJsonString());
+        }
+    }
+
+    /// <summary>Lists the current Save catalog from Options while real hosted main A stays active.</summary>
+    [Fact]
+    public async Task ActiveLoadCatalog_OptionsListsSaveAndBackWithoutReplacingOriginal()
+    {
+        var result = await RunHostedSaveLoadProbeAsync("engine-active-load-catalog", "lc-", 0);
+        Assert.True(result["DirectUnadmittedRefused"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["OriginalStopped"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["OriginalUnchangedAtBack"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["NoReplacementOrRequest"]!.GetValue<bool>(), result.ToJsonString());
+        // On RED, native setup/ordinary refusal, exact unchanged world, and controlled stop pass.
+        // The first success assertion exposes only the actual Options→Load exception/stack.
+        Assert.True(result["MenuSucceeded"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.Null(result["MenuFailure"]);
+        Assert.True(result["ExactSaveAndBackRendered"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.True(result["CatalogClosedBeforeInput"]!.GetValue<bool>(), result.ToJsonString());
+        Assert.Equal(2, result["LoadMenuReads"]!.GetValue<int>());
+    }
+
+    /// <summary>Runs the real Options Load catalog only beneath the bounded neutral native guardian.</summary>
+    public static async Task WriteActiveLoadCatalogProbeAsync(string package, string output, int mode, string own)
+    {
+        Assert.Equal(0, mode);
+        var launch = NeutralTerminalLaunch.Create(package, own);
+        var root = Directory.GetParent(launch.Scratch)!.FullName;
+        var seed = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+        var state = PortableSaveFixture.Seed(seed);
+        var prepare = new SaveLoadService(seed, state, NullLogger<SaveLoadService>.Instance);
+        const string saveName = "catalog-active-43";
+        Assert.True((await prepare.CreateSaveAsync(saveName, "independent native fixture", turnNumber: 43)).Committed);
+        var manual = seed.ResolvePath("saves/manual_saves");
+        var archive = Assert.Single(Directory.GetFiles(manual, "*.zip"));
+        var archiveBytes = File.ReadAllBytes(archive);
+        var generation = File.ReadAllBytes(seed.SessionGenerationPath);
+        var canonicalPath = seed.ResolvePath("game_state/world/test_fixture_state.json");
+        var canonical = File.ReadAllBytes(canonicalPath);
+        using var terminalOutput = new MemoryStream();
+        var host = new MainRunCrashScenarioDriver.FixtureHost(launch, terminalOutput);
+        using var control = new CancellationTokenSource();
+        var server = host.StartServer(control.Token);
+        var evidence = new Dictionary<string, object?>();
+        GmSessionRunIdentity? original = null;
+        GmSessionRunCoordinator? owner = null;
+        try
+        {
+            await host.CallAsync("StartShellAsync");
+            owner = host.Owner;
+            original = owner.Identity;
+            var running = GmSessionRunPersistence.Read(root)!;
+            Assert.Equal(original, GmSessionRunRecordCodec.Decode(running).Identity);
+            Assert.Equal(GmSessionRunDisposition.Running, GmSessionRunRecordCodec.Decode(running).Disposition);
+            Assert.False(host.Terminal.RootExited.IsCompleted);
+            Task body;
+            using (ExecutionContext.SuppressFlow()) body = Task.Run(async () =>
+            {
+                Assert.Null(GmSessionRunCoordinator.Current);
+                Assert.False(SessionOperationContext.TryGetExpectedGeneration(root, out _));
+                var closings = 0;
+                var loadStages = new List<string>();
+                var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
+                    PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                    {
+                        SessionOperationClosingAsync = () => { closings++; return Task.CompletedTask; },
+                        LoadOperationObserver = loadStages.Add
+                    });
+                var input = new LoadMenuConsoleInput([Key(ConsoleKey.DownArrow), Key(ConsoleKey.Enter)])
+                { UnexpectedRead = () => throw new InvalidOperationException("Options invoked unexpected fallback input.") };
+                var runtime = CreateGameEngineRuntime(files, input);
+                await using var audio = runtime.AudioService;
+                runtime.GameLoop.SetSession("active-catalog-43", 43);
+
+                var direct = await Record.ExceptionAsync(() => runtime.SaveLoad.GetAvailableSavesAsync());
+                var refusal = Assert.IsAssignableFrom<IOException>(direct);
+                Assert.Contains("Main run metadata or original owner admission is unavailable", refusal.Message);
+                evidence["DirectUnadmittedRefused"] = true;
+                evidence["DirectFailure"] = refusal.ToString();
+                Assert.Equal(running, GmSessionRunPersistence.Read(root));
+
+                var closedAtPrompt = true;
+                using var console = new LoadMenuAnsiConsole(read =>
+                {
+                    files.RequireLoadIpcOutsideFileScopes();
+                    closedAtPrompt &= closings == 1 && !SessionOperationContext.TryGetExpectedGeneration(root, out _)
+                        && GmSessionRunPersistence.Read(root)!.AsSpan().SequenceEqual(running);
+                    return read switch
+                    {
+                        0 => Key(ConsoleKey.DownArrow),
+                        1 => Key(ConsoleKey.Enter),
+                        _ => throw new InvalidOperationException("Catalog read a key beyond Back.")
+                    };
+                });
+                var previousConsole = AnsiConsole.Console;
+                var menuSucceeded = false;
+                Exception? menuFailure;
+                AnsiConsole.Console = console;
+                try { menuFailure = await Record.ExceptionAsync(async () => { menuSucceeded = await runtime.Engine.InGameOptionsMenu(); }); }
+                finally { AnsiConsole.Console = previousConsole; }
+
+                input.AssertCompleted();
+                Assert.Equal(2, input.Reads);
+                var rendered = console.Output;
+                File.WriteAllText(Path.Combine(own, "load-catalog-menu.txt"), rendered);
+                evidence["MenuFailure"] = menuFailure?.ToString();
+                evidence["MenuSucceeded"] = menuSucceeded;
+                evidence["LoadMenuReads"] = console.Reads;
+                evidence["CatalogClosedBeforeInput"] = console.Reads > 0 && closedAtPrompt && closings == 1;
+                evidence["ClosingCount"] = closings;
+                evidence["ExactSaveAndBackRendered"] = rendered.Contains("Выберите сохранение:", StringComparison.Ordinal)
+                    && rendered.Contains(saveName + " | Ход 43 |", StringComparison.Ordinal)
+                    && rendered.Contains(new LocalizationManager { CurrentLanguage = "ru" }.T("back"), StringComparison.Ordinal);
+                var afterMenu = GmSessionRunPersistence.Read(root)!;
+                evidence["OriginalUnchangedAtBack"] = original == GmSessionRunRecordCodec.Decode(afterMenu).Identity
+                    && afterMenu.AsSpan().SequenceEqual(running) && !host.Terminal.RootExited.IsCompleted
+                    && File.ReadAllBytes(files.SessionGenerationPath).AsSpan().SequenceEqual(generation)
+                    && Assert.Single(Directory.GetFiles(manual, "*.zip")) == archive
+                    && File.ReadAllBytes(archive).AsSpan().SequenceEqual(archiveBytes)
+                    && File.ReadAllBytes(canonicalPath).AsSpan().SequenceEqual(canonical);
+                evidence["NoReplacementOrRequest"] = loadStages.Count == 0 && new[]
+                    {
+                        "input/turn_request.json", "game_state/control/pending_turn_snapshot.json",
+                        "game_state/control/pending_turn_snapshot.authority.json", "ready/turn_complete.json", "ready/turn_error.json"
+                    }.All(path => !File.Exists(files.ResolvePath(path)))
+                    && !Directory.Exists(files.ResolvePath("game_state/control/pending_turn_snapshot"))
+                    && runtime.GameLoop.SessionId == "active-catalog-43" && runtime.GameLoop.TurnNumber == 43;
+                evidence["LoadOperationStages"] = loadStages;
+            });
+            await body.WaitAsync(TimeSpan.FromSeconds(12));
+        }
+        finally
+        {
+            if (owner != null) await host.CallAsync("StopShellAsync").WaitAsync(TimeSpan.FromSeconds(5));
+            await control.CancelAsync();
+            await server.WaitAsync(TimeSpan.FromSeconds(5));
+            var stopped = GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(root)!);
+            evidence["OriginalStopped"] = stopped.Disposition == GmSessionRunDisposition.Stopped
+                && stopped.StopEvidence?.Kind == GmSessionRunStopKind.OwnedScopeEmpty && stopped.Identity == original
+                && owner is { RetainsAuthority: false };
+            evidence["FinalRecord"] = stopped;
+            await File.WriteAllTextAsync(output, JsonSerializer.Serialize(evidence));
         }
     }
 

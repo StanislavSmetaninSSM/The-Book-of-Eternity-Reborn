@@ -5374,3 +5374,42 @@ verified the exception and archive and pins 2,706 regular artifacts; all raw
 material remains local. No hosted CI, merge, closure or production change in
 this checkpoint. Next bounded step is causal RED/GREEN for the active enumeration
 path, separately from save selection and the Load replacement operation.
+
+### T035 active Options Load listing regression: RED source WIP
+
+Base `3ce8aabf0cca79252a21c6d1655b5b53715ce20b` was verified by the coordinating
+parent on `1515-1516-1538-live-main-20261118`. Original failure is the active
+nonparticipating `GetAvailableSavesAsync` lease refusal in the Options→Load
+catalog. No original world, saves, queue or live launch is used by this block.
+
+The bounded new `portable-active-load-catalog` integration selection creates
+one fresh current-producer manual ZIP and starts the existing native neutral
+host/guardian. An isolated client context proves direct ordinary catalog API
+refuses under active original A, then drives the real in-game Options path
+and real Spectre selector to Back via its owned scripted input. The driver
+retains first actual menu exception/stack separately from setup, direct refusal,
+exact A record, generation, canonical marker and ZIP preservation, absence of
+Load stages/turn request and normal original stop. The parent asserts these
+first, then successful rendering and two selector reads after original scope
+finalization. Each actual selector read requires the existing filesystem IPC
+outside-scope predicate and exactly one session-close callback beforehand.
+No production code changes in this source checkpoint; compiled test is UNRUN
+until saved. Expected causal RED: native setup, direct refusal, unchanged state
+and original stop prove normal, then Options listing fails with the same
+IOException before the first Spectre key. Other failures are setup/fixture
+failures, not evidence qualifying the product bug.
+
+After verified causal RED, planned minimal GREEN: only the active Options call
+opts into a single existing participating current-session scope around sequential
+manual/autosave/checkpoint listing. The admitted before-generation hook refuses
+missing existing generation; cold/main-menu behavior stays ordinary. The scope
+must close before actual choice, empty-menu key, or selected Load lifecycle.
+Existing per-directory actual canonical leases, bounded metadata parsing, source
+validation, ordering and later replacement checks remain unchanged. Detached
+SaveInfo rows are reused only for this current menu; no cache across prompt or
+source mutation, generation, owner, selection or close. Do not add another listing
+scan, change archive I/O budget, or skip fresh lease/source checks. The existing
+shared neutral runner and test console avoid duplicate expensive setup; no speedup
+claim or production timing measurement. The defect is a console admission issue,
+not a GM schema, prompt or example contract change. Independent source review and
+exact C# execution remain pending; no hosted CI or raw artifacts published.

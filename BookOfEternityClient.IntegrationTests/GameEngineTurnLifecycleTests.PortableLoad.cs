@@ -317,10 +317,12 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         private readonly StringWriter _writer = new();
         private readonly IAnsiConsole _inner;
+        private readonly Func<int, ConsoleKeyInfo>? _read;
         internal int Reads { get; private set; }
         internal string Output => _writer.ToString();
-        internal LoadMenuAnsiConsole()
+        internal LoadMenuAnsiConsole(Func<int, ConsoleKeyInfo>? read = null)
         {
+            _read = read;
             _inner = AnsiConsole.Create(new AnsiConsoleSettings
             {
                 Ansi = AnsiSupport.Yes,
@@ -342,7 +344,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         public bool IsKeyAvailable() => true;
         public ConsoleKeyInfo? ReadKey(bool intercept)
         {
-            Assert.Equal(0, Reads++);
+            var index = Reads++;
+            if (_read != null) return _read(index);
+            Assert.Equal(0, index);
             return Key(ConsoleKey.Enter);
         }
         public Task<ConsoleKeyInfo?> ReadKeyAsync(bool intercept, CancellationToken cancellationToken) => Task.FromResult(ReadKey(intercept));
