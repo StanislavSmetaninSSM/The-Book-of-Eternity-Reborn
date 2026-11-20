@@ -1533,3 +1533,16 @@ losing contender can't reach status reader, real settled restart and unsettled
 adoption still fail/pass as specified. Local stale/mismatch/link/mode/drift tests
 must refuse without reconstructing or deleting a guard. No hosted relay or
 game-world changes during this source block.
+
+**Causal RED (Linux x64, 2026-11-20).** Tests-only checkpoint
+`efa299c4785ed6484f81197f7e4f57bcb5084f53`; fresh Integration build 57.26s,
+143 warnings and zero errors. Official runner planned and executed all 26 cases
+once (4 PASS / 22 expected FAIL, no skips, duplicates, timeout, or owned cleanup
+debt; 15.463s runner). Existing legacy hash, length, missing-member and manifest
+coverage refusals stayed green. Save included local daemon status; valid old
+Load imported foreign status; successful same-root Load overwrote the live
+status; rollback restored the bytes but still rewrote the status (mtime changed);
+invalid/orphan/drift and reserved-descendant cases committed rather than refused.
+Exact source and output joins before/after remained pinned. Local evidence index
+`c8f7fbb896f2574bcfcfc0bc018b0b846e2a09faa50dc645d5d95f0e38a422b5`.
+This is causal test evidence, not product correction or live/hosted acceptance.
