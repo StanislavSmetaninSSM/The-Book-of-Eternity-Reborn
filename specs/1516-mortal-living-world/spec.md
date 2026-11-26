@@ -271,3 +271,33 @@ Remaining sequence for this live check, without unrelated Mortal redesign:
    reproducible defect only after the actual supported path refuses or changes
    the wrong state. No spiritual combat, old-save migration, hosted CI, raw
    artifacts in Git, merge or issue closure in this checkpoint.
+
+### T016 off-screen terminal activity: live refusal and bounded correction plan
+
+- Turn 48 accepted an advance from 1927 to 2167. No cycle was pending in its
+  signed opening request; it crossed the world threshold without mutating the
+  captain, forest or guild. The next actual request carried one world cycle
+  and zero faction cycles.
+- Turn 49's exact relay packet used the existing terminal activity command
+  for the captain outside the player's scene. The real reducer cleared its
+  active tracker and produced one explicitly qualified completed result.
+  A separate comparison found that only the tracker and completed history
+  changed in the NPC core; the historical envelope, inventory, other NPC and
+  other core data were unchanged. Final validation still refused stale-style
+  carrier and inventory resend errors. A separate authoring issue in the
+  private debug output omitted the explicit current-location heading.
+  No turn-49 story was accepted. The pending candidate is not a checkpoint.
+- Add a causal test through the ordinary publication and final-validation
+  boundary before changing production. Extend only the existing operation-local
+  exact comparison to accept the terminal command's settled after-image,
+  bound to the authenticated turn and exact original history. It must not
+  excuse any raw carrier, unrelated actor changes, changed history or an
+  unconsumed/reintroduced sidecar. Keep current ordinary owner checks and
+  final validation unchanged for browser, specialized routes and raw input.
+  Derive the expected projection once from already captured immutable DATA;
+  keep current and closing authority/bytes checks fresh and add no cache.
+- Verify the real reducer/final gate and its negative controls using the
+  bounded ordinary-publication and terminal-activity categories. Do not
+  continue the unaccepted live phase or report the road complete on that basis.
+  A further live attempt requires a verified accepted predecessor and a
+  corrected GM current-location section.
