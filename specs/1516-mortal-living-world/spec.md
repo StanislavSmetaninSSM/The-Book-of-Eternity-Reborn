@@ -241,3 +241,33 @@ T016/T018 remain open until the connected live evidence and review are complete.
   checkpoints do not qualify spiritual combat, general replay/rollback, all
   feature coverage, or Windows, and do not close the issue. No hosted CI or raw
   diagnostic publication.
+
+### T016 explicit cold Load and remaining live plan
+
+The exact turn-47 manual archive was selected in the released-path console's
+ordinary **Load profile** menu on a separate empty test root. None of the 18
+checked chapter files existed there beforehand. The client confirmed the load,
+established a session generation and returned to the Mortal player screen at
+turn 47 and game minute 1927. The 18 files matched the archive byte for byte,
+including the NPCs, forest, faction/project/chronicle, world clock and markers,
+private living-world history and story. No GM turn was sent by the load. The
+exit interaction of the cold probe was not verified as an ordinary exit; the
+process guardian confirmed descendant cleanup. The accepted source world and
+the original archive are unchanged. This is cold console Load continuity, not
+an active GM-owner replacement proof or a post-Load GM turn.
+
+Remaining sequence for this live check, without unrelated Mortal redesign:
+
+1. On the retained accepted world, drive a fresh world boundary before
+   concluding the captain's investigation. Use the actual signed request and
+   the existing explicit terminal activity outcome. Verify the active tracker
+   clears and one exact result is appended, with no private detail in news.
+2. Continue from a verified predecessor. Only on the requisite signed faction
+   cycle(s), advance the existing road toward its declared cost and finish it
+   through the existing project path. Verify ownership, completion/history,
+   public consequence and no repeated event on a subsequent short turn.
+3. Review the reached cases against T016 and T018. Keep evidence for missing
+   gameplay cases separate from relay, Save and Load success. Record a
+   reproducible defect only after the actual supported path refuses or changes
+   the wrong state. No spiritual combat, old-save migration, hosted CI, raw
+   artifacts in Git, merge or issue closure in this checkpoint.
