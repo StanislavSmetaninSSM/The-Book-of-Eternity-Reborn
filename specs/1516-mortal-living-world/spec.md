@@ -196,3 +196,25 @@ T016/T018 remain open until the connected live evidence and review are complete.
   fresh verified state; the original combined turn is not a predecessor.
   Suited NPC reasoning, exact journal path, and output freshness will be
   included on first authoring. Faction and reload are still unverified.
+
+### T016 phase B accepted through the live GM relay
+
+- Final console validation now recognizes only the exact normalizer-owned
+  off-screen row, using the existing completed comparison owner. The projection
+  starts from the signed original and exact retained raw core, covers only
+  permanent-location and active-tracker commands, and is bound to the actual
+  canonical core and consumed/unchanged/missing activity carrier. Entering
+  and leaving checks read these dependencies afresh; no reusable authority
+  cache and no raw or specialized-route exemption.
+- Actual reducer/final-validation RED reproduced the false resend and inventory
+  rejection. The separate move-only RED reproduced a late activity carrier.
+  Final official selection passed 12/12, including direct mutation, envelope,
+  inventory, changed/deleted core and newly pending activity refusals.
+- Fresh live normal-console phases A and B accepted one story entry each with
+  verified logical/native closure. At 485→725, the player stayed in the
+  original room, the captain advanced 0→240 minutes and step 0→1, the courier
+  moved town→forest, and the same threat intensified 1→2 while independent
+  forest infection state changed 0→1. One history receipt bound the three
+  events to the actual request. Public news carried the courier arrival, not
+  the hidden investigation or infection. Faction and project remained
+  unchanged. This proves B, not the daily cycle or reload; T016/T018 stay open.
