@@ -408,3 +408,29 @@ waiting and late autosave fault controls are selected locally. This is an
 unverified source checkpoint, not a successful cold run. The read filtering
 is a cheap filename decision inside the existing enumeration before content
 read; no extra pass or cache.
+
+The exact actual-autosave RED passed after the writer correction (1/1,
+0.525 s, no skips). Fresh integration compilation produced 0 errors.
+An independent source review accepted the bounded writer-only change. The
+three historical player/waiting/late save-fault categories were then run
+separately against the corrected build and in a diagnostic comparison with
+the exact pre-correction client DLL. All six cases failed identically before
+reaching the autosave publication cut in both builds (player: request not
+created; waiting/late: save observer never reached). They are not positive
+evidence or an observed new regression. The corrected client DLL was
+restored to the integration output. The retained unit suite's offline
+restore was not completed here.
+
+On a separately owned corrected Linux world, one actual ordinary relay
+turn (42) generated a new autosave with no pending authority or reserved
+rollback members. The unchanged archive was selected through the real
+cold console Load menu. It resumed to the player prompt at turn 42,
+preserved 17 verified durable files and two expected absences, kept the
+same story and established a new generation without a new turn request.
+The final readback did not send any input after reaching the prompt and
+the native guardian drained its children; this does not claim ordinary
+exit navigation. The earlier failed exit-key probe and blocked original
+turn-53 archive remained separate and untouched. This verifies that the
+corrected producer and unchanged reader can resume a newly generated
+autosave, not a new complete turn-53 rerun or full Save/Load qualification.
+No closure, merge, hosted CI, legacy migration or raw Git artifacts.
