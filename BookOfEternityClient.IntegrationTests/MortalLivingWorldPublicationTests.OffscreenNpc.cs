@@ -12,8 +12,10 @@ public sealed partial class MortalLivingWorldPublicationTests
         GameStateValidationPhase.AcceptedTurnActorMaterializationCompleteness |
         GameStateValidationPhase.NpcStateFiles);
 
-    [Fact]
-    public async Task OrdinaryPublication_ReducedOffscreenNpcLocationAndActivityRetainHistoricalCarriers()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task OrdinaryPublication_ReducedOffscreenNpcLocationAndActivityRetainHistoricalCarriers(bool withActivity)
     {
         await using var context = await PrepareOffscreenNpcOrdinaryAsync();
         var backups = await BackupsAsync(context);
@@ -26,7 +28,7 @@ public sealed partial class MortalLivingWorldPublicationTests
             ["location"] = new JsonObject { ["currentLocationId"] = "loc_journey_forest", ["initialLocationId"] = null }
         });
         await context.WriteJsonAsync(CompletionCore, raw);
-        await context.WriteJsonAsync(CompletionCommands, new JsonObject
+        var sidecar = new JsonObject
         {
             ["NPCActivityUpdates"] = new JsonArray(new JsonObject
             {
@@ -34,7 +36,8 @@ public sealed partial class MortalLivingWorldPublicationTests
                 ["NPCName"] = "Captain Irina",
                 ["activityUpdate"] = new JsonObject { ["timeSpentMinutes"] = 60, ["currentStepNumber"] = 1 }
             })
-        });
+        };
+        if (withActivity) await context.WriteJsonAsync(CompletionCommands, sidecar);
         var clock = (await context.ReadJsonAsync(MortalLivingWorldSource.WorldTimePath))!.AsObject();
         clock["currentTimeInMinutes"] = 540;
         clock["timeOfDay"] = "09:00";
@@ -48,8 +51,11 @@ public sealed partial class MortalLivingWorldPublicationTests
         Assert.Empty(settled["NPCsInScene"]!.AsArray());
         Assert.Null(settled["NPCCoreChanges"]);
         var expected = original.DeepClone();
-        expected["UpdateNPCs"]![0]!["currentActivity"]!["timeSpentMinutes"] = 60;
-        expected["UpdateNPCs"]![0]!["currentActivity"]!["currentStepNumber"] = 1;
+        if (withActivity)
+        {
+            expected["UpdateNPCs"]![0]!["currentActivity"]!["timeSpentMinutes"] = 60;
+            expected["UpdateNPCs"]![0]!["currentActivity"]!["currentStepNumber"] = 1;
+        }
         expected["UpdateNPCs"]![1]!["currentLocationId"] = "loc_journey_forest";
         Assert.True(JsonNode.DeepEquals(expected, settled), "Both reducers must reach the exact canonical image; no fixture after-image is installed.");
         Assert.Null((await context.ReadJsonAsync(CompletionCommands))?["NPCActivityUpdates"]);
@@ -58,6 +64,13 @@ public sealed partial class MortalLivingWorldPublicationTests
         Assert.DoesNotContain(issues, issue => IsHistoricalOffscreenResendIssue(issue.Code));
         Assert.Contains(await context.Validator.ValidateGameStateAsync(OffscreenNpcFinalSelection),
             issue => IsHistoricalOffscreenResendIssue(issue.Code));
+        var settledSidecar = await context.ReadJsonAsync(CompletionCommands);
+        await context.WriteJsonAsync(CompletionCommands, sidecar);
+        var activityDrift = await Assert.ThrowsAsync<ValidationService.CompletedLocationComparisonRefusedException>(
+            () => context.Validator.ValidateCompletedLocationStateAsync(result, OffscreenNpcFinalSelection));
+        Assert.Contains("off-screen NPC activity", activityDrift.Message);
+        if (settledSidecar is null) context.FileSystem.DeleteFile(CompletionCommands);
+        else await context.WriteJsonAsync(CompletionCommands, settledSidecar);
         var changed = settled.DeepClone();
         changed["UpdateNPCs"]![0]!["currentActivity"]!["timeSpentMinutes"] = 61;
         await context.WriteJsonAsync(CompletionCore, changed);
