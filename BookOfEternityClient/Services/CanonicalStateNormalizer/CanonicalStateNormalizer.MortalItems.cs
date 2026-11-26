@@ -1873,7 +1873,9 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 }
                 else if (treatmentPreflight is null)
                 {
-                    locationCapture = await ValidationService.CaptureLocationComparisonAsync(fs, writeLease);
+                    locationCapture = await ValidationService.CaptureLocationComparisonAsync(fs, writeLease,
+                        beforeImages.FirstOrDefault(image => image.Path == NpcCoreChangesContract.NpcCorePath)?.Bytes,
+                        beforeImages.FirstOrDefault(image => image.Path == ValidationService.OffscreenNpcActivityPath)?.Bytes);
                     boundNormalizer = await boundNormalizer.WithOrdinaryNpcCompletionSourceAsync();
                     mechanicsPlan = await boundNormalizer
                         .NormalizeAccumulatedStateWithPlanAsync(backups);

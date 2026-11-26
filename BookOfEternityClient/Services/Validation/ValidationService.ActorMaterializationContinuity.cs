@@ -298,7 +298,8 @@ public partial class ValidationService
                                     JsonValuesSemanticallyEqual(
                                         historicalActorJson,
                                         actor.GetRawText());
-                                if (!isUnchangedHistoricalCarrier)
+                                if (!isUnchangedHistoricalCarrier &&
+                                    !IsCompletedOffscreenNpcRow(actor, sectionName, actorId))
                                 {
                                     if (!hasCurrentEnvelope)
                                         continue;

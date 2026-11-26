@@ -5290,6 +5290,7 @@ public partial class ValidationService
                     !(mortalActorPreTurnAuthority.Status == ValidatedPendingTurnSnapshotStatus.Missing &&
                       !isResponseCreationValidation && IsOrdinaryCanonicalActor(item, sectionName)) &&
                     item.TryGetProperty("inventory", out var currentInventory) &&
+                    !IsCompletedOffscreenNpcRow(item, sectionName, effectiveNpcId) &&
                     ShouldBlockMortalActorInventoryResend(
                         item,
                         effectiveNpcId,

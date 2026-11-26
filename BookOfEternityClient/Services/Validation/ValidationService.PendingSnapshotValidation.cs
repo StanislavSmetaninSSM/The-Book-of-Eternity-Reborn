@@ -135,6 +135,7 @@ public partial class ValidationService
             {
                 await completedLocation.RequireCurrentAsync(_fs, invocation.Physical.Lease!);
                 admitted.LocationIds = completedLocation.CopyIds();
+                admitted.OffscreenNpcRows = completedLocation.OffscreenNpcRows;
             }
             issues = await validate();
             await CompareCompletedTreatmentItemsAsync(invocation, issues);
@@ -158,6 +159,7 @@ public partial class ValidationService
             invocation.Closed = true;
             invocation.Active = false;
             admitted.LocationIds = null;
+            admitted.OffscreenNpcRows = null;
             admitted.OrdinaryCanonical = null;
             admitted.LoadedCanonical = null;
             try { if (invocation.Physical != null) await invocation.Physical.DisposeAsync(); }

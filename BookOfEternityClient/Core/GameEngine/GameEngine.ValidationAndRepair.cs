@@ -326,7 +326,8 @@ public partial class GameEngine
                         : await _validator.ValidateGameStateAsync();
                 }
                 catch (ValidationService.CompletedLocationComparisonRefusedException refused)
-                    when (!refused.Data.Contains("CoordinatedLeaseReleaseFailure"))
+                    when (!refused.Data.Contains("PendingSnapshotValidation.CloseFailure") &&
+                          !refused.Data.Contains("CoordinatedLeaseReleaseFailure"))
                 {
                     // A repair cannot redefine the already consumed allocation. Both ordinary
                     // callers return this rejection to their terminal owner, which restores and

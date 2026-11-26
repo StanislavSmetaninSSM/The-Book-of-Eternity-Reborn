@@ -54,8 +54,19 @@ public sealed partial class MortalLivingWorldPublicationTests
         Assert.True(JsonNode.DeepEquals(expected, settled), "Both reducers must reach the exact canonical image; no fixture after-image is installed.");
         Assert.Null((await context.ReadJsonAsync(CompletionCommands))?["NPCActivityUpdates"]);
 
-        var issues = await context.Validator.ValidateGameStateAsync(OffscreenNpcFinalSelection);
+        var issues = await context.Validator.ValidateCompletedLocationStateAsync(result, OffscreenNpcFinalSelection);
         Assert.DoesNotContain(issues, issue => IsHistoricalOffscreenResendIssue(issue.Code));
+        Assert.Contains(await context.Validator.ValidateGameStateAsync(OffscreenNpcFinalSelection),
+            issue => IsHistoricalOffscreenResendIssue(issue.Code));
+        var changed = settled.DeepClone();
+        changed["UpdateNPCs"]![0]!["currentActivity"]!["timeSpentMinutes"] = 61;
+        await context.WriteJsonAsync(CompletionCore, changed);
+        var error = await Assert.ThrowsAsync<ValidationService.CompletedLocationComparisonRefusedException>(
+            () => context.Validator.ValidateCompletedLocationStateAsync(result, OffscreenNpcFinalSelection));
+        Assert.Contains("off-screen NPC published image changed", error.Message);
+        context.FileSystem.DeleteFile(CompletionCore);
+        await Assert.ThrowsAsync<ValidationService.CompletedLocationComparisonRefusedException>(
+            () => context.Validator.ValidateCompletedLocationStateAsync(result, OffscreenNpcFinalSelection));
     }
 
     [Theory]
