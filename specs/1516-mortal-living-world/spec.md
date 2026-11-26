@@ -301,3 +301,23 @@ Remaining sequence for this live check, without unrelated Mortal redesign:
   continue the unaccepted live phase or report the road complete on that basis.
   A further live attempt requires a verified accepted predecessor and a
   corrected GM current-location section.
+
+The actual reducer/final-boundary test reproduced the exact three historical
+refusals after asserting the reducer's complete output and command consumption:
+12 existing controls passed, one new case failed as intended. The correction
+in e289a9a7 extends the existing completed comparison only for a terminal-only
+off-screen activity carrier; it proves the exact signed original actor,
+activity and turn, one appended history row, and a consumed sidecar. Raw input,
+specialized and browser behavior stay unchanged. Independent source review found
+no blocking issue. Fresh Linux integration build had no errors. The five
+selected ordinary publication, terminal publication, refusal, source and
+post-consumption categories passed 35/35, with no skips, duplicate IDs or
+timeouts and complete owned cleanup (runner 61.195 s). This is not a live pass.
+
+During the live rejection the bridge later returned an empty response. Physical
+process drain was verified, but logical cleanup, terminal-owner retirement and
+rollback were not. The original live story stops at 48 and the rejected request
+is still pending on disk; do not resume from this root or from a cold readback
+copy. The live terminal acceptance, road finish, public consequence and
+following duplicate control require a new independently verified live chain on
+the corrected runtime. No task or main-branch state was changed.
