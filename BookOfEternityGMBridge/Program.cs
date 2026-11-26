@@ -853,20 +853,16 @@ internal sealed partial class BridgeHost : IDisposable
         lock (_sync)
         {
             if (_startupObservationFailed) { _status.Ready=false; _status.State="StartupObservationUnavailable"; return Task.CompletedTask; }
-            if (_terminalUncertain) { _status.Ready=false; _status.State="TerminalUncertain"; TryWriteInputStatus(); return Task.CompletedTask; }
+            if (_terminalUncertain) { ObserveAutomationStatus(false, "TerminalUncertain"); return Task.CompletedTask; }
             var profile = LoadBridgeConfig().GmCliInputProfile.Snapshot();
             if (_inputLifetime != null && !_inputLifetime.Revoked && !_inputLifetime.ManualTakeover &&
                 !_automaticInputPaused && _admittedPrompts == 0 && IsEmptyIdleView(profile, _promptScreenReader()))
             {
-                _status.Ready = true;
-                _status.State = "Ready";
-                TryWriteInputStatus();
+                ObserveAutomationStatus(true, "Ready");
             }
             else if (_admittedPrompts == 0)
             {
-                _status.Ready = false;
-                if (!_automaticInputPaused) _status.State = "OperatorNotReady";
-                TryWriteInputStatus();
+                ObserveAutomationStatus(false, _automaticInputPaused ? _status.State : "OperatorNotReady");
             }
         }
         return Task.CompletedTask;

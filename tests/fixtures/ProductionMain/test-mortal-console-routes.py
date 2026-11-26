@@ -86,7 +86,7 @@ class RouteTests(unittest.TestCase):
         peer=Peer(False);peer.console=types.SimpleNamespace(view=AuthoredView(peer));ns['client']=peer
         with self.assertRaises(TimeoutError):ns['finite_select'](console_routes.fixed_menu('Menu',['Alpha','Beta'],20),'Beta',0,2)
         self.assertEqual(peer.keys,[b'\x1b[B'])
-    def selection_sequence(self, transitions, target_index=3):
+    def selection_sequence(self, transitions, target_index=3, *, from_other_menu=False, omit_close=False):
         # Authored exact UI shape, not a copied game capture or ownership proof.
         labels=['💰 Деньги: 500','⚔ ⚔️ Основная рука: Древний меч','📦 Древний меч [Оружие]','📦 🔒 Кладовая материалов совета (1 пр.)','← Назад']
         menu=console_routes.fixed_menu('🎒 📦 Инвентарь  (⚖ 1.8kg/45.0kg кг)  (выберите для просмотра / управления)',labels,20)
@@ -101,6 +101,12 @@ class RouteTests(unittest.TestCase):
                 if key==b'\x1b[B':self.pending.extend(next(self.turn,[]))
                 return cut
         peer=Peer();peer.console=types.SimpleNamespace(view=AuthoredView(peer));peer.frame=frame
+        if from_other_menu:
+            previous=console_routes.fixed_menu('Prior menu',['Storage','Back'],10)
+            menu=console_routes.after_menu(menu,previous,'Storage')
+            close=b'\r'+b'\x1b[2K\x1b[1A'*3+b'\x1b[2K\x1b[?25h'
+            initial=frame(0).split(b'\x1b[6A',1)[1]
+            peer.capture=bytearray((b'' if omit_close else close)+b'\x1b[?25l'+initial)
         def until(predicate,*unused):
             for _ in range(8):
                 if predicate():return
@@ -111,6 +117,14 @@ class RouteTests(unittest.TestCase):
         node=next(n for n in ast.parse(pathlib.Path(__file__).with_name('live-mortal-phase.py').read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='finite_select')
         ns={'client':peer,'console_routes':console_routes,'until':until};exec(compile(ast.Module(body=[node],type_ignores=[]),'actual finite selector','exec'),ns)
         return peer,lambda:ns['finite_select'](menu,labels[target_index],0,5)
+    def test_entered_submenu_accepts_one_fresh_arrow_without_requiring_a_second_close(self):
+        peer,run=self.selection_sequence([[[0,1]]],target_index=1,from_other_menu=True)
+        run()
+        self.assertEqual(peer.keys,[b'\x1b[B',b'\r'])
+    def test_entered_submenu_still_requires_original_close_before_first_key(self):
+        peer,run=self.selection_sequence([],target_index=1,from_other_menu=True,omit_close=True)
+        with self.assertRaises(TimeoutError):run()
+        self.assertEqual(peer.keys,[])
     def test_duplicate_redraw_waits_for_transition_without_extra_key(self):
         for transitions in ([[[0],[1]],[[1],[2]],[[2],[3]]], [[[0,0,1]],[[1,2]],[[2,2,3]]]):
             with self.subTest(transitions=transitions):
@@ -350,6 +364,6 @@ class RouteTests(unittest.TestCase):
 
 if __name__=='__main__':
     suite=unittest.defaultTestLoader.loadTestsFromTestCase(RouteTests)
-    if suite.countTestCases()!=28:raise SystemExit('Expected exactly twenty-eight finite-route DATA methods')
+    if suite.countTestCases()!=30:raise SystemExit('Expected exactly thirty finite-route DATA methods')
     result=unittest.TextTestRunner(verbosity=2).run(suite)
-    raise SystemExit(0 if result.testsRun==28 and result.wasSuccessful() and not result.skipped else 1)
+    raise SystemExit(0 if result.testsRun==30 and result.wasSuccessful() and not result.skipped else 1)

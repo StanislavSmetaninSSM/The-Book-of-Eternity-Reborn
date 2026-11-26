@@ -7,7 +7,7 @@ turn. Later phases preserve the same canonical world and require complete prior
 logical/physical-owner cleanup evidence; no replay or scripted GM output.
 """
 import datetime, io, zipfile, copy
-import errno, fcntl, stat, hashlib, json, os, pty, re, select, shutil, struct, subprocess, sys, termios, time, uuid
+import errno, fcntl, signal, stat, hashlib, json, os, pty, re, select, shutil, struct, subprocess, sys, termios, time, uuid
 from pathlib import Path
 import relay_phase_evidence as phase_evidence
 import mortal_console_routes as console_routes
@@ -330,6 +330,25 @@ def daemon_pair_capture(session, evidence, prefix):
 
 def daemon_pair_decode(evidence,prefix,settled):
     return phase_evidence.daemon_pair_decode(evidence,prefix,settled)
+
+def guarded_process_identity(pid, launcher):
+    if type(pid) is not int or pid <= 1 or launcher.poll() is not None:
+        raise RuntimeError('Original daemon process unavailable')
+    def stat(pid):
+        raw=(Path('/proc')/str(pid)/'stat').read_text()
+        if int(raw.split(' ',1)[0])!=pid:
+            raise RuntimeError('Original daemon process identity drift')
+        values=raw.rsplit(')',1)[1].split()
+        return (int(values[1]),int(values[2]),int(values[3]),int(values[19]))
+    original=stat(pid)
+    cursor=pid; seen=set()
+    while cursor!=launcher.pid:
+        if cursor<=1 or cursor in seen:
+            raise RuntimeError('Target is not a descendant of the retained daemon launcher')
+        seen.add(cursor); cursor=stat(cursor)[0]
+    if original[1:3]!=(launcher.pid,launcher.pid) or stat(pid)!=original or launcher.poll() is not None:
+        raise RuntimeError('Original daemon group, session or identity drift')
+    return original
 
 def daemon_settlement_proved(evidence):
     return phase_evidence.daemon_settlement_proved(evidence)
@@ -1125,10 +1144,15 @@ def finite_select(menu,label,cut,maximum_rows,commit=True,*,cleanup=False):
     context=context if context is not None and context['menu'] is menu else None
     if context is not None and not context['send_confirmed']:raise RuntimeError('Inventory input outcome unknown')
     selected=None;prior=(context['selected'] if context['pending_next'] is not None else context.get('tail_prior')) if context is not None else None
+    # A prior-menu close admits the first destination frame, not its
+    # later redraws. Keep the boundary proof until the first arrow is
+    # authorized; subsequent cuts start in the already admitted menu.
+    redraw_menu={k:menu[k] for k in ('header','choices','page_size','profile') if k in menu}
     for _ in range(maximum_rows):
+        frame_menu=menu if prior is None else redraw_menu
         def transitioned():
             nonlocal selected
-            frames=console_routes.selected_frames(bytes(client.capture),cut,menu)
+            frames=console_routes.selected_frames(bytes(client.capture),cut,frame_menu)
             if not frames:return False  # Includes incomplete newest frame; never fallback.
             if prior is None:
                 if any(row!=frames[0] for row in frames):raise RuntimeError('Unrequested menu transition')
@@ -1146,7 +1170,7 @@ def finite_select(menu,label,cut,maximum_rows,commit=True,*,cleanup=False):
         until(transitioned,5,'fresh fixed menu ordered transition')
         if context is not None:context.update(selected=selected,pending_next=None,cut=cut,tail_prior=prior)
         from fullroute_inputs import retained_selection,selection_proof
-        proof=selection_proof(bytes(client.capture),cut,menu,selected,client.console.view)
+        proof=selection_proof(bytes(client.capture),cut,frame_menu,selected,client.console.view)
         if selected==label:
             selected_cut=cut;after=len(client.capture)
             if commit and context is not None:inventory_context=None  # Enter may leave inventory; never infer return.
@@ -1602,6 +1626,9 @@ if route['Route'] in ('permission-with-denial','storage-local-proof'):
 storage_retrieve_preflight=prepare_storage_retrieve() if route['Route']==STORAGE_RETRIEVE_ROUTE else None
 inventory_context=None;inventory_cleanup_required=False
 client=bridge=daemon=None;client_wait=False;client_prompt=False
+daemon_signal_pin=None
+cooperative_daemon_stop=(env.get('BOE_FIXTURE_COOPERATIVE_DAEMON_STOP')=='1' and
+                         route['Route'] in ('birth',STORAGE_RETRIEVE_ROUTE))
 ledger_witness=ledger_binding=None
 try:
     if cold_loaded:
@@ -1637,6 +1664,17 @@ try:
     result['DaemonSettlement']=daemon_pair_capture(session,{},'Original')
     journal.append({'At':elapsed(),'OriginalDaemonEvidence':dict(result['DaemonSettlement'])})
     daemon_owner=daemon_pair_decode(result['DaemonSettlement'],'Original',False)
+    if cooperative_daemon_stop:
+        status=json.loads(bytes.fromhex(result['DaemonSettlement']['OriginalStatusRawHex']).decode('utf-8-sig'))
+        daemon_pid=status['pid']
+        daemon_identity=guarded_process_identity(daemon_pid,daemon.process)
+        fd=os.pidfd_open(daemon_pid)
+        try:
+            if guarded_process_identity(daemon_pid,daemon.process)!=daemon_identity:
+                raise RuntimeError('Daemon identity changed during PIDFD admission')
+        except BaseException:
+            os.close(fd);raise
+        daemon_signal_pin=(fd,daemon_pid,daemon_identity)
     if previous and daemon_owner==daemon_pair_decode(previous['DaemonSettlement'],'Final',True):
         raise RuntimeError('Daemon startup reused predecessor owner')
     if cold_loaded and daemon_owner==cold_admission['ArchivedDaemonOwnerId']:
@@ -1844,6 +1882,30 @@ finally:
         try:
             if inventory_cleanup_required or result.get('ClientCleanupFailure'):raise RuntimeError('Client cleanup unconfirmed; shutdown skipped, owner UNKNOWN')
             wait_daemon_consumer_returned()
+            if cooperative_daemon_stop:
+                if daemon_signal_pin is None or not result.get('ClientTerminalClosure',{}).get('TerminalNormalClose'):
+                    raise RuntimeError('Missing original daemon or client closure; no signal')
+                same_main=read_json(record_path)
+                if same_main['Disposition']!='Running' or same_main['Identity']!=original_record:
+                    raise RuntimeError('Original Running Main changed; no signal')
+                fd,pid,identity=daemon_signal_pin
+                current=daemon_pair_capture(session,{},'Original')
+                current_status=json.loads(bytes.fromhex(current['OriginalStatusRawHex']).decode('utf-8-sig'))
+                if (daemon_pair_decode(current,'Original',False)!=daemon_owner or current_status['pid']!=pid
+                        or guarded_process_identity(pid,daemon.process)!=identity):
+                    raise RuntimeError('Original daemon guard or process changed; no signal')
+                journal.append({'At':elapsed(),'Phase':'cooperative SIGTERM to retained daemon','Pid':pid,'StartTicks':identity[-1]})
+                signal.pidfd_send_signal(fd,signal.SIGTERM)
+                result['CooperativeDaemonStopRequested']=True
+                until(lambda:daemon.process.poll() is not None,16,'original cooperative daemon exit')
+                if daemon.slave>=0:os.close(daemon.slave);daemon.slave=-1
+                until(lambda:daemon.eof,5,'original cooperative daemon EOF')
+                settled_daemon=daemon_pair_capture(session,dict(result['DaemonSettlement']),'Final')
+                if (daemon.process.returncode!=0 or termios.tcgetattr(daemon.master)!=daemon.initial
+                        or not daemon_settlement_proved(settled_daemon)):
+                    raise RuntimeError('Original daemon cooperative settlement unconfirmed; no Main shutdown')
+                result['CooperativeDaemonStopSettled']=True
+                journal.append({'At':elapsed(),'CooperativeDaemonSettlement':settled_daemon})
             shutdown_attempts+=1
             stop=rpc({'command':'shutdown','rootKey':original['rootKey'],'expectedMainIdentity':original},12)
             result['ShutdownReceipt']=stop;assert stop['ok'];proof=stop['status']['terminalStop']
@@ -1856,10 +1918,11 @@ finally:
     elif bridge is not None:result['CleanupFailure']='Original Running identity unavailable; guardian cannot logical-success'
     # Keep participating admission transport alive until original fenced settlement.
     # Lost/unknown ACK retains logical uncertainty; never force a success or replay.
-    if daemon is not None and daemon.process.poll() is None and result['LogicalLifecycleVerified']:
+    if not cooperative_daemon_stop and daemon is not None and daemon.process.poll() is None and result['LogicalLifecycleVerified']:
         try:
             daemon.send(b'\x03','stop daemon only after original Stopped ACK');until(lambda:daemon.process.poll() is not None,16,'daemon original stop')
         except Exception as ex:result['DaemonCleanupFailure']=type(ex).__name__+': '+str(ex)
+    if daemon_signal_pin is not None:os.close(daemon_signal_pin[0])
     result['ShutdownAttempts']=shutdown_attempts
     if rpc_peer is not None:
         try:result['RpcHelperClosure']=rpc_peer.close()

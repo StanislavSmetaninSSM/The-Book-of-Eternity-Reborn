@@ -4725,7 +4725,7 @@ public partial class FileSystemManager
     private Task<CanonicalWriteLease>
         AcquireCanonicalWriteLeaseWithAmbientAsync(
             CanonicalWritePurpose purpose,
-            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null, ValidationReadReservation? worldIssuance = null, object? acquisitionOccurrence = null)
+            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null, ValidationReadReservation? worldIssuance = null, object? acquisitionOccurrence = null, bool singlePhysicalAttempt = false)
     {
         var mainAdmission=BeginMainAdmission(false, worldIssuance, physicalScope: true);
         var registration = new AmbientCanonicalLeaseRegistration(
@@ -4734,21 +4734,39 @@ public partial class FileSystemManager
         return CompleteCanonicalWriteLeaseAcquisitionAsync(
             registration,
             purpose,
-            cancellationToken, workerPurpose, mainAdmission, acquisitionOccurrence ?? new object());
+            cancellationToken, workerPurpose, mainAdmission, acquisitionOccurrence ?? new object(), singlePhysicalAttempt);
+    }
+
+    // Only the daemon's correlated repair observation may defer a physical open.
+    // No Main-admission, post-open or cleanup failure is a retryable read result.
+    internal async Task<CanonicalWriteLease?> TryAcquireDaemonRepairReadLeaseAsync()
+    {
+        var occurrence = new object();
+        try
+        {
+            return await AcquireCanonicalWriteLeaseWithAmbientAsync(
+                CanonicalWritePurpose.PublicationReadQuiescence, default,
+                acquisitionOccurrence: occurrence, singlePhysicalAttempt: true);
+        }
+        catch (CanonicalLockContention failure) when (
+            ReferenceEquals(failure.Manager, this) && ReferenceEquals(failure.Occurrence, occurrence))
+        {
+            return null;
+        }
     }
 
     private async Task<CanonicalWriteLease>
         CompleteCanonicalWriteLeaseAcquisitionAsync(
             AmbientCanonicalLeaseRegistration registration,
             CanonicalWritePurpose purpose,
-            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, MainAdmission mainAdmission, object acquisitionOccurrence)
+            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, MainAdmission mainAdmission, object acquisitionOccurrence, bool singlePhysicalAttempt)
     {
         try
         {
             await mainAdmission.AcquireAsync(cancellationToken,purpose==CanonicalWritePurpose.SessionFinalization,workerPurpose:workerPurpose);
             var writeLease = await AcquireCanonicalWriteLeaseCoreAsync(
                 purpose,
-                cancellationToken, workerPurpose, acquisitionOccurrence);
+                cancellationToken, workerPurpose, acquisitionOccurrence, singlePhysicalAttempt);
             writeLease.MainAdmission=mainAdmission;
             registration.Activate();
             writeLease.AmbientRegistration = registration;
@@ -4780,7 +4798,7 @@ public partial class FileSystemManager
     /// </returns>
     private async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseCoreAsync(
         CanonicalWritePurpose purpose,
-        CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, object acquisitionOccurrence)
+        CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose, object acquisitionOccurrence, bool singlePhysicalAttempt)
     {
         EnsureCanonicalSessionRootIsNotReparsePoint();
         var lockPath = CanonicalWriteLockPath;
@@ -4810,7 +4828,7 @@ public partial class FileSystemManager
                     FileOptions.Asynchronous);
                 MainOperationFailureDiagnostic.ReportPhysical(physicalObservation, "physical-opened", attempt + 1);
             }
-            catch (IOException) when (attempt < CanonicalWriteLockRetryCount - 1)
+            catch (IOException) when (!singlePhysicalAttempt && attempt < CanonicalWriteLockRetryCount - 1)
             {
                 parentAuthority.Dispose();
 #if DEBUG

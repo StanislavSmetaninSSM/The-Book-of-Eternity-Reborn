@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
 using System.Text.Json;
@@ -13,6 +14,8 @@ internal sealed partial class BridgeHost
     private Task _statusPublisher = Task.CompletedTask;
     private bool _statusSealed = true;
     private bool _statusActuallyPublished;
+    private long? _lastStatusQueueTimestamp;
+    private static readonly TimeSpan UnchangedAutomationStatusInterval = TimeSpan.FromSeconds(1);
     private SemaphoreSlim? _statusSignal;
     private TaskCompletionSource _statusSettlement = SettledStatus();
     private static TaskCompletionSource SettledStatus()
@@ -36,10 +39,25 @@ internal sealed partial class BridgeHost
         }
     }
 
+    // Called under _sync by the observation preamble. Keep every readiness
+    // transition immediate, but don't flood canonical writes when callers poll
+    // an unchanged view. A later poll still supplies a heartbeat and can
+    // re-offer a snapshot that was deferred by physical contention.
+    private void ObserveAutomationStatus(bool ready, string state)
+    {
+        var changed = _status.Ready != ready || !string.Equals(_status.State, state, StringComparison.Ordinal);
+        _status.Ready = ready;
+        _status.State = state;
+        if (changed || _lastStatusQueueTimestamp is not { } last ||
+            Stopwatch.GetElapsedTime(last) >= UnchangedAutomationStatusInterval)
+            TryWriteInputStatus();
+    }
+
     private void QueueOriginalStatusPublication()
     {
         lock (_sync)
         {
+            _lastStatusQueueTimestamp = Stopwatch.GetTimestamp();
             _status.UpdatedAtUtc = DateTimeOffset.UtcNow.ToString("O");
             // Serialization freezes the complete nested collections under _sync.
             // The captured owner can never be redirected to a later epoch.

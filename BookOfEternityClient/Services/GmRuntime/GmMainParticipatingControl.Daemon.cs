@@ -56,7 +56,7 @@ internal static partial class GmMainParticipatingControl
                         receiving=false;incoming.SetLength(0);
                         var request=JsonSerializer.Deserialize<Request>(bytes,MainOperationReader.Json)??throw new InvalidDataException();
                         object payload;
-                        if(request.Action=="snapshot")
+                        if(request.Action is "snapshot" or "snapshot-repair")
                         {
                             try {payload=await SnapshotAsync(files,request);}
                             catch {result.ReadRefused=true;throw;}
@@ -81,7 +81,14 @@ internal static partial class GmMainParticipatingControl
         private static async Task<object> SnapshotAsync(FileSystemManager files,Request request)
         {
             if(request.Generation!=null&&(!SessionOperationContext.TryGetExpectedGeneration(files.BasePath,out var bound)||bound!=request.Generation))return new {matches=false};
-            await using var lease=await files.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.PublicationReadQuiescence);
+            var repairProbe=request.Action=="snapshot-repair";
+            if(repairProbe&&(request.Trees.Length!=0||request.Expected.Count!=0||request.Generation!=null||
+                request.Path!=null||request.Bytes!=null||request.Paths.Length!=1||
+                request.Paths[0]!="game_state/control/validation_repair_request.json"))
+                throw new InvalidDataException("Invalid scoped daemon repair observation.");
+            await using var lease=repairProbe?await files.TryAcquireDaemonRepairReadLeaseAsync():
+                await files.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.PublicationReadQuiescence);
+            if(lease==null)return new {matches=false,repairReadContended=true};
             var scope=new GmHelperCanonicalScope(files,lease,false);
             if(request.Generation!=null&&files.ReadLocalGenerationSnapshot(lease).Binding.Id!=request.Generation)return new {matches=false};
             if(!await MatchesAsync(files,lease,scope,request.Expected))return new {matches=false};

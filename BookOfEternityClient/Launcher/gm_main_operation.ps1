@@ -464,7 +464,7 @@ function Invoke-GmDaemonStorageRequest {
     $header=Send-GmOperationCommand $context @{action='daemon-request-end';transfer=$transfer}
     } catch {
         if(Test-GmDaemonReadFailure $_){throw}
-        if($context.lost -or $Request.action -ceq 'snapshot'){throw (New-GmDaemonReadFailure 'Original daemon request or reply unavailable; no replay.' $_.Exception)}
+        if($context.lost -or $Request.action -cin @('snapshot','snapshot-repair')){throw (New-GmDaemonReadFailure 'Original daemon request or reply unavailable; no replay.' $_.Exception)}
         throw
     }
     $buffer=[IO.MemoryStream]::new()
@@ -483,7 +483,11 @@ function Invoke-GmDaemonStorageRequest {
         $json=[Text.UTF8Encoding]::new($false,$true).GetString($result)
         $payload=ConvertFrom-Json -InputObject $json -ErrorAction Stop
         if($null -eq $payload -or $payload -isnot [pscustomobject] -or $payload.matches -isnot [bool]){throw 'Invalid daemon response object.'}
-        if($Request.action -ceq 'snapshot' -and $payload.matches){
+        $contentionProperty=$payload.PSObject.Properties['repairReadContended']
+        if($null -ne $contentionProperty -and ($Request.action -cne 'snapshot-repair' -or $payload.matches -or
+            $contentionProperty.Value -isnot [bool] -or !$contentionProperty.Value -or
+            @($payload.PSObject.Properties).Count -ne 2)){throw 'Invalid daemon repair contention result.'}
+        if($Request.action -cin @('snapshot','snapshot-repair') -and $payload.matches){
             if($payload.generation -cnotmatch '^[0-9a-f]{32}$' -or $payload.files -isnot [array] -or $payload.trees -isnot [array]){throw 'Invalid daemon snapshot shape.'}
             $seen=New-GmDaemonPathMap
             foreach($file in $payload.files){
@@ -510,6 +514,27 @@ function Get-GmDaemonSnapshot {
     catch {
         if(Test-GmDaemonReadFailure $_){throw}
         throw (New-GmDaemonReadFailure 'Original daemon read admission or completion was refused.' $_.Exception)
+    }
+}
+function Get-GmDaemonCorrelatedRepairObservation {
+    param([string]$Path)
+    $relative=ConvertTo-GmDaemonRelativePath $Path
+    if($relative -cne 'game_state/control/validation_repair_request.json'){
+        throw (New-GmDaemonReadFailure 'Wrong canonical repair target.' $null)
+    }
+    try {
+        $snapshot=Invoke-GmParticipatingConsumer $GameSessionPath {
+            Invoke-GmDaemonStorageRequest @{action='snapshot-repair';paths=@($relative);trees=@();expected=(New-GmDaemonPathMap)}
+        }
+        if($snapshot.repairReadContended -eq $true){return [pscustomobject]@{contended=$true;file=$null}}
+        if(!$snapshot.matches -or @($snapshot.files).Count -ne 1 -or $snapshot.files[0].path -cne $relative -or
+            @($snapshot.trees).Count -ne 0 -or $snapshot.files[0].kind -cnotin @('Missing','File')){
+            throw (New-GmDaemonReadFailure 'Original repair observation was not complete.' $null)
+        }
+        return [pscustomobject]@{contended=$false;file=$snapshot.files[0]}
+    } catch {
+        if(Test-GmDaemonReadFailure $_){throw}
+        throw (New-GmDaemonReadFailure 'Original repair observation admission or completion was refused.' $_.Exception)
     }
 }
 function Invoke-GmDaemonConditionalMutation {

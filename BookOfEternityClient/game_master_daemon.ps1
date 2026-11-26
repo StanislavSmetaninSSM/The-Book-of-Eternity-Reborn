@@ -66,6 +66,7 @@ $ErrorActionPreference = "Stop"
 . (Join-Path $PSScriptRoot "Launcher/gm_main_operation.ps1")
 . (Join-Path $PSScriptRoot "Launcher/gm_daemon_instance.ps1")
 $script:LinuxDaemonGuard = $null
+$script:LinuxDaemonGracefulStop = $null
 $script:DaemonTerminalSettled = $false
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
@@ -161,6 +162,9 @@ $script:CorrelatedRepairPollMilliseconds = 200
 
 try {
 Start-LinuxGmDaemonInstance
+if ($script:LinuxDaemonGuard) {
+    $script:LinuxDaemonGracefulStop = [BookOfEternityClient.Services.GmRuntime.LinuxDaemonGracefulStop]::new()
+}
 
 Invoke-GmParticipatingConsumer $GameSessionPath {
     foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
@@ -4477,24 +4481,35 @@ function Wait-CorrelatedValidationRepairRequest {
         [int]$GraceMilliseconds = 0
     )
 
-    $repair = Read-CorrelatedValidationRepairRequest -TurnRequest $TurnRequest
-    if ($null -ne $repair -or $GraceMilliseconds -le 0) {
-        return $repair
-    }
-
-    $elapsed = 0
-    while ($elapsed -lt $GraceMilliseconds) {
-        $sleep = [Math]::Min($script:CorrelatedRepairPollMilliseconds, $GraceMilliseconds - $elapsed)
-        Start-Sleep -Milliseconds $sleep
-        $elapsed += $sleep
-
-        $repair = Read-CorrelatedValidationRepairRequest -TurnRequest $TurnRequest
-        if ($null -ne $repair) {
-            return $repair
+    if($GraceMilliseconds -le 0){return Read-CorrelatedValidationRepairRequest -TurnRequest $TurnRequest}
+    # Start grace only after a successful nonmatching read. Busy cannot
+    # establish absence; require another admitted read started after grace.
+    # Grace is elapsed time, independent of how many polls got the lock.
+    $elapsed=[Diagnostics.Stopwatch]::StartNew()
+    $firstNegativeAt=$null
+    $observationLimitMs=20000
+    while($elapsed.ElapsedMilliseconds -lt $observationLimitMs){
+        $sampleStartedAt=$elapsed.ElapsedMilliseconds
+        $sample=Get-GmDaemonCorrelatedRepairObservation $RepairRequestFile
+        if($elapsed.ElapsedMilliseconds -ge $observationLimitMs){break}
+        if($sample.contended){
+            Start-Sleep -Milliseconds ([Math]::Max(0,[Math]::Min($script:CorrelatedRepairPollMilliseconds,$observationLimitMs-$elapsed.ElapsedMilliseconds)))
+            continue
         }
+        if($sample.file.kind -ceq 'File'){
+            $text=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([string]$sample.file.bytes)).TrimStart([char]0xFEFF)
+            $repair=$null
+            try {$repair=ConvertFrom-Json -InputObject $text -ErrorAction Stop} catch {}
+            if(Test-GmRequestCorrelation -ExpectedRequest $TurnRequest -CandidateRequest $repair){return $repair}
+        }
+        if($null -eq $firstNegativeAt){$firstNegativeAt=$elapsed.ElapsedMilliseconds}
+        if($sampleStartedAt-$firstNegativeAt -ge $GraceMilliseconds){return $null}
+        $now=$elapsed.ElapsedMilliseconds
+        $untilGrace=[Math]::Max(1,$GraceMilliseconds-($now-$firstNegativeAt))
+        $sleep=[Math]::Max(0,[Math]::Min([Math]::Min($untilGrace,$script:CorrelatedRepairPollMilliseconds),$observationLimitMs-$now))
+        Start-Sleep -Milliseconds $sleep
     }
-
-    return $null
+    throw (New-GmDaemonReadFailure 'Original repair observation did not settle within its bounded window; no replay.' $null)
 }
 
 function Get-GmValidationRepairAttempt {
@@ -7011,10 +7026,13 @@ Write-Log "Watching: $InputDir" -Color DarkGray
 
     # Main loop
     $statusTimer = 0
-    while ($true) {
+    while (!$script:LinuxDaemonGracefulStop -or !$script:LinuxDaemonGracefulStop.Requested) {
         if ($script:LinuxDaemonGuard) { $script:LinuxDaemonGuard.Validate() }
         try {
             Start-Sleep -Milliseconds $PollingInterval
+            # SIGTERM requests orderly shutdown without canceling this runspace.
+            # A started operation unwinds normally before watcher and guard teardown.
+            if ($script:LinuxDaemonGracefulStop -and $script:LinuxDaemonGracefulStop.Requested) { break }
             # Coalesce hints without reducing the existing polling delay.
             # Event delivery is not a latency guarantee; polling also sees missed hints.
             [void]$daemonWorkSignal.WaitOne(0)
@@ -7086,7 +7104,14 @@ finally {
 }
 
 } finally {
-    if ($script:LinuxDaemonGuard) {
-        try { $script:LinuxDaemonGuard.Dispose() } finally { $script:LinuxDaemonGuard = $null }
+    try {
+        if ($script:LinuxDaemonGuard) {
+            try { $script:LinuxDaemonGuard.Dispose() } finally { $script:LinuxDaemonGuard = $null }
+        }
+    } finally {
+        if ($script:LinuxDaemonGracefulStop) {
+            $script:LinuxDaemonGracefulStop.Dispose()
+            $script:LinuxDaemonGracefulStop = $null
+        }
     }
 }
