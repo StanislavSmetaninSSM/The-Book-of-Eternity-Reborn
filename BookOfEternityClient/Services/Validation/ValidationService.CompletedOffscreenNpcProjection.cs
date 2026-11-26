@@ -10,13 +10,15 @@ public partial class ValidationService
 
     // Immutable, operation-local DATA. The ordinary publication comparison owns
     // source identity and exact bytes at both ends of the final validation lease.
-    internal sealed class OffscreenNpcProjection(JsonObject expected, IReadOnlyDictionary<string, string> rows, bool consumedActivity)
+    internal sealed class OffscreenNpcProjection(JsonObject expected, IReadOnlyDictionary<string, string> rows,
+        bool consumedActivity, string? originalActivityHash)
     {
         internal bool MatchesCompleteRoot(byte[] bytes) =>
             TryReadOffscreenObject(bytes) is { } actual && JsonNode.DeepEquals(expected, actual);
 
-        internal bool ConsumedActivity { get; } = consumedActivity;
-        internal bool MatchesActivityConsumption(byte[] bytes) => TryReadOffscreenObject(bytes) is { Count: 0 };
+        internal bool MatchesActivityAfterImage(byte[]? bytes) => consumedActivity
+            ? bytes is not null && TryReadOffscreenObject(bytes) is { Count: 0 }
+            : (bytes is null ? null : LocationHash(bytes)) == originalActivityHash;
 
         internal bool MatchesRow(string id, JsonElement row) =>
             rows.TryGetValue(id, out var expectedRow) && JsonValuesSemanticallyEqual(expectedRow, row.GetRawText());
@@ -108,7 +110,8 @@ public partial class ValidationService
 
         return touched.Count == 0 ? null : new OffscreenNpcProjection(expected,
             touched.ToDictionary(pair => pair.Key, pair => pair.Value.ToJsonString(), StringComparer.Ordinal),
-            activities?["NPCActivityUpdates"] is JsonArray { Count: > 0 });
+            activities?["NPCActivityUpdates"] is JsonArray { Count: > 0 },
+            rawActivities is null ? null : LocationHash(rawActivities));
 
         JsonObject? FindHistorical(string id)
         {

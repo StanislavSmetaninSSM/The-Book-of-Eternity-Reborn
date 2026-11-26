@@ -59,6 +59,7 @@ public partial class ValidationService
             read.Snapshot.RequestId, read.Snapshot.TurnNumber, read.Snapshot.SnapshotToken);
         var npc = compareNpc ? BuildOffscreenNpcProjection(
             read.Snapshot.ReadRequiredBytes(NpcCoreChangesContract.NpcCorePath), rawNpcCore, rawNpcActivities) : null;
+        if (npc is null) originalPaths = LocationOriginalPaths;
         return new LocationComparisonCapture(LocationComparisonKey, files, generation, read.Snapshot, bindings, browser, originalPaths, npc);
     }
 
@@ -163,13 +164,10 @@ public partial class ValidationService
                 var npc = await files.ReadFileBytesAsync(lease, NpcCoreChangesContract.NpcCorePath);
                 if (npc is not null && _offscreenNpc.MatchesCompleteRoot(npc))
                 {
-                    if (_offscreenNpc.ConsumedActivity)
-                    {
-                        var activity = await files.ReadFileBytesAsync(lease, OffscreenNpcActivityPath);
-                        if (activity is null || !_offscreenNpc.MatchesActivityConsumption(activity))
-                            return; // No comparison can be issued until the exact command carrier settled.
-                        _publishedActivityHash = LocationHash(activity);
-                    }
+                    var activity = await files.ReadFileBytesAsync(lease, OffscreenNpcActivityPath);
+                    if (!_offscreenNpc.MatchesActivityAfterImage(activity))
+                        return; // Neither a pending command nor a later sidecar substitution is settled.
+                    _publishedActivityHash = activity is null ? null : LocationHash(activity);
                     _publishedNpcHash = LocationHash(npc);
                 }
             }
@@ -202,12 +200,9 @@ public partial class ValidationService
             var current = await files.ReadFileBytesAsync(lease, NpcCoreChangesContract.NpcCorePath);
             if (current is null || LocationHash(current) != _publishedNpcHash)
                 throw new CompletedLocationComparisonRefusedException("Completed off-screen NPC published image changed.");
-            if (_publishedActivityHash is not null)
-            {
-                var activities = await files.ReadFileBytesAsync(lease, OffscreenNpcActivityPath);
-                if (activities is null || LocationHash(activities) != _publishedActivityHash)
-                    throw new CompletedLocationComparisonRefusedException("Completed off-screen NPC activity consumption changed.");
-            }
+            var activities = await files.ReadFileBytesAsync(lease, OffscreenNpcActivityPath);
+            if ((activities is null ? null : LocationHash(activities)) != _publishedActivityHash)
+                throw new CompletedLocationComparisonRefusedException("Completed off-screen NPC activity carrier changed.");
         }
     }
 
