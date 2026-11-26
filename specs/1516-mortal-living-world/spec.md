@@ -434,3 +434,33 @@ turn-53 archive remained separate and untouched. This verifies that the
 corrected producer and unchanged reader can resume a newly generated
 autosave, not a new complete turn-53 rerun or full Save/Load qualification.
 No closure, merge, hosted CI, legacy migration or raw Git artifacts.
+
+### T016 corrected full live sequence and cold autosave 53
+
+On the corrected writer (product 9cb3a29d), one retained Mortal session
+accepted all 12 ordinary relay turns 42–53. Each had one new authenticated
+request and accepted story entry, no repair, and verified normal owner
+retirement and native cleanup. The nine exact private receipts joined their
+own requests and four bounded quiet assessments covered all five scopes.
+The captain completed the investigation once, privately, on turn 49.
+The guild completed the same road on turn 52 with 2,880 minutes, step 2,
+one chronicle entry and one public announcement; the quiet turn 53 did
+not duplicate or change those records. Sum of phase durations: 879.311 s.
+
+The actual corrected autosave from turn 53 was then selected once through the
+normal cold Load menu in a different empty profile. The unchanged archive
+omitted pending authority and reserved transient rollback files. Load
+returned to the player prompt on the same turn with a new generation.
+Nineteen watched durable files, including the story, private receipts,
+investigation, road, public announcement and clock, matched archive and
+settled source byte for byte. No request or story was submitted after Load.
+Native descendant drain was verified; ordinary exit from the loaded
+client was not exercised. This closes the observed autosave-to-player
+blocker, not the separate accepted action after Load called for in Phase D.
+
+A clean-source integration build succeeded (197 warnings, no errors).
+The explicit real-turn journey, ordinary publication and NPC post-consumption
+categories passed 16/16 in 62.878 s, with zero skipped or duplicate cases and
+complete owned cleanup. This does not change the older unrelated fault-case
+outcomes or qualify all Save/Load paths. T016/T018 remain unchecked; no main
+merge, issue closure, hosted CI or raw evidence publication.
