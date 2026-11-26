@@ -462,5 +462,33 @@ A clean-source integration build succeeded (197 warnings, no errors).
 The explicit real-turn journey, ordinary publication and NPC post-consumption
 categories passed 16/16 in 62.878 s, with zero skipped or duplicate cases and
 complete owned cleanup. This does not change the older unrelated fault-case
-outcomes or qualify all Save/Load paths. T016/T018 remain unchecked; no main
-merge, issue closure, hosted CI or raw evidence publication.
+outcomes or qualify all Save/Load paths. No main merge, issue closure,
+hosted CI or raw evidence publication.
+
+### T016 Phase D: accepted turn 54 after the actual turn-53 autosave
+
+A new isolated profile selected the exact unmodified turn-53 autosave through
+the ordinary cold console menu. It reached the player prompt, then exited
+normally through Options and the main menu. Nineteen watched files matched
+the archive after exit; both terminal processes exited zero, EOF and
+terminal restoration were observed, and the native guard drained.
+Cold console wall time: 6.671 s.
+
+With the client closed, only the three profile-local relay settings (pipe,
+command and working directory) were rebound. A new bridge and daemon owned
+the loaded generation. One ordinary player action received a fresh signed
+turn-54 request and one live, request-bound GM response through the relay.
+The same story gained one accepted line. One minute elapsed (08:07 to
+08:08), both cycle markers remained at 4,800 minutes and the typed outcome
+was NotRequired. All nine prior private receipts and the investigation,
+road, chronicle and public announcement remained byte-identical. The source
+autosave did not change. No repair, extra manual Save, or replay; client,
+bridge and daemon closed normally and native cleanup drained. Ordinary
+turn and cleanup: 61.364 s.
+
+One preceding private harness attempt stopped before sending a gameplay
+action because its sibling PowerShell fixture was missing. It accepted zero
+turns and is not part of this result. The successful run reused the pinned
+runtime, terminal and relay packages, not any active owner or mutable
+fixture. Current request, archive, generation, and closure checks were
+fresh. No production source changed and no new performance claim is made.
