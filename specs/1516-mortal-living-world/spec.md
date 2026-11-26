@@ -218,3 +218,26 @@ T016/T018 remain open until the connected live evidence and review are complete.
   events to the actual request. Public news carried the courier arrival, not
   the hidden investigation or infection. Faction and project remained
   unchanged. This proves B, not the daily cycle or reload; T016/T018 stay open.
+
+### T016 daily faction boundary and ordinary Save verified live
+
+- Used the same accepted Mortal world and a fresh actual relay request per turn.
+  The approach (725→1919) and crossing (1919→1921) left the faction's agenda,
+  road project and faction marker unchanged. The crossing request had no faction
+  cycle due when signed; its end made one day due for the following request.
+- The next request opened at 1921 with one world and one faction cycle due.
+  Exactly one accepted GM turn advanced the time to 1926 and both markers to
+  1920. The merchant guild adopted the Eastgate market decision and its existing
+  road project advanced 0→240 minutes and step 0→1. The project identity, name
+  and resources stayed intact. Exactly one faction chronicle entry was appended;
+  the captain, courier and forest state did not change on this turn.
+- A fresh quiet request started at 1926 with neither cycle due and ended at
+  1927. Faction core/projects/chronicles, NPC core and world map stayed
+  byte-identical; no repeated project, news or assessment was requested.
+  The accepted private assessment history remained at four receipts.
+- The real console Save after that turn produced a verified manual archive.
+  Its checked world, NPC, faction, schedule and story bytes matched the accepted
+  files. Explicit Load of this archive is a separate acceptance step. These
+  checkpoints do not qualify spiritual combat, general replay/rollback, all
+  feature coverage, or Windows, and do not close the issue. No hosted CI or raw
+  diagnostic publication.
