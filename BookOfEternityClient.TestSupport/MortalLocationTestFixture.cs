@@ -312,6 +312,20 @@ public static class MortalLocationTestFixture
         receipt["seal"] = ComputeSeal(envelope, receipt);
     }
 
+    /// <summary>Rebinds a detached test location or link to an earlier seed turn and recomputes its fixture seal.</summary>
+    internal static void SetFixtureSourceTurn(JsonObject entity, int turn)
+    {
+        var envelope = entity["materialization"]!.AsObject();
+        var receipt = entity["materializationReceipt"]!.AsObject();
+        var owner = FormattableString.Invariant($"turn_{turn}");
+        envelope["sourceTurn"] = turn;
+        envelope["sourceAuthority"]!["authorityId"] = owner;
+        receipt["sourceTurn"] = turn;
+        receipt["sourceAuthorityId"] = owner;
+        receipt.Remove("seal");
+        receipt["seal"] = ComputeSeal(envelope, receipt);
+    }
+
     public static JsonObject CreateReceiptlessNegative()
     {
         var invalid = CreateCanonicalLocation();

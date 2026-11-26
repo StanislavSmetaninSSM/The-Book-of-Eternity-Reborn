@@ -13,7 +13,7 @@ internal static class MortalLiveSeedExporter
 {
     internal const int SetupTurn = 41;
     internal const string StoryPath = "stories/mortal_life_2.jsonl";
-    internal static async Task ExportAsync(string basePath, string exampleSessionPath, string manifestPath)
+    internal static async Task ExportAsync(string basePath, string exampleSessionPath, string manifestPath, bool offscreen = false)
     {
         basePath = Path.GetFullPath(basePath); manifestPath = Path.GetFullPath(manifestPath);
         if (File.Exists(basePath) || (Directory.Exists(basePath) && Directory.EnumerateFileSystemEntries(basePath).Any()))
@@ -23,7 +23,8 @@ internal static class MortalLiveSeedExporter
         // Both refusals above precede directory creation, copying and validators.
         Directory.CreateDirectory(basePath);
         var fs = new FileSystemManager(basePath, NullLogger<FileSystemManager>.Instance);
-        await MortalLiveSeedBuilder.PrepareAsync(fs, exampleSessionPath, MortalLiveSeedBuilder.SeedActorsAsync, stateOnly: true);
+        await MortalLiveSeedBuilder.PrepareAsync(fs, exampleSessionPath,
+            offscreen ? MortalLiveSeedBuilder.SeedOffscreenActorsAsync : MortalLiveSeedBuilder.SeedActorsAsync, stateOnly: true);
         var sessionId = "seeded_live_mortal_" + Guid.NewGuid().ToString("N");
         await fs.WriteFileAtomicAsync("game_state/history/chat_log.json", new JsonObject
         { ["sessionId"] = sessionId, ["entries"] = new JsonArray() }.ToJsonString());

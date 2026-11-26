@@ -8,7 +8,7 @@ using BookOfEternityClient.Services;
 namespace BookOfEternityClient.Tests;
 
 // Shared initial setup only. No turn author, reply, history publication or reuse of authority.
-internal static class MortalLiveSeedBuilder
+internal static partial class MortalLiveSeedBuilder
 {
     private static readonly string[] RequiredMortalLore =
     [
@@ -68,7 +68,10 @@ internal static class MortalLiveSeedBuilder
         RequireEmpty(MortalStorageAccessProjection.ValidateCanonical(map, projection.Root));
     }
 
-    internal static async Task SeedActorsAsync(FileSystemManager files)
+    internal static Task SeedActorsAsync(FileSystemManager files) => SeedActorsAsync(files, offscreen: false);
+    internal static Task SeedOffscreenActorsAsync(FileSystemManager files) => SeedActorsAsync(files, offscreen: true);
+
+    private static async Task SeedActorsAsync(FileSystemManager files, bool offscreen)
     {
         var map = JsonNode.Parse(await files.ReadFileAsync("game_state/world/world_map.json"))!.AsObject();
         var location = map["locations"]!.AsArray().Single().AsObject();
@@ -102,10 +105,11 @@ internal static class MortalLiveSeedBuilder
             }
         };
         NpcTradeRequestState.NormalizeNpcTradeReceiptsShape(scout);
-        await Write("game_state/npcs/npc_core.json", new JsonObject
-        { ["UpdateNPCs"] = new JsonArray(), ["NPCsInScene"] = new JsonArray(scout) });
+        var npcCore = offscreen ? CreateOffscreenNpcCore(scout) : new JsonObject
+        { ["UpdateNPCs"] = new JsonArray(), ["NPCsInScene"] = new JsonArray(scout) };
+        await Write("game_state/npcs/npc_core.json", npcCore);
 
-        await Write("game_state/npcs/npc_journals.json", new JsonObject { ["NPCJournals"] = new JsonArray(new JsonObject
+        var scoutJournal = new JsonObject
         {
             ["NPCId"] = JourneyScoutId, ["NPCName"] = "Mira the scout",
             ["journalEntries"] = new JsonArray(new JsonObject
@@ -114,37 +118,57 @@ internal static class MortalLiveSeedBuilder
                 ["event"] = "inspection_commission", ["description"] = "I will inspect the crossing before I tell the council it is safe.",
                 ["emotionalImpact"] = "concern", ["relationshipChange"] = "0"
             })
-        }) });
+        };
+        await Write("game_state/npcs/npc_journals.json", new JsonObject
+        { ["NPCJournals"] = offscreen ? CreateOffscreenJournals(scoutJournal) : new JsonArray(scoutJournal) });
 
+        var factionId = offscreen ? GuildId : JourneyFactionId;
+        var factionName = offscreen ? "Northmark Trade Guild" : "Crossing Council";
         var faction = JourneyFaction();
-        faction["factionId"] = JourneyFactionId;
+        faction["factionId"] = factionId;
         faction.Remove("initialId"); faction.Remove("isNewFaction");
-        faction["name"] = "Crossing Council";
-        faction["currentAgenda"] = "Await the scout's bridge report before committing repair workers.";
-        faction["materialization"]!["factionId"] = JourneyFactionId;
-        faction["materialization"]!["materializationId"] = "fmat_journey_council_40";
+        faction["name"] = factionName;
+        faction["currentAgenda"] = offscreen ? "Survey markets before the next daily road allocation." :
+            "Await the scout's bridge report before committing repair workers.";
+        if (offscreen)
+        {
+            faction["purpose"] = "Trade between settlements and keep routes open.";
+            faction["description"] = "A merchant guild responsible for the Eastgate road works.";
+            faction["memory"]!["summary"] = "The guild surveyed the terrain for a road between Eastgate and the forest waystation.";
+            faction["memory"]!["enduringFacts"] = new JsonArray("The road is an active guild project.");
+            faction["memory"]!["openThreads"] = new JsonArray("The guild has not yet chosen its daily market allocation.");
+        }
+        faction["materialization"]!["factionId"] = factionId;
+        faction["materialization"]!["materializationId"] = offscreen ? "fmat_journey_guild_40" : "fmat_journey_council_40";
         faction["materialization"]!["materializedAtTurn"] = 40;
         faction["materialization"]!["capabilities"]!["runsProjects"] = true;
         faction["materialization"]!["sections"]!["projects"] = new JsonObject { ["state"] = "populated" };
-        var structure = JourneyFactionCompanion();
+        var structure = JourneyFactionCompanion(factionId, factionName);
         foreach (var key in new[] { "governance", "leadership", "ranks", "structuredBonuses" })
         { structure[key] = faction[key]!.DeepClone(); faction.Remove(key); }
         // Canonical resources and structure live in their exact sidecars.
         faction.Remove("resources");
         foreach (var key in new[] { "playerBranch", "playerRank", "playerStrategyDirective", "reputationDescription" })
             faction[key] = null;
-        var resources = JourneyFactionCompanion();
+        var resources = JourneyFactionCompanion(factionId, factionName);
         resources["metaResources"] = new JsonArray(); resources["strategicGoods"] = new JsonArray();
-        var custom = JourneyFactionCompanion(); custom["customStates"] = new JsonArray();
+        var custom = JourneyFactionCompanion(factionId, factionName); custom["customStates"] = new JsonArray();
         foreach (var key in new[] { "activeProjects", "completedProjects", "customStates", "scribeChronicle" }) faction.Remove(key);
         await Write("game_state/factions/faction_core.json", new JsonObject { ["factions"] = new JsonArray(faction) });
         await Write("game_state/factions/faction_structure.json", new JsonObject { ["entries"] = new JsonArray(structure) });
         await Write("game_state/factions/faction_resources.json", new JsonObject { ["entries"] = new JsonArray(resources) });
         await Write("game_state/factions/faction_custom.json", new JsonObject { ["entries"] = new JsonArray(custom) });
         await Write("game_state/factions/faction_chronicles.json", new JsonObject { ["entries"] = new JsonArray(new JsonObject
-        { ["factionId"] = JourneyFactionId, ["entry"] = "#40 - The council commissions inspection before repairing the crossing." }) });
+        { ["factionId"] = factionId, ["entry"] = offscreen ? "#40 - The guild commissions a road survey." :
+            "#40 - The council commissions inspection before repairing the crossing." }) });
         await Write("game_state/factions/faction_projects.json", new JsonObject
-        { ["activeProjects"] = new JsonArray(JourneyBridgeProject()), ["completedProjects"] = new JsonArray() });
+        { ["activeProjects"] = new JsonArray(offscreen ? GuildRoadProject(factionName) : JourneyBridgeProject()), ["completedProjects"] = new JsonArray() });
+
+        if (offscreen)
+        {
+            await WriteOffscreenMapAsync(files, map);
+            return;
+        }
 
         location["activeThreats"] = new JsonArray(new JsonObject
         {
@@ -180,7 +204,7 @@ internal static class MortalLiveSeedBuilder
         ["totalResourceCost"] = new JsonArray(), ["resourcesSpent"] = new JsonArray(), ["totalTimeCostMinutes"] = 480,
         ["timeSpentMinutes"] = 0, ["totalSteps"] = 2, ["currentStep"] = 0
     };
-    private static JsonObject JourneyFactionCompanion() => new() { ["factionId"] = JourneyFactionId, ["factionName"] = "Crossing Council" };
+    private static JsonObject JourneyFactionCompanion(string id, string name) => new() { ["factionId"] = id, ["factionName"] = name };
     private static JsonObject JourneyTrait(string name, string description, int value) => new()
     { ["traitName"] = name, ["description"] = description, ["value"] = value, ["valueDescription"] = "A stable explicit personality disposition." };
     private static JsonObject JourneyEmpty(string reason) => new() { ["state"] = "empty_by_design", ["reason"] = reason };
