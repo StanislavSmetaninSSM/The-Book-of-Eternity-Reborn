@@ -2,6 +2,82 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "browser-submitted-turn-refresh",
+      "responsibility": "After a browser submission, serial bounded pending-status reads defer refresh through refused or still-pending phases and abandon an obsolete shell owner.",
+      "excludes": "No command replay, automatic acceptance, external provider, or backend API expansion.",
+      "changeHints": [
+        "BookOfEternityClient.WebFrontend/src/hooks/waitForBrowserTurnSettled.ts",
+        "BookOfEternityClient.WebFrontend/src/context/ShellContext.tsx"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "frontend",
+          "runner": "vitest",
+          "tests": [
+            "BookOfEternityClient.WebFrontend/test/browserTurnRefresh.test.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-browser-completed-location",
+      "responsibility": "#1515 browser-origin terminal processing: real ordinary publication allocates the new Mortal location, its bound comparison supplies cross-reference membership, and altered or absent after-images cannot reseal it.",
+      "excludes": "No new authority, browser repair protocol, save migration, Afterlife, or whole browser feature acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.CompletedLocationComparison.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserLocationComparison.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_RecognizesSameTurnPublishedLocationWithoutResealing"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-birth-confirmations",
+      "responsibility": "#1515 structured Mortal vehicle ownership/storage access confirmations from exact current accepted birth and canonical player state.",
+      "excludes": "Free prose semantics, ordinary access grants, joint repair, Afterlife, and whole issue closure.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalBirthConfirmation.cs",
+        "BookOfEternityClient.Tests/MortalBirthConfirmationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalBirthConfirmationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "mortal-self-save-load-turn-data",
       "responsibility": "#1515 T035 initial setup41 self-created exact manual ZIP, active Load A-to-B, retained daemon, B-bound single GM turn and B-only normal cleanup DATA.",
       "excludes": "No live game/GM or OS owner qualification; no cold Save43, existing archive reuse, generic input program or production contract changes.",
@@ -29710,7 +29786,7 @@
     },
     {
       "id": "c5-original-status-phase",
-      "responsibility": "Actual original NativeLineage Bridge status publisher encountering genuine GameEngine preparing outside its lease: known pre-publication diagnostic refusal defers, exact browser/status bytes preserved, same original owner remains Running, later actual staged publication succeeds and original Stop/physical cleanup completes.",
+      "responsibility": "Actual original NativeLineage Bridge status publisher encountering genuine GameEngine preparing outside its lease: known pre-publication diagnostic refusal defers, exact browser/status bytes preserved, same original owner remains Running, later actual staged publication succeeds and original Stop/physical cleanup completes. The separate participating-daemon case verifies exact pre-command refusal with unconsumed input and byte-identical preparing evidence.",
       "excludes": "No general browser admission bypass, Program/relay gameplay, model/provider or replacement/active-crash settlement claim. Existing genuine status I/O fault and retirement controls selected separately.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserStatusPhase.cs",
@@ -29733,7 +29809,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_StatusPreparingRefusalDefersWithoutLosingOriginalOwner"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_StatusPreparingRefusalDefersWithoutLosingOriginalOwner",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_ParticipatingReadyRefusalIsNonFatalBeforeAnyCommand"
           ]
         }
       ]
@@ -29980,7 +30057,7 @@
     },
     {
       "id": "c5-original-browser-journal-selection-race",
-      "responsibility": "#1553 T069/T071 deterministic actual browser prelock journal selection concurrent with one real physical-lease-owned publisher. Two cases: original IntentStage Move to Active and committed Active cleanup disappearance. Test-only instance-local selected-path latch; strict codec/guards/recovery remain unchanged; selected-name disappearance permits one fresh reselection only. Requires witnessed transaction/path/bytes/hash/intermediate phase and successful full publication/actual lease disposal before resuming preflight; successful oracle requires fresh physical held original proof and unchanged original tuple/manifest/signed authority/snapshots. Preserved pre-fix causal RED is exact selected-path FileNotFound at HasNamespaceJournalMagic; post-fix GREEN requires fresh held original proof. Timeout/unreached seam is incomplete, not proof. Each case cancellation30s/latches and bounded joins10s; category2min, explicit overall6 with six existing pending-recovery/refusal controls and separately owned seven reselection negatives.",
+      "responsibility": "#1553 T069/T071 deterministic actual browser prelock journal selection concurrent with one real physical-lease-owned publisher. Two cases: original IntentStage Move to Active and committed Active cleanup disappearance. Test-only instance-local selected-path latch; strict codec/guards/recovery remain unchanged; selected-name disappearance permits one fresh reselection only. Requires witnessed transaction/path/bytes/hash/intermediate phase and successful full publication/actual lease disposal before resuming preflight; successful oracle requires fresh physical held original proof and unchanged original tuple/manifest/signed authority/snapshots. Preserved pre-fix causal RED is exact selected-path FileNotFound at HasNamespaceJournalMagic; post-fix GREEN requires fresh held original proof. Timeout/unreached seam is incomplete, not proof. Each case cancellation30s/latches and bounded joins10s; category2min, explicit overall6 with six existing pending-recovery/refusal controls and separately owned seven reselection negatives. Linux controls also verify a real writer-owned exclusive intent open is reselected and an unsafe path still fails the held inventory check before recovery.",
       "excludes": "Historical responsible actor/transaction attribution, old helper causal linkage, fullC5 acceptance, live provider, Windows/B2/main/CI/merge/issues.",
       "changeHints": [
         "BookOfEternityClient/Core/FileSystemManager.cs",
@@ -30013,7 +30090,9 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_SelectedJournalSurvivesOwnedPublicationTransition"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_SelectedJournalSurvivesOwnedPublicationTransition",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_ExclusiveIntentStageReselectsAfterOwnedPublication",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BrowserOriginalAdmission_ValidatesWholeInventoryOnlyWithPhysicalLease"
           ]
         }
       ]

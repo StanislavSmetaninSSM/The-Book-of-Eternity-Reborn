@@ -215,10 +215,13 @@ public partial class StateManager
                 GetString(doc.RootElement, "response", "")) ?? "";
         });
 
+        MortalBirthConfirmation.Claim[] birthClaims = [];
         // Core: GM Debug
         await TryLoadJson(writeLease, "output/debug_logs.json", (doc) =>
         {
             state.GmDebug = GetString(doc.RootElement, "gm_thoughts_markdown", "");
+            if (doc.RootElement.TryGetProperty(MortalBirthConfirmation.Property, out _))
+                birthClaims = MortalBirthConfirmation.ReadClaims(doc.RootElement);
         });
 
         // World: Location
@@ -377,7 +380,13 @@ public partial class StateManager
                 state.SessionId = sid.GetString() ?? "";
         });
 
-        state.TurnNumber = await DetectCurrentSessionTurnNumberAsync();
+        var birthStoryPath = birthClaims.Length != 0 && RealmSemantics.IsMortalRealm(state.CurrentRealm)
+            ? _fs.ResolvePath(StoryService.GetStoryPath(state.CurrentRealm, state.Incarnation)) : null;
+        var storyView = await DetectCurrentSessionTurnNumberAsync(birthStoryPath);
+        state.TurnNumber = storyView.Turn;
+        if (storyView.LatestMortalTurn is { } accepted)
+            state.AcceptedMortalBirthNarrative = MortalBirthConfirmation.ReadCaptionedAcceptedStory(
+                state.Narrative, birthClaims, state.CurrentRealm, state.TurnNumber, accepted);
 
         state.LastUpdated = DateTime.UtcNow;
         CurrentState = state;
@@ -403,13 +412,14 @@ public partial class StateManager
         }
     }
 
-    private async Task<int> DetectCurrentSessionTurnNumberAsync()
+    private async Task<(int Turn, JsonObject? LatestMortalTurn)> DetectCurrentSessionTurnNumberAsync(string? birthStoryPath)
     {
         var storiesPath = _fs.ResolvePath("stories");
         if (!Directory.Exists(storiesPath))
-            return 0;
+            return (0, null);
 
         var maxTurn = 0;
+        JsonObject? latestMortalTurn = null;
         foreach (var file in Directory.EnumerateFiles(storiesPath, "*.*", SearchOption.AllDirectories))
         {
             var extension = Path.GetExtension(file);
@@ -421,9 +431,17 @@ public partial class StateManager
 
             try
             {
-                maxTurn = Math.Max(maxTurn, string.Equals(extension, ".jsonl", StringComparison.OrdinalIgnoreCase)
-                    ? await ReadMaxTurnFromJsonLinesStoryAsync(file)
-                    : await ReadMaxTurnFromJsonStoryAsync(file));
+                if (string.Equals(extension, ".jsonl", StringComparison.OrdinalIgnoreCase))
+                {
+                    var captureMortal = string.Equals(file, birthStoryPath, StringComparison.Ordinal);
+                    if (captureMortal)
+                        new TrustedLocalFileScope([_fs.GameSessionPath]).ValidateFile(file);
+                    var rows = await ReadMaxTurnFromJsonLinesStoryAsync(file, captureMortal);
+                    maxTurn = Math.Max(maxTurn, rows.Turn);
+                    if (captureMortal) latestMortalTurn = rows.Latest;
+                }
+                else
+                    maxTurn = Math.Max(maxTurn, await ReadMaxTurnFromJsonStoryAsync(file));
             }
             catch (JsonException ex)
             {
@@ -435,7 +453,7 @@ public partial class StateManager
             }
         }
 
-        return maxTurn;
+        return (maxTurn, latestMortalTurn);
     }
 
     private static async Task<int> ReadMaxTurnFromJsonStoryAsync(string file)
@@ -456,19 +474,28 @@ public partial class StateManager
         return maxTurn;
     }
 
-    private static async Task<int> ReadMaxTurnFromJsonLinesStoryAsync(string file)
+    private static async Task<(int Turn, JsonObject? Latest)> ReadMaxTurnFromJsonLinesStoryAsync(string file, bool captureLatest)
     {
         var maxTurn = 0;
+        JsonObject? latest = null;
         foreach (var line in await File.ReadAllLinesAsync(file))
         {
             if (string.IsNullOrWhiteSpace(line))
                 continue;
 
-            if (JsonNode.Parse(line) is JsonObject obj)
-                maxTurn = Math.Max(maxTurn, GetJsonObjectInt(obj, "turn", "turnNumber") ?? 0);
+            if (JsonNode.Parse(line) is not JsonObject obj)
+                continue;
+            var turn = GetJsonObjectInt(obj, "turn", "turnNumber") ?? 0;
+            if (turn > maxTurn)
+            {
+                maxTurn = turn;
+                if (captureLatest) latest = obj;
+            }
+            else if (captureLatest && turn == maxTurn)
+                latest = null; // Do not reinterpret an ambiguous current story row.
         }
 
-        return maxTurn;
+        return (maxTurn, latest);
     }
 
     private static int? GetJsonObjectInt(JsonObject root, params string[] names)

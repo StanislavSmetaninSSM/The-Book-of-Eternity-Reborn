@@ -8,6 +8,33 @@
 **Tech stack:** C#/.NET 8 target, SDK 10 compiler, PowerShell 7 category runner, existing System.Text.Json and typed xUnit tests.
 **Spec:** [spec.md](spec.md)
 
+## Structured birth confirmation follow-up, 2026-11-26
+
+[#1515](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn):
+the quiet live control accepted; the separate prose-only vehicle and storage
+claims also entered accepted history without corresponding objects. Owner
+approved the structured confirmation route, not independent free-prose audit.
+
+1. Freeze the existing exact accepted-birth receipt and storage-transition
+   contracts; no new receipt or state writer.
+2. Verify absent/invalid declarations, wrong source/ref/location/owner and
+   inaccessible storage against a cheap pure fixture; confirm the matched
+   Russian text only from accepted canonical labels.
+3. Compose after post-materialization validation/repair and before ordinary
+   active, resumed and late console/browser story publication. Same response
+   feeds the player; no mutation of raw GM output or independent joint story.
+4. Reopen the durable story and check the actual player's output and unchanged
+   structured evidence on a fresh genuine relay test. Keep neutral and
+   mismatched controls separate; record which routes actually ran.
+
+Optimization: ordinary unrequested turns only inspect the final debug artifact;
+do not load histories if no supported claim exists. For a claimed batch, hold
+one existing canonical lease, read each needed root once, and build bounded
+per-call identity lookups. Do not cache access or source authority across turns.
+Do not conflate ordinary accepted-story coverage with joint repair or arbitrary
+free-prose detection. Raw diagnostics remain local.
+
+
 ## Final accepted #1515 checkpoint, 2026-11-16
 
 FR1–FR9 are implemented within the Mortal-only pre-release scope. Independent
@@ -5713,3 +5740,48 @@ answer within local connection bounds; this environment still lacks the
 owning .NET 10.0.404 SDK, .NET 8 runtime and PowerShell 7. Running the
 official category, compiling the runtime package, confirming exact live
 menu shapes and independent final launch review remain HOLD/UNRUN.
+
+## Linux Firefox → GM relay → accepted Mortal turn, 2026-11-26
+
+The browser-origin live repro exposed three separate handoff failures:
+a short test-harness startup budget, legitimate in-flight phase refusal
+misclassified as daemon failure, and pre-lock journal/namespace contention.
+The fix keeps original owner, close, snapshot and canonical write fences.
+Only the exact Linux sharing refusal on the unfinished private intent
+can trigger bounded reselection. The full physical inventory is still
+checked under the canonical lease before recovery.
+
+A genuine Firefox-origin action subsequently exposed a separate false
+cross-reference rejection: the newly published location was present in
+the accepted candidate but the browser validator still used pre-turn
+membership. The browser now checks the same completed publication
+against its exact original processing scope and current map/index at
+both validation boundaries. Changed or absent post-images remain
+refusals, and a simultaneous lease-close failure is not clean rejection.
+
+In the successful full live run a ready Linux daemon forwarded one
+actual Firefox turn to the local GM relay. The GM answered that same
+request. The engine accepted turn 42 exactly once, created the new
+location, bound the vehicle and storage receipts to the original turn,
+and persisted both confirmations. The original Firefox tab displayed
+both automatically; logical and native owned cleanup completed. This
+uses the first completion watcher. Final watcher hardening is tested
+separately: bounded serialized status reads, narrow acknowledged scene
+refresh, no repeated POST, previous scene retained on temporary
+failure, exact publication owner and unmount retirement. No claim
+about arbitrary GM prose, browser repair, hosted CI or Windows.
+A separate controlled Firefox run with the final assets verified that a
+temporary scene-read failure is retried and a settled scene is visible
+in the original tab when new writes are blocked. No write gate changes
+and no action is resubmitted.
+
+Local checks: the final bounded browser/phase/journal/UI selection
+passed 27 of 27; 15 existing ordinary completed-location cases and
+24 existing browser Load controls stayed green. The 40 Mortal caption
+cases passed the earlier handoff build. Vite and TypeScript builds
+passed. Optimization: the unheld directory walk was redundant for
+journal member classification and is not cached; mutable evidence is
+fresh under the original lease. Pending browser observation requests
+only existing status, not repeated full shell bundles; the final
+successful refresh replaces only session and scene data. No raw
+diagnostic or save files belong to this checkpoint.

@@ -58,6 +58,7 @@ internal static partial class GmMainParticipatingControl
         var reader = new MainOperationReader(input);
         using var daemon = new DaemonExchange();
         var explicitClose = false;
+        var bodyEntered = false;
         long sequence = 0;
         MainOperationOutcome outcome = MainOperationOutcome.Completed;
         var publicationUncertain = false;
@@ -80,6 +81,7 @@ internal static partial class GmMainParticipatingControl
             {
                 try
                 {
+                bodyEntered = true;
                 originalProjection=files.DescribeMainOperationClose(MainOperationOutcome.Completed,false);
                 MainOperationFailureDiagnostic.Mark(diagnosticNonce,files.BasePath,"helper-before-ready",close:originalProjection);
                 await MainOperationReader.WriteAsync(output, new { ok = true, state = "active", sequence, originalClose = originalProjection }, CancellationToken.None);
@@ -139,6 +141,20 @@ internal static partial class GmMainParticipatingControl
         catch(Exception failure)
         {
             MainOperationFailureDiagnostic.Report(diagnosticNonce,"participating-body-or-finalization",null,failure,close:terminalClose,projection:originalProjection,sequence:sequence,owner:originalProjection?.Identity);
+            // The browser preflight can defer this NEW observation. There was
+            // no ready grant/command, and any original remote pin has already
+            // closed successfully. Never use this for an admitted read, a
+            // failed/unconfirmed close, or any other admission refusal.
+            if (OperatingSystem.IsLinux() && !bodyEntered && sequence == 0 &&
+                files.IsOriginalBrowserPhaseRefusal(failure) &&
+                !failure.Data.Contains("MainOperationCloseFailure") &&
+                !failure.Data.Contains("SessionFinalizationFailure") &&
+                (remoteAdmission ? closeObserved && terminalClose is { ClosingFailed: false, Outcome: MainOperationOutcome.Failed } : terminalClose == null))
+            {
+                await MainOperationReader.WriteAsync(output,
+                    new { ok = false, state = "browser-phase-deferred", sequence }, CancellationToken.None);
+                return 0;
+            }
             // SessionOperationContext marks transport loss below before finalization.
             // A reply loss after explicit close cannot reverse an owner receipt.
             if (!explicitClose) files.MarkMainOperationUnresolved();

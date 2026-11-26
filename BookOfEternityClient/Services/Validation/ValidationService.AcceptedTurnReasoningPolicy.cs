@@ -28,7 +28,8 @@ public partial class ValidationService
         return true;
     }
 
-    private void AppendAcceptedReasoningUnknownFields(JsonElement root, List<ValidationIssue> issues)
+    private void AppendAcceptedReasoningUnknownFields(JsonElement root, List<ValidationIssue> issues,
+        bool allowMortalBirthConfirmation)
     {
         foreach (var prop in root.EnumerateObject())
         {
@@ -37,7 +38,8 @@ public partial class ValidationService
 
             if (string.Equals(prop.Name, "gm_thoughts_markdown", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(prop.Name, "timestamp", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(prop.Name, "npcSkillClaims", StringComparison.Ordinal))
+                string.Equals(prop.Name, "npcSkillClaims", StringComparison.Ordinal) ||
+                (allowMortalBirthConfirmation && string.Equals(prop.Name, MortalBirthConfirmation.Property, StringComparison.Ordinal)))
                 continue;
 
             issues.Add(new ValidationIssue(
@@ -46,7 +48,8 @@ public partial class ValidationService
                 "output/debug_logs.json содержит неподдерживаемое top-level поле",
                 code: "debug_logs_unknown_field",
                 section: "gm_thoughts_markdown",
-                expected: "gm_thoughts_markdown | timestamp | npcSkillClaims",
+                expected: allowMortalBirthConfirmation ? "gm_thoughts_markdown | timestamp | npcSkillClaims | mortalBirthConfirmations"
+                    : "gm_thoughts_markdown | timestamp | npcSkillClaims",
                 actual: prop.Name,
                 repairHint: "Пиши в output/debug_logs.json gm_thoughts_markdown, timestamp и Mortal npcSkillClaims для текущего хода."));
         }

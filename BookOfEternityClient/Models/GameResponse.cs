@@ -18,6 +18,10 @@ public class GameResponse
     [JsonPropertyName("gm_thoughts_markdown")]
     public string? GmThoughtsMarkdown { get; set; }
 
+    // Hint from the already read GM artifact; the final writer rereads actual data under its own lease.
+    [JsonIgnore]
+    internal bool HasMortalBirthConfirmation { get; set; }
+
     [JsonPropertyName("combat_log_markdown")]
     public string? CombatLogMarkdown { get; set; }
 

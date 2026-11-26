@@ -319,13 +319,14 @@ public partial class GameEngine
                         ? await _validator.ValidateLoadedCanonicalGameStateAsync(loadedCanonicalGeneration)
                         : ordinaryPreSend
                         ? await _validator.ValidateOrdinaryPreSendGameStateAsync()
-                        : completedLocation is not null && !_fs.HasBrowserOriginalOperation
+                        : completedLocation is not null
                         ? await _validator.ValidateCompletedLocationStateAsync(completedLocation, GameStateValidationSelection.All)
                         : source == PostAcceptedMaterializedStateValidationSource && !_fs.HasBrowserOriginalOperation
                         ? await _validator.ValidatePostMaterializedGameStateAsync()
                         : await _validator.ValidateGameStateAsync();
                 }
                 catch (ValidationService.CompletedLocationComparisonRefusedException refused)
+                    when (!refused.Data.Contains("CoordinatedLeaseReleaseFailure"))
                 {
                     // A repair cannot redefine the already consumed allocation. Both ordinary
                     // callers return this rejection to their terminal owner, which restores and

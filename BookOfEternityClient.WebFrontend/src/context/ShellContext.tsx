@@ -23,6 +23,7 @@ import type {
   LocalWebUiSessionStatus
 } from '../api/contracts';
 import { useShellState } from '../hooks/useShellState';
+import { waitForBrowserTurnSettled } from '../hooks/waitForBrowserTurnSettled';
 import { sanitizeExplorerCommandResultForPlayer } from '../utils/playerCopy';
 import { createSaveContinuationLatch, type SavePersistenceNotice } from '../utils/savePersistenceNotice';
 import { createBrowserLoadController, type BrowserLoadOwner, type LoadPersistenceNotice } from '../utils/loadPersistenceNotice';
@@ -40,6 +41,7 @@ export type BrowserShellState =
       menu: BrowserApiResult<BrowserMainMenuDto>;
       session: BrowserApiResult<LocalWebUiSessionStatus>;
       game: BrowserApiResult<BrowserGameScreenDto>;
+      turnRefreshToken?: number;
       audio: BrowserApiResult<BrowserAudioSettingsDto>;
       settings: BrowserApiResult<BrowserClientSettingsDto>;
       lifecycle: BrowserApiResult<BrowserLifecycleDashboardDto> | null;
@@ -167,8 +169,10 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const [isCommandView, setIsCommandView] = useState(false);
   const composerSubmissionInFlight = useRef(false);
   const operationEpoch = useRef(0);
+  const turnRefreshEpoch = useRef(0);
+  const followedTurnNotice = useRef<{ token: number; text: string } | null>(null);
   const { shellState, loadBrowserState: loadBrowserStateCore, refreshAfterSave: refreshAfterSaveCore,
-    refreshAfterLoad: refreshAfterLoadCore, invalidateRefresh } = useShellState(advancedEnabled);
+    refreshAfterLoad: refreshAfterLoadCore, refreshSettledTurn, invalidateRefresh } = useShellState(advancedEnabled);
   const saveContinuationLatch = useRef(createSaveContinuationLatch());
   const [saveContinuationNotice, setSaveContinuationNotice] = useState<SavePersistenceNotice | null>(null);
   const blockSaveContinuation = useCallback((notice: SavePersistenceNotice) => {
@@ -220,7 +224,37 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     void loadBrowserState();
   }, [loadBrowserState]);
 
+  const refreshEnqueuedState = useCallback((isCurrent: () => boolean) => {
+    return loadBrowserStateCore(() => isCurrent() && !continuationBlocked() && !isLoadInProgress(), true);
+  }, [loadBrowserStateCore, continuationBlocked, isLoadInProgress]);
+  const latestSettledTurnRefresh = useRef(refreshSettledTurn);
+  useEffect(() => { latestSettledTurnRefresh.current = refreshSettledTurn; }, [refreshSettledTurn]);
+  useEffect(() => () => { operationEpoch.current++; turnRefreshEpoch.current++; }, []);
+
+  const followQueuedTurn = useCallback((submissionIsCurrent: () => boolean, queuedNotice: string) => {
+    if (!submissionIsCurrent()) return;
+    const refresh = ++turnRefreshEpoch.current;
+    followedTurnNotice.current = { token: refresh, text: queuedNotice };
+    const isCurrent = () => turnRefreshEpoch.current === refresh && submissionIsCurrent();
+    let idleSession: Extract<BrowserApiResult<LocalWebUiSessionStatus>, { ok: true }> | null = null;
+    void waitForBrowserTurnSettled(async signal => {
+      const status = await browserApi.getSessionStatus(signal);
+      idleSession = status.ok && status.data.gameSessionExists && !status.data.pendingTurn.hasActiveGmTurn ? status : null;
+      return status.ok && status.data.gameSessionExists ? status.data.pendingTurn.hasActiveGmTurn : null;
+    }, isCurrent, undefined, undefined, signal => idleSession
+      ? latestSettledTurnRefresh.current(idleSession, signal, isCurrent, refresh)
+      : Promise.resolve(false));
+  }, []);
+
   const readyState = shellState.status === 'ready' ? shellState : null;
+  const displayedTurnRefresh = readyState?.turnRefreshToken;
+  useEffect(() => {
+    const notice = followedTurnNotice.current;
+    if (!notice || notice.token !== displayedTurnRefresh || turnRefreshEpoch.current !== notice.token) return;
+    followedTurnNotice.current = null;
+    setComposerNotice(previous => previous === notice.text ? null : previous);
+  }, [displayedTurnRefresh]);
+
   const gameScreen = readyState && isSuccess(readyState.game) ? readyState.game.data : null;
   const menu = readyState && isSuccess(readyState.menu) ? readyState.menu.data : null;
   const session = readyState && isSuccess(readyState.session) ? readyState.session.data : null;
@@ -261,6 +295,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     const epoch = operationEpoch.current;
     const isCurrent = () => epoch === operationEpoch.current && !continuationBlocked() && !isLoadInProgress();
     setComposerNotice('Выполняю команду…');
+    let queuedTurn = false;
     try {
       const result = await browserApi.executeExplorerCommand({ command, advancedEnabled });
       if (!isCurrent()) return;
@@ -274,7 +309,10 @@ export function ShellProvider({ children }: { children: ReactNode }) {
           const actionResult = await browserApi.submitPlayerAction({ text: pendingGmAction });
           if (!isCurrent()) return;
           if (actionResult.ok && actionResult.data.success) {
-            setComposerNotice(actionResult.data.playerMessage || 'Запрос отправлен ГМ. Дождитесь обновления витрины.');
+            const queuedNotice = actionResult.data.playerMessage || 'Запрос отправлен ГМ. Дождитесь обновления витрины.';
+            setComposerNotice(queuedNotice);
+            followQueuedTurn(isCurrent, queuedNotice);
+            queuedTurn = true;
           } else if (actionResult.ok) {
             setComposerNotice(actionResult.data.playerMessage || 'Не удалось отправить запрос ГМ.');
           } else {
@@ -289,8 +327,11 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     } catch {
       if (isCurrent()) setComposerNotice('Ошибка соединения при выполнении команды.');
     }
-    if (isCurrent()) void loadBrowserState();
-  }, [advancedEnabled, loadBrowserState, continuationBlocked, isLoadInProgress]);
+    if (isCurrent()) {
+      if (queuedTurn) void refreshEnqueuedState(isCurrent);
+      else void loadBrowserState();
+    }
+  }, [advancedEnabled, loadBrowserState, continuationBlocked, isLoadInProgress, followQueuedTurn, refreshEnqueuedState]);
 
   const submitComposerText = useCallback((text: string) => {
     const normalized = text.trim();
@@ -313,9 +354,10 @@ export function ShellProvider({ children }: { children: ReactNode }) {
       if (!isCurrent()) return;
       if (result.ok && result.data.success) {
         setComposerNotice(result.data.playerMessage);
+        followQueuedTurn(isCurrent, result.data.playerMessage);
         setComposerTextState('');
         clearCommandResult();
-        void loadBrowserState();
+        void refreshEnqueuedState(isCurrent);
       } else if (result.ok && !result.data.success) {
         setComposerNotice(result.data.playerMessage);
       } else {
@@ -326,7 +368,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     }).finally(() => {
       if (epoch === operationEpoch.current) composerSubmissionInFlight.current = false;
     });
-  }, [executeCommand, clearCommandResult, loadBrowserState, continuationBlocked, isLoadInProgress]);
+  }, [executeCommand, clearCommandResult, continuationBlocked, isLoadInProgress, followQueuedTurn, refreshEnqueuedState]);
 
   const submitComposer = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

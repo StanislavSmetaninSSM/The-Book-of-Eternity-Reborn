@@ -475,10 +475,13 @@ internal sealed partial class TrustedLocalFilePublication
     // A read-only refusal projection through the original trusted codec. Visible
     // after-images never substitute for this publisher's committed decision.
     internal void RequireBrowserRecoveryPreservesOriginal(string generation, IEnumerable<string> originalPaths,
-        Func<string,bool>? protectsReceiptNamespace = null, Action<string>? selectedObserver = null)
+        Func<string,bool>? protectsReceiptNamespace = null, Action<string>? selectedObserver = null,
+        bool waitForPreLockIntentWriter = false)
     {
         if (!Directory.Exists(_journalRoot)) return;
         var retrySelectedDisappearance = true;
+        var intentSharingReselections = 0;
+        const int maxIntentSharingReselections = 20;
         while (true)
         {
             _journalScope.ValidateDirectory(_journalRoot, allowMissing: false);
@@ -496,7 +499,18 @@ internal sealed partial class TrustedLocalFilePublication
             try
             {
                 // Namespace recovery may replace the original session and its tuple.
-                if (HasNamespaceJournalMagic(path))
+                var namespaceJournal = ReadNamespaceJournalMagic(path, waitForPreLockIntentWriter &&
+                    intentSharingReselections < maxIntentSharingReselections && MemberComparer.Equals(path, IntentStage));
+                if (namespaceJournal == null)
+                {
+                    // The exclusive writer still owns this unfinished stage.
+                    // Wait briefly, then revalidate the complete namespace and
+                    // reselect; never use that read as absence or bypass a check.
+                    intentSharingReselections++;
+                    Thread.Sleep(50);
+                    continue;
+                }
+                if (namespaceJournal.Value)
                     throw Conflict("Original browser session has pending namespace publication.");
                 journal = ReadJournal(path);
             }

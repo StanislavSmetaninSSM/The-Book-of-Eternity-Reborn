@@ -26,7 +26,15 @@ public partial class ValidationService
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
     {
         files.EnsureCanonicalWriteLeaseActive(lease);
-        if (files.HasBrowserOriginalOperation) return null;
+        if (files.HasBrowserOriginalOperation)
+        {
+            // Only raw location birth candidates need a new location membership
+            // comparison. This shape check selects an observer, not authority.
+            var currentRaw = await files.ReadFileAsync(lease, MortalLocationMaterializationContract.CurrentLocationPath);
+            if (!ContainsLocationBirth(currentRaw, current: true) &&
+                !ContainsLocationBirth(await files.ReadFileAsync(lease, MortalLocationMaterializationContract.WorldMapPath), current: false))
+                return null;
+        }
         var manifest = await files.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
         if (manifest is null) return null;
         var read = PendingTurnSnapshotReader.ReadCurrent(files, lease, LocationOriginalPaths);
@@ -37,7 +45,28 @@ public partial class ValidationService
             ?? throw new InvalidDataException("Location comparison requires an original generation.");
         var bindings = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var path in LocationBindingPaths) bindings.Add(path, LocationHash(await files.ReadFileBytesAsync(lease, path)));
-        return new LocationComparisonCapture(LocationComparisonKey, files, generation, read.Snapshot, bindings);
+        var browser = files.CaptureBrowserLocationComparisonOwner(lease, read.Snapshot.SessionId,
+            read.Snapshot.RequestId, read.Snapshot.TurnNumber, read.Snapshot.SnapshotToken);
+        return new LocationComparisonCapture(LocationComparisonKey, files, generation, read.Snapshot, bindings, browser);
+    }
+
+    private static bool ContainsLocationBirth(string? json, bool current)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return false;
+        try
+        {
+            using var document = JsonDocument.Parse(json);
+            var root = document.RootElement;
+            if (root.ValueKind != JsonValueKind.Object) return false;
+            return current
+                ? root.TryGetProperty("currentLocationData", out var location) &&
+                  location.ValueKind == JsonValueKind.Object && location.TryGetProperty("locationId", out var id) &&
+                  id.ValueKind == JsonValueKind.Null
+                : root.TryGetProperty("worldMapUpdates", out var updates) && updates.ValueKind == JsonValueKind.Object &&
+                  updates.TryGetProperty("newLocations", out var locations) && locations.ValueKind == JsonValueKind.Array &&
+                  locations.GetArrayLength() != 0;
+        }
+        catch (JsonException) { return false; } // Existing raw validation rejects invalid declarations.
     }
 
     /// <summary>Exact previously published comparison lost its original or published binding; never repair by resealing.</summary>
@@ -61,14 +90,16 @@ public partial class ValidationService
         private readonly string _generation;
         private readonly PendingTurnSnapshotReadAuthority _original;
         private readonly IReadOnlyDictionary<string, string> _bindings;
+        private readonly FileSystemManager.BrowserOriginalOperationScope? _browserOwner;
         private int _completionTaken;
         private byte[]? _publishedMap;
         private string? _publishedIndexHash;
         internal LocationComparisonCapture(object key, FileSystemManager files, string generation,
-            PendingTurnSnapshotReadAuthority original, IReadOnlyDictionary<string, string> bindings)
+            PendingTurnSnapshotReadAuthority original, IReadOnlyDictionary<string, string> bindings,
+            FileSystemManager.BrowserOriginalOperationScope? browserOwner)
         {
             if (!ReferenceEquals(key, LocationComparisonKey)) throw new InvalidOperationException("Original issuance required.");
-            _files = files; _generation = generation; _original = original; _bindings = bindings;
+            _files = files; _generation = generation; _original = original; _bindings = bindings; _browserOwner = browserOwner;
         }
 
         /// <summary>Reauthenticates the same original under the caller's genuine current lease.</summary>
@@ -77,6 +108,9 @@ public partial class ValidationService
             using var fresh = FileSystemManager.SuppressValidationReuse();
             if (!ReferenceEquals(files, _files) || !files.IsCurrentSessionGeneration(lease, _generation))
                 throw new CompletedLocationComparisonRefusedException("Completed location original owner changed.");
+            if (!ReferenceEquals(_browserOwner, files.CaptureBrowserLocationComparisonOwner(lease,
+                    _original.SessionId, _original.RequestId, _original.TurnNumber, _original.SnapshotToken)))
+                throw new CompletedLocationComparisonRefusedException("Completed location browser scope changed.");
             var read = PendingTurnSnapshotReader.ReadCurrent(files, lease, LocationOriginalPaths);
             if (!read.Success || read.Snapshot is not { } current || current.SessionId != _original.SessionId ||
                 current.RequestId != _original.RequestId || current.TurnNumber != _original.TurnNumber ||
@@ -86,8 +120,11 @@ public partial class ValidationService
                 if (!current.ReadRequiredBytes(path).AsSpan().SequenceEqual(_original.ReadRequiredBytes(path)))
                     throw new CompletedLocationComparisonRefusedException("Completed location original bytes changed.");
             foreach (var pair in _bindings)
-                if (LocationHash(await files.ReadFileBytesAsync(lease, pair.Key)) != pair.Value)
+            {
+                var currentBytes = await files.ReadFileBytesAsync(lease, pair.Key);
+                if (currentBytes is null || LocationHash(currentBytes) != pair.Value)
                     throw new CompletedLocationComparisonRefusedException("Completed location request binding changed.");
+            }
         }
 
         /// <summary>Binds exact output immediately after actual normalization, before awaited post-validation.</summary>
@@ -143,8 +180,9 @@ public partial class ValidationService
         {
             using var fresh = FileSystemManager.SuppressValidationReuse();
             await _original.RequireCurrentAsync(files, lease);
-            if (LocationHash(await files.ReadFileBytesAsync(lease, MortalLocationMaterializationContract.WorldMapPath)) != _mapHash ||
-                LocationHash(await files.ReadFileBytesAsync(lease, MortalLocationIdentityState.StatePath)) != _indexHash)
+            var map = await files.ReadFileBytesAsync(lease, MortalLocationMaterializationContract.WorldMapPath);
+            var index = await files.ReadFileBytesAsync(lease, MortalLocationIdentityState.StatePath);
+            if (map is null || index is null || LocationHash(map) != _mapHash || LocationHash(index) != _indexHash)
                 throw new CompletedLocationComparisonRefusedException("Completed location published image changed.");
         }
         /// <summary>Returns detached membership after fresh opening proof, not an authority token.</summary>

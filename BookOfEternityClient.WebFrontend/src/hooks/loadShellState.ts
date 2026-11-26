@@ -11,7 +11,8 @@ export async function loadShellState(
   setShellState: PublishShellState,
   publicationOwner: ShellRefreshOwner,
   advancedEnabled: boolean,
-  requestIsCurrent: () => boolean = () => true
+  requestIsCurrent: () => boolean = () => true,
+  preserveReadyOnFailure = false
 ): Promise<void> {
   if (!requestIsCurrent()) return;
   const refresh = ++publicationOwner.current;
@@ -38,7 +39,7 @@ export async function loadShellState(
   const allFailed = [menu, session, game, audio, settings, commandCoverage].every((result) => !result.ok && result.kind === 'network-error');
 
   if (allFailed) {
-    setShellState({
+    setShellState(previous => !isCurrent() || (preserveReadyOnFailure && previous.status === 'ready') ? previous : {
       status: 'error',
       playerMessage: 'Локальная книга недоступна. Убедитесь, что игра запущена.',
       technicalDetails: !menu.ok ? menu.message : 'Запросы к книге не ответили.'

@@ -17,13 +17,29 @@ internal sealed partial class TrustedLocalFilePublication
     /// <returns>
     /// <see langword="true"/> for exact v3 magic; otherwise <see langword="false"/>.
     /// </returns>
-    private bool HasNamespaceJournalMagic(string path)
+    private bool HasNamespaceJournalMagic(string path) => ReadNamespaceJournalMagic(path, false) == true;
+
+    // Null is an observation of the exact intent-stage open collision, not a
+    // claim that the file is absent or a permission to act on partial bytes.
+    private bool? ReadNamespaceJournalMagic(string path, bool observeBrowserIntentSharing)
     {
-        using var input = new FileStream(_journalScope.ValidateFile(path, allowMissing: false),
-            FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete);
-        Span<byte> magic = stackalloc byte[8];
-        var count = input.ReadAtLeast(magic, magic.Length, throwOnEndOfStream: false);
-        return count == magic.Length && magic.SequenceEqual(NamespaceFrameMagic);
+        var safePath = _journalScope.ValidateFile(path, allowMissing: false);
+        FileStream input;
+        try
+        {
+            input = new FileStream(safePath, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete);
+        }
+        catch (IOException failure) when (observeBrowserIntentSharing && OperatingSystem.IsLinux() && failure.HResult == 11)
+        {
+            // Linux FileStream's actual nonblocking share-lock refusal.
+            return null;
+        }
+        using (input)
+        {
+            Span<byte> magic = stackalloc byte[8];
+            var count = input.ReadAtLeast(magic, magic.Length, throwOnEndOfStream: false);
+            return count == magic.Length && magic.SequenceEqual(NamespaceFrameMagic);
+        }
     }
 
     /// <summary>

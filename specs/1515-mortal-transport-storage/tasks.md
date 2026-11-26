@@ -3,6 +3,17 @@
 Issue: [#1515](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1515)
 Spec and implementation plan: [spec.md](spec.md), [plan.md](plan.md).
 
+## Structured confirmation follow-up (#1515, 2026-11-26)
+
+- [ ] T1515-C01: match exact structured first-birth claims to current authoritative
+  state; preserve neutral flows and refuse confirmation without evidence.
+- [ ] T1515-C02: publish the same confirmed ordinary response to display and
+  durable story; sync GM output/repair guidance and worked examples.
+- [ ] T1515-C03: run targeted tests and fresh live GM-relay positive/control
+  routes; read story and verify state/cleanup independently. Leave arbitrary
+  prose and the separately owned joint story outside this qualification.
+
+
 ## Setup
 - [x] T001 Verify live #1511/#1513 dependency closure, main base and publish isolated task branch.
 - [x] T002 Map existing vehicle/resource/location/item authorities and create this Spec Kit WIP.

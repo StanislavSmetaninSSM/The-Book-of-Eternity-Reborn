@@ -46,8 +46,8 @@ export interface BrowserApiClientOptions {
 
 export interface BrowserApiClient {
   getMainMenu(): Promise<BrowserApiResult<BrowserMainMenuDto>>;
-  getSessionStatus(): Promise<BrowserApiResult<LocalWebUiSessionStatus>>;
-  getGameScreen(): Promise<BrowserApiResult<BrowserGameScreenDto>>;
+  getSessionStatus(signal?: AbortSignal): Promise<BrowserApiResult<LocalWebUiSessionStatus>>;
+  getGameScreen(signal?: AbortSignal): Promise<BrowserApiResult<BrowserGameScreenDto>>;
   getAudioSettings(): Promise<BrowserApiResult<BrowserAudioSettingsDto>>;
   updateAudioSettings(request: BrowserAudioSettingsUpdateRequest): Promise<BrowserApiResult<BrowserAudioSettingsDto>>;
   getClientSettings(): Promise<BrowserApiResult<BrowserClientSettingsDto>>;
@@ -132,8 +132,8 @@ export function createBrowserApiClient(options: BrowserApiClientOptions = {}): B
 
   return {
     getMainMenu: () => requestJson<BrowserMainMenuDto>(fetcher, baseUrl, '/api/main-menu'),
-    getSessionStatus: () => requestJson<LocalWebUiSessionStatus>(fetcher, baseUrl, '/api/session'),
-    getGameScreen: () => requestJson<BrowserGameScreenDto>(fetcher, baseUrl, '/api/game-screen'),
+    getSessionStatus: signal => requestJson<LocalWebUiSessionStatus>(fetcher, baseUrl, '/api/session', { signal }),
+    getGameScreen: signal => requestJson<BrowserGameScreenDto>(fetcher, baseUrl, '/api/game-screen', { signal }),
     getAudioSettings: () => requestJson<BrowserAudioSettingsDto>(fetcher, baseUrl, '/api/audio/settings'),
     updateAudioSettings: (request) => requestJson<BrowserAudioSettingsDto>(fetcher, baseUrl, '/api/audio/settings', jsonInit('POST', request)),
     getClientSettings: () => requestJson<BrowserClientSettingsDto>(fetcher, baseUrl, '/api/client/settings'),

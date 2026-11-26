@@ -213,6 +213,21 @@ public partial class FileSystemManager
     }
 
     internal bool HasBrowserOriginalOperation=>CurrentBrowserOriginalScope()!=null;
+
+    // DATA origin identity, not a new admission. All reads keep the exact
+    // original physical lease and participating owner.
+    internal BrowserOriginalOperationScope? CaptureBrowserLocationComparisonOwner(CanonicalWriteLease lease,
+        string session, string request, int turn, string token)
+    {
+        EnsureValidCanonicalWriteLease(lease);
+        var original = CurrentBrowserOriginalScope();
+        if (original is null) return null;
+        if (!ReferenceEquals(original._files, this) ||
+            !original.MatchesValidatedOriginalFrame(session, request, turn, token))
+            throw BrowserOriginalMainCondition.Invalid();
+        original.ValidateOwner(lease.MainAdmission);
+        return original;
+    }
     internal BrowserOriginalOperationScope BeginBrowserOriginalOperation(PendingPlayerActionService.Binding binding,
         PendingPlayerActionService.Staged? staged=null)
     {
@@ -473,30 +488,35 @@ public partial class FileSystemManager
         {
             GameEngine.ValidateCompletedBrowserReceipt(state,original,ReadOriginalBrowserBytes,
                 OriginalBrowserFileExists,EnumerateOriginalBrowserPhysicalFiles());
-            RequireOriginalBrowserRecoverySafe(staged,original);
+            RequireOriginalBrowserRecoverySafe(staged,original,false);
             return null;
         }
         original.BrowserOriginalMainCondition!.RequireCurrent(this);
-        RequireOriginalBrowserRecoverySafe(staged,original);
+        RequireOriginalBrowserRecoverySafe(staged,original,physicalLease == null && !HasAmbientCanonicalLease());
         return original.BrowserOriginalMainCondition;
     }
 
     private void RequireOriginalBrowserRecoverySafe(PendingPlayerActionService.Staged staged,
-        GameEngine.PendingTurnSnapshotManifest manifest)
+        GameEngine.PendingTurnSnapshotManifest manifest, bool stagedBeforePhysicalLease)
     {
         var history=StrictJsonAuthority.Deserialize<JsonObject>(staged.HistoryJson,
             new System.Text.Json.JsonSerializerOptions(),"original browser history inventory")
             ??throw BrowserOriginalMainCondition.Invalid();
         var paths=manifest.Files.Keys.Concat(manifest.Files.Values).Concat(manifest.RollbackBackups.Values)
             .Concat(history.Select(pair=>pair.Key))
-            .Concat(GameEngine.SelectOriginalStoryContinuityFiles(EnumerateOriginalBrowserPhysicalFiles()))
             .Concat(new[]{PendingPlayerActionService.PendingPath,"input/turn_request.json",BrowserManifestPath,
                 PendingTurnSnapshotAuthority.AuthorityPath,"ready/turn_complete.json","ready/turn_error.json"});
+        // An unlocked whole-session walk can race ordinary publication scratch.
+        // The same story predicate below protects every journal member now.
+        // Retain the full namespace check under the physical lease, before
+        // recovery (and on the unchanged completed-receipt route).
+        if (!stagedBeforePhysicalLease)
+            paths = paths.Concat(GameEngine.SelectOriginalStoryContinuityFiles(EnumerateOriginalBrowserPhysicalFiles()));
         var settled=PendingPlayerActionService.Parse(staged.Json,staged.Binding.Generation).Phase=="settled";
         new TrustedLocalFilePublication(this,new TrustedLocalFileScope([BasePath]))
             .RequireBrowserRecoveryPreservesOriginal(staged.Binding.Generation,paths,relative =>
                 settled && GameEngine.IsOriginalBrowserPhysicalInventoryPath(relative) ||
                 GameEngine.SelectOriginalStoryContinuityFiles([relative]).Any(),
-                _hooks?.BrowserRecoveryJournalSelectedObserver);
+                _hooks?.BrowserRecoveryJournalSelectedObserver,stagedBeforePhysicalLease);
     }
 }

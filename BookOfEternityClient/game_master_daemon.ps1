@@ -1452,6 +1452,8 @@ Mortal no-claim skeleton: the `npcSkillClaims: []` below is an explicit declarat
 
 For EVERY relevant NPC block, the current-location line is mandatory. If the actor is a player character or non-spatial afterlife locus, state that explicitly instead of deleting the line.
 
+In an ordinary Mortal turn, request a system confirmation of first birth only through private `output/debug_logs.json.mortalBirthConfirmations`: closed {kind, ref} rows (max 16, unique), `vehicleOwnership` with the exact same-turn `vehicleRef` for an admitted player-owned vehicle in the scene or selected Active, or `storageAccess` with the exact same-turn `storageId` for a newly created accessible store at the current location. Omit the field when not needed. Keep free prose atmospheric; do not announce these mechanics in narrative or option text. The client verifies accepted birth, ownership/effective access and then writes the confirmation to the final player response and story. No new access, travel, or item transfer is implied. Preserve valid rows when repairing unrelated output; do not write them for Afterlife, later access changes or Mortal joint repair.
+
 `output/interface_updates.json`:
 
 ```json
@@ -7061,11 +7063,21 @@ Write-Log "Watching: $InputDir" -Color DarkGray
             }
         }
         catch {
+            if (Test-GmBrowserPhaseDeferral $_) {
+                # The refused helper never entered its body; no work to replay.
+                # Do not try another status write in the same transient phase.
+                Write-GmOperationDiagnostic 'daemon-main-loop-browser-phase-deferred' $_
+                continue
+            }
             Write-GmOperationDiagnostic 'daemon-main-loop-original-failure' $_
             $script:ErrorCount++
             $script:DaemonLastLoopError = New-DaemonErrorPayload -ErrorRecord $_ -Phase "main_loop"
             Write-Log "Main loop error recovered: $($_.Exception.Message)" -Level "ERROR" -Color Red
-            Write-DaemonStatus -Status "running" -Reason "main_loop_error_recovered"
+            try { Write-DaemonStatus -Status "running" -Reason "main_loop_error_recovered" }
+            catch {
+                if (-not (Test-GmBrowserPhaseDeferral $_)) { throw }
+                Write-GmOperationDiagnostic 'daemon-recovery-status-browser-phase-deferred' $_
+            }
             Start-Sleep -Milliseconds ([Math]::Max(250, $PollingInterval))
         }
     }

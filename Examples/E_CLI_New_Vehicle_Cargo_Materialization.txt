@@ -239,3 +239,16 @@ ordinary inventory changes later.
     }
   ]
 }
+
+ORDINARY PLAYER OWNERSHIP CONFIRMATION
+
+For the player-owned Active variant with exact initial vehicleRef new_cart, add
+this field to the ordinary Mortal debug report alongside its timestamp, NPC
+Scope and npcSkillClaims. Narrate the scene in neutral terms; do not tell the
+player the vehicle was transferred. The client confirms ownership by the accepted
+same-turn vehicle and player owner, not travel permission. Omit this row for the
+Faction variant.
+
+```json
+{"mortalBirthConfirmations":[{"kind":"vehicleOwnership","ref":"new_cart"}]}
+```

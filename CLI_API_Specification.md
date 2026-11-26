@@ -494,6 +494,7 @@ game_session/
 - Authoritative GM-authored outputs remain:
   - `output/narrative_response.json` ← `response`
   - `output/debug_logs.json` ← `gm_thoughts_markdown` plus directly authored private `npcSkillClaims` on Mortal accepted turns (not a GameResponse field)
+    Optional ordinary Mortal first birth: In an ordinary Mortal turn, request a system confirmation of first birth only through private `output/debug_logs.json.mortalBirthConfirmations`: closed {kind, ref} rows (max 16, unique), `vehicleOwnership` with the exact same-turn `vehicleRef` for an admitted player-owned vehicle in the scene or selected Active, or `storageAccess` with the exact same-turn `storageId` for a newly created accessible store at the current location. Omit the field when not needed. Keep free prose atmospheric; do not announce these mechanics in narrative or option text. The client verifies accepted birth, ownership/effective access and then writes the confirmation to the final player response and story. No new access, travel, or item transfer is implied. Preserve valid rows when repairing unrelated output; do not write them for Afterlife, later access changes or Mortal joint repair.
   - `output/interface_updates.json` ← optional `dialogueOptions`, `image_prompt` payload for turns that actually change the interface
 - These `output/*.json` files are fresh per-turn transient artifacts for the current `sessionId/requestId/turnNumber`.
 - Rewrite them for the current request only; never append cross-turn history there and never reuse stale payload from a previous turn.

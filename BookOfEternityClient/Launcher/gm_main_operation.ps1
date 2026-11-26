@@ -48,6 +48,10 @@ function Read-GmOperationReply {
         Write-GmOperationDiagnostic 'reply-timeout' $null $Context; throw 'Original operation reply unavailable; no replay.' }
     $line = $read.Result
     if ($null -eq $line -or [Text.Encoding]::UTF8.GetByteCount($line) -gt 65536) { $Context.lost = $true; throw 'Original operation connection lost; no replay.' }
+    if ($Context.sequence -eq 0 -and $Context.lastAction -ceq 'helper-ready' -and
+        [string]::Equals($line, '{"ok":false,"state":"browser-phase-deferred","sequence":0}', [StringComparison]::Ordinal)) {
+        $Context.browserPhaseDeferredFrame = $true
+    }
     return ($line | ConvertFrom-Json -ErrorAction Stop)
 }
 
@@ -65,9 +69,14 @@ function Open-GmParticipatingOperation {
     $start.RedirectStandardInput = $true; $start.RedirectStandardOutput = $true; $start.RedirectStandardError = $true
     foreach ($arg in @($assembly,'--gm-main-operation','--root',$root)) { [void]$start.ArgumentList.Add($arg) }
     $process = [Diagnostics.Process]::Start($start)
-    $context = [pscustomobject]@{ process=$process; errorRead=$process.StandardError.ReadToEndAsync(); session=$session; sequence=0L; lastAction='helper-ready'; closed=$false; lost=$false; disposed=$false; pendingRead=$null; originalClose=$null; closeObserved=$false; closeOutcome=0; terminalClose=$null; lastCommandReply=$null; publicationUncertain=$false; uncertainCommandReply=$null; localScopeCompleted=$false }
+    $context = [pscustomobject]@{ process=$process; errorRead=$process.StandardError.ReadToEndAsync(); session=$session; sequence=0L; lastAction='helper-ready'; browserPhaseDeferredFrame=$false; closed=$false; lost=$false; disposed=$false; pendingRead=$null; originalClose=$null; closeObserved=$false; closeOutcome=0; terminalClose=$null; lastCommandReply=$null; publicationUncertain=$false; uncertainCommandReply=$null; localScopeCompleted=$false }
+    $browserPhaseDeferred = $false
     try {
         $ready = Read-GmOperationReply $context
+        if ($context.browserPhaseDeferredFrame) {
+            $browserPhaseDeferred = $true
+            throw 'Original browser phase deferred before any participating command.'
+        }
         if (-not $ready.ok -or $ready.state -cne 'active' -or $ready.sequence -ne 0) { throw 'Participating admission refused.' }
         $context.originalClose=$ready.originalClose
         return $context
@@ -81,9 +90,24 @@ function Open-GmParticipatingOperation {
         $code=$context.exitCode
         $diagnostic=$context.diagnostic
         Write-GmOperationDiagnostic 'helper-open-completion-after-dispose' $originalOpenFailure $context
+        if ($browserPhaseDeferred -and $code -eq 0) {
+            $failure = [IO.IOException]::new('Original browser phase deferred before any participating command.')
+            $failure.Data['GmBrowserPhaseDeferredBeforeCommand'] = $true
+            throw $failure
+        }
         $kind=Get-GmOperationFailureKind $diagnostic
         throw "Original participating admission unavailable (helper exit $code, $kind)."
     }
+}
+
+function Test-GmBrowserPhaseDeferral {
+    param($Failure)
+    $current=if($Failure -is [Management.Automation.ErrorRecord]){$Failure.Exception}else{$Failure}
+    while ($current) {
+        if ($current.Data['GmBrowserPhaseDeferredBeforeCommand'] -is [bool] -and $current.Data['GmBrowserPhaseDeferredBeforeCommand']) { return $true }
+        $current=$current.InnerException
+    }
+    return $false
 }
 
 function Send-GmOperationCommand {

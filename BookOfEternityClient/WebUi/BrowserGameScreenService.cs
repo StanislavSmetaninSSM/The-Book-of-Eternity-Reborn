@@ -44,7 +44,7 @@ public sealed class BrowserGameScreenService
         }
 
         var qte = await _qte.BuildReadOnlyStateAsync();
-        var narrative = await BuildNarrativeAsync(state);
+        var narrative = await BuildNarrativeAsync(state, lifecycle.PendingTurn.HasActiveGmTurn);
         var media = await BuildMediaAsync(narrative);
         var playerVisibleEffects = await BuildPlayerVisibleEffectsAsync();
 
@@ -135,13 +135,13 @@ public sealed class BrowserGameScreenService
     private static bool IsExpectedEmptySoulState(string readError) =>
         readError.Contains("отсутствует или пуст", StringComparison.OrdinalIgnoreCase);
 
-    private async Task<BrowserGameScreenNarrativeDto> BuildNarrativeAsync(AggregatedGameState state)
+    private async Task<BrowserGameScreenNarrativeDto> BuildNarrativeAsync(AggregatedGameState state, bool gmTurnActive)
     {
         var interfaceUpdates = await ReadJsonObjectAsync("output/interface_updates.json");
         var combatLog = await ReadJsonObjectAsync("game_state/combat/combat_log.json");
 
         return new BrowserGameScreenNarrativeDto(
-            Text: state.Narrative,
+            Text: gmTurnActive ? state.Narrative : state.AcceptedMortalBirthNarrative ?? state.Narrative,
             DialogueOptions: ReadDialogueOptions(interfaceUpdates),
             CombatLog: ReadString(combatLog, "combat_log_markdown", "combatLogMarkdown", "combatLog"),
             ImagePrompt: ReadString(interfaceUpdates, "image_prompt", "imagePrompt"));

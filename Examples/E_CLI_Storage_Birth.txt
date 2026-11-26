@@ -383,3 +383,15 @@ metadata, items, child evidence nor access after-images behind.
 This is a complete raw operation/item fragment, not a complete accepted response.
 Focused source/example guards validate its grammar and declarations; real intake,
 publication, source drift, rollback and later move controls are separate evidence.
+
+ORDINARY PLAYER ACCESS CONFIRMATION
+
+For the current-scene storage_supply example with accepted hasFullAccess=true,
+add this field to the ordinary Mortal debug report alongside its timestamp, NPC
+Scope and npcSkillClaims. Do not announce access in free prose. The client confirms
+access from the exact accepted birth and matching current access projection.
+Omit the row for the locked storage example; ownership is not access.
+
+```json
+{"mortalBirthConfirmations":[{"kind":"storageAccess","ref":"storage_supply"}]}
+```

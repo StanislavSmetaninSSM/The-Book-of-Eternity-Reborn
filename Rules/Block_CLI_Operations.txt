@@ -2206,3 +2206,5 @@ legacy IDs, effects, History, a new result/witness or a replacement request. Cur
 comparison DATA is not live authority and does not replay deleted components.
 
 Read Examples/E_CLI_Wound_Materialization.txt worked mortal_guided_treatment_execution_v1.
+
+In an ordinary Mortal turn, request a system confirmation of first birth only through private `output/debug_logs.json.mortalBirthConfirmations`: closed {kind, ref} rows (max 16, unique), `vehicleOwnership` with the exact same-turn `vehicleRef` for an admitted player-owned vehicle in the scene or selected Active, or `storageAccess` with the exact same-turn `storageId` for a newly created accessible store at the current location. Omit the field when not needed. Keep free prose atmospheric; do not announce these mechanics in narrative or option text. The client verifies accepted birth, ownership/effective access and then writes the confirmation to the final player response and story. No new access, travel, or item transfer is implied. Preserve valid rows when repairing unrelated output; do not write them for Afterlife, later access changes or Mortal joint repair.

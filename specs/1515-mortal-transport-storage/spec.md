@@ -32,6 +32,28 @@ A GM creates storage within its governed location, with stable exact identity, p
 - FR8 CLI/browser display canonical effective vehicle/storage state, not pending access commands or legacy aliases. No redesigned screens or new travel mechanics.
 - FR9 GM rules, daemon and bounded repair guidance, worked vehicle and shared/restricted storage examples, source guards and category metadata match the supported contract. No afterlife prompt change unless an actually shared contract requires isolation guidance.
 
+## Agreed structured birth confirmation (#1515)
+
+For ordinary Mortal player turns, the GM describes the scene without mechanically
+announcing the transfer of ownership of a newly created vehicle or access to a
+newly created store. If the scene calls for that confirmation, the GM adds the
+optional private `mortalBirthConfirmations` array alongside `npcSkillClaims` in
+`output/debug_logs.json`. Each of at most 16 rows is exactly
+`{"kind":"vehicleOwnership","ref":"<same-turn vehicleRef>"}` or
+`{"kind":"storageAccess","ref":"<same-turn storageId in the current scene>"}`.
+The declaration is not a command, narrative text, or evidence of a grant.
+
+The client renders the confirmation only after materialization and any repair
+have succeeded, in the same final response used for the console/browser and
+durable story. Exact same-turn birth evidence and current player ownership for
+a vehicle in the scene (or the active vehicle), or current effective access at
+the exact current storage coordinate, must agree. Wrong, duplicate, stale, or
+unproved declarations emit no confirmation for that batch. Do not infer travel
+permission from ownership. No change to existing access, to afterlife, or to
+the independently owned Mortal joint repair story. The latter and arbitrary
+claims embedded in unrestricted prose are not qualified by this contract; leave
+the original broad prose-only criterion open and preserve its live evidence.
+
 ## Success boundary
 
 All FR1–FR9 require concrete implementation and impact-selected evidence. Cheap pure policy tests precede real accepted-turn creation, moves and rollback checks. Source-only or PlanOnly results are not PASS. No whole-suite or hosted CI. No main merge or issue closure is authorized in this task. Optional capabilities and historical fixtures do not indefinitely expand this boundary.

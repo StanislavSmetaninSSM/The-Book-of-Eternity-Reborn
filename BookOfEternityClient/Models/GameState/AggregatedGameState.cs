@@ -10,6 +10,7 @@ public class AggregatedGameState
 {
     // Core
     public string Narrative { get; set; } = string.Empty;
+    internal string? AcceptedMortalBirthNarrative { get; set; }
     public string GmDebug { get; set; } = string.Empty;
     public PlayerStatusState PlayerStatus { get; set; } = new();
     

@@ -269,7 +269,8 @@ public partial class GameEngine
 
     private async Task<bool> ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(
         RollbackSnapshot? rollbackSnapshot,
-        ValidatedPendingTurnSnapshotContext? originalBrowserSnapshotContext = null)
+        ValidatedPendingTurnSnapshotContext? originalBrowserSnapshotContext = null,
+        Action? onRepairStarted = null)
     {
         // The original browser finalizer has already authenticated this exact
         // baseline. Reuse it only for the first read-only validation pass; repair
@@ -293,6 +294,7 @@ public partial class GameEngine
                 originalBrowserSnapshotScope?.Dispose();
                 guardianMusingsScope.Invalidate();
                 completedItemsScope.Invalidate();
+                onRepairStarted?.Invoke();
                 return Task.CompletedTask;
             },
             guardianMusingsForRepair: guardianMusings, completedLocation: locations);

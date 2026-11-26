@@ -137,6 +137,7 @@ public partial class GameEngine
                 using var doc = JsonDocument.Parse(debugJson);
                 if (doc.RootElement.TryGetProperty("gm_thoughts_markdown", out var gm))
                     response.GmThoughtsMarkdown = gm.GetString();
+                response.HasMortalBirthConfirmation = doc.RootElement.TryGetProperty(MortalBirthConfirmation.Property, out _);
             }
             catch (Exception ex)
             {

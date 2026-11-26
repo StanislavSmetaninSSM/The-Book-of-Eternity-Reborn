@@ -174,7 +174,9 @@ public partial class GameEngine
             CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction);
             await _pendingTurnState.RotateAfterAcceptedTurnAsync();
             await NormalizeRuntimeUiArtifactsAsync();
-            if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(rollbackSnapshot))
+            var repairedAfterResponse = false;
+            if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(rollbackSnapshot,
+                    onRepairStarted: () => repairedAfterResponse = true))
             {
                 _pendingMemoryLegacyAwaitingConsumption = false;
                 _fs.DeleteFile("ready/turn_complete.json");
@@ -186,6 +188,7 @@ public partial class GameEngine
                 return false;
             }
 
+            await ApplyAcceptedMortalBirthConfirmationsAsync(response, snapshotContext, repairedAfterResponse);
             var retainSourceForQte = _fs.FileExists(QteSceneService.QteOfferPath);
             if (!retainSourceForQte && HasRollbackCapability(rollbackSnapshot))
                 CleanupBackup(rollbackSnapshot!);
@@ -1071,7 +1074,9 @@ public partial class GameEngine
                     var lateAction = snapshotContext?.PlayerAction ?? string.Empty;
                     await _pendingTurnState.RotateAfterAcceptedTurnAsync();
                     await NormalizeRuntimeUiArtifactsAsync();
-                    if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(rollbackSnapshot))
+                    var repairedAfterResponse = false;
+                    if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(rollbackSnapshot,
+                            onRepairStarted: () => repairedAfterResponse = true))
                     {
                         _fs.DeleteFile("ready/turn_complete.json");
                         if (!await RollbackRejectedAcceptedTurnAsync(
@@ -1083,6 +1088,7 @@ public partial class GameEngine
                         return true;
                     }
 
+                    await ApplyAcceptedMortalBirthConfirmationsAsync(lateResponse, snapshotContext, repairedAfterResponse);
                     _lastResponse = lateResponse;
                     _gameLoop.IncrementTurn();
 
@@ -2125,8 +2131,10 @@ public partial class GameEngine
 
         await _pendingTurnState.RotateAfterAcceptedTurnAsync();
         await NormalizeRuntimeUiArtifactsAsync();
+        var repairedAfterResponse = false;
         if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(
-                backedUpFiles, browserStaged == null ? null : activeSnapshotContext))
+                backedUpFiles, browserStaged == null ? null : activeSnapshotContext,
+                onRepairStarted: () => repairedAfterResponse = true))
         {
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
@@ -2149,6 +2157,7 @@ public partial class GameEngine
 
         if (playerFacingTurn)
         {
+            await ApplyAcceptedMortalBirthConfirmationsAsync(response, activeSnapshotContext, repairedAfterResponse);
             _gameLoop.IncrementTurn();
             _lastResponse = response;
             _pendingImagePrompt = null;

@@ -14,6 +14,44 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class GameEngineTurnLifecycleTests
 {
     [Fact]
+    public async Task BrowserOriginalAdmission_ParticipatingReadyRefusalIsNonFatalBeforeAnyCommand()
+    {
+        if (!OperatingSystem.IsLinux()) return;
+        var binding = await QueueBrowserInputAsync(_fs);
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]), fileSystem: _fs);
+        await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, binding.Generation, async () =>
+        {
+            using var original = _fs.BeginBrowserOriginalOperation(binding);
+            await InvokePrivateTaskAsync(engine, "ClaimBrowserPreparationAsync", binding);
+            var before = OriginalAdmissionTree();
+
+            Task<(int Exit, string Frame, long InputPosition)> Attempt()
+            {
+                using var _ = ExecutionContext.SuppressFlow();
+                return Task.Run(async () =>
+                {
+                    var fresh = new FileSystemManager(_fs.BasePath, NullLogger<FileSystemManager>.Instance);
+                    using var input = new MemoryStream("{\"action\":\"close\",\"outcome\":0,\"sequence\":1}\n"u8.ToArray());
+                    using var output = new MemoryStream();
+                    var exit = await GmMainParticipatingControl.RunAsync(fresh, input, output);
+                    return (exit, System.Text.Encoding.UTF8.GetString(output.ToArray()), input.Position);
+                });
+            }
+
+            var result = await Attempt().WaitAsync(TimeSpan.FromSeconds(10));
+            Assert.Equal(0, result.Exit);
+            Assert.Equal(0L, result.InputPosition);
+            using var frame = JsonDocument.Parse(result.Frame);
+            Assert.False(frame.RootElement.GetProperty("ok").GetBoolean());
+            Assert.Equal("browser-phase-deferred", frame.RootElement.GetProperty("state").GetString());
+            Assert.Equal(0, frame.RootElement.GetProperty("sequence").GetInt32());
+            Assert.Equal(3, frame.RootElement.EnumerateObject().Count()); // No active grant or close authority.
+            AssertOriginalAdmissionTree(before);
+            return true;
+        });
+    }
+
+    [Fact]
     public async Task BrowserOriginalAdmission_StatusPreparingRefusalDefersWithoutLosingOriginalOwner()
     {
         var own = Path.Combine("/tmp", "gc-" + Guid.NewGuid().ToString("N")[..12]);

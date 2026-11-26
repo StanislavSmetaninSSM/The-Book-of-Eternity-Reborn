@@ -147,6 +147,108 @@ public sealed partial class GameEngineTurnLifecycleTests
                 pair => Convert.ToHexString(SHA256.HashData(pair.Value))) }));
     }
 
+    [Fact]
+    public async Task BrowserOriginalAdmission_ExclusiveIntentStageReselectsAfterOwnedPublication()
+    {
+        if (!OperatingSystem.IsLinux()) return;
+
+        var (_, staged) = await PrepareBrowserInputStagingAsync(withRollback: true);
+        var intent = Path.Combine(_fs.RuntimeRootPath, "trusted-local-publication-v1", "intent.tmp");
+        var probe = _fs.ResolvePath("game_state/control/c5_sharing_probe.json");
+        var before = OriginalAdmissionTree();
+        using var advance = new ManualResetEventSlim();
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+        var held = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var selections = 0;
+
+        var publisher = Task.Run(async () =>
+        {
+            await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync(cancellationToken: deadline.Token);
+            new TrustedLocalFilePublication(_fs, new TrustedLocalFileScope([_fs.BasePath])).Publish(
+                lease, TrustedLocalGeneration.Existing(staged.Binding.Generation), [new(probe, null, [1, 2, 3])],
+                (phase, _) =>
+                {
+                    if (phase != TrustedLocalPublicationPhase.IntentStaged) return;
+                    // Reopen the actual writer-owned temporary journal on the same
+                    // physical lease with the same exclusive mode as its encoder.
+                    using var exclusive = new FileStream(intent, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+                    held.TrySetResult();
+                    Assert.True(advance.Wait(TimeSpan.FromSeconds(10)), "Intent holder timed out.");
+                });
+        });
+        try
+        {
+            await held.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            var cold = new FileSystemManager(_fs.BasePath, NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                {
+                    BrowserRecoveryJournalSelectedObserver = path =>
+                    {
+                        if (++selections == 1)
+                        {
+                            Assert.Equal(intent, path);
+                            var busy = Assert.Throws<IOException>(() =>
+                            {
+                                using var read = new FileStream(intent, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete);
+                            });
+                            Assert.Equal(11, busy.HResult);
+                            return;
+                        }
+                        Assert.Equal(2, selections);
+                        Assert.Equal(intent, path);
+                        advance.Set();
+                        publisher.WaitAsync(TimeSpan.FromSeconds(8)).GetAwaiter().GetResult();
+                    }
+                });
+            await using var fresh = await cold.AcquireCanonicalWriteLeaseAsync(cancellationToken: deadline.Token);
+            cold.EnsureCanonicalWriteLeaseActive(fresh);
+            Assert.Equal(2, selections);
+            Assert.Equal(staged.Binding.Generation, cold.ReadExistingSessionGeneration(fresh));
+            Assert.Equal(staged.RequestJson, await cold.ReadFileAsync(fresh, "input/turn_request.json"));
+            Assert.Equal(staged.Json, await cold.ReadFileAsync(fresh, PendingPlayerActionService.PendingPath));
+            var after = OriginalAdmissionTree();
+            foreach (var pair in before) Assert.Equal(pair.Value, after[pair.Key]);
+            Assert.Equal(new byte[] { 1, 2, 3 }, File.ReadAllBytes(probe));
+        }
+        finally
+        {
+            advance.Set();
+            await publisher.WaitAsync(TimeSpan.FromSeconds(10));
+        }
+    }
+
+    [Fact]
+    public async Task BrowserOriginalAdmission_ValidatesWholeInventoryOnlyWithPhysicalLease()
+    {
+        if (!OperatingSystem.IsLinux()) return;
+        await PrepareBrowserInputStagingAsync(withRollback: true);
+        var target = _fs.ResolvePath("game_state/control/c5_sharing_probe.json");
+        var link = _fs.ResolvePath("game_state/control/c5_unexpected_link.json");
+        File.CreateSymbolicLink(link, target);
+        var prelockProved = 0;
+        var recovery = 0;
+        var cold = new FileSystemManager(_fs.BasePath, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                AfterBrowserOriginalPreflightAsync = () => { prelockProved++; return Task.CompletedTask; },
+                LocalPublicationRecoveryObserver = (_, _) => recovery++
+            });
+
+        try
+        {
+            var failure = await Record.ExceptionAsync(async () =>
+            {
+                await using var lease = await cold.AcquireCanonicalWriteLeaseAsync();
+            });
+            Assert.IsType<InvalidDataException>(failure);
+            Assert.Equal(1, prelockProved); // Only the held, pre-recovery scan refuses the unrelated leaf.
+            Assert.Equal(0, recovery);
+            Assert.Equal(target, new FileInfo(link).LinkTarget);
+            Assert.False(File.Exists(target));
+        }
+        finally { File.Delete(link); }
+    }
+
     [Theory]
     [InlineData("intent-rename")]
     [InlineData("committed-cleanup")]

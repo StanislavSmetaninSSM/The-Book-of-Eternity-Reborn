@@ -56,8 +56,8 @@ public partial class ValidationService
     private WorldValidationInvocation AdmitWorldValidation(bool gameState, GameStateValidationSelection? selection = null, bool completedLocation = false)
     {
         _pendingSnapshotInvocation.Value?.RequireCurrent();
-        if (completedLocation && (!gameState || _fs.HasBrowserOriginalOperation))
-            throw new InvalidOperationException("Completed location comparison is ordinary state validation only.");
+        if (completedLocation && !gameState)
+            throw new InvalidOperationException("Completed location comparison is state validation only.");
         var browser = gameState && _sameTurnOwnerInputs == null && _fs.HasBrowserOriginalOperation;
         lock (_worldReadGate)
         {
@@ -105,6 +105,18 @@ public partial class ValidationService
         {
             if (completedLocation is null)
                 return await ValidateGameStateCoreAsync(selection, metaControlShapesOnly, acceptedStoryAppend, jointStoryProof);
+            if (_fs.HasBrowserOriginalOperation)
+            {
+                // Browser already owns its processing scope and its World/Meta
+                // read phases. Do not borrow the console-only pending reader.
+                // Opening and closing checks reauthenticate the same captured
+                // owner and after-image; the detached IDs grant no mutation.
+                await RequireBrowserCompletedLocationAsync(completedLocation);
+                invocation.LocationIds = completedLocation.CopyIds();
+                var issues = await ValidateGameStateCoreAsync(selection, metaControlShapesOnly, acceptedStoryAppend, jointStoryProof);
+                await RequireBrowserCompletedLocationAsync(completedLocation);
+                return issues;
+            }
             var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
             Exception? failure = null;
             try
@@ -122,7 +134,20 @@ public partial class ValidationService
                 await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, failure);
             }
         }
-        finally { ReleaseWorldValidation(invocation); }
+        finally
+        {
+            invocation.LocationIds = null;
+            ReleaseWorldValidation(invocation);
+        }
+    }
+
+    private async Task RequireBrowserCompletedLocationAsync(CompletedLocationComparison completed)
+    {
+        var lease = await _fs.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.PublicationReadQuiescence);
+        Exception? failure = null;
+        try { await completed.RequireCurrentAsync(_fs, lease); }
+        catch (Exception caught) { failure = caught; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, false, failure); }
     }
 
     private void ReleaseWorldValidation(WorldValidationInvocation invocation)

@@ -7,6 +7,25 @@ public partial class ValidationService
     private sealed record ReasoningPrefixEvaluation(List<ValidationIssue> Issues, bool Terminal,
         string? NormalizedThoughts, ReasoningScopeManifest? Scope, ReasoningScopeMode ScopeMode, string ActorType);
 
+    private async Task<bool> IsMortalBirthConfirmationRealmAsync(DebugPrefixSourceSession? source)
+    {
+        if (source is null)
+            return RealmSemantics.IsMortalRealm(await TryResolveCurrentRealmAsync());
+        // This dependency participates in the existing observed prefix recheck;
+        // reading it outside the source would retain an incomplete validation result.
+        var raw = await source.ReadAuxiliaryTextAsync("output/debug_logs.json",
+            "game_state/meta/soul_state.json", "mortal-confirmation-realm", source.Lease);
+        if (string.IsNullOrWhiteSpace(raw)) return false;
+        try
+        {
+            using var doc = JsonDocument.Parse(raw);
+            return doc.RootElement.ValueKind == JsonValueKind.Object &&
+                doc.RootElement.TryGetProperty("currentRealm", out var realm) &&
+                realm.ValueKind == JsonValueKind.String && RealmSemantics.IsMortalRealm(realm.GetString());
+        }
+        catch (JsonException) { return false; }
+    }
+
     private async Task<ReasoningPrefixEvaluation> EvaluateAcceptedReasoningPrefixAsync(DebugPrefixSourceSession? source)
     {
         using var evaluationTiming = _fs.MeasureOperation("ReasoningPrefix.Evaluate");
@@ -54,7 +73,9 @@ public partial class ValidationService
                 "Добавь в output/debug_logs.json поле timestamp в ISO 8601 формате вместе с актуальным gm_thoughts_markdown.");
 
             source?.EndTimestampPolicy(issues.Skip(timestampIssueStart));
-            AppendAcceptedReasoningUnknownFields(doc.RootElement, issues);
+            var allowMortalBirthConfirmation = doc.RootElement.TryGetProperty(MortalBirthConfirmation.Property, out _) &&
+                await IsMortalBirthConfirmationRealmAsync(source);
+            AppendAcceptedReasoningUnknownFields(doc.RootElement, issues, allowMortalBirthConfirmation);
         }
         catch (JsonException ex)
         {

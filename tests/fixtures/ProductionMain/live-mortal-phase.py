@@ -421,7 +421,20 @@ def checked_story_append(before,after,request):
     return phase_evidence.checked_mortal_story_append(before,after,request)
 
 
-def relay_response_evidence(queue,request_bytes,binding,session_path,narrative,baseline=None):
+def checked_birth_confirmation_lines(lines):
+    """Opt-in test expectation, never learned from the observed story, queue or runtime."""
+    if not isinstance(lines, (list, tuple)) or len(lines)>16:
+        raise ValueError('Invalid expected birth confirmation lines')
+    prefixes=('Теперь вам принадлежит транспорт «','Вам доступно хранилище «')
+    if any(type(line) is not str or not 1<=len(line)<=220 or
+           any(not ch.isprintable() for ch in line) or
+           not any(line.startswith(prefix) and line.endswith('».') and len(line)>len(prefix)+2 for prefix in prefixes)
+           for line in lines) or len(set(lines))!=len(lines):
+        raise ValueError('Invalid expected birth confirmation lines')
+    return tuple(lines)
+
+
+def relay_response_evidence(queue,request_bytes,binding,session_path,narrative,baseline=None, *, expected_birth_lines=()):
     request=json.loads(request_bytes);identity={k:request[k] for k in ('sessionId','requestId','turnNumber')}
     rows=[];narratives=[]
     for folder in sorted(queue.glob('request-*'),key=lambda p:int(p.name.split('-')[1])):
@@ -450,7 +463,11 @@ def relay_response_evidence(queue,request_bytes,binding,session_path,narrative,b
             if write['Path']=='output/narrative_response.json':narratives.append(write['Data']['response'])
         rows.append({'QueueId':folder.name,'Kind':meta['Kind'],'RequestSHA256':meta['RequestSHA256'],'ResponseSHA256':sha(response),'Dispatch':dispatch,'Execution':execution})
     if not rows or rows[0]['Kind']!='turn' or any(r['Kind'] not in ('turn','repair') for r in rows) or sum(r['Kind']=='turn' for r in rows)!=1:raise ValueError('Unexpected relay operation sequence')
-    if narrative is not None and (not narratives or narratives[-1]!=narrative):raise ValueError('Story differs from actual final GM narrative')
+    lines=checked_birth_confirmation_lines(expected_birth_lines)
+    if narrative is not None:
+        if not narratives:raise ValueError('Missing actual final GM narrative')
+        expected=narratives[-1]+('\n\n'+'\n'.join(lines) if lines else '')
+        if narrative!=expected:raise ValueError('Story differs from actual final GM narrative and exact expected client confirmations')
     return rows
 
 
@@ -470,6 +487,18 @@ if len(sys.argv)==2 and sys.argv[1]=='--check-mortal-relay-evidence':
             dispatch=dict(disposition='submission-observed',inputBindingId='binding',contentHash=sha(b'1\n'+prompt).upper(),operationKind=kind,operationRevision='live' if kind=='turn' else '2')
             for name,data in [('request.json',meta),('dispatch.json',dispatch),('reply.json',dict(QueueId=folder.name,PromptSHA256=sha(prompt),RequestSHA256=sha(source),TurnRequestSHA256=sha(raw),ResponseSHA256=sha(response))),('started.json',dict(ResponseSHA256=sha(response))),('execution.json',dict(Executed=True,ExitCode=0,ChildExited=True,IoDrained=True))]: (folder/name).write_text(json.dumps(data))
         assert len(relay_response_evidence(queue,raw,'binding',session_path,'repair GM'))==2
+        captions=('Теперь вам принадлежит транспорт «Повозка».','Вам доступно хранилище «Кладовая».')
+        exact='repair GM'+'\n\n'+'\n'.join(captions)
+        assert len(relay_response_evidence(queue,raw,'binding',session_path,exact,expected_birth_lines=captions))==2
+        for bad_value,bad_lines in (
+                (exact,()), ('turn GM'+'\n\n'+'\n'.join(captions),captions),
+                (exact+'\n'+captions[0],captions), ('repair GM',captions),
+                (exact,tuple(reversed(captions))),
+                ('repair GM\n\nНепроверенное сообщение.',('Непроверенное сообщение.',))):
+            try:relay_response_evidence(queue,raw,'binding',session_path,bad_value,expected_birth_lines=bad_lines)
+            except ValueError:pass
+            else:raise AssertionError('Unqualified story or final suffix accepted')
+
         baseline=queue/'baseline';(baseline/'game_state/control').mkdir(parents=True)
         first=queue/'request-1-inert';first_meta=json.loads((first/'request.json').read_bytes())
         for name in ('pending_turn_snapshot.json','pending_turn_snapshot.authority.json'):
@@ -680,6 +709,9 @@ assert os.environ.get('TERM')=='dumb'
 route_path=out/'console-route.json'
 route_bytes=route_path.read_bytes() if route_path.exists() else None
 route=console_routes.checked_route(strict_settings(route_bytes) if route_bytes is not None else None)
+expected_birth_lines=checked_birth_confirmation_lines(trace_profile.get('ExpectedBirthConfirmationLines', ()))
+if expected_birth_lines and (route['Route']!='birth' or restored_diagnostic or cold_loaded or len(sys.argv)!=5 or trace_profile.get('ExpectedTurn')!=42):
+    raise ValueError('Birth confirmations require a fresh original birth test profile')
 action_bytes=Path(sys.argv[3]).read_bytes();action=checked_action(action_bytes)
 previous_bytes=Path(sys.argv[5]).read_bytes() if len(sys.argv)==6 else None
 previous=strict_settings(previous_bytes) if previous_bytes is not None else None
@@ -1789,7 +1821,8 @@ try:
                     if route['Route']=='self-save-load-turn':
                         phase_evidence.require_self_save_turn_status(result,rpc({'command':'status'}))
                         result['SelfSaveQueue']=phase_evidence.require_self_save_queue(relay_queue,request_bytes,complete=True)
-                    result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['TurnRunningStatus']['status']['inputBindingId'],session,accepted_row['narrative'],baseline)
+                    result['RelayResponseEvidence']=relay_response_evidence(relay_queue,request_bytes,result['TurnRunningStatus']['status']['inputBindingId'],session,accepted_row['narrative'],baseline,expected_birth_lines=expected_birth_lines)
+                    if expected_birth_lines:result['ExpectedBirthConfirmationLines']=list(expected_birth_lines)
                     phase_evidence.receipt_package_proved(receipt_helper,package_manifest['ReceiptHelperPins'])
                     phase_evidence.require_physical_trace_admission(base,out,trace_profile,env)
                     helper=subprocess.run(['dotnet',str(receipt_helper),'mortal-live-evidence',str(baseline),str(session),str(out/'actual-turn-request.json')],capture_output=True,timeout=receipt_check_budget(start+work_seconds,time.monotonic()),env=env)
@@ -1950,6 +1983,8 @@ finally:
     if not daemon_settlement_proved(daemon_evidence):result['DaemonSettlementFailure']='Original daemon terminal settlement unconfirmed'
     try:
         terminal_fixture_admission()
+        if phase_evidence.load_physical_trace_profile(out,os.environ)!=trace_profile:
+            raise ValueError('Original launch profile changed')
         closing_package,_=phase_evidence.relay_package_preflight(out,ship,__file__)
         if closing_package!=package_manifest:raise ValueError('Phase package manifest changed')
         if (route_path.read_bytes() if route_path.exists() else None)!=route_bytes:
