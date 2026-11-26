@@ -119,6 +119,19 @@ public sealed class MortalLiveSeedExporterTests
                 row!["sourceLocationId"]!.GetValue<string>() == "loc_journey_town" &&
                 row["targetLocationId"]!.GetValue<string>() == "loc_journey_forest"));
             Assert.Equal("open", route!["access"]!["state"]!.GetValue<string>());
+            Assert.NotEqual("loc_journey_town", playerLocation);
+            var index = await Read(MortalLocationIdentityState.StatePath);
+            var linkIndex = Assert.Single(index["linkEntries"]!.AsArray())!;
+            Assert.True(JsonNode.DeepEquals(route["linkId"], linkIndex["linkId"]));
+            Assert.True(JsonNode.DeepEquals(route["sourceLocationId"], linkIndex["sourceLocationId"]));
+            Assert.True(JsonNode.DeepEquals(route["targetLocationId"], linkIndex["targetLocationId"]));
+            Assert.Equal(40, linkIndex["sourceTurn"]!.GetValue<int>());
+            foreach (var id in new[] { "loc_journey_town", "loc_journey_forest" })
+            {
+                var placeIndex = Assert.Single(index["locationEntries"]!.AsArray(),
+                    row => row!["locationId"]!.GetValue<string>() == id)!;
+                Assert.Equal(40, placeIndex["sourceTurn"]!.GetValue<int>());
+            }
             Assert.Equal(3, map["locations"]!.AsArray().Count);
             var forest = Assert.Single(map["locations"]!.AsArray().Where(row =>
                 row!["locationId"]!.GetValue<string>() == "loc_journey_forest"))!;
@@ -146,7 +159,9 @@ public sealed class MortalLiveSeedExporterTests
             Assert.Equal("faction_journey_guild", project["factionId"]!.GetValue<string>());
             Assert.Equal("project_journey_road", project["projectId"]!.GetValue<string>());
             Assert.Equal(0, project["timeSpentMinutes"]!.GetValue<int>());
-            Assert.Empty(await new ValidationService(fs, NullLogger<ValidationService>.Instance).ValidateOrdinaryPreSendGameStateAsync());
+            var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+            Assert.Empty(await SessionOperationContext.RunParticipatingCurrentSessionAsync(fs,
+                validator.ValidateOrdinaryPreSendGameStateAsync));
             var seed = JsonNode.Parse(await File.ReadAllTextAsync(manifest))!;
             Assert.Equal(41, seed["setupTurn"]!.GetValue<int>());
             Assert.False(seed["acceptedGmTurn"]!.GetValue<bool>());

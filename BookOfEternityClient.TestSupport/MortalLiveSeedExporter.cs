@@ -49,7 +49,8 @@ internal static class MortalLiveSeedExporter
         // Off-screen rows in UpdateNPCs are settled NPC DATA, not a GM
         // full-object resend. Use the production idle/canonical read reservation.
         var issues = offscreen
-            ? await validator.ValidateOrdinaryPreSendGameStateAsync()
+            ? await SessionOperationContext.RunParticipatingCurrentSessionAsync(fs,
+                validator.ValidateOrdinaryPreSendGameStateAsync)
             : await validator.ValidateGameStateAsync();
         if (issues.Count != 0) throw new InvalidDataException("Initial full validation refused: " + JsonSerializer.Serialize(issues));
         AssertNoRuntimeArtifacts(basePath, fs.GameSessionPath);
