@@ -167,3 +167,32 @@ T016/T018 remain open until the connected live evidence and review are complete.
   before implementing any correction; reject raw-only or unauthenticated
   destinations. The attempted Phase B is not accepted and cannot be replayed
   as a new turn. Phase C and reload are not yet qualified.
+
+### T016 second live checkpoint: pending-map fix qualified, final NPC blocker open
+
+- Fix: an ordinary authenticated Mortal move may recover permanent location IDs
+  from the exact signed original when a pending map wrapper otherwise hides the
+  canonical view. Raw-only IDs and modified canonical siblings do not qualify.
+  The location publication owner still validates/materializes the actual update;
+  the normalizer rechecks the resulting canonical map before NPC mutation.
+- Focused RED moved to 5/5 PASS. The broader existing NPC core category still
+  has the same seven fixture-only storage projection failures seen before this
+  fix; it is not claimed green. No new cache or shared mutable fixture.
+- A fresh corrected world passed the control again. The next real turn passed
+  the former map/NPC gate and the reducers produced the expected off-screen
+  captain progress and courier destination in the pending candidate. It did
+  not append a story or complete acceptance: final validation rejected the
+  changed historical `UpdateNPCs` rows as if the GM had resent their original
+  materialization and inventory. First-person journals and reasoning were also
+  incomplete in the initial GM answer. The journal/reasoning repair did not
+  remove those canonical-carrier refusals. Never move these NPCs into the
+  player scene, drop their envelopes/inventories, or count pending after-images
+  as accepted facts.
+- Next: reproduce the final-validator rejection with actual normalizer-owned
+  off-screen activity/movement output. Use the existing accepted-turn
+  ownership/after-image comparison pattern, not a blanket exception for
+  changed `UpdateNPCs` rows. Keep GM raw resend, envelope and inventory
+  drift, mismatched after-image, and late-rollback refusals. Then restart in
+  fresh verified state; the original combined turn is not a predecessor.
+  Suited NPC reasoning, exact journal path, and output freshness will be
+  included on first authoring. Faction and reload are still unverified.
