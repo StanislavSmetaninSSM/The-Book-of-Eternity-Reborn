@@ -36,7 +36,7 @@ that an ordinary multi-turn player journey completed through GameEngine.
 - [x] T015 Construct a complete current Mortal baseline and drive actual `ProcessPlayerTurn` through accepted story append and turn advance, not cancellation after validation.
 - [ ] T016 Simulate connected scout/threat, council/project, completion/news and bounded quiet-time outcomes in one retained world; assert actual canonical state, current request receipts and reload continuity after each turn.
 - [x] T017 Submit one contradictory cross-surface package, observe genuine refusal without false accepted story/history, repair the same request through the supported route and verify acceptance.
-- [ ] T018 Run the narrowly owned official category, review fresh evidence independently, save branch and report limitations without merging or closing.
+- [x] T018 Run the narrowly owned official category, review fresh evidence independently, save branch and report limitations without merging or closing. Verified 16/16 and independent readback of the full corrected live run and cold autosave at 2ef882e6. T016 still needs the accepted post-Load player turn; ordinary exit from the cold client was not exercised.
 
 ## Live-discovered terminal command gap, 2026-11-18
 - [x] T019 Complete the existing Mortal NPC activity terminal consumer with explicit outcome and authenticated client-owned completion turn: cheap contract and original-to-canonical RED/GREEN, exact owner/source refusal, existing atomic rollback, synchronized GM instructions/examples/current fixtures, independent review and bounded official checks. Follow the terminal contract in spec.md and next-block plan in live-relay-phase-plan.md. This does not mark T016/T017 live journeys complete.
