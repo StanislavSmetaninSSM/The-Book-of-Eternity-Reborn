@@ -363,3 +363,27 @@ earlier build, not a new cold Load after turn 53. The task checkboxes are
 unchanged pending independent outcome review and reconciliation of those
 limits. No gameplay/source changes, hosted CI, main merge or raw artifacts
 are included in this checkpoint.
+
+### T016 final-build cold Load: autosave commits but blocks continuation
+
+The ordinary Load menu opened the unchanged turn-53 autosave from the corrected
+live run in a separate empty console profile. Publication committed and created
+a new generation. Nineteen checked durable files matched the clean settled
+source and archive byte for byte, including the completed road, public news,
+NPC and journal, living-world history, scheduler, and accepted story. No new
+turn request or story was written. The client nevertheless displayed
+“Сохранение загружено. Продолжение остановлено.” and never returned to the
+player prompt. Native descendant drain was confirmed; a normal player exit was
+not established.
+
+The unmodified autosave contains a pending-turn authority marker absent from
+the settled source, as well as transient rollback files. Cold Load restored
+the marker exactly. The ordinary accepted-turn branch currently calls autosave
+before retiring its terminal artifacts, and the loaded idle check deliberately
+refuses any retained pending-turn authority marker. These facts identify a
+capture-order defect candidate, not corrupt canonical story or world data.
+Do not strip markers from this archive, blindly retry the blocked root, or
+relax the idle gate to get a green result. A causal regression should prove a
+new autosave of a fully settled accepted turn excludes those transient
+artifacts and can cold-load through the unchanged idle check. No fix, successful
+turn-53 cold continuation or new manual Save is claimed. T016/T018 stay open.
