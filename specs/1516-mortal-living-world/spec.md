@@ -321,3 +321,45 @@ is still pending on disk; do not resume from this root or from a cold readback
 copy. The live terminal acceptance, road finish, public consequence and
 following duplicate control require a new independently verified live chain on
 the corrected runtime. No task or main-branch state was changed.
+
+### T016 corrected live relay: investigation, road and duplicate control
+
+An independently validated current test baseline on the corrected Linux build
+(product e289a9a7) accepted 12 consecutive ordinary console turns, 42–53,
+in one Mortal session. Each phase used one fresh actual request and one
+GM-authored response through the normal relay, one accepted story append, and
+verified ordinary client/owner stop and native descendant drain. All request
+IDs were distinct, story hashes joined across starts, and no repair was
+invoked. The 12 phase durations totalled 833.626 seconds. The rejected old
+session was not reused.
+
+- Turn 43 reproduced off-screen captain progress, the courier's town-to-forest
+  movement, and both threat intensification and the separate forest infection
+  effect. Turns 44, 45, 48 and 50 retained explicit five-scope audits with no
+  significant change; the faction did not receive work early at the day
+  boundary. Turn 46 again accepted the guild's Eastgate market decision and
+  its first 240 minutes of road work.
+- Turn 49 accepted the original investigation's explicit
+  `SuccessWithComplication` result, whereas the previous runtime refused
+  this path. The precise off-screen NPC lost its active task, gained one
+  completed history record at turn 49 and one private journal entry.
+  The command sidecar was consumed. The rest of the NPC core, public news,
+  map and faction project state were unchanged.
+- Turns 51 and 52 each opened on a signed daily faction cycle. The same road
+  progressed from 240 to 1,560 to 2,880 minutes; only the final turn reached
+  step 2 of 2. Turn 52 removed the active row and preserved the exact project
+  and owner in the completed archive with `completionTurn: 52`. It appended
+  exactly one faction chronicle entry and one public announcement. The private
+  receipt used one whole-entity completion effect and one exact news reference.
+- Turn 53 had neither cycle due. The accepted one-minute control left the
+  project, chronicle, public news, NPC core/journal, map and living-world
+  history byte-identical. The chain ended with nine distinct typed assessment
+  receipts tied to their actual requests and no pending request or snapshot.
+
+This qualifies the connected current Mortal live scenario above, not a
+whole-task closure. Ordinary Continue persisted the same world between
+phases; the separate cold archive Load evidence above was at turn 47 on the
+earlier build, not a new cold Load after turn 53. The task checkboxes are
+unchanged pending independent outcome review and reconciliation of those
+limits. No gameplay/source changes, hosted CI, main merge or raw artifacts
+are included in this checkpoint.
