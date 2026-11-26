@@ -46,7 +46,11 @@ internal static class MortalLiveSeedExporter
             throw new InvalidDataException("Unexpected canonical setup story encoding.");
         AssertNoRuntimeArtifacts(basePath, fs.GameSessionPath);
         var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        // Off-screen rows in UpdateNPCs are settled NPC DATA, not a GM
+        // full-object resend. Use the production idle/canonical read reservation.
+        var issues = offscreen
+            ? await validator.ValidateOrdinaryPreSendGameStateAsync()
+            : await validator.ValidateGameStateAsync();
         if (issues.Count != 0) throw new InvalidDataException("Initial full validation refused: " + JsonSerializer.Serialize(issues));
         AssertNoRuntimeArtifacts(basePath, fs.GameSessionPath);
         var storyFiles = Directory.GetFiles(storyDirectory, "*", SearchOption.AllDirectories);

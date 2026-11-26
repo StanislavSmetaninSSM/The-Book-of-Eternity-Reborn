@@ -138,6 +138,7 @@ public sealed class MortalLiveSeedExporterTests
                 var actor = Assert.Single(actors.Where(row => row!["NPCId"]!.GetValue<string>() == id))!;
                 Assert.Equal("loc_journey_town", actor["currentLocationId"]!.GetValue<string>());
                 Assert.Equal(0, actor["currentActivity"]!["timeSpentMinutes"]!.GetValue<int>());
+                Assert.Empty(actor["inventory"]!.AsArray());
             }
             var faction = Assert.Single((await Read("game_state/factions/faction_core.json"))["factions"]!.AsArray())!;
             Assert.Equal("faction_journey_guild", faction["factionId"]!.GetValue<string>());
@@ -145,7 +146,7 @@ public sealed class MortalLiveSeedExporterTests
             Assert.Equal("faction_journey_guild", project["factionId"]!.GetValue<string>());
             Assert.Equal("project_journey_road", project["projectId"]!.GetValue<string>());
             Assert.Equal(0, project["timeSpentMinutes"]!.GetValue<int>());
-            Assert.Empty(await new ValidationService(fs, NullLogger<ValidationService>.Instance).ValidateGameStateAsync());
+            Assert.Empty(await new ValidationService(fs, NullLogger<ValidationService>.Instance).ValidateOrdinaryPreSendGameStateAsync());
             var seed = JsonNode.Parse(await File.ReadAllTextAsync(manifest))!;
             Assert.Equal(41, seed["setupTurn"]!.GetValue<int>());
             Assert.False(seed["acceptedGmTurn"]!.GetValue<bool>());
