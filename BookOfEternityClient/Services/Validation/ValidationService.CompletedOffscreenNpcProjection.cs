@@ -7,6 +7,7 @@ namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
     internal const string OffscreenNpcActivityPath = "game_state/npcs/npc_activities.json";
+    private const string TerminalNpcActivityCommands = "completeNPCActivities";
 
     // Immutable, operation-local DATA. The ordinary publication comparison owns
     // source identity and exact bytes at both ends of the final validation lease.
@@ -27,7 +28,9 @@ public partial class ValidationService
     private static bool NeedsOffscreenNpcProjection(byte[]? core, byte[]? activities) =>
         core is not null &&
         (core.AsSpan().IndexOf("\"NPCCoreChanges\""u8) >= 0 ||
-         activities is not null && activities.AsSpan().IndexOf("\"NPCActivityUpdates\""u8) >= 0);
+         activities is not null &&
+         (activities.AsSpan().IndexOf("\"NPCActivityUpdates\""u8) >= 0 ||
+          activities.AsSpan().IndexOf("\"completeNPCActivities\""u8) >= 0));
 
     private static JsonObject? TryReadOffscreenObject(byte[]? bytes)
     {
@@ -46,7 +49,7 @@ public partial class ValidationService
     }
 
     private static OffscreenNpcProjection? BuildOffscreenNpcProjection(
-        byte[]? originalCore, byte[]? rawCore, byte[]? rawActivities)
+        byte[]? originalCore, byte[]? rawCore, byte[]? rawActivities, int originalTurn)
     {
         var expected = TryReadOffscreenObject(originalCore);
         var raw = TryReadOffscreenObject(rawCore);
@@ -61,9 +64,13 @@ public partial class ValidationService
 
         var activities = TryReadOffscreenObject(rawActivities);
         if (rawActivities is not null && activities is null ||
-            activities?.Any(property => property.Key != "NPCActivityUpdates") == true ||
+            activities?.Any(property => property.Key is not ("NPCActivityUpdates" or TerminalNpcActivityCommands)) == true ||
             activities?.ContainsKey("NPCActivityUpdates") == true && activities["NPCActivityUpdates"] is not JsonArray)
             return null;
+        var terminal = activities?[TerminalNpcActivityCommands] as JsonArray;
+        if (activities?.ContainsKey(TerminalNpcActivityCommands) == true &&
+            (terminal is not { Count: > 0 } || activities.Count != 1 || coreCommands is not null))
+            return null; // This observer certifies only the ordinary separate terminal-command carrier.
 
         var touched = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         var seen = new HashSet<string>(StringComparer.Ordinal);
@@ -108,9 +115,44 @@ public partial class ValidationService
             }
         }
 
+        seen.Clear();
+        if (terminal is not null)
+        {
+            foreach (var node in terminal)
+            {
+                if (node is not JsonObject command ||
+                    !ExactOffscreenKeys(command, "NPCId", "NPCName", "activityName", "finalState", "finalOutcome", "narrativeSummary") ||
+                    ExactOffscreenText(command["NPCId"]) is not { } id || !seen.Add(id) ||
+                    FindHistorical(id) is not { } row || ExactOffscreenText(command["NPCName"]) is not { } name ||
+                    ExactOffscreenText(row["name"]) != name ||
+                    row["currentActivity"] is not JsonObject active ||
+                    ExactOffscreenText(command["activityName"]) is not { } activity ||
+                    ExactOffscreenText(active["activityName"]) != activity ||
+                    row["completedActivities"] is not JsonArray history ||
+                    ExactOffscreenText(command["finalState"]) is not { } state || state is not ("Completed" or "Abandoned") ||
+                    ExactOffscreenText(command["finalOutcome"]) is not { } outcome ||
+                    outcome is not ("Success" or "SuccessWithComplication" or "Failure") ||
+                    state == "Abandoned" && outcome != "Failure" ||
+                    ExactOffscreenText(command["narrativeSummary"]) is not { } summary)
+                    return null;
+
+                // Only the two fields changed by the terminal reducer, with the
+                // signed original turn supplying completionTurn, not the command.
+                history.Add(new JsonObject
+                {
+                    ["activityName"] = activity,
+                    ["completionTurn"] = originalTurn,
+                    ["finalOutcome"] = outcome,
+                    ["narrativeSummary"] = summary
+                });
+                row["currentActivity"] = null;
+                touched[id] = row;
+            }
+        }
+
         return touched.Count == 0 ? null : new OffscreenNpcProjection(expected,
             touched.ToDictionary(pair => pair.Key, pair => pair.Value.ToJsonString(), StringComparer.Ordinal),
-            activities?["NPCActivityUpdates"] is JsonArray { Count: > 0 },
+            terminal is not null || activities?["NPCActivityUpdates"] is JsonArray { Count: > 0 },
             rawActivities is null ? null : LocationHash(rawActivities));
 
         JsonObject? FindHistorical(string id)

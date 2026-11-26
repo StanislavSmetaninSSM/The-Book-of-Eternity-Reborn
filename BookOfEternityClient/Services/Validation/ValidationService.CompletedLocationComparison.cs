@@ -58,7 +58,8 @@ public partial class ValidationService
         var browser = files.CaptureBrowserLocationComparisonOwner(lease, read.Snapshot.SessionId,
             read.Snapshot.RequestId, read.Snapshot.TurnNumber, read.Snapshot.SnapshotToken);
         var npc = compareNpc ? BuildOffscreenNpcProjection(
-            read.Snapshot.ReadRequiredBytes(NpcCoreChangesContract.NpcCorePath), rawNpcCore, rawNpcActivities) : null;
+            read.Snapshot.ReadRequiredBytes(NpcCoreChangesContract.NpcCorePath), rawNpcCore, rawNpcActivities,
+            read.Snapshot.TurnNumber) : null;
         if (npc is null) originalPaths = LocationOriginalPaths;
         return new LocationComparisonCapture(LocationComparisonKey, files, generation, read.Snapshot, bindings, browser, originalPaths, npc);
     }
