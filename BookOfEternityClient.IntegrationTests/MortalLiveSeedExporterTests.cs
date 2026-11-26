@@ -99,4 +99,59 @@ public sealed class MortalLiveSeedExporterTests
         }
         finally { Directory.Delete(root, true); }
     }
+    [Fact]
+    public async Task OffscreenExportCreatesConnectedMortalBaselineWithoutAnAcceptedTurn()
+    {
+        var root = Path.Combine(TestDiagnosticPaths.Root, "mortal-live-offscreen-seed", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            var basePath = Path.Combine(root, "play");
+            var manifest = Path.Combine(root, "seed.json");
+            Assert.Equal(0, await NativeHostScenarioDriver.Main(
+                ["mortal-live-offscreen-seed-export", basePath, TestRepoPaths.BaseSessionRoot, manifest]));
+            var fs = new FileSystemManager(basePath, NullLogger<FileSystemManager>.Instance);
+            async Task<JsonNode> Read(string path) => JsonNode.Parse((await fs.ReadFileAsync(path))!)!;
+            var map = await Read("game_state/world/world_map.json");
+            var playerLocation = (await Read("game_state/world/current_location.json"))["locationId"]!.GetValue<string>();
+            var roads = map["links"]!.AsArray();
+            var route = Assert.Single(roads.Where(row =>
+                row!["sourceLocationId"]!.GetValue<string>() == "loc_journey_town" &&
+                row["targetLocationId"]!.GetValue<string>() == "loc_journey_forest"));
+            Assert.Equal("open", route!["access"]!["state"]!.GetValue<string>());
+            Assert.Equal(3, map["locations"]!.AsArray().Count);
+            var forest = Assert.Single(map["locations"]!.AsArray().Where(row =>
+                row!["locationId"]!.GetValue<string>() == "loc_journey_forest"))!;
+            Assert.NotEqual(playerLocation, forest["locationId"]!.GetValue<string>());
+            var spores = Assert.Single(forest["activeThreats"]!.AsArray())!;
+            Assert.Equal("threat_journey_spores", spores["threatId"]!.GetValue<string>());
+            Assert.Equal(0, spores["currentActivity"]!["timeSpentMinutes"]!.GetValue<int>());
+            var forestState = Assert.Single(forest["customStates"]!.AsArray())!;
+            Assert.Equal(0, forestState["infectionStage"]!.GetValue<int>());
+
+            var npcs = await Read("game_state/npcs/npc_core.json");
+            Assert.Empty(npcs["NPCsInScene"]!.AsArray());
+            var actors = npcs["UpdateNPCs"]!.AsArray();
+            Assert.Equal(2, actors.Count);
+            foreach (var id in new[] { "npc_journey_captain", "npc_journey_courier" })
+            {
+                var actor = Assert.Single(actors.Where(row => row!["NPCId"]!.GetValue<string>() == id))!;
+                Assert.Equal("loc_journey_town", actor["currentLocationId"]!.GetValue<string>());
+                Assert.Equal(0, actor["currentActivity"]!["timeSpentMinutes"]!.GetValue<int>());
+            }
+            var faction = Assert.Single((await Read("game_state/factions/faction_core.json"))["factions"]!.AsArray())!;
+            Assert.Equal("faction_journey_guild", faction["factionId"]!.GetValue<string>());
+            var project = Assert.Single((await Read("game_state/factions/faction_projects.json"))["activeProjects"]!.AsArray())!;
+            Assert.Equal("faction_journey_guild", project["factionId"]!.GetValue<string>());
+            Assert.Equal("project_journey_road", project["projectId"]!.GetValue<string>());
+            Assert.Equal(0, project["timeSpentMinutes"]!.GetValue<int>());
+            Assert.Empty(await new ValidationService(fs, NullLogger<ValidationService>.Instance).ValidateGameStateAsync());
+            var seed = JsonNode.Parse(await File.ReadAllTextAsync(manifest))!;
+            Assert.Equal(41, seed["setupTurn"]!.GetValue<int>());
+            Assert.False(seed["acceptedGmTurn"]!.GetValue<bool>());
+            Assert.False(fs.FileExists("input/turn_request.json"));
+            Assert.False(fs.FileExists(MortalLivingWorldSource.HistoryPath));
+        }
+        finally { Directory.Delete(root, recursive: true); }
+    }
 }
