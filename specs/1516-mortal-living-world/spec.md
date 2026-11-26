@@ -387,3 +387,24 @@ relax the idle gate to get a green result. A causal regression should prove a
 new autosave of a fully settled accepted turn excludes those transient
 artifacts and can cold-load through the unchanged idle check. No fix, successful
 turn-53 cold continuation or new manual Save is claimed. T016/T018 stay open.
+
+### T016 portable autosave writer correction in progress
+
+A small actual autosave on the uncorrected build reproduced the exact ZIP
+leak: the pending-turn authority and both seeded rollback members appeared
+in the committed archive (one case, causal assertion failure, owned cleanup).
+Existing engine fault cases explicitly rely on preserving live terminal
+evidence until the autosave outcome is known. Moving cleanup earlier would
+break that recovery contract. Exclude the exact authority marker and reserved
+rollback filenames in game state, output and lore only while constructing
+new archives; leave the live workspace, timing, publication and all existing
+archive reading unchanged. This does not add any anti-tamper behavior for
+single-player saves or omit player-authored mods with similar names.
+
+The retained ordinary archive writer test checks the same shared snapshot
+writer, live-source bytes, omitted transient members and a player-owned
+lookalike. The narrower actual autosave probe and the existing player,
+waiting and late autosave fault controls are selected locally. This is an
+unverified source checkpoint, not a successful cold run. The read filtering
+is a cheap filename decision inside the existing enumeration before content
+read; no extra pass or cache.

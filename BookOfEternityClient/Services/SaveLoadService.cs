@@ -563,7 +563,8 @@ public partial class SaveLoadService
         {
             var relativePath = Path.GetRelativePath(sourceDir, file);
             var entryPath = NormalizeHostArchiveSeparators(Path.Combine(entryPrefix, relativePath));
-            if (IsEphemeralArchivePath(entryPath) || LinuxDaemonInstanceGuard.IsLocalStatusPath(entryPath) ||
+            if (IsEphemeralArchivePath(entryPath) || IsLiveTurnRecoverySaveSource(entryPrefix, entryPath) ||
+                LinuxDaemonInstanceGuard.IsLocalStatusPath(entryPath) ||
                 entryPath.Equals(
                     CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
                     StringComparison.OrdinalIgnoreCase))
@@ -1547,6 +1548,13 @@ public partial class SaveLoadService
             character is >= '0' and <= '9' or
                 >= 'a' and <= 'f' or
                 >= 'A' and <= 'F');
+
+    // Save may run before accepted-turn cleanup. Keep recovery evidence in the
+    // live workspace, not in a player archive. Do not change archive reading.
+    private static bool IsLiveTurnRecoverySaveSource(string entryPrefix, string entryPath) =>
+        entryPath.Equals(PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
+        (entryPrefix is GameStateDirectory or "output" or "lore" &&
+         Path.GetFileName(entryPath).Contains(".rollback.", StringComparison.OrdinalIgnoreCase));
 
     private static bool IsEphemeralArchivePath(string entryPath) =>
         EphemeralControlFiles.Contains(entryPath) ||

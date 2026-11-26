@@ -21,6 +21,14 @@ public sealed class PortableSaveCreationTests(ITestOutputHelper output) : IDispo
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             { LocalPublicationObserver = (phase, _) => { if (phase == TrustedLocalPublicationPhase.Committed) commits++; } });
         var state = PortableSaveFixture.Seed(files);
+        var artifacts = new[] { PendingTurnSnapshotAuthority.AuthorityPath,
+            "output/debug_logs.json.rollback.639313057953954697",
+            "game_state/control/pending_ink_actions.json.rollback.639313057953954697" };
+        foreach (var path in artifacts)
+            await File.WriteAllBytesAsync(files.ResolvePath(path), new byte[] { 123, 125, 10 });
+        const string playerFile = "mods/example.rollback.notes.json";
+        Directory.CreateDirectory(Path.GetDirectoryName(files.ResolvePath(playerFile))!);
+        File.WriteAllBytes(files.ResolvePath(playerFile), new byte[] { 123, 125, 10 });
         var generation = File.ReadAllBytes(files.SessionGenerationPath);
         var before = Snapshot(files.GameSessionPath);
         var prepared = 0;
@@ -43,6 +51,8 @@ public sealed class PortableSaveCreationTests(ITestOutputHelper output) : IDispo
         using var archive = ZipFile.OpenRead(archivePath);
         Assert.NotNull(archive.GetEntry("save_manifest.json"));
         Assert.NotNull(archive.GetEntry("game_state/meta/soul_state.json"));
+        Assert.NotNull(archive.GetEntry(playerFile));
+        Assert.DoesNotContain(archive.Entries, entry => artifacts.Contains(entry.FullName, StringComparer.Ordinal));
         Assert.Empty(Directory.EnumerateFileSystemEntries(Path.Combine(files.RuntimeRootPath, "save-staging")));
     }
 
