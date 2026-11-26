@@ -82,6 +82,54 @@ public sealed partial class MortalLivingWorldPublicationTests
             () => context.Validator.ValidateCompletedLocationStateAsync(result, OffscreenNpcFinalSelection));
     }
 
+    [Fact]
+    public async Task OrdinaryPublication_ReducedOffscreenNpcTerminalOutcomeRetainsHistoricalCarrier()
+    {
+        await using var context = await PrepareOffscreenNpcOrdinaryAsync();
+        var backups = await BackupsAsync(context);
+        var original = (await context.ReadJsonAsync(CompletionCore))!.AsObject();
+        var actor = original["UpdateNPCs"]![0]!;
+        var activityName = actor["currentActivity"]!["activityName"]!.GetValue<string>();
+        const string summary = "Confirmed the time, but could not identify the suspect.";
+        var sidecar = new JsonObject
+        {
+            ["completeNPCActivities"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = "npc_journey_captain", ["NPCName"] = "Captain Irina",
+                ["activityName"] = activityName, ["finalState"] = "Completed",
+                ["finalOutcome"] = "SuccessWithComplication", ["narrativeSummary"] = summary
+            })
+        };
+        await context.WriteJsonAsync(CompletionCommands, sidecar);
+
+        var result = await PublishAsync(context, backups);
+        Assert.DoesNotContain(result.Issues, issue => issue.Severity == IssueSeverity.Error);
+        var settled = (await context.ReadJsonAsync(CompletionCore))!.AsObject();
+        var expected = original.DeepClone();
+        var expectedActor = expected["UpdateNPCs"]![0]!;
+        expectedActor["currentActivity"] = null;
+        expectedActor["completedActivities"]!.AsArray().Add(new JsonObject
+        {
+            ["activityName"] = activityName, ["completionTurn"] = 42,
+            ["finalOutcome"] = "SuccessWithComplication", ["narrativeSummary"] = summary
+        });
+        Assert.True(JsonNode.DeepEquals(expected, settled));
+        Assert.Equal(0, (await context.ReadJsonAsync(CompletionCommands))!.AsObject().Count);
+
+        var final = await context.Validator.ValidateCompletedLocationStateAsync(result, OffscreenNpcFinalSelection);
+        Assert.DoesNotContain(final, issue => IsHistoricalOffscreenResendIssue(issue.Code));
+        Assert.Contains(await context.Validator.ValidateGameStateAsync(OffscreenNpcFinalSelection),
+            issue => IsHistoricalOffscreenResendIssue(issue.Code));
+        await context.WriteJsonAsync(CompletionCommands, sidecar);
+        await Assert.ThrowsAsync<ValidationService.CompletedLocationComparisonRefusedException>(
+            () => context.Validator.ValidateCompletedLocationStateAsync(result, OffscreenNpcFinalSelection));
+        await context.WriteJsonAsync(CompletionCommands, new JsonObject());
+        settled["UpdateNPCs"]![0]!["completedActivities"]![0]!["completionTurn"] = 43;
+        await context.WriteJsonAsync(CompletionCore, settled);
+        await Assert.ThrowsAsync<ValidationService.CompletedLocationComparisonRefusedException>(
+            () => context.Validator.ValidateCompletedLocationStateAsync(result, OffscreenNpcFinalSelection));
+    }
+
     [Theory]
     [InlineData("raw-location")]
     [InlineData("raw-envelope")]
