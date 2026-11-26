@@ -118,14 +118,19 @@ public partial class ValidationService
             return issues;
         }
 
-        var authority = _sameTurnOwnerInputs is null
-            ? await NpcCoreChangesContract.ReadAuthorityAsync(_fs)
-            : NpcCoreChangesContract.CreateAuthorityFromCanonicalJson(
-                await ReadSameTurnOwnerCurrentTextAsync(MortalLocationMaterializationContract.WorldMapPath),
-                await ReadSameTurnOwnerCurrentTextAsync(MortalLocationMaterializationContract.CurrentLocationPath),
-                await ReadSameTurnOwnerCurrentTextAsync("game_state/factions/faction_core.json"),
-                await ReadSameTurnOwnerCurrentTextAsync("game_state/misc/characteristics.json"),
-                await ReadSameTurnOwnerCurrentTextAsync(MortalNpcWorldProgressionPolicy.Path));
+        // Retain the existing ordinary or selected-draft read route. Parse its
+        // map for same-turn initial references; a raw wrapper is not a canonical map.
+        Task<string?> ReadCurrentAuthority(string path) => _sameTurnOwnerInputs is null
+            ? _fs.ReadFileAsync(path)
+            : ReadSameTurnOwnerCurrentTextAsync(path);
+        const string mapPath = MortalLocationMaterializationContract.WorldMapPath;
+        var rawMapJson = await ReadCurrentAuthority(mapPath);
+        var authority = NpcCoreChangesContract.CreateAuthorityFromCanonicalJson(
+            rawMapJson,
+            await ReadCurrentAuthority(MortalLocationMaterializationContract.CurrentLocationPath),
+            await ReadCurrentAuthority("game_state/factions/faction_core.json"),
+            await ReadCurrentAuthority("game_state/misc/characteristics.json"),
+            await ReadCurrentAuthority(MortalNpcWorldProgressionPolicy.Path));
         authority = authority with { ProgressionSource = CreateNpcProgressionSource(lookup.Manifest) };
         if (_sameTurnOwnerNpcSkillInput is { } completed)
         {
@@ -177,6 +182,20 @@ public partial class ValidationService
             issues.AddRange(candidate.Issues);
             return issues;
         }
+        if (_sameTurnOwnerInputs is null &&
+            authority.ProgressionSource is { Realm: "mortal_world" } &&
+            currentRoot[NpcCoreChangesContract.PropertyName] is JsonArray commands &&
+            commands.OfType<JsonObject>().Any(row => row["location"] is JsonObject location &&
+                location["currentLocationId"] is JsonValue))
+        {
+            var pendingMapSiblings = ReadNpcPendingMapCanonicalSiblings(rawMapJson);
+            if (pendingMapSiblings is not null)
+            {
+                var signedMap = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, mapPath);
+                AddNpcOriginalPermanentMapAuthority(authority, pendingMapSiblings, signedMap);
+            }
+        }
+
         var evaluation = NpcCoreChangesContract.Evaluate(
             currentRoot,
             preTurnRoot,
@@ -448,6 +467,57 @@ public partial class ValidationService
     }
 
     /// <summary>Projects already authenticated manifest DATA without exposing its token to the GM.</summary>
+    // Admission-only view: the independent location validator still owns all
+    // raw commands and the complete map/index publication. Never strip a
+    // wrapper from GM data and treat the remainder as canonical authority.
+    private static JsonObject? ReadNpcPendingMapCanonicalSiblings(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return null;
+        try
+        {
+            using var doc = JsonDocument.Parse(text);
+            var root = doc.RootElement;
+            if (root.ValueKind != JsonValueKind.Object ||
+                !root.TryGetProperty("worldMapUpdates", out var wrapper) || wrapper.ValueKind != JsonValueKind.Object ||
+                TryFindDuplicateJsonProperty(root, out _))
+                return null;
+
+            var siblings = JsonNode.Parse(root.GetRawText())!.AsObject();
+            siblings.Remove("worldMapUpdates");
+            return siblings;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    private static void AddNpcOriginalPermanentMapAuthority(
+        NpcCoreChangesContract.Authority authority, JsonObject rawCanonicalSiblings, string? signedMap)
+    {
+        if (string.IsNullOrWhiteSpace(signedMap))
+            return;
+        try
+        {
+            using var doc = JsonDocument.Parse(signedMap);
+            var root = doc.RootElement;
+            if (!HasExactCanonicalWorldMapRoot(root, out var locations) ||
+                TryFindDuplicateJsonProperty(root, out _) ||
+                rawCanonicalSiblings.Count != 0 &&
+                !JsonNode.DeepEquals(rawCanonicalSiblings, JsonNode.Parse(signedMap)))
+                return;
+
+            var originalIds = ReadExactCanonicalWorldMapLocationIds(root);
+            if (originalIds.Count == locations.GetArrayLength())
+                authority.KnownPermanentLocationIds.UnionWith(originalIds);
+        }
+        catch (JsonException)
+        {
+            // Missing, malformed or changed original authority grants nothing.
+        }
+    }
+
     private static NpcCoreChangesContract.ProgressionSourceContext CreateNpcProgressionSource(
         ValidationPendingTurnSnapshotManifest manifest) => new(
             manifest.SessionId, manifest.RequestId, manifest.TurnNumber, manifest.ManifestPayloadHash,

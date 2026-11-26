@@ -1456,6 +1456,7 @@ public sealed class NpcCoreChangesTests : IDisposable
     [InlineData("wrapper-only", true)]
     [InlineData("retained-map", true)]
     [InlineData("projected-only-destination", false)]
+    [InlineData("changed-canonical-sibling", false)]
     [InlineData("tampered-original", false)]
     public async Task NpcLocationWithPendingWorldMapUsesOnlySignedPermanentDestination(string mode, bool accepted)
     {
@@ -1483,6 +1484,8 @@ public sealed class NpcCoreChangesTests : IDisposable
             ? new JsonObject() : originalMap.DeepClone().AsObject();
         if (mode == "projected-only-destination")
             raw["locations"]!.AsArray().Add(remote.DeepClone());
+        else if (mode == "changed-canonical-sibling")
+            raw["locations"]![0]!["description"] = "A raw canonical mutation outside the command.";
         raw["worldMapUpdates"] = new JsonObject
         {
             ["locationUpdates"] = new JsonArray(new JsonObject
