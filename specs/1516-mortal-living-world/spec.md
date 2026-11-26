@@ -147,3 +147,23 @@ immutable build inputs only after source/output identity checks; each phase
 must read current clock, canonical state, owner and receipt evidence freshly.
 Keep raw diagnostics outside Git; update this plan with concise evidence only.
 T016/T018 remain open until the connected live evidence and review are complete.
+
+### T016 first live checkpoint, 2026-11-26
+
+- Off-screen test seed passed the dedicated category (4/4). The opt-in
+  seed uses the real ordinary canonical reservation; the default seed is
+  unchanged. The courier's two-hour travel duration is scenario data, not a
+  new elapsed-time validation field on the link.
+- Phase A passed one actual GM-relay turn: 480→485 game minutes, one story
+  append, no living-world receipt, unchanged NPC/location/threat/faction/project
+  data, and successful logical/native cleanup.
+- Phase B reached the next genuine request. The combined courier move and
+  governed map update stopped in pre-normalization with
+  `npc_core_changes_location_invalid`. The destination exists in the exact
+  authenticated original. Both command-only and unchanged canonical map plus
+  command wrapper were refused on the same original request. The strict
+  current-map reader excludes a pending wrapper; do not grant authority to
+  temporary/raw projections. Test authenticated permanent destination reuse
+  before implementing any correction; reject raw-only or unauthenticated
+  destinations. The attempted Phase B is not accepted and cannot be replayed
+  as a new turn. Phase C and reload are not yet qualified.

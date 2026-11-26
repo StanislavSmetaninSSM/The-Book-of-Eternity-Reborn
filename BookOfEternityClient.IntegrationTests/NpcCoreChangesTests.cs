@@ -1451,6 +1451,61 @@ public sealed class NpcCoreChangesTests : IDisposable
         throw new Xunit.Sdk.XunitException("Authoritative NPCCoreChanges template is not a complete JSON object.");
     }
 
+
+    [Theory]
+    [InlineData("wrapper-only", true)]
+    [InlineData("retained-map", true)]
+    [InlineData("projected-only-destination", false)]
+    [InlineData("tampered-original", false)]
+    public async Task NpcLocationWithPendingWorldMapUsesOnlySignedPermanentDestination(string mode, bool accepted)
+    {
+        const string destination = "loc_npc_contract_destination";
+        const string path = MortalLocationMaterializationContract.WorldMapPath;
+        var remote = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(destination, "Contract test destination", x: 3);
+        var fixture = await WriteFixtureAsync((root, actor, _) =>
+        {
+            root["NPCCoreChanges"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = actor["NPCId"]!.DeepClone(),
+                ["reason"] = "An existing actor follows a route to a distinct accepted location.",
+                ["location"] = new JsonObject { ["currentLocationId"] = destination, ["initialLocationId"] = null }
+            });
+        });
+        var originalMap = fixture.Files[path];
+        if (mode != "projected-only-destination")
+        {
+            originalMap["locations"]!.AsArray().Add(remote.DeepClone());
+            var locationIndex = MortalLocationTestFixture.CreateIdentityIndex(remote)["locationEntries"]![0]!;
+            fixture.Files[MortalLocationIdentityState.StatePath]["locationEntries"]!.AsArray().Add(locationIndex.DeepClone());
+            await WriteSnapshotAsync(fixture);
+        }
+        var raw = mode == "wrapper-only" || mode == "tampered-original"
+            ? new JsonObject() : originalMap.DeepClone().AsObject();
+        if (mode == "projected-only-destination")
+            raw["locations"]!.AsArray().Add(remote.DeepClone());
+        raw["worldMapUpdates"] = new JsonObject
+        {
+            ["locationUpdates"] = new JsonArray(new JsonObject
+            {
+                ["locationId"] = fixture.LocationId,
+                ["customStates"] = new JsonArray(new JsonObject { ["kind"] = "condition", ["stage"] = 1 })
+            })
+        };
+        await _fs.WriteFileAtomicAsync(path, raw.ToJsonString());
+        if (mode == "tampered-original")
+        {
+            var changed = originalMap.DeepClone().AsObject();
+            changed["locations"]![1]!["description"] = "This was changed after the test snapshot was signed.";
+            await _fs.WriteFileAtomicAsync($"game_state/control/pending_turn_snapshot/{path}", changed.ToJsonString());
+        }
+
+        var before = await _fs.ReadFileAsync(path);
+        var issues = await _validator.ValidateNpcCoreChangesBeforeNormalizationAsync();
+        var relevant = issues.Where(i => i.Code?.StartsWith("npc_core_changes_", StringComparison.Ordinal) == true).ToArray();
+        if (accepted) Assert.Empty(relevant);
+        else Assert.NotEmpty(relevant);
+        Assert.Equal(before, await _fs.ReadFileAsync(path));
+    }
     private async Task<NpcCoreFixture> WriteFixtureAsync(
         Action<JsonObject, JsonObject, JsonObject>? mutateCurrent = null)
     {
