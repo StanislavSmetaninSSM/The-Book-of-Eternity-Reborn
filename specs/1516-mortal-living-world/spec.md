@@ -492,3 +492,61 @@ turns and is not part of this result. The successful run reused the pinned
 runtime, terminal and relay packages, not any active owner or mutable
 fixture. Current request, archive, generation, and closure checks were
 fresh. No production source changed and no new performance claim is made.
+
+
+## Expanded acceptance: effects on Mortal game objects (2026-11-27)
+
+A chronicle, announcement, GM narrative or receipt is not evidence of a game
+object changing. When simulation says an actor moved, a threat affected its
+location, a project changed the world, or an NPC acquired equipment, inspect
+the exact authoritative objects before and after the accepted turn, show that
+the declared effect matches, and verify persistence on normal reload. If an
+effect is described as changing play, also demonstrate the ordinary consumer
+of that change (for example access to the route or the actor's usable item).
+Do not force an event or invent a delta for an interval with no real change.
+This is about accepted engine effects in the Mortal world, not anti-tamper
+protection for player-owned saves or changes to spiritual combat.
+
+### Rechecked against the retained live relay run
+
+| Criterion | Evidence and boundary |
+| --- | --- |
+| NPC tasks and movement | On turn 43 the captain's investigation moved from step 0 to 1 and 0 to 240 minutes. The courier's canonical location changed from Eastgate to the Alderwood waystation after a 120-minute route within that interval; neither NPC entered the player's scene, and the player stayed put. Turn 49 closed the captain's active task with one private completed outcome. |
+| Location threat and its target | On turn 43 the same spores threat in the same forest advanced 240 minutes and intensity 1 to 2. The forest's separate canonical infection stage rose 0 to 1. This proves a durable location-state change, not a particular downstream modifier or penalty. |
+| Faction agenda and project | A daily cycle changed the guild's canonical agenda. The same owned road project advanced 240 to 1,560 to 2,880 minutes, reached step 2 and moved from active to completed on turn 52. It produced one chronicle entry and one public announcement. These changes survived reload; the world map and link were unchanged at road completion. |
+| NPC possessions | The courier's inventory stayed empty on the checked turns. No acquisition, equipment change or downstream equipment use was exercised. |
+
+Before/after files for these turns were checked against the accepted-phase
+hashes, and the private receipts were joined to the live requests. Both
+earlier live verifiers passed readback again, including ordinary turn 54
+after Load. This does not extend their acceptance to the cases below.
+
+### Open checks before accepting the expanded scope
+
+- [ ] Live road consequence: complete an eligible faction project through
+  ordinary play and the GM relay. Show both the accepted project transition
+  and the corresponding canonical location profile or route-access change,
+  demonstrate the normal consumer where the effect affects play, then reload
+  and show neither result duplicates.
+- [ ] Live NPC acquisition after actual travel: verify the exact destination,
+  an authorized acquisition or transfer from an identified source, the exact
+  item and owner in canonical inventory, any claimed equipment slot, and the
+  relevant later consumer and reload. The current living-world evidence table
+  does not cover NPC inventory/equipment; general NPC item commands do not
+  by themselves prove the living-world event or its acquisition.
+- [ ] Keep prose-only consequences visibly distinct from verified facts. The
+  existing desired-refusal test for a crossing described as destroyed while
+  the report says no change still fails on Linux: expected the prior turn 41
+  to remain, actual accepted turn 42. An explicitly declared effect without
+  matching reduced state is a different case the existing guard handles.
+  The prose-only check does not pass under the current explicit-report
+  contract; do not imply arbitrary prose is parsed or mark it as verified.
+
+The single targeted category `mortal-living-world-narrative-omission` ran one
+case after an offline integration build of the unchanged executable sources
+at `9de51787`; one expected causal failure, no skips, duplicates or timeout,
+with full owned cleanup (16.332 s runner wall time). The default build route
+stopped before test discovery; the offline build succeeded. No new live round,
+production change or raw diagnostics publication in this audit. Reusing the
+original phase evidence avoids reenacting proven events; verification of new
+object effects requires fresh request, original-state and accepted-state data.
