@@ -4,13 +4,19 @@ using System.Text.Json.Nodes;
 namespace BookOfEternityClient.Services;
 
 /// <summary>Pure event/effect checks on caller-authenticated detached DATA; never publication authority.</summary>
-internal static class MortalLivingWorldEvents
+internal static partial class MortalLivingWorldEvents
 {
     private const string ReportPath = "game_state/control/mortal_living_world_report.json";
     private sealed record Reference(string Kind, string Id, string? Owner)
     {
         internal string Key => new JsonArray(Kind, Id, Owner).ToJsonString();
     }
+
+    internal static bool ReportsNpcAcquisition(JsonObject? report) =>
+        report?["events"] is JsonArray events && events.OfType<JsonObject>().Any(ev =>
+            ev["effects"] is JsonArray effects && effects.OfType<JsonObject>().Any(effect =>
+                Text(effect["operation"]) == "acquire" && Text(effect["field"]) == "inventory" &&
+                effect["target"] is JsonObject target && Text(target["kind"]) == "npc"));
 
     /// <summary>Validates declared events against original and settled canonical documents, without reads or mutation.</summary>
     internal static IReadOnlyList<ValidationIssue> Validate(JsonObject report,
@@ -36,6 +42,8 @@ internal static class MortalLivingWorldEvents
             { Fail("events", "Changes require event evidence; no-change assessments cannot carry events."); return issues; }
             var eventIds = new HashSet<string>(StringComparer.Ordinal);
             var usedEffects = new HashSet<string>(StringComparer.Ordinal);
+            var itemCreations = new HashSet<string>(StringComparer.Ordinal);
+            var itemEvidence = new Lazy<NpcAcquisitionIndexEvidence?>(() => ReadNpcAcquisitionIndex(original, current));
             for (var i = 0; i < events.Count; i++)
             {
                 var path = $"events[{i}]";
@@ -68,6 +76,20 @@ internal static class MortalLivingWorldEvents
                         usedEffects.Add(target.Key + ":entity");
                         if (!ValidateLifecycle(target, operation, effect, report, original, current, originalAbsentPaths))
                             Fail(ep, "Lifecycle evidence requires complete exact canonical objects and an authenticated absent-to-active or active-to-completed transition.", "mortal_living_world_lifecycle_invalid");
+                        continue;
+                    }
+                    if (target.Kind == "npc" && field == "inventory" && operation == "acquire")
+                    {
+                        var refusal = "The claim must name one exact new creationRef.";
+                        if (effect["after"] is not JsonObject declaration ||
+                            Text(declaration["value"]) is not { } creationRef ||
+                            !Matches(effect["before"], false, null) ||
+                            !Matches(declaration, true, JsonValue.Create(creationRef)) ||
+                            !itemCreations.Add(creationRef) ||
+                            !Integer(report["turn"], out var turn) ||
+                            !MatchesNpcAcquisition(target, creationRef, turn, original, current, itemEvidence.Value, out refusal))
+                            Fail(ep, refusal,
+                                "mortal_living_world_npc_acquisition_mismatch");
                         continue;
                     }
                     if (usedEffects.Contains(target.Key + ":entity"))

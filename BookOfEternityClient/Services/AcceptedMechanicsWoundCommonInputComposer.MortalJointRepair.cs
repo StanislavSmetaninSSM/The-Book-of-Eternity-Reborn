@@ -18,7 +18,7 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
         ResourceDefinitionCatalog definitions, ResourceStateLedger state, ResourceHistoryState history,
         ResourceOwnerAuthority owners, IResourceRegisteredSystemOutcomeDraft registeredOutcome,
         IReadOnlyList<ResourceOwnerKey> terminalOwners, AcceptedMechanicsIdentityFactory resourceFactory,
-        MortalJointLivingWorldContribution livingWorld)
+        MortalJointLivingWorldContribution livingWorld, EffectIdentityFactory? effectFactory)
     {
         using var innerTiming1 = files.MeasureOperation("JointInput.CaptureCalculationInputs");
         try
@@ -61,7 +61,7 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                 ResourceAcceptedTurnInputComposer.Parse(null), identity, bundle.EffectBatchPlan.EffectPlan,
                 Array.Empty<ResourceCapacityIntent>(), Array.Empty<ResourceOwnerCapacityDraft>(), terminalOwners,
                 companions, Array.Empty<AcceptedMechanicsOwnerTransition>(),
-                new[] { registeredOutcome }, pending.State, resourceFactory, null, 0, bundle, anchors),
+                new[] { registeredOutcome }, pending.State, resourceFactory, effectFactory, 0, bundle, anchors),
                 Array.Empty<ValidationIssue>()));
         }
         catch (Exception error) when (error is InvalidDataException or InvalidOperationException or ArgumentException or
@@ -184,6 +184,7 @@ internal static partial class AcceptedMechanicsWoundCommonInputComposer
                     authority.History, authority.Owners, sourceCatalog, commands, effectIdentity, effects,
                     terminalOwners: authority.TerminalOwners, registeredSystemOutcomes: new[] { authority.RegisteredOutcome },
                     pendingResolutionState: pending.State, resourceIdentityFactory: authority.RetainedCalculationInputs.ResourceIdentityFactory,
+                    effectIdentityFactory: authority.RetainedCalculationInputs.EffectIdentityFactory,
                     woundStageBundle: bundle, woundAnchorPlan: authority.Anchors, jointRepairCommonAuthority: authority);
                 heavyTimingJointInputComposeBuildPlanningContext?.Dispose();
                 using var heavyTimingJointInputComposeBuildAcceptedInput = files.MeasureOperation("JointInput.Compose.BuildAcceptedInput");

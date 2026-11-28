@@ -7,22 +7,103 @@ namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
     internal const string OffscreenNpcActivityPath = "game_state/npcs/npc_activities.json";
+    internal const string OffscreenNpcInventoryPath = "game_state/npcs/npc_inventory.json";
     private const string TerminalNpcActivityCommands = "completeNPCActivities";
 
     // Immutable, operation-local DATA. The ordinary publication comparison owns
     // source identity and exact bytes at both ends of the final validation lease.
-    internal sealed class OffscreenNpcProjection(JsonObject expected, IReadOnlyDictionary<string, string> rows,
-        bool consumedActivity, string? originalActivityHash)
+    internal sealed class OffscreenNpcProjection(JsonObject expected, Dictionary<string, JsonObject> rows,
+        bool consumedActivity, string? originalActivityHash, bool observeAcquisitions)
     {
         internal bool MatchesCompleteRoot(byte[] bytes) =>
-            TryReadOffscreenObject(bytes) is { } actual && JsonNode.DeepEquals(expected, actual);
+            rows.Count != 0 && TryReadOffscreenObject(bytes) is { } actual && JsonNode.DeepEquals(expected, actual);
 
         internal bool MatchesActivityAfterImage(byte[]? bytes) => consumedActivity
             ? bytes is not null && TryReadOffscreenObject(bytes) is { Count: 0 }
             : (bytes is null ? null : LocationHash(bytes)) == originalActivityHash;
 
         internal bool MatchesRow(string id, JsonElement row) =>
-            rows.TryGetValue(id, out var expectedRow) && JsonValuesSemanticallyEqual(expectedRow, row.GetRawText());
+            rows.TryGetValue(id, out var expectedRow) && JsonValuesSemanticallyEqual(expectedRow.ToJsonString(), row.GetRawText());
+
+        // The item owner supplies its actual chosen and successfully written
+        // phase, not a reread of the final NPC row. Import only admitted root
+        // appends; the existing comparison still owns every other NPC byte.
+        internal bool TryComposeAcquisitions(MortalItemAcceptedTurnNormalizationSnapshot snapshot,
+            IReadOnlyDictionary<string, JsonNode?> phase)
+        {
+            if (!observeAcquisitions ||
+                phase[NpcCoreChangesContract.NpcCorePath] is not JsonObject phaseCore ||
+                phaseCore["UpdateNPCs"] is not JsonArray phaseRows ||
+                phase[MortalItemIdentityState.StatePath] is not JsonObject index ||
+                index["entries"] is not JsonArray entries)
+                return false;
+
+            var routes = snapshot.CloneRouteCatalog().ByCreationRef
+                .Where(pair => pair.Value is { Route: "npc_acquisition", AuthorityKind: "npc_inventory_add",
+                    Destination: { Kind: "npc_inventory", ContainerId: null, ContainerPath.Count: 0 } })
+                .GroupBy(pair => pair.Value.Destination.OwnerId, StringComparer.Ordinal).ToArray();
+            if (routes.Length == 0) return false;
+
+            var byId = entries.OfType<JsonObject>().ToLookup(
+                entry => ExactOffscreenText(entry["itemId"]), StringComparer.Ordinal);
+            var appends = new List<(string Id, JsonObject Row, JsonObject[] Items)>();
+            foreach (var owner in routes)
+            {
+                if (FindHistoricalOffscreenRow(expected, owner.Key) is not { } row)
+                    continue;
+                var projectedOwner = phaseRows.OfType<JsonObject>()
+                    .Where(candidate => ExactOffscreenText(candidate["NPCId"]) == owner.Key).Take(2).ToArray();
+                if (projectedOwner.Length != 1 || projectedOwner[0]["inventory"] is not JsonArray projectedInventory ||
+                    row["inventory"] is not (null or JsonArray))
+                    return false;
+
+                var allocated = new Dictionary<string, (string CreationRef, string ReceiptId)>(StringComparer.Ordinal);
+                foreach (var route in owner)
+                {
+                    if (!snapshot.TryGetAllocatedItemId(route.Key, out var itemId) ||
+                        !snapshot.TryGetRootReceiptId(route.Key, out var receiptId) ||
+                        !allocated.TryAdd(itemId, (route.Key, receiptId)))
+                        return false;
+                }
+
+                var additions = new List<JsonObject>();
+                foreach (var item in projectedInventory.OfType<JsonObject>())
+                {
+                    if (ExactOffscreenText(item["itemId"]) is not { } itemId ||
+                        !allocated.Remove(itemId, out var allocation))
+                        continue;
+                    if (item[MortalItemMaterializationContract.ReceiptProperty] is not JsonObject receipt ||
+                        ExactOffscreenText(receipt["receiptId"]) != allocation.ReceiptId ||
+                        ExactOffscreenText(receipt["creationRef"]) != allocation.CreationRef ||
+                        ExactOffscreenText(receipt["instanceKind"]) != "root" ||
+                        receipt["acceptedAtTurn"]?.GetValue<int>() != snapshot.Turn)
+                        return false;
+
+                    var itemEntries = byId[itemId].Take(2).ToArray();
+                    if (itemEntries.Length != 1 ||
+                        ExactOffscreenText(itemEntries[0]["receiptId"]) != allocation.ReceiptId ||
+                        itemEntries[0]["currentCarrier"] is not JsonObject carrier ||
+                        ExactOffscreenText(carrier["kind"]) != "npc_inventory" ||
+                        ExactOffscreenText(carrier["ownerId"]) != owner.Key)
+                        return false;
+                    additions.Add(item);
+                }
+                if (allocated.Count != 0) return false;
+                appends.Add((owner.Key, row, additions.ToArray()));
+            }
+
+            foreach (var append in appends)
+            {
+                if (append.Row["inventory"] is not JsonArray inventory)
+                {
+                    inventory = new JsonArray();
+                    append.Row["inventory"] = inventory;
+                }
+                foreach (var item in append.Items) inventory.Add(item.DeepClone());
+                rows[append.Id] = append.Row;
+            }
+            return appends.Count != 0;
+        }
     }
 
     private static bool NeedsOffscreenNpcProjection(byte[]? core, byte[]? activities) =>
@@ -49,12 +130,12 @@ public partial class ValidationService
     }
 
     private static OffscreenNpcProjection? BuildOffscreenNpcProjection(
-        byte[]? originalCore, byte[]? rawCore, byte[]? rawActivities, int originalTurn)
+        byte[]? originalCore, byte[]? rawCore, byte[]? rawActivities, int originalTurn, bool observeAcquisitions)
     {
         var expected = TryReadOffscreenObject(originalCore);
         var raw = TryReadOffscreenObject(rawCore);
         if (expected is null || raw is null || expected.ContainsKey(NpcCoreChangesContract.PropertyName) ||
-            expected["UpdateNPCs"] is not JsonArray historical || expected["NPCsInScene"] is not JsonArray scene)
+            expected["UpdateNPCs"] is not JsonArray || expected["NPCsInScene"] is not JsonArray)
             return null;
 
         var coreCommands = raw[NpcCoreChangesContract.PropertyName];
@@ -150,17 +231,20 @@ public partial class ValidationService
             }
         }
 
-        return touched.Count == 0 ? null : new OffscreenNpcProjection(expected,
-            touched.ToDictionary(pair => pair.Key, pair => pair.Value.ToJsonString(), StringComparer.Ordinal),
+        return touched.Count == 0 && !observeAcquisitions ? null : new OffscreenNpcProjection(expected, touched,
             terminal is not null || activities?["NPCActivityUpdates"] is JsonArray { Count: > 0 },
-            rawActivities is null ? null : LocationHash(rawActivities));
+            rawActivities is null ? null : LocationHash(rawActivities), observeAcquisitions);
 
-        JsonObject? FindHistorical(string id)
-        {
-            if (scene.OfType<JsonObject>().Any(row => ExactOffscreenText(row["NPCId"]) == id)) return null;
-            var matches = historical.OfType<JsonObject>().Where(row => ExactOffscreenText(row["NPCId"]) == id).Take(2).ToArray();
-            return matches.Length == 1 && matches[0]["materialization"] is JsonObject ? matches[0] : null;
-        }
+        JsonObject? FindHistorical(string id) => FindHistoricalOffscreenRow(expected, id);
+    }
+
+    private static JsonObject? FindHistoricalOffscreenRow(JsonObject root, string id)
+    {
+        if (root["NPCsInScene"] is not JsonArray scene || root["UpdateNPCs"] is not JsonArray historical ||
+            scene.OfType<JsonObject>().Any(row => ExactOffscreenText(row["NPCId"]) == id))
+            return null;
+        var matches = historical.OfType<JsonObject>().Where(row => ExactOffscreenText(row["NPCId"]) == id).Take(2).ToArray();
+        return matches.Length == 1 && matches[0]["materialization"] is JsonObject ? matches[0] : null;
     }
 
     private static bool ExactOffscreenKeys(JsonObject node, params string[] keys) =>

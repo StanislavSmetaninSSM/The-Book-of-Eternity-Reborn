@@ -1,5 +1,6 @@
 """Prepare a fresh T016 package only. Never launches a client, relay or GM."""
 import argparse
+import base64
 import hashlib
 import json
 import os
@@ -8,10 +9,12 @@ import shutil
 import stat
 import subprocess
 import time
+import zipfile
 from relay_phase_evidence import (require_native_bootstrap_path_budget,
     relay_inventory, relay_package_preflight, strict_settings)
 
 STAGES=('native','publish-client','publish-bridge','publish-helper','export','deploy','verify')
+SEED_EXPORTS={'scout':'mortal-live-seed-export', 'offscreen':'mortal-live-offscreen-seed-export'}
 
 
 def digest(path):
@@ -171,11 +174,47 @@ def native_join(repo, native, commit):
     return inventory(native)
 
 
+EVENTLOG_PACKAGE='System.Diagnostics.EventLog/8.0.0'
+EVENTLOG_RESOURCE='runtimes/win/lib/net8.0/System.Diagnostics.EventLog.Messages.dll'
+
+
+def eventlog_publish_asset(repo, project):
+    """Verify the one net8.0 publish-only SDK copy against its restored archive."""
+    assets=strict_settings(safe_member(repo,project+'/obj/project.assets.json').read_bytes())
+    library=assets.get('libraries',{}).get(EVENTLOG_PACKAGE,{})
+    target=assets.get('targets',{}).get('net8.0',{}).get(EVENTLOG_PACKAGE,{})
+    if (library.get('path')!='system.diagnostics.eventlog/8.0.0' or library.get('type')!='package' or
+            target.get('runtimeTargets',{}).get(EVENTLOG_RESOURCE)!={'assetType':'runtime','rid':'win'}):
+        raise ValueError('Published EventLog resource has no exact restored runtime dependency')
+    candidates=[]
+    for root in assets.get('packageFolders',{}):
+        if not Path(root).is_absolute():raise ValueError('Relative restored package root')
+        archive=safe_member(Path(root),library['path']+'/system.diagnostics.eventlog.8.0.0.nupkg')
+        if archive.is_file():
+            content=strict_settings(safe_member(archive.parent,'.nupkg.metadata').read_bytes())
+            sidecar=safe_member(archive.parent,archive.name+'.sha512')
+            feed_root=Path(content.get('source',''))
+            if not feed_root.is_absolute():raise ValueError('EventLog package must be restored from the local offline feed')
+            feed_archive=safe_member(feed_root,archive.name)
+            archive_bytes=archive.read_bytes()
+            archive_sha=base64.b64encode(hashlib.sha512(archive_bytes).digest()).decode('ascii')
+            # NuGet's signed-content hash is not the SHA512 of the zipped archive.
+            if (content.get('contentHash')!=library.get('sha512') or sidecar.read_text().strip()!=archive_sha or
+                    feed_archive.read_bytes()!=archive_bytes):
+                raise ValueError('Restored EventLog package does not agree with the offline feed and recorded hashes')
+            with zipfile.ZipFile(archive) as package:
+                if package.namelist().count(EVENTLOG_RESOURCE)!=1:raise ValueError('Restored EventLog resource is ambiguous')
+                candidates.append(hashlib.sha256(package.read(EVENTLOG_RESOURCE)).hexdigest())
+    if len(candidates)!=1:raise ValueError('Restored EventLog package must resolve exactly once')
+    return candidates[0]
+
+
 def published_join(repo, published, project, output_pins, native):
     """Bind every published member to its owning build output or fresh native input.
 
 These executable SDK projects have no publish-only managed transform under
---no-build. Only the two explicitly injected native Content members differ.
+--no-build. Additional inputs are the two explicitly injected native Content
+members and one SDK runtime resource independently joined to its restored archive.
 Unexpected publish-generated files fail closed rather than being self-pinned.
 """
     prefix=project+'/bin/Debug/net8.0/'
@@ -185,6 +224,8 @@ Unexpected publish-generated files fail closed rather than being self-pinned.
         expected['runtimes/linux-x64/native/'+name]=digest(native/name)
     rows=inventory(published)
     actual={row['path']:row['sha256'] for row in rows}
+    if EVENTLOG_RESOURCE in actual and EVENTLOG_RESOURCE not in expected:
+        expected[EVENTLOG_RESOURCE]=eventlog_publish_asset(repo,project)
     if actual!=expected:raise ValueError('Published producer copy mismatch: '+project)
     return rows
 
@@ -208,9 +249,10 @@ def private_tree(root):
         path.chmod(0o700 if path.is_dir() or path.stat().st_mode & 0o111 else 0o600)
 
 
-def prepare(repo, destination, build_manifest):
+def prepare(repo, destination, build_manifest, seed_scenario="scout"):
     """Coordinate real publication/export once; write final readiness only after joins."""
     repo=Path(repo).absolute();dest=Path(destination).absolute();build_path=Path(build_manifest).absolute()
+    if seed_scenario not in SEED_EXPORTS:raise ValueError('Unknown Mortal setup scenario')
     build_raw=build_path.read_bytes();build=strict_settings(build_raw)
     if build.get('configuration')!='Debug' or build.get('framework')!='net8.0' or not build.get('toolVersions'):
         raise ValueError('Owning build configuration/tool versions required')
@@ -252,8 +294,9 @@ def prepare(repo, destination, build_manifest):
             elif name in projects:
                 project,target=projects[name]
                 argv=['dotnet','publish',str(repo/project/(project+'.csproj')),'-c','Debug','--no-build','--no-restore',
-                      '-p:BoeNativePackageDirectory='+str(native),'-p:BoeRequireNativePackage=true','-nodeReuse:false','-p:UseSharedCompilation=false','-o',str(target)]
-            elif name=='export':argv=['dotnet',str(helper/'BookOfEternityClient.TestSupport.dll'),'mortal-live-seed-export',str(dest/'play'),str(repo/'FileSystemExample/game_session'),str(seed_path)]
+                      '-p:BoeNativePackageDirectory='+str(native),'-p:BoeRequireNativePackage=true','-maxcpucount:1',
+                      '-nodeReuse:false','-p:UseSharedCompilation=false','-o',str(target)]
+            elif name=='export':argv=['dotnet',str(helper/'BookOfEternityClient.TestSupport.dll'),SEED_EXPORTS[seed_scenario],str(dest/'play'),str(repo/'FileSystemExample/game_session'),str(seed_path)]
             else:
                 session=dest/'play/game_session'
                 if name=='deploy':
@@ -303,6 +346,7 @@ def prepare(repo, destination, build_manifest):
         if result['failedStage'] is not None:raise ValueError('Preparation failed: '+result['failedStage'])
         manifest={'schemaVersion':1,'kind':'mortal-live-preparation','prepared':True,'checkoutHead':commit,'publishedCheckpoint':published,'checkoutChanges':dirty,
                   'configuration':'Debug','framework':'net8.0','toolVersions':build['toolVersions'],'guardianBootstrap':build['guardianTool'],
+                  'seedScenario':seed_scenario,
                   'owningBuildManifest':str(build_path),'owningBuildManifestSHA256':hashlib.sha256(build_raw).hexdigest(),
                   'sourcePins':source,'outputPins':outputs,'inventories':verified,'stages':outcomes,
                   'seedManifestSHA256':digest(seed_path),'packageManifestSHA256':digest(phase/'relay-phase-package.json')}
@@ -318,4 +362,5 @@ def prepare(repo, destination, build_manifest):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--repo',required=True);parser.add_argument('--destination',required=True);parser.add_argument('--build-manifest',required=True)
-    args=parser.parse_args();prepare(args.repo,args.destination,args.build_manifest)
+    parser.add_argument('--seed-scenario', choices=SEED_EXPORTS, default='scout')
+    args=parser.parse_args();prepare(args.repo,args.destination,args.build_manifest,args.seed_scenario)

@@ -68,6 +68,7 @@ public partial class GameEngine
         internal bool Delegated => _delegated;
         internal bool Live => !_expired;
         internal bool CloseRecorded => _close is not null;
+        internal string? CloseDisposition => _close?.Disposition;
         internal object? Continuation => _continuation;
         internal object? Reservation => _reservation;
         internal string Generation => _generation;

@@ -44,7 +44,7 @@ internal static partial class WoundAcceptedTurnPlanner
         /// </returns>
         internal async Task<IReadOnlyList<ValidationIssue>> EnsureCommonCalculationAsync(object issuer,
             FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
-            MortalJointLivingWorldContribution livingWorld)
+            MortalJointLivingWorldContribution livingWorld, EffectIdentityFactory? effectFactory)
         {
             using var innerTiming1 = files.MeasureOperation("JointCalculation.EnsureAsync");
             if (!ReferenceEquals(issuer, JointCommonCalculationIssuer))
@@ -52,8 +52,10 @@ internal static partial class WoundAcceptedTurnPlanner
             await ValidateJointRepairResourcePublicationAsync(files, lease, this);
             if (HasRetainedCommonCalculation)
             {
-                if (RequireRetainedCalculation().LivingWorldFingerprint != livingWorld.Fingerprint)
-                    throw new InvalidDataException("The retained joint calculation belongs to another living-world contribution.");
+                var retained = RequireRetainedCalculation();
+                if (retained.LivingWorldFingerprint != livingWorld.Fingerprint ||
+                    !ReferenceEquals(retained.Inputs.EffectIdentityFactory, effectFactory))
+                    throw new InvalidDataException("The retained joint calculation belongs to another living-world contribution or effect allocation scope.");
                 return Array.Empty<ValidationIssue>();
             }
             if (Interlocked.CompareExchange(ref _calculationAttempted, 1, 0) != 0)
@@ -62,7 +64,8 @@ internal static partial class WoundAcceptedTurnPlanner
             using var innerTiming2 = files.MeasureOperation("JointCalculation.CaptureInputsAsync");
             var captured = await AcceptedMechanicsWoundCommonInputComposer.CaptureJointRepairCalculationInputsAsync(
                 files, lease, bundle, Baseline.Anchors, Baseline.Mechanical.BeforeImages,
-                Definitions, State, History, FinalOwners, this, TerminalOwners, CreateIdentityFactory(), livingWorld);
+                Definitions, State, History, FinalOwners, this, TerminalOwners, CreateIdentityFactory(),
+                livingWorld, effectFactory);
             innerTiming2?.Dispose();
             if (captured.Inputs is not { } inputs) return captured.Issues;
             var binding = bundle.Input.Binding;

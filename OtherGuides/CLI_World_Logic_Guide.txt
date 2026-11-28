@@ -96,6 +96,21 @@ cosmetic edits and array reordering are not progress. Preserve unrelated fields.
 See mortal_living_world_npc_activity_update_v1 in Examples/E_CLI_Mortal_Living_World.txt
 for a complete source-local NPC activity update, not a full NPC creation packet.
 
+Examples illustrate possible in-world outcomes; they are not a checklist of
+events to manufacture. Simulate NPC goals, location threats and faction projects
+as the world warrants. When an action really changes an object, use its existing
+state command and report that consequence. A chronicle entry alone cannot move
+an NPC, change a location or put an item in somebody's inventory. A genuinely
+quiet interval can stay quiet.
+
+For a newly materialized root item acquired by an existing NPC during an ordinary
+assessed turn, use the dedicated NPCInventoryAdds command. In the report target
+that exact NPC, use operation "acquire" and field "inventory", with before
+{"present":false} and after {"present":true,"value":"<exact creationRef>"}.
+The reference names only that new item; it does not describe the whole inventory.
+Do not guess a permanent item ID, resend the NPC row, or use this effect for
+existing-item transfer, containers, or equipment changes.
+
 Owner-route boundaries:
 Diagnosis supports noSignificantChange only, against the actual planned diagnosis
 duration. Autonomous changes need an ordinary assessed turn; do not relabel real

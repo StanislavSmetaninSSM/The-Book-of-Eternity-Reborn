@@ -67,7 +67,8 @@ public partial class CanonicalStateNormalizer
         IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates,
         MortalItemAcceptedTurnNormalizationMode mode,
         MortalItemCanonicalProjectionResult? reusedPhase = null,
-        string? reusedProjectionProof = null)
+        string? reusedProjectionProof = null,
+        ValidationService.LocationComparisonCapture? locationComparison = null)
     {
         ArgumentNullException.ThrowIfNull(mode);
         if (mode is MortalItemAcceptedTurnNormalizationMode.Validated validated)
@@ -139,6 +140,7 @@ public partial class CanonicalStateNormalizer
                 }
                 await WriteCanonicalFileAtomicAsync(path, after.ToJsonString(JsonOpts));
             }
+            locationComparison?.ObserveNpcAcquisitionPhase(validated.Snapshot, projectedRoots);
             return;
         }
 
@@ -1875,10 +1877,11 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 {
                     locationCapture = await ValidationService.CaptureLocationComparisonAsync(fs, writeLease,
                         beforeImages.FirstOrDefault(image => image.Path == NpcCoreChangesContract.NpcCorePath)?.Bytes,
-                        beforeImages.FirstOrDefault(image => image.Path == ValidationService.OffscreenNpcActivityPath)?.Bytes);
+                        beforeImages.FirstOrDefault(image => image.Path == ValidationService.OffscreenNpcActivityPath)?.Bytes,
+                        beforeImages.FirstOrDefault(image => image.Path == ValidationService.OffscreenNpcInventoryPath)?.Bytes);
                     boundNormalizer = await boundNormalizer.WithOrdinaryNpcCompletionSourceAsync();
                     mechanicsPlan = await boundNormalizer
-                        .NormalizeAccumulatedStateWithPlanAsync(backups);
+                        .NormalizeAccumulatedStateWithPlanAsync(backups, locationCapture);
                     if (locationCapture is not null)
                         await locationCapture.BindPublishedImageAsync(fs, writeLease, LocationPublicationIssuer);
                 }

@@ -43,6 +43,31 @@ public partial class GameEngine
                 throw new InvalidOperationException("Narrative invocation requires its actual engine issuer.");
         }
 
+        internal object GetActualFrame(object issuer)
+        {
+            RequireIssuer(issuer);
+            if (_expired || _frame is null || !ReferenceEquals(_engine._mortalJointNarrativeInvocation, this))
+                throw new InvalidDataException("joint_audit_narrative_frame_unavailable");
+            return _frame;
+        }
+
+        internal string CaptureAuditSourceData(object issuer)
+        {
+            RequireIssuer(issuer);
+            if (_expired || _pass is null || !ReferenceEquals(_engine._mortalJointNarrativeInvocation, this))
+                throw new InvalidDataException("joint_audit_narrative_source_unavailable");
+            _pass.RequireIssuer(_engine._validator);
+            var source = _pass.CaptureDiagnostic();
+            if (!source.Completed || source.Disposed || source.Fault is not null || source.WritesStarted != 0 ||
+                source.WritesReturned != 0 || source.ProjectionChanged)
+                throw new InvalidDataException("joint_audit_requires_completed_readonly_narrative");
+            return System.Text.Json.JsonSerializer.Serialize(source.Occurrences.Select(row => new
+            {
+                row.Role, row.Path, row.Route, row.State,
+                Bytes = row.Bytes is null ? null : Convert.ToBase64String(row.Bytes)
+            }));
+        }
+
         internal void Complete(object issuer, ValidationService.NarrativePolicyPass pass)
         {
             RequireIssuer(issuer);

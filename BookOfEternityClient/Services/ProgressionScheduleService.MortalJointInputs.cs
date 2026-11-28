@@ -119,6 +119,40 @@ public partial class ProgressionScheduleService
         return capture;
     }
 
+    // Detached calculation DATA is replayed only after a new owner has freshly
+    // matched all source bytes/absence, control and request identity. The retained
+    // fingerprint includes generation; neither old lease nor old authority survives.
+    internal async Task<FrozenMortalOutcomeInputs> RecaptureMortalOutcomeInputsAsync(
+        FileSystemManager.CanonicalWriteLease lease, ProgressionControl actualControl,
+        string sessionId, string requestId, int turn, JsonObject retainedBody, string expectedFingerprint)
+    {
+        _fs.EnsureCanonicalWriteLeaseActive(lease);
+        var body = retainedBody.DeepClone().AsObject();
+        if (!JsonNode.DeepEquals(body["control"], JsonSerializer.SerializeToNode(actualControl, JsonOpts)) ||
+            body["requestContext"] is not JsonObject context ||
+            context["sessionId"]?.GetValue<string>() != sessionId ||
+            context["requestId"]?.GetValue<string>() != requestId || context["turn"]?.GetValue<int>() != turn)
+            throw new InvalidDataException("Retained progression control or request changed.");
+        var raw = body["sourceBytes"] as JsonObject ?? throw new InvalidDataException("Retained progression sources are missing.");
+        RequireFrozenKeys(raw, MortalJointCalculationSourcePaths);
+        var sources = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        foreach (var path in MortalJointCalculationSourcePaths)
+        {
+            var expected = raw[path] is null ? null : Convert.FromBase64String(raw[path]!.GetValue<string>());
+            var current = await _fs.ReadFileBytesAsync(lease, path);
+            if (expected is null ? current is not null : current is null || !expected.AsSpan().SequenceEqual(current))
+                throw new InvalidDataException("Retained progression source changed: " + path);
+            sources.Add(path, current);
+        }
+        // The constructor performs independent complete raw-input recomposition,
+        // using the retained clock DATA, then binds a NEW object to this lease.
+        var rebound = new FrozenMortalOutcomeInputs(FrozenMortalInputsIssuer, this, _fs, lease, sources, body);
+        if (rebound.Fingerprint != expectedFingerprint)
+            throw new InvalidDataException("Retained progression generation or calculation identity changed.");
+        await rebound.ValidateCurrentAsync(_fs, lease);
+        return rebound;
+    }
+
     // Pure calculation only. The old caller still performs its actual async
     // source reads and captures its final UTC at the original statement below.
     // This helper grants no mutation, publication or cold phase authority.

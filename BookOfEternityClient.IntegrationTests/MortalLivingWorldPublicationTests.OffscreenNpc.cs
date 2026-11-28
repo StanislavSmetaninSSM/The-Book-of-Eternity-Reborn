@@ -150,6 +150,174 @@ public sealed partial class MortalLivingWorldPublicationTests
         Assert.Contains(issues, issue => IsHistoricalOffscreenResendIssue(issue.Code));
     }
 
+    [Theory]
+    [InlineData(false, false, false)]
+    [InlineData(true, false, false)]
+    [InlineData(true, true, false)]
+    [InlineData(true, true, true)]
+    public async Task OrdinaryPublication_AuthorizedOffscreenNpcAcquisitionKeepsHistoricalCarrier(
+        bool withMovement, bool withAssessment, bool wrongClaim)
+    {
+        const string npcId = "npc_journey_captain";
+        const string creationRef = "new_offscreen_captain_lantern";
+        const string authorityId = "npc_inventory_add:42:0:npc_journey_captain";
+        await using var context = await PrepareOffscreenNpcOrdinaryAsync();
+        var backups = await BackupsAsync(context);
+        var original = (await context.ReadJsonAsync(CompletionCore))!.AsObject();
+        var originalActor = Assert.Single(original["UpdateNPCs"]!.AsArray()
+            .OfType<JsonObject>(), row => row["NPCId"]!.GetValue<string>() == npcId);
+        Assert.Empty(originalActor["inventory"]!.AsArray());
+        if (withMovement)
+        {
+            var raw = original.DeepClone().AsObject();
+            raw["NPCCoreChanges"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = npcId,
+                ["reason"] = "The captain followed the accepted route before receiving the equipment.",
+                ["location"] = new JsonObject { ["currentLocationId"] = "loc_journey_forest", ["initialLocationId"] = null }
+            });
+            await context.WriteJsonAsync(CompletionCore, raw);
+            var clock = (await context.ReadJsonAsync(MortalLivingWorldSource.WorldTimePath))!.AsObject();
+            clock["currentTimeInMinutes"] = withAssessment ? 720 : 540;
+            clock["timeOfDay"] = withAssessment ? "12:00" : "09:00";
+            await context.WriteJsonAsync(MortalLivingWorldSource.WorldTimePath, clock);
+            Assert.DoesNotContain(await context.Validator.ValidateNpcCoreChangesBeforeNormalizationAsync(),
+                issue => issue.Severity == IssueSeverity.Error);
+        }
+        if (withAssessment)
+        {
+            const int from = 480, to = 720;
+            var report = Report(changes: true);
+            report["fromMinute"] = from;
+            report["toMinute"] = to;
+            report["events"] = new JsonArray(new JsonObject
+            {
+                ["eventId"] = "captain-obtains-lantern", ["fromMinute"] = from, ["toMinute"] = to,
+                ["actors"] = new JsonArray(Npc()), ["targets"] = new JsonArray(Npc()),
+                ["cause"] = new JsonObject
+                {
+                    ["summary"] = "The captain reaches the waystation and receives gear for the investigation.",
+                    ["references"] = new JsonArray(Npc())
+                },
+                ["effects"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["effectId"] = "arrive", ["target"] = Npc(), ["operation"] = "update",
+                        ["field"] = "currentLocationId",
+                        ["before"] = new JsonObject { ["present"] = true, ["value"] = originalActor["currentLocationId"]!.DeepClone() },
+                        ["after"] = new JsonObject { ["present"] = true, ["value"] = "loc_journey_forest" }
+                    },
+                    new JsonObject
+                    {
+                        ["effectId"] = "acquire", ["target"] = Npc(), ["operation"] = "acquire",
+                        ["field"] = "inventory",
+                        ["before"] = new JsonObject { ["present"] = false },
+                        ["after"] = new JsonObject { ["present"] = true, ["value"] = wrongClaim ? "other_lantern" : creationRef }
+                    }),
+                ["consequences"] = new JsonArray(new JsonObject
+                {
+                    ["summary"] = "The captain is at the waystation and now carries the acquired lantern.",
+                    ["effectIds"] = new JsonArray("arrive", "acquire")
+                }),
+                ["knowledge"] = new JsonObject { ["player"] = "hidden", ["newsReferences"] = new JsonArray() }
+            });
+            await context.WriteJsonAsync(MortalLivingWorldSource.ReportPath, report);
+            JsonObject Npc() => new() { ["kind"] = "npc", ["id"] = npcId };
+        }
+        const string commands = MortalItemAcceptedTransferCatalog.NpcCommandsPath;
+        await context.WriteJsonAsync(commands, new JsonObject
+        {
+            ["NPCInventoryAdds"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = npcId,
+                ["NPCName"] = originalActor["name"]!.GetValue<string>(),
+                ["destinationContainerId"] = null,
+                ["item"] = MortalItemTestFixture.CreateRawRoot(route: "npc_acquisition",
+                    authorityKind: "npc_inventory_add", authorityId: authorityId,
+                    creationRef: creationRef, materializationId: "mat_offscreen_captain_lantern")
+            })
+        });
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        var rawIssues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.True(rawIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, rawIssues.Select(issue => $"{issue.Code}: {issue.FilePath}: {issue.Actual}")));
+        var common = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(context.FileSystem);
+        Assert.NotNull(common);
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(common!.Result.Plan);
+        string allocatedId;
+        string rootReceiptId;
+        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+        {
+            Assert.True(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(context.FileSystem, lease,
+                common.Binding.SessionId, common.Binding.SnapshotToken, common.Binding.Turn, out var snapshot));
+            Assert.True(snapshot.MatchesAcceptedOwnerAuthority(plan.OwnerAuthority));
+            Assert.True(snapshot.TryGetAllocatedItemId(creationRef, out allocatedId!));
+            Assert.True(snapshot.TryGetRootReceiptId(creationRef, out rootReceiptId!));
+        }
+        var beforePublication = wrongClaim ? await CaptureAsync(context) : null;
+        var result = await PublishAsync(context, backups);
+        if (beforePublication is not null)
+        {
+            Assert.Contains(result.Issues, issue => issue.Code == "mortal_living_world_npc_acquisition_mismatch");
+            await AssertBytesAsync(context, beforePublication);
+            return;
+        }
+        Assert.True(result.Issues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, result.Issues.Select(issue => $"{issue.Code}: {issue.Section}: {issue.Message}")));
+        if (withAssessment)
+        {
+            var history = await context.ReadJsonAsync(MortalLivingWorldSource.HistoryPath);
+            var entry = Assert.Single(Assert.IsType<JsonArray>(history?["entries"]));
+            Assert.Equal(creationRef, entry!["report"]!["events"]![0]!["effects"]![1]!["after"]!["value"]!.GetValue<string>());
+            Assert.Null(await context.ReadJsonAsync(MortalLivingWorldSource.ReportPath));
+        }
+        var settled = (await context.ReadJsonAsync(CompletionCore))!.AsObject();
+        Assert.Empty(settled["NPCsInScene"]!.AsArray());
+        var actor = Assert.Single(settled["UpdateNPCs"]!.AsArray()
+            .OfType<JsonObject>(), row => row["NPCId"]!.GetValue<string>() == npcId);
+        var item = Assert.Single(actor["inventory"]!.AsArray())!.AsObject();
+        var itemId = item["itemId"]!.GetValue<string>();
+        Assert.Equal(allocatedId, itemId);
+        var receipt = item["materializationReceipt"]!;
+        Assert.Equal(itemId, receipt["itemId"]!.GetValue<string>());
+        Assert.Equal(rootReceiptId, receipt["receiptId"]!.GetValue<string>());
+        Assert.Equal(creationRef, receipt["creationRef"]!.GetValue<string>());
+        Assert.Equal(42, receipt["acceptedAtTurn"]!.GetValue<int>());
+        Assert.Equal(authorityId, item["materialization"]!["sourceAuthority"]!["authorityId"]!.GetValue<string>());
+        var index = MortalItemIdentityState.Parse((await context.ReadJsonAsync(MortalItemIdentityState.StatePath))!);
+        Assert.Empty(index.Issues);
+        var carrier = index.EntriesByItemId[itemId]["currentCarrier"]!;
+        Assert.Equal(npcId, carrier["ownerId"]!.GetValue<string>());
+        Assert.Equal("npc_inventory", carrier["kind"]!.GetValue<string>());
+        Assert.Null((await context.ReadJsonAsync(commands))?["NPCInventoryAdds"]);
+        var withoutInventoryChange = settled.DeepClone();
+        var checkedActor = Assert.Single(withoutInventoryChange["UpdateNPCs"]!.AsArray().OfType<JsonObject>(),
+            row => row["NPCId"]!.GetValue<string>() == npcId);
+        checkedActor["inventory"] = new JsonArray();
+        var expected = original.DeepClone();
+        if (withMovement)
+        {
+            var expectedActor = Assert.Single(expected["UpdateNPCs"]!.AsArray().OfType<JsonObject>(),
+                row => row["NPCId"]!.GetValue<string>() == npcId);
+            expectedActor["currentLocationId"] = "loc_journey_forest";
+            expectedActor["initialLocationId"] = null;
+        }
+        Assert.True(JsonNode.DeepEquals(expected, withoutInventoryChange),
+            "Only the exact historical actor's supported item and location deltas may change.");
+        var issues = await context.Validator.ValidateCompletedLocationStateAsync(result, OffscreenNpcFinalSelection);
+        Assert.DoesNotContain(issues, issue => IsHistoricalOffscreenResendIssue(issue.Code));
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+
+        // The completed turn comparison cannot bless a different item index.
+        // Whitespace preserves JSON semantics but changes the bound publication bytes.
+        var indexText = await context.FileSystem.ReadFileAsync(MortalItemIdentityState.StatePath);
+        Assert.NotNull(indexText);
+        await context.FileSystem.WriteFileAtomicAsync(MortalItemIdentityState.StatePath, indexText + "\n");
+        await Assert.ThrowsAsync<ValidationService.CompletedLocationComparisonRefusedException>(
+            () => context.Validator.ValidateCompletedLocationStateAsync(result, OffscreenNpcFinalSelection));
+    }
+
     private static bool IsHistoricalOffscreenResendIssue(string? code) => code is
         "actor_materialization_historical_envelope_changed" or
         "actor_materialization_existing_resend_forbidden" or

@@ -49,3 +49,8 @@ that an ordinary multi-turn player journey completed through GameEngine.
 
 ## Bounded failed-live observability and accepted-DATA restore, 2026-11-18
 - [ ] T022 Investigate mm3 p04's original client exception without replaying its unresolved owner/world. Use existing opt-in DEBUG stderr exception export. If needed, add a narrowly admitted diagnostic restored-accepted-DATA fixture mode with exact source hashes, explicit operational exclusions and new ownership; never pretend a restored copy is the original continuation. Preserve ordinary seed/continuation gates, cheap positive/negative harness tests, independent source/outcome review and at most one controlled diagnostic reproduction before reassessing. No authority bypass, arbitrary cleanup, broad test run or automatic acceptance claim.
+
+## Shared independent semantic audit (#1515/#1516)
+
+- [ ] Implement and verify ../1515-mortal-transport-storage/independent-audit-plan.md.
+- [ ] Prove omitted crossing destruction refuses and repairs through real accepted-turn flow.

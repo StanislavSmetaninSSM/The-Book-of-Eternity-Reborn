@@ -521,9 +521,14 @@ hashes, and the private receipts were joined to the live requests. Both
 earlier live verifiers passed readback again, including ordinary turn 54
 after Load. This does not extend their acceptance to the cases below.
 
-### Open checks before accepting the expanded scope
+### Checks before accepting the expanded scope
 
-- [ ] Live road consequence: complete an eligible faction project through
+The scenarios below illustrate the contract, not predetermined GM outcomes.
+When the GM judges that an event changes a game object, apply the supported
+canonical change and report matching evidence; a chronicle or notice alone is
+not that change. A genuinely quiet interval needs no invented consequence.
+
+- [x] Live road consequence (representative run below): complete an eligible faction project through
   ordinary play and the GM relay. Show both the accepted project transition
   and the corresponding canonical location profile or route-access change,
   demonstrate the normal consumer where the effect affects play, then reload
@@ -550,3 +555,88 @@ stopped before test discovery; the offline build succeeded. No new live round,
 production change or raw diagnostics publication in this audit. Reusing the
 original phase evidence avoids reenacting proven events; verification of new
 object effects requires fresh request, original-state and accepted-state data.
+
+### Representative live road run (2026-11-27)
+
+The recorded local GM-relay run continued one story from its turn-50 autosave.
+On turn 51, the same guild project reached 1,560 minutes and the existing
+Eastgate–Alderwood foot link sealed while the decking was replaced. Two repair
+deliveries stayed bound to the same request. The normal location projection
+no longer offered that route from the canonical Eastgate origin. On turn 52,
+with no repair, the project completed at 2,880 minutes, that exact link reopened,
+and the existing projection offered it again. There was one completion notice.
+This was a projection check, not actual player travel.
+
+On turn 53, the captain took the reopened link off-screen in 120 modeled
+minutes and her canonical location changed to Alderwood. The player stayed in
+Valmont’s private quarters. Two same-request GM repairs fixed commentary and
+source labels, not the movement delta. Each phase added exactly one accepted
+receipt. A separate normal load of the untouched turn-53 save matched 19 joined
+files, with the open route and new NPC location retained and no extra turn,
+project, or notice. NPC acquisition and prose-omission handling were not proved.
+
+Recovery note: these results were read back while the original
+local artifacts were available. This text was reconstructed from the retained
+checkpoint and user report; it is not a new run and does not recreate raw saves.
+
+### Off-screen item carrier comparison: local correction plan
+
+- Reproduce both item-only acquisition and acquisition plus movement through
+  ordinary publication, then through the real final actor validator.
+- Compose only newly sealed items selected by the admitted item route, owner,
+  allocation and receipt with the prior exact NPC projection. Compare the
+  whole expected NPC root; recheck the bound item index with the final image.
+  Direct carrier edits, duplicate owners and unbound changes stay ineligible.
+- Re-run the two reproductions and the neighboring move, activity and raw
+  resend controls. The separate living-world declaration and live relay plus
+  ordinary Load proof are still required.
+
+### Next evidence slice: NPC acquisition in the assessed living world
+
+- Keep the report a description of an accepted change, never a write API. Add
+  a closed NPC inventory acquisition effect for an exact existing NPC, naming
+  the GM-authored creation reference (never a guessed permanent item ID).
+- Require the reference absent from the authenticated original and match one
+  newly accepted root receipt at the current turn, exact owner and item-index
+  lineage. Missing or mismatched changes must refuse and restore exact bytes.
+  This first slice does not generalize to trading existing items or equipment.
+- Explain to the GM that the sample outcomes are illustrative: use the
+  established mechanic when simulation produces an actual consequence and
+  preserve genuinely quiet windows. Report neither intended work nor public
+  knowledge as settled facts. Deliver the rule in the rendered context.
+- Then use the real GM relay once on a suitable scene, with an exact
+  before/after inventory and ownership readback and ordinary Load; keep any
+  NPC-specific fixtures, raw logs and save files out of Git.
+
+### Accepted live acquisition and cold Load, 2026-11-28
+
+- The official local ordinary-publication and delivered-guidance selections
+  passed 19/19. The exact report and item claim passed, a wrong creation
+  reference rolled back byte-for-byte, and the real daemon delivered the rule:
+  use actual state commands for consequential choices, not predetermined
+  examples or mere chronicle entries; allow genuinely quiet intervals.
+- A fresh Mortal setup started at turn 41 (setup only). Through the Linux
+  ordinary client, daemon and native GM relay, T42 advanced four hours
+  (480 → 720). Lev took the open Eastgate–Alderwood footpath and received one
+  new copper signal whistle at the waystation while the player remained in
+  Valmont's private chambers. The ordinary action and two repairs all belonged
+  to the same request. The initial refusal concerned thought-journal retention
+  and request-time scheduler fields; the second repair refreshed player-facing
+  artifacts and named the exact actor journal. Neither repair changed the
+  movement, item, creation reference or living-world event.
+- Readback proved one accepted story, exact off-screen NPC movement, one
+  matching item on that NPC and in the identity index, and one private assessed
+  event containing both effects. The true T42 autosave contained exact NPC,
+  item index, time, history and story bytes. The original run recorded a valid
+  logical stop and three clean process exits but did not meet the driver's
+  separate daemon-settlement proof. It was not reused as a continuation.
+- The untouched original autosave was copied into a separate empty namespace.
+  Via the ordinary main-menu Load, the actual game selected that exact archive
+  and reached a fresh player prompt without any new gameplay action. The loaded
+  NPC carrier, item index, private history and story matched the archive
+  exactly; the item still belonged once to the courier at Alderwood. The
+  standalone Load and owner cleanup passed independently.
+- Scope: new root acquisition only, not preexisting-item transfer, equipment,
+  a public disclosure, or a claim of comprehensive simulation coverage.
+  The separate narrative-without-effects audit gap remains open. Private
+  diagnostics and autosaves are not versioned; no hosted CI was run.

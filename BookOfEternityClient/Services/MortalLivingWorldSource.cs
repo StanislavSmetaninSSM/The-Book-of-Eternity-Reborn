@@ -38,14 +38,15 @@ internal sealed class MortalLivingWorldSource
     private MortalLivingWorldSource(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
         PendingTurnSnapshotReadAuthority original, Dictionary<string, byte[]?> originals,
         Dictionary<string, byte[]?> opening, MortalLivingWorldAssessmentContext context,
-        PendingTurnSnapshotPathSelection selection)
+        PendingTurnSnapshotPathSelection selection, IReadOnlyList<string> domains)
     {
         _files = files; _lease = lease; _generation = files.ReadLocalGenerationSnapshot(lease).Binding.Id;
         _snapshotToken = original.SnapshotToken; _original = originals; _opening = opening;
-        Context = context; _selection = selection;
+        Context = context; _selection = selection; Domains = domains;
     }
 
     internal MortalLivingWorldAssessmentContext Context { get; }
+    internal IReadOnlyList<string> Domains { get; }
     /// <summary>Detached original binding DATA, never publication authority.</summary>
     internal string SnapshotToken => _snapshotToken;
     /// <summary>Returns an independent copy of captured opening DATA for a selected path.</summary>
@@ -83,19 +84,30 @@ internal sealed class MortalLivingWorldSource
         {
             // Authority capture must not borrow provisional working bytes from an ambient DATA owner.
             using var fresh = FileSystemManager.SuppressValidationReuse();
-            var selection = PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(RequiredPaths,
+            var reportBytes = await files.ReadFileBytesAsync(lease, ReportPath);
+            JsonObject? report;
+            try { report = Root(reportBytes, ReportPath); }
+            catch (Exception error) when (error is JsonException or ArgumentException or InvalidOperationException or InvalidDataException)
+            { return Refuse("report_invalid", "The private report must be a JSON object without duplicate fields."); }
+
+            var reportsAcquisition = diagnosisOwner is null && MortalLivingWorldEvents.ReportsNpcAcquisition(report);
+            var domains = reportsAcquisition ? [.. DomainPaths, MortalItemIdentityState.StatePath] : DomainPaths;
+            // The current Mortal bootstrap supplies the identity index. No legacy
+            // fallback may infer an empty original to certify a new item.
+            var required = reportsAcquisition ? [.. RequiredPaths, MortalItemIdentityState.StatePath] : RequiredPaths;
+            var selection = PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(required,
                 DomainPaths.Concat([ReportPath, HistoryPath]));
             var read = PendingTurnSnapshotReader.ReadCurrent(files, lease, selection);
             if (!read.Success || read.Snapshot is not { } original)
                 return new(read.Issues, null);
             if (original.Realm != "mortal_world")
                 return Refuse("source_invalid", "The assessment requires an authenticated Mortal original.");
-            var originals = RequiredPaths.Concat(DomainPaths).Concat([ReportPath, HistoryPath]).Distinct(StringComparer.Ordinal)
+            var originals = RequiredPaths.Concat(domains).Concat([ReportPath, HistoryPath]).Distinct(StringComparer.Ordinal)
                 .ToDictionary(path => path, path => original.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal)
                     ? null : original.ReadRequiredBytes(path), StringComparer.Ordinal);
             var opening = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
             foreach (var path in originals.Keys.Concat(GuardPaths).Distinct(StringComparer.Ordinal))
-                opening.Add(path, await files.ReadFileBytesAsync(lease, path));
+                opening.Add(path, path == ReportPath ? reportBytes : await files.ReadFileBytesAsync(lease, path));
             if (!Same(originals[HistoryPath], opening[HistoryPath]))
                 return Refuse("history_mutation", "The client-owned assessment history differs from its authenticated original.");
             if (!Same(originals[ProgressionScheduleService.SchedulePath], opening[ProgressionScheduleService.SchedulePath]))
@@ -169,15 +181,11 @@ internal sealed class MortalLivingWorldSource
             var context = new MortalLivingWorldAssessmentContext(original.SessionId, original.RequestId, original.TurnNumber,
                 originalClock.Minutes, resultingMinute, control.LastWorldSimulationTimeInMinutes,
                 control.LastFactionSimulationTimeInMinutes, control.WorldCycleMinutes, control.FactionCycleMinutes);
-            JsonObject? report;
-            try { report = Root(opening[ReportPath], ReportPath); }
-            catch (Exception error) when (error is JsonException or ArgumentException or InvalidOperationException or InvalidDataException)
-            { return Refuse("report_invalid", "The private report must be a JSON object without duplicate fields."); }
             var issues = MortalLivingWorldAssessment.Validate(context, report);
             if (issues.Count != 0) return new(issues, null);
             // Validate detached originals now; malformed roots never become an empty inferred catalog.
-            foreach (var path in DomainPaths) _ = Root(originals[path], path);
-            var source = new MortalLivingWorldSource(files, lease, original, originals, opening, context, selection);
+            foreach (var path in domains) _ = Root(originals[path], path);
+            var source = new MortalLivingWorldSource(files, lease, original, originals, opening, context, selection, domains);
             await source.RequireUnchangedInputsAsync(files, lease);
             return new([], source);
         }

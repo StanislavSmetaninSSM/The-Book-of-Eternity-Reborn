@@ -476,7 +476,8 @@ internal static partial class WoundAcceptedTurnPlanner
     /// </returns>
     private static async Task<JointRepairBoundCommonInputResult> PrepareJointRepairBoundCommonInputCoreAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, object resourceAuthority,
-        GameEngine.MortalJointProgressionSource progression, JointRepairCommonInputPreparationState preparation)
+        GameEngine.MortalJointProgressionSource progression, JointRepairCommonInputPreparationState preparation,
+        EffectIdentityFactory? effectFactory = null)
     {
         await ValidateJointRepairResourcePublicationAsync(files, lease, resourceAuthority);
         await progression.ValidateCurrentAsync(files, lease);
@@ -485,7 +486,7 @@ internal static partial class WoundAcceptedTurnPlanner
         if (livingWorld.Contribution is null || livingWorld.Issues.Count != 0)
             return new(null, null, livingWorld.Issues);
         var calculationIssues = await resources.EnsureCommonCalculationAsync(JointCommonCalculationIssuer, files, lease,
-            livingWorld.Contribution);
+            livingWorld.Contribution, effectFactory);
         if (calculationIssues.Count != 0) return new(null, null, calculationIssues);
         using var innerTiming5 = files.MeasureOperation("JointCommon.CreateAuthority");
         MortalJointRepairCommonAuthority authority;
@@ -532,12 +533,13 @@ internal static partial class WoundAcceptedTurnPlanner
     /// </returns>
     internal static async Task<AcceptedMechanicsPlanningResult> CreateJointRepairCommonPlanAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, object resourceAuthority,
-        GameEngine.MortalJointProgressionSource progression)
+        GameEngine.MortalJointProgressionSource progression, EffectIdentityFactory? effectFactory = null)
     {
         var preparation = new JointRepairCommonInputPreparationState();
         try
         {
-            var composed = await PrepareJointRepairBoundCommonInputCoreAsync(files, lease, resourceAuthority, progression, preparation);
+            var composed = await PrepareJointRepairBoundCommonInputCoreAsync(files, lease, resourceAuthority, progression, preparation,
+                effectFactory);
             if (!composed.Success || composed.Input is null) return new(null, composed.Issues);
             return await SealBoundJointRepairCommonPlanAsync(files, lease, composed.Input, composed.Authority!);
         }

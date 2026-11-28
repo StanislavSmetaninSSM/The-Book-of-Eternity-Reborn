@@ -107,8 +107,12 @@ public partial class GameEngine
             throw new InvalidDataException("The actual progression manifest is null.");
         if (!JsonNode.DeepEquals(manifest["progressionControl"], JsonSerializer.SerializeToNode(control, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)))
             throw new InvalidDataException("The actual progression control is not the signed original's control.");
-        var inputs = await _progressionSchedule.CaptureMortalOutcomeInputsAsync(lease, control,
-            frame.SessionId, frame.RequestId, frame.TurnNumber);
+        var inputs = _mortalJointAuditExpected is { } audited
+            ? await _progressionSchedule.RecaptureMortalOutcomeInputsAsync(lease, control,
+                frame.SessionId, frame.RequestId, frame.TurnNumber,
+                JsonNode.Parse(audited.ProgressionBasisJson)!.AsObject(), audited.ProgressionInputFingerprint)
+            : await _progressionSchedule.CaptureMortalOutcomeInputsAsync(lease, control,
+                frame.SessionId, frame.RequestId, frame.TurnNumber);
         var signedSchedule = original.ReadRequiredBytes(ProgressionScheduleService.SchedulePath);
         var currentSchedule = inputs.ReadSourceBytes(ProgressionScheduleService.SchedulePath);
         if (currentSchedule is null || !signedSchedule.AsSpan().SequenceEqual(currentSchedule))

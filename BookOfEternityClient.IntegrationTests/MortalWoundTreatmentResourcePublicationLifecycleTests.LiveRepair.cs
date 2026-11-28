@@ -261,7 +261,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await _fs.WriteFileAtomicAsync(lease, "output/interface_updates.json", JsonSerializer.Serialize(new { dialogueOptions = Array.Empty<object>(), timestamp }));
         await _fs.WriteFileAtomicAsync(lease, "output/debug_logs.json", JsonSerializer.Serialize(new
         {
-            timestamp, gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: нет\n" +
+            timestamp, npcSkillClaims = Array.Empty<object>(), gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: нет\n" +
                 "- Why relevant: Уже запечатанное клиентом лечение и описание собственного пореза; нового решения NPC нет.\n" +
                 "- Actors outside scope: Field medic\n- Why outside scope: Нет нового взаимодействия, реплик или изменений NPC.\n\n" +
                 "## Reasoning\n- The client owns the held treatment. The single physical QTE draft supplies its complete acquisition narration."

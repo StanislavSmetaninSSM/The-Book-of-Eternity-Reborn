@@ -70,3 +70,8 @@ Dependencies: Setup → US1/US2 pure contracts → combined publication → US3 
 - [x] T036 (#1515/T035) Reproduce the verified active Options Load catalog lease refusal with an independent real native owner and current-producer ZIP, then qualify only the participating listing scope with close-before-selection and preserved A/generation/archive. No selected Load, new live run, guard change, cold bootstrap, archive reuse or GM contract change.
 - [ ] T037 (#1515/T035) Causally reproduce the actual daemon-status existence helper admission crossing the Load guard into authenticated B using one new fixture-owned ZIP and genuine native Load/helper/guard/close. Qualify only that handoff separately; no production edits, live retry, daemon loop, old world or provider in the RED checkpoint.
 - [ ] T038 (#1515/T016) Independently verify a fresh accepted same-world courtyard birth → actual GM permission decision → ordinary console Retrieve and manual Save. No Deposit/Load, forced permission, prior-world promotion or production policy change. A denied or deferred decision ends normally without moving/saving and is not a positive PASS.
+
+## Reopened cross-issue semantic coupling (#1515/#1516)
+
+- [ ] Implement and verify [independent-audit-plan.md](independent-audit-plan.md).
+- [ ] Preserve the two prose-only causal failures until real audit/repair proves the fix.

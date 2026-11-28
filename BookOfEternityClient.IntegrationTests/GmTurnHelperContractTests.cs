@@ -5054,7 +5054,10 @@ public sealed class GmTurnHelperContractTests
                          "mortal_living_world_history.json", "client-owned", "FilesModified", "not full feature acceptance",
                          "For ordinary assessed Mortal turns", "Diagnosis supports noSignificantChange only",
                          "do not recreate a consumed report", "Existing cycle backlog alone does not forbid",
-                         "Local QTE cannot consume a living-world report" })
+                         "Local QTE cannot consume a living-world report",
+                         "Simulate NPC goals, location threats and faction projects",
+                         "A chronicle entry alone cannot move", "quiet interval can stay quiet",
+                         "NPCInventoryAdds", "operation \"acquire\"", "<exact creationRef>" })
                 Assert.Contains(token, livingWorldText, StringComparison.Ordinal);
             var livingWorldExample = Assert.Single(manifest.RootElement.GetProperty("docs").EnumerateArray(),
                 item => item.GetProperty("role").GetString() == "mortal_living_world_examples");

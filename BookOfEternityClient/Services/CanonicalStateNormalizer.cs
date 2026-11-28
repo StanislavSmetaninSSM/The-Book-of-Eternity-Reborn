@@ -315,7 +315,8 @@ public partial class CanonicalStateNormalizer
     }
 
     internal async Task<AcceptedMechanicsPlan?> NormalizeAccumulatedStateWithPlanAsync(
-        IReadOnlyDictionary<string, string>? backups = null)
+        IReadOnlyDictionary<string, string>? backups = null,
+        ValidationService.LocationComparisonCapture? locationComparison = null)
     {
         if (_writeLease == null)
         {
@@ -324,7 +325,7 @@ public partial class CanonicalStateNormalizer
             try
             {
                 return await BindTo(writeLease)
-                    .NormalizeAccumulatedStateWithPlanAsync(backups);
+                    .NormalizeAccumulatedStateWithPlanAsync(backups, locationComparison);
             }
             catch (CoordinatedStatePublicationUncertainException uncertain)
             {
@@ -357,7 +358,7 @@ public partial class CanonicalStateNormalizer
             return await NormalizeAccumulatedStateCoreAsync(
                 backups,
                 mortalItemMode,
-                acceptedMechanicsPreflight);
+                acceptedMechanicsPreflight, locationComparison: locationComparison);
         }
 
         EnsureNoPlanAcceptedMechanicsAuthorityStillAbsent();
@@ -434,7 +435,8 @@ public partial class CanonicalStateNormalizer
         MortalItemAcceptedTurnNormalizationMode mortalItemMode,
         AcceptedMechanicsNormalizationPreflight? acceptedMechanicsPreflight,
         MortalWoundTreatmentPublicationTakeReceipt? treatmentPublicationReceipt = null,
-        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null,
+        ValidationService.LocationComparisonCapture? locationComparison = null)
     {
         ArgumentNullException.ThrowIfNull(mortalItemMode);
         var spiritualOwner = (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Plan.SpiritualHealingContinuation;
@@ -490,7 +492,7 @@ public partial class CanonicalStateNormalizer
             (acceptedMechanicsPreflight as AcceptedMechanicsNormalizationPreflight.Validated)?.Binding);
         var mortalLocationPlan = normalizedLocations.Plan;
         await NormalizeMortalItemsAsync(backups, mortalLocationPlan?.AcceptedStorageCoordinates, mortalItemMode,
-            normalizedLocations.ItemPhase, normalizedLocations.ProjectionProof);
+            normalizedLocations.ItemPhase, normalizedLocations.ProjectionProof, locationComparison);
         await NormalizeGuardiansAsync(
             backups,
             (acceptedMechanicsPreflight as

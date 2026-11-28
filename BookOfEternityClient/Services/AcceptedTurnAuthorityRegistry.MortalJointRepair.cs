@@ -31,7 +31,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
 
     internal static async Task<WoundEffectBatchPlanningResult> GetOrBuildWoundJointRepairEffectValidatedAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
-        WoundPreparedAcceptedTurnPlan prepared, EffectAcceptedTurnInput input, object continuation, object reservation)
+        WoundPreparedAcceptedTurnPlan prepared, EffectAcceptedTurnInput input, object continuation, object reservation,
+        EffectIdentityFactory? identityFactory = null)
     {
         try
         {
@@ -43,7 +44,8 @@ internal static partial class AcceptedTurnAuthorityRegistry
         catch (Exception failure) when (failure is InvalidDataException or IOException)
         { GetState(files, lease).InvalidateOwnedJointRepairPreparation(continuation, reservation); throw; }
         return GetState(files, lease).GetOrBuildWoundEffectValidated(prepared, input,
-            reservationAuthority: reservation, jointRepairContinuationAuthority: continuation);
+            reservationAuthority: reservation, identityFactory: identityFactory,
+            jointRepairContinuationAuthority: continuation);
     }
 
     internal static async Task<WoundAcceptedTurnPlanningResult> GetOrBuildWoundJointRepairFinalValidatedAsync(

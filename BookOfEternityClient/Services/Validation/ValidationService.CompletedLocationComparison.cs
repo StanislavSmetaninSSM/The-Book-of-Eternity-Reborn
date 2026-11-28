@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -24,7 +25,7 @@ public partial class ValidationService
     /// <summary>Captures genuine original bindings only inside the ordinary publication owner.</summary>
     internal static async Task<LocationComparisonCapture?> CaptureLocationComparisonAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease,
-        byte[]? rawNpcCore = null, byte[]? rawNpcActivities = null)
+        byte[]? rawNpcCore = null, byte[]? rawNpcActivities = null, byte[]? rawNpcInventory = null)
     {
         files.EnsureCanonicalWriteLeaseActive(lease);
         if (files.HasBrowserOriginalOperation)
@@ -38,7 +39,10 @@ public partial class ValidationService
         }
         var manifest = await files.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
         if (manifest is null) return null;
-        var compareNpc = !files.HasBrowserOriginalOperation && NeedsOffscreenNpcProjection(rawNpcCore, rawNpcActivities);
+        var compareAcquisitions = !files.HasBrowserOriginalOperation && rawNpcInventory is not null &&
+            rawNpcInventory.AsSpan().IndexOf("\"NPCInventoryAdds\""u8) >= 0;
+        var compareNpc = !files.HasBrowserOriginalOperation &&
+            (compareAcquisitions || NeedsOffscreenNpcProjection(rawNpcCore, rawNpcActivities));
         string[] originalPaths = compareNpc ? [.. LocationOriginalPaths, NpcCoreChangesContract.NpcCorePath] : LocationOriginalPaths;
         var read = PendingTurnSnapshotReader.ReadCurrent(files, lease, originalPaths);
         if (!read.Success && compareNpc)
@@ -59,7 +63,7 @@ public partial class ValidationService
             read.Snapshot.RequestId, read.Snapshot.TurnNumber, read.Snapshot.SnapshotToken);
         var npc = compareNpc ? BuildOffscreenNpcProjection(
             read.Snapshot.ReadRequiredBytes(NpcCoreChangesContract.NpcCorePath), rawNpcCore, rawNpcActivities,
-            read.Snapshot.TurnNumber) : null;
+            read.Snapshot.TurnNumber, compareAcquisitions) : null;
         if (npc is null) originalPaths = LocationOriginalPaths;
         return new LocationComparisonCapture(LocationComparisonKey, files, generation, read.Snapshot, bindings, browser, originalPaths, npc);
     }
@@ -107,7 +111,15 @@ public partial class ValidationService
         private readonly FileSystemManager.BrowserOriginalOperationScope? _browserOwner;
         private readonly IReadOnlyCollection<string> _originalPaths;
         private readonly OffscreenNpcProjection? _offscreenNpc;
-        private string? _publishedNpcHash, _publishedActivityHash;
+        private string? _publishedNpcHash, _publishedActivityHash, _publishedNpcItemIndexHash;
+        private JsonObject? _observedNpcItemIndex;
+
+        internal void ObserveNpcAcquisitionPhase(MortalItemAcceptedTurnNormalizationSnapshot snapshot,
+            IReadOnlyDictionary<string, JsonNode?> publishedPhase)
+        {
+            if (_offscreenNpc?.TryComposeAcquisitions(snapshot, publishedPhase) == true)
+                _observedNpcItemIndex = publishedPhase[MortalItemIdentityState.StatePath]!.DeepClone().AsObject();
+        }
         private int _completionTaken;
         private byte[]? _publishedMap;
         private string? _publishedIndexHash;
@@ -168,6 +180,14 @@ public partial class ValidationService
                     var activity = await files.ReadFileBytesAsync(lease, OffscreenNpcActivityPath);
                     if (!_offscreenNpc.MatchesActivityAfterImage(activity))
                         return; // Neither a pending command nor a later sidecar substitution is settled.
+                    if (_observedNpcItemIndex is not null)
+                    {
+                        var items = await files.ReadFileBytesAsync(lease, MortalItemIdentityState.StatePath);
+                        if (items is null || !JsonNode.DeepEquals(_observedNpcItemIndex, TryReadOffscreenObject(items)))
+                            return;
+                        _publishedNpcItemIndexHash = LocationHash(items);
+                        _observedNpcItemIndex = null;
+                    }
                     _publishedActivityHash = activity is null ? null : LocationHash(activity);
                     _publishedNpcHash = LocationHash(npc);
                 }
@@ -201,6 +221,12 @@ public partial class ValidationService
             var current = await files.ReadFileBytesAsync(lease, NpcCoreChangesContract.NpcCorePath);
             if (current is null || LocationHash(current) != _publishedNpcHash)
                 throw new CompletedLocationComparisonRefusedException("Completed off-screen NPC published image changed.");
+            if (_publishedNpcItemIndexHash is not null)
+            {
+                var items = await files.ReadFileBytesAsync(lease, MortalItemIdentityState.StatePath);
+                if (items is null || LocationHash(items) != _publishedNpcItemIndexHash)
+                    throw new CompletedLocationComparisonRefusedException("Completed off-screen NPC item index changed.");
+            }
             var activities = await files.ReadFileBytesAsync(lease, OffscreenNpcActivityPath);
             if ((activities is null ? null : LocationHash(activities)) != _publishedActivityHash)
                 throw new CompletedLocationComparisonRefusedException("Completed off-screen NPC activity carrier changed.");

@@ -36,7 +36,7 @@ internal sealed class MortalLivingWorldPublication
         _historyBefore = source.ReadOpeningBytes(MortalLivingWorldSource.HistoryPath);
         _report = Root(_reportBefore, MortalLivingWorldSource.ReportPath);
         _history = Root(_historyBefore, MortalLivingWorldSource.HistoryPath);
-        foreach (var path in MortalLivingWorldSource.DomainPaths)
+        foreach (var path in _source.Domains)
             if (source.ReadOriginalDocument(path) is { } root) _originalDocuments.Add(path, root);
             else _originalAbsentPaths.Add(path);
     }
@@ -89,7 +89,7 @@ internal sealed class MortalLivingWorldPublication
         await RequireBytesAsync(files, lease, MortalLivingWorldSource.ReportPath, _reportBefore);
         await RequireBytesAsync(files, lease, MortalLivingWorldSource.HistoryPath, _historyBefore);
         var final = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
-        foreach (var path in MortalLivingWorldSource.DomainPaths.Append(MortalLivingWorldSource.WorldTimePath))
+        foreach (var path in _source.Domains.Append(MortalLivingWorldSource.WorldTimePath))
             final.Add(path, await files.ReadFileBytesAsync(lease, path));
         JsonObject? clock;
         try { clock = Root(final[MortalLivingWorldSource.WorldTimePath], MortalLivingWorldSource.WorldTimePath); }
@@ -108,7 +108,7 @@ internal sealed class MortalLivingWorldPublication
         var current = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         try
         {
-            foreach (var path in MortalLivingWorldSource.DomainPaths)
+            foreach (var path in _source.Domains)
                 if (Root(final[path], path) is { } root) current.Add(path, root);
         }
         catch (Exception error) when (error is JsonException or ArgumentException or InvalidOperationException or InvalidDataException)

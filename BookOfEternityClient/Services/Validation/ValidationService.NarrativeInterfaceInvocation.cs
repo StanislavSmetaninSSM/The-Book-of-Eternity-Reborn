@@ -8,13 +8,20 @@ public partial class ValidationService
 
     /// <summary>Runs the ordinary narrative policy once and retains its actual invocation DATA.</summary>
     /// <returns>The original issues and source observations; no engine registration or publication authority.</returns>
-    internal async Task<NarrativePolicyPass> ValidateAcceptedTurnNarrativePolicyPassAsync()
+    internal Task<NarrativePolicyPass> ValidateAcceptedTurnNarrativePolicyPassAsync() =>
+        CaptureAcceptedTurnNarrativePolicyPassAsync(readOnly: false);
+
+    /// <summary>Observes the sealed narrative without normalizing or rewriting public output.</summary>
+    internal Task<NarrativePolicyPass> ValidateMortalJointNarrativeReadOnlyPolicyPassAsync() =>
+        CaptureAcceptedTurnNarrativePolicyPassAsync(readOnly: true);
+
+    private async Task<NarrativePolicyPass> CaptureAcceptedTurnNarrativePolicyPassAsync(bool readOnly)
     {
         using var timing = _fs.MeasureOperation("NarrativePolicy.Capture");
         var source = new NarrativeInterfaceSourceSession(_fs, NarrativePassIssuer);
         try
         {
-            var issues = await ValidateAcceptedTurnNarrativePayloadInternalAsync(source: source);
+            var issues = await ValidateAcceptedTurnNarrativePayloadInternalAsync(readOnly: readOnly, source: source);
             source.Complete();
             return NarrativePolicyPass.Issue(NarrativePassIssuer, this, source, issues);
         }

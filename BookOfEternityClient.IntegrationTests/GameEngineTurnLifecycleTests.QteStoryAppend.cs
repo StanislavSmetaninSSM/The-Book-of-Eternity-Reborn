@@ -401,7 +401,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             var timestamp = DateTime.UtcNow.ToString("o");
             await WriteJsonAsync("output/narrative_response.json", new { response = QteStoryNarrative, timestamp });
             await WriteJsonAsync("output/interface_updates.json", new { dialogueOptions = Array.Empty<object>(), timestamp });
-            await WriteJsonAsync("output/debug_logs.json", new { timestamp, gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: нет\n- Why relevant: Обвал без участия NPC.\n- Actors outside scope: нет\n- Why outside scope: В сцене нет других акторов.\n\n## Reasoning\n- Only the QTE offer is authored; no ordinary state changes." });
+            await WriteJsonAsync("output/debug_logs.json", new { timestamp, npcSkillClaims = Array.Empty<object>(), gm_thoughts_markdown = "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: нет\n- Why relevant: Обвал без участия NPC.\n- Actors outside scope: нет\n- Why outside scope: В сцене нет других акторов.\n\n## Reasoning\n- Only the QTE offer is authored; no ordinary state changes." });
             await WriteJsonAsync("ready/turn_complete.json", new { sessionId = run.Source.SessionId, requestId = run.Source.RequestId,
                 turnNumber = run.Source.TurnNumber, status = "success", timestamp, filesModified = new[] { QteSceneService.QteOfferPath, "output/narrative_response.json", "output/interface_updates.json", "output/debug_logs.json" } });
             stagedReady = true;

@@ -2,6 +2,110 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "mortal-independent-audit-responses-protocol",
+      "responsibility": "#1515/#1516 standalone no-tool JSON request shape and strict provider envelope handoff to exact audit evidence validation.",
+      "excludes": "No HTTP dispatch, account or model qualification, engine gate, Windows or live GM acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalTurnAuditResponsesProtocol.cs",
+        "BookOfEternityClient.Tests/MortalTurnAuditResponsesProtocolTests.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-independent-audit-contract",
+          "when": "Changing the typed verdict or exact packet evidence contract."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalTurnAuditResponsesProtocolTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-joint-audit-progression-replay",
+      "responsibility": "#1515/#1516 detached progression DATA replay under a new lease; exact sources/control/tuple/calculation and old-lease refusal.",
+      "excludes": "No full engine lifecycle, live model, generation replacement or publication acceptance.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalJointProgressionReplayTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-joint-audit-preview-lifecycle",
+      "responsibility": "#1515/#1516 genuine live joint preview unattempted close, fresh narrative recapture, deterministic rebuild and one actual publication.",
+      "excludes": "No live model transport, whole Mortal audit acceptance, cold resume or browser owner qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointAuditPreview.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointAuditPreview.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AuditPreviewClosesAndFreshRebuildPublishesOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-independent-audit-contract",
+      "responsibility": "#1515/#1516 immutable audit packet and strict bound response DATA validation.",
+      "excludes": "No model inference, transport isolation, engine acceptance or completeness guarantee.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalTurnAuditContract.cs",
+        "BookOfEternityClient.Tests/MortalTurnAuditContractTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalTurnAuditContractTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "browser-submitted-turn-refresh",
       "responsibility": "After a browser submission, serial bounded pending-status reads defer refresh through refused or still-pending phases and abandon an obsolete shell owner.",
       "excludes": "No command replay, automatic acceptance, external provider, or backend API expansion.",
@@ -58619,6 +58723,30 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.MortalLiveEvidenceValidatorTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-offscreen-item-historical-carrier",
+      "responsibility": "#1516 authorized ordinary NPC acquisition on an already materialized off-screen historical carrier, exact item/index, final actor validation and living-world acquisition report/rollback.",
+      "excludes": "No live relay, ordinary Load, equipment, transfer or issue-wide acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLivingWorldPublicationTests.OffscreenNpc.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLivingWorldPublicationTests.OrdinaryPublication_AuthorizedOffscreenNpcAcquisitionKeepsHistoricalCarrier"
           ]
         }
       ]
